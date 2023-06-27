@@ -1,0 +1,1 @@
+export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
