@@ -3,14 +3,13 @@ import PageSwitch from "./PageSwitch";
 import { PageContainerProps } from "../types/common.types";
 
 const PageContainer: FunctionComponent<PageContainerProps> = ({
-    pageSwitcher
+  pageSwitcher,
 }): JSX.Element => {
-
-    return (
-        <div>
-            <PageSwitch pageSwitcher={pageSwitcher} />
-        </div>
-    )
-}
+  return (
+    <div className="relative w-full h-fit flex">
+      <PageSwitch pageSwitcher={pageSwitcher} />
+    </div>
+  );
+};
 
 export default PageContainer;

@@ -9,7 +9,7 @@ export default function Home(): JSX.Element {
   );
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
   return (
-    <div className="relative overflow-x-hidden w-full h-full flex flex-col px-6">
+    <div className="relative overflow-hidden w-full h-fit flex flex-row px-6 gap-10">
       <PreRolls preRoll={preRolls.left} />
       <PageContainer pageSwitcher={pageSwitcher} />
       <PreRolls preRoll={preRolls.right} />

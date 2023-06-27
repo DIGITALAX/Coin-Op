@@ -46,6 +46,20 @@ export default function Document() {
         crossOrigin="anonymous"
         type="font/otf"
       />
+      <link
+        rel="preload"
+        href="/fonts/SatoshiRegular.otf"
+        as="font"
+        crossOrigin="anonymous"
+        type="font/otf"
+      />
+      <link
+        rel="preload"
+        href="/fonts/SatoshiBold.otf"
+        as="font"
+        crossOrigin="anonymous"
+        type="font/otf"
+      />
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -63,6 +77,16 @@ export default function Document() {
               @font-face {
                 font-family: "Aquatico Regular";
                 src: url("./fonts/AquaticoRegular.otf");
+              }
+
+              @font-face {
+                font-family: "Satoshi Regular";
+                src: url("./fonts/SatoshiRegular.otf");
+              }
+
+              @font-face {
+                font-family: "Satoshi Black";
+                src: url("/fonts/SatoshiBlack.otf");
               }
             `,
         }}

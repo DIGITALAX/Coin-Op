@@ -13,6 +13,7 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import RouterChange from "@/components/Common/modules/RouterChange";
+import useRollSearch from "@/components/Layout/hooks/useRollSearch";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [polygon],
@@ -69,12 +70,19 @@ export default function App({ Component, pageProps }: AppProps) {
     return <RouterChange />;
   }
 
+  const { rollSearch, handleRollSearch, prompt, setPrompt } = useRollSearch();
+
   return (
     <Provider store={store}>
       <WagmiConfig config={config}>
         <RainbowKitProvider chains={chains}>
-          <div className="relative overflow-x-hidden w-full h-fit flex flex-col selection:bg-oscurazul selection:text-white">
-            <Header />
+          <div className="relative overflow-x-hidden w-full h-fit flex flex-col selection:bg-oscurazul selection:text-white gap-5">
+            <Header
+              rollSearch={rollSearch}
+              handleRollSearch={handleRollSearch}
+              prompt={prompt}
+              setPrompt={setPrompt}
+            />
             <Component {...pageProps} />
             <Footer />
           </div>

@@ -11,11 +11,17 @@ module.exports = {
         mega: "Megamax Jones",
         monu: "Monument Regular",
         aqua: "Aquatico Regular",
+        sat: "Satoshi Regular",
+        satB: "Satoshi Black",
       },
       colors: {
         oscurazul: "#030D6B",
-        fresa: "#B620E0"
+        fresa: "#B620E0",
+        ama: "#FBDB86"
       },
+      height: {
+        100: "36rem"
+      }
     },
   },
   plugins: [],

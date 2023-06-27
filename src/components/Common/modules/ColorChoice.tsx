@@ -3,6 +3,7 @@ import { ColorChoiceProps } from "../types/common.types";
 
 const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
   colors,
+  chosenColor,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex">
@@ -11,7 +12,9 @@ const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
           return (
             <div
               key={index}
-              className="relative w-5 h-5 border border-white rounded-full cursor-pointer"
+              className={`relative w-5 h-5 border rounded-full cursor-pointer ${
+                chosenColor === color ? "border-blue" : "border-white"
+              }`}
               style={{ backgroundColor: color }}
             ></div>
           );

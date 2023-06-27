@@ -2,10 +2,12 @@ import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import pageReducer from "./reducers/pageSlice";
 import preRollReducer from "./reducers/preRollSlice";
+import cartReducer from "./reducers/cartSlice";
 
 const reducer = combineReducers({
   pageReducer,
-  preRollReducer
+  preRollReducer,
+  cartReducer,
 });
 
 export const store = configureStore({

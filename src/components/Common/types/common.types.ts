@@ -19,6 +19,7 @@ export interface PreRoll {
   price: number;
   type: PrintType;
   bgColor: string;
+  chosenColor: string;
 }
 
 export type PreRollsProps = {
@@ -35,5 +36,23 @@ export type PrintTagProps = {
 };
 
 export type ColorChoiceProps = {
-  colors: string[]
+  colors: string[];
+  chosenColor: string;
+};
+
+export type SearchBoxProps = {
+  promptSearch: RollSearch;
+};
+
+export interface RollSearch {
+  tags: string;
+  image: string;
+  name: string;
 }
+
+export type RollSearchProps = {
+  rollSearch: RollSearch[];
+  handleRollSearch: () => void;
+  prompt: string;
+  setPrompt: (e: string) => void;
+};
