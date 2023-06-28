@@ -17,7 +17,7 @@ const TopBanner: FunctionComponent = (): JSX.Element => {
             Action Word
           </div>
           <div className="relative w-fit h-fit items-center justify-center flex text-sm">
-            it's simple
+            it&apos;s simple
           </div>
         </div>
       </div>
