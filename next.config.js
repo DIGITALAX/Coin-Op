@@ -9,6 +9,7 @@ const allowedOrigins = [
   "https://api.thegraph.com",
   "https://youtube.com",
   "https://vimeo.com",
+  `https://${process.env.NEXT_PUBLIC_ALGOLIA_ID}-dsn.algolia.net`,
 ];
 
 const nextConfig = {

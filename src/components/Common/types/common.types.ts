@@ -74,7 +74,7 @@ export type SearchBoxProps = {
 
 export type RollSearchProps = {
   rollSearch: PreRoll[];
-  handleRollSearch: () => void;
+  handleRollSearch: () => Promise<void>;
   prompt: string;
   setPrompt: (e: string) => void;
   handlePromptChoose: (e: PreRoll) => void;
