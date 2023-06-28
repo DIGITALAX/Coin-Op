@@ -6,14 +6,30 @@ import {
 import PreRoll from "./PreRoll";
 
 const PreRolls: FunctionComponent<PreRollsProps> = ({
-  preRoll,
+  dispatch,
+  cartItems,
+  preRolls,
+  left,
+  right,
 }): JSX.Element => {
   return (
-    <div className="relative w-72 h-full flex overflow-y-scroll">
+    <div className="relative w-80 h-[60rem] flex overflow-y-scroll">
       <div className="relative w-full h-fit flex flex-col justify-start items-center gap-10">
-        {preRoll?.map((preRoll: PreRollInterface, index: number) => {
-          return <PreRoll key={index} preRoll={preRoll} />;
-        })}
+        {(left ? preRolls.left : preRolls.right)?.map(
+          (preRoll: PreRollInterface, index: number) => {
+            return (
+              <PreRoll
+                key={index}
+                preRoll={preRoll}
+                cartItems={cartItems}
+                dispatch={dispatch}
+                preRolls={preRolls}
+                left={left}
+                right={right}
+              />
+            );
+          }
+        )}
       </div>
     </div>
   );

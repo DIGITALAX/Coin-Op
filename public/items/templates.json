@@ -1,0 +1,42 @@
+[
+  {
+    "name": "hoodie",
+    "type": "hoodie",
+    "image": "QmVhSyXB67nUj1yH7GmojxvkoAdsrAumJkXs5rECnN7Cfj"
+  },
+  {
+    "name": "shirt",
+    "type": "shirt",
+    "image": "QmRXrv2icSyRi5P7VEx9yWh66VQB9UiiYPSt2NDkuGAcB9"
+  },
+  {
+    "name": "poster",
+    "type": "poster",
+    "image": "QmXSKZvk6iHtqRN9e3GEZPKRiDTUD72RY7w84ya2t3mRdZ"
+  },
+  {
+    "name": "sticker",
+    "type": "sticker",
+    "image": "QmV3Au8Vz2HZ4cfP5Jp5WsD47umg67rN11Y47a5mdL7dnm"
+  },
+  {
+    "name": "hoodie1",
+    "type": "sticker",
+    "image": "Qmf9YuBTjdSbr9gRuieLbd3T3LgCi1iBEvoJ1kazPqt9Zu"
+  },
+  {
+    "name": "shirt1",
+    "type": "sticker",
+    "image": "QmQ4MZv5Si4GBpotREfegxyR7Ym4h3xCvo6eu4AUzEh77Z"
+  },
+  {
+    "name": "shirt2",
+    "type": "sticker",
+    "image": "QmScnZDEzfSmnDVbwDXGmv7EHq4uVkhUcmDXSLA287bQEC"
+  },
+  {
+    "name": "shirt3",
+    "type": "sticker",
+    "image": "QmaMokaGD416aNQgGHhRirRsk9udvv5gtpV3P62Bie7DMB"
+  }
+]

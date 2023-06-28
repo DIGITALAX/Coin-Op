@@ -37,6 +37,7 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
                 alt="seeAll"
                 fill
                 src={`${INFURA_GATEWAY}/ipfs/QmXvzWPiUqMw6umcS3Qp6yXCTwLzZtbXcWH8fKE6i3ZFpY`}
+                draggable={false}
               />
             </div>
           </div>

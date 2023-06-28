@@ -4,15 +4,15 @@ import Grid from "./Grid";
 import { FormatProps } from "../types/format.types";
 
 const Format: FunctionComponent<FormatProps> = ({
-  setTemplate,
   templates,
   template,
+  dispatch
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col gap-5">
       <TopBanner />
       <Grid
-        setTemplate={setTemplate}
+        dispatch={dispatch}
         templates={templates}
         template={template}
       />

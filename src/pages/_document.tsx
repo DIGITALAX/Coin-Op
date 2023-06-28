@@ -55,7 +55,7 @@ export default function Document() {
       />
       <link
         rel="preload"
-        href="/fonts/SatoshiBold.otf"
+        href="/fonts/SatoshiBlack.otf"
         as="font"
         crossOrigin="anonymous"
         type="font/otf"

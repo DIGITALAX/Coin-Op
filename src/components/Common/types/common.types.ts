@@ -1,3 +1,6 @@
+import { Template } from "@/components/Walkthrough/Format/types/format.types";
+import { AnyAction, Dispatch } from "redux";
+
 export type PageSwitchProps = {
   pageSwitcher: string;
 };
@@ -17,27 +20,48 @@ export interface PreRoll {
   image: string;
   colors: string[];
   price: number;
-  type: PrintType;
+  type: string;
   bgColor: string;
   chosenColor: string;
 }
 
 export type PreRollsProps = {
-  preRoll: PreRoll[];
+  preRolls: {
+    left: PreRoll[];
+    right: PreRoll[];
+  };
+  dispatch: Dispatch<AnyAction>;
+  cartItems: PreRoll[];
+  left?: boolean;
+  right?: boolean;
 };
 
 export type PreRollProps = {
   preRoll: PreRoll;
+  dispatch: Dispatch<AnyAction>;
+  cartItems: PreRoll[];
+  preRolls: {
+    left: PreRoll[];
+    right: PreRoll[];
+  };
+  left?: boolean;
+  right?: boolean;
 };
 
 export type PrintTagProps = {
   backgroundColor: string;
-  type: PrintType;
+  type: string;
 };
 
 export type ColorChoiceProps = {
-  colors: string[];
-  chosenColor: string;
+  dispatch: Dispatch<AnyAction>;
+  preRolls: {
+    left: PreRoll[];
+    right: PreRoll[];
+  };
+  preRoll: PreRoll;
+  left?: boolean;
+  right?: boolean;
 };
 
 export type SearchBoxProps = {
@@ -46,8 +70,7 @@ export type SearchBoxProps = {
 
 export interface RollSearch {
   tags: string;
-  image: string;
-  name: string;
+  template: Template;
 }
 
 export type RollSearchProps = {

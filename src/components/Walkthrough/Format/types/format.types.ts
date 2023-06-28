@@ -1,7 +1,9 @@
+import { AnyAction, Dispatch } from "redux";
+
 export type GridProps = {
   templates: Template[];
   template: Template | undefined;
-  setTemplate: (e: Template) => void;
+  dispatch: Dispatch<AnyAction>;
 };
 
 export interface Template {
@@ -11,8 +13,14 @@ export interface Template {
 }
 
 export type FormatProps = {
-    templates: Template[];
-    template: Template | undefined;
-    setTemplate: (e: Template) => void;
-  };
-  
+  templates: Template[];
+  template: Template | undefined;
+  dispatch: Dispatch<AnyAction>;
+};
+
+export type TemplateProps = {
+  template: Template | undefined;
+  chosenTemplate: Template | undefined;
+  height: string;
+  dispatch: Dispatch<AnyAction>;
+};

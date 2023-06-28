@@ -10,7 +10,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
     <div className="relative w-40 h-40 rounded-md border border-white/70 px-3 cursor-pointer">
       <div className="relative w-full h-full object-cover hover:opacity-80">
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/${promptSearch.image}`}
+          src={`${INFURA_GATEWAY}/ipfs/${promptSearch.template.image}`}
           fill
           alt="searchPrompt"
         />

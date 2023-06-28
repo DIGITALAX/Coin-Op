@@ -12,6 +12,7 @@ const Footer: FunctionComponent = (): JSX.Element => {
           target="_blank"
           href="https://www.digitalax.xyz"
           className="relative w-4 h-4 flex cursor-pointer active:scale-95 justify-center items-center"
+          draggable={false}
         >
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmSVUP4KFDrQ4pigtY67UbNABeaSFNikAw23ucbGRhh8nU`}
@@ -25,6 +26,7 @@ const Footer: FunctionComponent = (): JSX.Element => {
           target="_blank"
           href="https://www.chromadin.xyz/#chat?option=history&profile=digitalax"
           className="relative w-5 h-5 flex cursor-pointer active:scale-95 justify-center items-center"
+          draggable={false}
         >
           <Image
             src={`${INFURA_GATEWAY}/ipfs/Qmdpju26ySZyrHANGw6Evhnm3phEub9CDZC8gXMhwsj74Z`}
@@ -38,6 +40,7 @@ const Footer: FunctionComponent = (): JSX.Element => {
           target="_blank"
           href="https://github.com/digitalax"
           className="relative w-fit h-fit cursor-pointer active:scale-95 flex justify-center items-center"
+          draggable={false}
         >
           <BsGithub size={20} color={"white"} />
         </a>
@@ -46,6 +49,7 @@ const Footer: FunctionComponent = (): JSX.Element => {
           target="_blank"
           href="https://twitter.com/DIGITALAX_"
           className="relative w-fit h-fit cursor-pointer active:scale-95 flex justify-center items-center"
+          draggable={false}
         >
           <BsTwitter size={20} color={"white"} />
         </a>

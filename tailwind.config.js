@@ -17,11 +17,17 @@ module.exports = {
       colors: {
         oscurazul: "#030D6B",
         fresa: "#B620E0",
-        ama: "#FBDB86"
+        ama: "#FBDB86",
+        leg: "#32C5FF",
+        mod: "#6236FF",
+        sol: "#FFC800",
       },
       height: {
-        100: "36rem"
-      }
+        100: "36rem",
+      },
+      fontSize: {
+        xxs: "0.5rem",
+      },
     },
   },
   plugins: [],
