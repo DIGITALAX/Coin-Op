@@ -18,25 +18,10 @@ const useRollSearch = () => {
 
   const handleRollSearch = async () => {
     if (!algolia) return;
-    const searchResults: PreRoll[] = [];
 
     const { hits } = await algolia.search(prompt);
-    console.log({ hits });
 
-    [...preRolls.left, ...preRolls.right].forEach((preRoll) => {
-      preRoll.tags?.forEach((tag) => {
-        if (
-          tag.toLowerCase().includes(prompt.toLowerCase()) ||
-          prompt.toLowerCase().includes(tag.toLowerCase()) ||
-          (tag.length >= 3 &&
-            tag.toLowerCase().includes(prompt.slice(0, 3).toLowerCase()))
-        ) {
-          searchResults.push(preRoll);
-        }
-      });
-    });
-
-    dispatch(setRollSearch(searchResults));
+    dispatch(setRollSearch(hits.length > 0 ? hits : (undefined as any)));
   };
 
   const handlePromptChoose = (preRoll: PreRoll) => {
