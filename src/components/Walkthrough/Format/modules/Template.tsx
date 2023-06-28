@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import { TemplateProps } from "../types/format.types";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
 import { setTemplate } from "../../../../../redux/reducers/templateSlice";
 
@@ -23,7 +23,8 @@ const Template: FunctionComponent<TemplateProps> = ({
       <div className="relative w-full h-full object-cover">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${template?.image}`}
-          fill
+          layout="fill"
+          objectFit="cover"
           alt="template"
           draggable={false}
           className="rounded-md"

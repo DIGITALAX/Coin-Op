@@ -1,14 +1,18 @@
 import Hook from "@/components/Common/modules/Hook";
 import RollSearch from "@/components/Common/modules/RollSearch";
 import { FunctionComponent } from "react";
-import { HeaderProps } from "../types/layout.types";
+import useRollSearch from "../hooks/useRollSearch";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
-const Header: FunctionComponent<HeaderProps> = ({
-  rollSearch,
-  handleRollSearch,
-  setPrompt,
-  prompt,
-}): JSX.Element => {
+const Header: FunctionComponent = (): JSX.Element => {
+  const { handleRollSearch, prompt, setPrompt, handlePromptChoose } =
+    useRollSearch();
+  const router = useRouter();
+  const rollSearch = useSelector(
+    (state: RootState) => state.app.rollSearchReducer.value
+  );
   return (
     <div className="relative w-full flex flex-col gap-20 px-3 pt-2 pb-20">
       <div className="flex flex-row items-center w-full h-fit text-white font-mega">
@@ -25,6 +29,8 @@ const Header: FunctionComponent<HeaderProps> = ({
           handleRollSearch={handleRollSearch}
           setPrompt={setPrompt}
           prompt={prompt}
+          handlePromptChoose={handlePromptChoose}
+          router={router}
         />
         <Hook />
       </div>

@@ -4,12 +4,14 @@ import pageReducer from "./reducers/pageSlice";
 import preRollReducer from "./reducers/preRollSlice";
 import cartReducer from "./reducers/cartSlice";
 import templateReducer from "./reducers/templateSlice";
+import rollSearchReducer from "./reducers/rollSearchSlice";
 
 const reducer = combineReducers({
   pageReducer,
   preRollReducer,
   cartReducer,
   templateReducer,
+  rollSearchReducer,
 });
 
 export const store = configureStore({

@@ -1,7 +1,7 @@
 import { ChangeEvent, FunctionComponent } from "react";
-import { RollSearch, RollSearchProps } from "../types/common.types";
+import { PreRoll, RollSearchProps } from "../types/common.types";
 import SearchBox from "./SearchBox";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 
 const RollSearch: FunctionComponent<RollSearchProps> = ({
@@ -9,6 +9,8 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
   handleRollSearch,
   prompt,
   setPrompt,
+  handlePromptChoose,
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 flex flex-col justify-start h-fit gap-4">
@@ -26,23 +28,34 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
       >
         search prompts
       </div>
-      <div className="relative flex w-full h-44 justify-start items-center">
+      <div className="relative flex flex-col w-full h-48 justify-start items-start overflow-y-scroll">
         {rollSearch?.length > 0 && (
-          <div className="relative inline-flex flex-wrap gap-3 pt-6 justify-start items-center">
-            {rollSearch.map((roll: RollSearch, index: number) => {
-              return <SearchBox key={index} promptSearch={roll} />;
+          <div className="relative inline-flex flex-wrap gap-6 pt-6 justify-start items-center">
+            {rollSearch?.slice(0, 8).map((roll: PreRoll, index: number) => {
+              return (
+                <SearchBox
+                  key={index}
+                  promptSearch={roll}
+                  handlePromptChoose={handlePromptChoose}
+                />
+              );
             })}
-            <div className="relative w-20 h-8 flex">
-              <Image
-                alt="seeAll"
-                fill
-                src={`${INFURA_GATEWAY}/ipfs/QmXvzWPiUqMw6umcS3Qp6yXCTwLzZtbXcWH8fKE6i3ZFpY`}
-                draggable={false}
-              />
-            </div>
           </div>
         )}
       </div>
+      {rollSearch?.length > 0 && (
+        <div
+          className="relative w-20 h-8 flex cursor-pointer active:scale-95"
+          onClick={() => router.push("/preroll/all")}
+        >
+          <Image
+            alt="seeAll"
+            layout="fill"
+            src={`${INFURA_GATEWAY}/ipfs/QmXvzWPiUqMw6umcS3Qp6yXCTwLzZtbXcWH8fKE6i3ZFpY`}
+            draggable={false}
+          />
+        </div>
+      )}
     </div>
   );
 };

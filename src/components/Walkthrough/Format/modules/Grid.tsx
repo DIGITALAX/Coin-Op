@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
 import {
@@ -17,7 +17,7 @@ const Grid: FunctionComponent<GridProps> = ({
       <div className="absolute w-full h-full flex">
         <Image
           alt="copy"
-          fill
+          layout="fill"
           src={`${INFURA_GATEWAY}/ipfs/QmZibAC5QRhVVNnXUQZaBcWtmYxUoFjCcGMTZcccJK7RXe`}
           draggable={false}
         />
@@ -43,7 +43,7 @@ const Grid: FunctionComponent<GridProps> = ({
             <div className="relative w-12 h-5 flex">
               <Image
                 alt="seeAll"
-                fill
+                layout="fill"
                 src={`${INFURA_GATEWAY}/ipfs/QmXvzWPiUqMw6umcS3Qp6yXCTwLzZtbXcWH8fKE6i3ZFpY`}
                 draggable={false}
               />
@@ -51,7 +51,7 @@ const Grid: FunctionComponent<GridProps> = ({
             <div className="relative w-12 h-5 flex">
               <Image
                 alt="seeAll"
-                fill
+                layout="fill"
                 src={`${INFURA_GATEWAY}/ipfs/QmXvzWPiUqMw6umcS3Qp6yXCTwLzZtbXcWH8fKE6i3ZFpY`}
                 draggable={false}
               />

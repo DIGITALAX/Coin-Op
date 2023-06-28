@@ -13,32 +13,34 @@ const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
     <div className="relative w-full h-fit flex">
       <div className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-start overflow-x-scroll">
         {preRoll.colors?.map((color: string, index: number) => {
-          console.log({
-            color,
-            c: preRoll.chosenColor,
-          });
           return (
             <div
               key={index}
               className={`relative w-5 h-5 border rounded-full cursor-pointer ${
-                preRoll.chosenColor === color ? "border-blue" : "border-white"
+                preRoll.chosenColor === color ? "border-fresa" : "border-white"
               }`}
               onClick={() => {
-                const updated = (
-                  left ? [...preRolls.left] : [...preRolls.right]
-                ).map((obj) => {
-                  if (obj.image === preRoll.image) {
-                    console.log("here", obj)
-                    return { ...obj, chosenColor: color };
-                  } else {
-                    return obj;
-                  }
-                });
+                const updated = {
+                  left: left
+                    ? preRolls.left.map((obj) =>
+                        obj.image === preRoll.image
+                          ? { ...obj, chosenColor: color }
+                          : obj
+                      )
+                    : preRolls.left,
+                  right: right
+                    ? preRolls.right.map((obj) =>
+                        obj.image === preRoll.image
+                          ? { ...obj, chosenColor: color }
+                          : obj
+                      )
+                    : preRolls.right,
+                };
 
                 dispatch(
                   setPreRoll({
-                    actionLeft: left ? updated : [...preRolls.left],
-                    actionRight: right ? updated : [...preRolls.right],
+                    actionLeft: updated.left,
+                    actionRight: updated.right,
                   })
                 );
               }}

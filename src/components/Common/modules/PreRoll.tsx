@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import { PreRollProps } from "../types/common.types";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import PrintTag from "./PrintTag";
 import ColorChoice from "./ColorChoice";
@@ -19,7 +19,8 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
       <div className="relative w-full h-80 flex flex-col object-cover">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${preRoll.image}`}
-          fill
+          layout="fill"
+          objectFit="cover"
           draggable={false}
           alt="preRoll"
         />
@@ -44,7 +45,8 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
         >
           <Image
             src={`${INFURA_GATEWAY}/ipfs/Qmbk9wDd5oAJLBVqJAktbSR8xbXcDfYLSwQcxP9DYrrt1P`}
-            fill
+            layout="fill"
+            objectFit="cover"
             draggable={false}
             alt="preRoll"
           />

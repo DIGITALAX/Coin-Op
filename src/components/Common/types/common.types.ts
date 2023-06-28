@@ -1,4 +1,5 @@
 import { Template } from "@/components/Walkthrough/Format/types/format.types";
+import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
 
 export type PageSwitchProps = {
@@ -17,12 +18,14 @@ export enum PrintType {
 }
 
 export interface PreRoll {
+  name: string;
   image: string;
   colors: string[];
   price: number;
   type: string;
   bgColor: string;
   chosenColor: string;
+  tags: string[];
 }
 
 export type PreRollsProps = {
@@ -65,17 +68,15 @@ export type ColorChoiceProps = {
 };
 
 export type SearchBoxProps = {
-  promptSearch: RollSearch;
+  promptSearch: PreRoll;
+  handlePromptChoose: (e: PreRoll) => void;
 };
 
-export interface RollSearch {
-  tags: string;
-  template: Template;
-}
-
 export type RollSearchProps = {
-  rollSearch: RollSearch[];
+  rollSearch: PreRoll[];
   handleRollSearch: () => void;
   prompt: string;
   setPrompt: (e: string) => void;
+  handlePromptChoose: (e: PreRoll) => void;
+  router: NextRouter;
 };
