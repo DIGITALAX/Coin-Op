@@ -13,6 +13,7 @@ module.exports = {
         aqua: "Aquatico Regular",
         sat: "Satoshi Regular",
         satB: "Satoshi Black",
+        herm: "Hermano Alto Stamp",
       },
       colors: {
         oscurazul: "#030D6B",
@@ -27,6 +28,10 @@ module.exports = {
       },
       fontSize: {
         xxs: "0.5rem",
+      },
+      backgroundImage: {
+        cross:
+          "url('https://chromadin.infura-ipfs.io/ipfs/QmX7qQsdvNDRnqg7C3S2LLTcpeBB81cFsjzt6PdnK1kkkF')",
       },
     },
   },

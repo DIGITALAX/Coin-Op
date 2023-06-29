@@ -27,6 +27,11 @@
   src: url("/fonts/SatoshiBlack.otf");
 }
 
+@font-face {
+  font-family: "Hermano Alto Stamp";
+  src: url("/fonts/HermanoAltoStamp.ttf");
+}
+
 body {
   background: black;
   scrollbar-width: thin;

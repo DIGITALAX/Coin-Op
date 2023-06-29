@@ -60,6 +60,13 @@ export default function Document() {
         crossOrigin="anonymous"
         type="font/otf"
       />
+       <link
+        rel="preload"
+        href="/fonts/HermanoAltoStamp.ttf"
+        as="font"
+        crossOrigin="anonymous"
+        type="font/ttf"
+      />
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -86,7 +93,12 @@ export default function Document() {
 
               @font-face {
                 font-family: "Satoshi Black";
-                src: url("/fonts/SatoshiBlack.otf");
+                src: url("./fonts/SatoshiBlack.otf");
+              }
+
+              @font-face {
+                font-family: "Hermano Alto Stamp";
+                src: url("./fonts/HermanoAltoStamp.ttf");
               }
             `,
         }}

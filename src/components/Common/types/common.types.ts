@@ -2,12 +2,9 @@ import { Template } from "@/components/Walkthrough/Format/types/format.types";
 import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
 
-export type PageSwitchProps = {
-  pageSwitcher: string;
-};
-
 export type PageContainerProps = {
-  pageSwitcher: string;
+  dispatch: Dispatch<AnyAction>;
+  template: Template
 };
 
 export enum PrintType {

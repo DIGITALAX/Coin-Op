@@ -1,6 +1,5 @@
 import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
-import pageReducer from "./reducers/pageSlice";
 import preRollReducer from "./reducers/preRollSlice";
 import cartReducer from "./reducers/cartSlice";
 import templateReducer from "./reducers/templateSlice";
@@ -8,7 +7,6 @@ import rollSearchReducer from "./reducers/rollSearchSlice";
 import algoliaReducer from "./reducers/algoliaSlice";
 
 const reducer = combineReducers({
-  pageReducer,
   preRollReducer,
   cartReducer,
   templateReducer,
