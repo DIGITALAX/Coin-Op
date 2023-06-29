@@ -12,7 +12,7 @@ const Template: FunctionComponent<TemplateProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className={`relative w-full flex cursor-pointer hover:opacity-80 rounded-md ${
+      className={`relative w-full flex cursor-pointer hover:opacity-80 rounded-md bg-cross ${
         chosenTemplate === template
           ? "border-2 border-white opacity-60"
           : "border-ama border"

@@ -78,7 +78,7 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="absolute text-white font-mega text-4xl uppercase bottom-4"
+        className="absolute text-white font-mana text-4xl uppercase bottom-4"
         draggable={false}
       >
         choose format

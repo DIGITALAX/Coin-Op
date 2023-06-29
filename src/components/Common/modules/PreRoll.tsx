@@ -36,16 +36,16 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
           right={right}
         />
       </div>
-      <div className="relative flex flex-row gap-2 w-full h-fit">
+      <div className="relative flex flex-row gap-2 w-full h-fit items-center">
         <div className="relative text-xl text-white font-aqua flex justify-start items-start w-fit h-fit">
           ${preRoll.price}
         </div>
         <div
-          className="relative text-xl text-white font-aqua flex justify-end ml-auto w-6 h-6 cursor-pointer active:scale-95"
+          className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
           onClick={() => dispatch(setCart([...cartItems, preRoll]))}
         >
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/Qmbk9wDd5oAJLBVqJAktbSR8xbXcDfYLSwQcxP9DYrrt1P`}
+            src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}
             layout="fill"
             objectFit="cover"
             draggable={false}

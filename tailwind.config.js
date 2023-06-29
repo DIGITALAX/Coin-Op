@@ -14,6 +14,7 @@ module.exports = {
         sat: "Satoshi Regular",
         satB: "Satoshi Black",
         herm: "Hermano Alto Stamp",
+        mana: "Manaspace",
       },
       colors: {
         oscurazul: "#030D6B",
@@ -22,6 +23,7 @@ module.exports = {
         leg: "#32C5FF",
         mod: "#6236FF",
         sol: "#FFC800",
+        azul: "#2A36F6",
       },
       height: {
         100: "36rem",
@@ -29,9 +31,12 @@ module.exports = {
       fontSize: {
         xxs: "0.5rem",
       },
+      zIndex: {
+        1: 1,
+      },
       backgroundImage: {
         cross:
-          "url('https://chromadin.infura-ipfs.io/ipfs/QmX7qQsdvNDRnqg7C3S2LLTcpeBB81cFsjzt6PdnK1kkkF')",
+          "url('https://chromadin.infura-ipfs.io/ipfs/QmPKU1ck9PLyFchFpe2vzJh3eyxSYij28ixTdRzaHi4E1p')",
       },
     },
   },

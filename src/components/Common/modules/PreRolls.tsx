@@ -13,7 +13,7 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
   right,
 }): JSX.Element => {
   return (
-    <div className="relative w-80 h-[60rem] flex overflow-y-scroll">
+    <div className="relative w-80 h-full flex overflow-y-scroll">
       <div className="relative w-full h-fit flex flex-col justify-start items-center gap-10">
         {(left ? preRolls.left : preRolls.right)?.map(
           (preRoll: PreRollInterface, index: number) => {

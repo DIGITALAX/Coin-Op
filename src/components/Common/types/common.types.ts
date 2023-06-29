@@ -1,10 +1,17 @@
 import { Template } from "@/components/Walkthrough/Format/types/format.types";
 import { NextRouter } from "next/router";
+import { MutableRefObject } from "react";
 import { AnyAction, Dispatch } from "redux";
 
 export type PageContainerProps = {
   dispatch: Dispatch<AnyAction>;
-  template: Template
+  template: Template;
+  synthLayer: string[];
+  synthLayerSelected: string;
+  shareSet: boolean;
+  setShareSet: (e: boolean) => void;
+  scrollRef: MutableRefObject<HTMLDivElement | null>;
+  cartItems: PreRoll[];
 };
 
 export enum PrintType {

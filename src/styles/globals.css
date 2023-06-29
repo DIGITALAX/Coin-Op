@@ -32,6 +32,11 @@
   src: url("/fonts/HermanoAltoStamp.ttf");
 }
 
+@font-face {
+  font-family: "Manaspace";
+  src: url("/fonts/Manaspace.ttf");
+}
+
 body {
   background: black;
   scrollbar-width: thin;
@@ -76,4 +81,33 @@ div::-webkit-scrollbar-thumb {
 
 div:hover::-webkit-scrollbar {
   opacity: 1; /* Show the scrollbar on hover */
+}
+
+
+#arrowsLeft {
+  animation: move 4s ease-in-out infinite;
+}
+
+#arrowsRight {
+  animation: moveBack 4s ease-in-out infinite;
+}
+
+@keyframes move {
+  0%,
+  100% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes moveBack {
+  50% {
+    transform: translateX(0%);
+  }
+  0%,
+  100% {
+    transform: translateX(-100%);
+  }
 }

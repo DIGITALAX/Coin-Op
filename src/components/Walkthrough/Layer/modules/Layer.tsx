@@ -5,10 +5,11 @@ import Grid from "./Grid";
 const Layer: FunctionComponent<LayerProps> = ({
   layers,
   dispatch,
+  synthLayer,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-fit flex flex-col gap-5">
-      <Grid dispatch={dispatch} layers={layers}/>
+    <div className="relative w-full h-fit flex flex-col">
+      <Grid dispatch={dispatch} layers={layers} synthLayer={synthLayer} />
     </div>
   );
 };

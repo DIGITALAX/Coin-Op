@@ -60,9 +60,16 @@ export default function Document() {
         crossOrigin="anonymous"
         type="font/otf"
       />
-       <link
+      <link
         rel="preload"
         href="/fonts/HermanoAltoStamp.ttf"
+        as="font"
+        crossOrigin="anonymous"
+        type="font/ttf"
+      />
+      <link
+        rel="preload"
+        href="/fonts/Manaspace.ttf"
         as="font"
         crossOrigin="anonymous"
         type="font/ttf"
@@ -99,6 +106,11 @@ export default function Document() {
               @font-face {
                 font-family: "Hermano Alto Stamp";
                 src: url("./fonts/HermanoAltoStamp.ttf");
+              }
+
+              @font-face {
+                font-family: "Manaspace";
+                src: url("./fonts/Manaspace.ttf");
               }
             `,
         }}

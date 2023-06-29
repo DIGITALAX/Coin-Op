@@ -5,6 +5,8 @@ import cartReducer from "./reducers/cartSlice";
 import templateReducer from "./reducers/templateSlice";
 import rollSearchReducer from "./reducers/rollSearchSlice";
 import algoliaReducer from "./reducers/algoliaSlice";
+import synthLayerReducer from "./reducers/synthLayerSlice";
+import layerToSynthReducer from "./reducers/layerToSynthSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -12,6 +14,8 @@ const reducer = combineReducers({
   templateReducer,
   rollSearchReducer,
   algoliaReducer,
+  synthLayerReducer,
+  layerToSynthReducer,
 });
 
 export const store = configureStore({

@@ -5,21 +5,49 @@ import useRollSearch from "../hooks/useRollSearch";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import Image from "next/legacy/image";
+import { INFURA_GATEWAY } from "../../../../lib/constants";
 
 const Header: FunctionComponent = (): JSX.Element => {
-  const { handleRollSearch, prompt, setPrompt, handlePromptChoose } =
-    useRollSearch();
+  const {
+    handleRollSearch,
+    prompt,
+    setPrompt,
+    handlePromptChoose,
+    scrollToCheckOut,
+  } = useRollSearch();
   const router = useRouter();
   const rollSearch = useSelector(
     (state: RootState) => state.app.rollSearchReducer.value
   );
+  const cartItems = useSelector(
+    (state: RootState) => state.app.cartReducer.value
+  );
   return (
     <div className="relative w-full flex flex-col gap-20 px-3 pt-2 pb-20">
-      <div className="flex flex-row items-center w-full h-fit text-white font-mega">
-        <div className="relative flex flex-col justify-start w-fit h-fit items-center">
+      <div className="flex flex-row w-full h-fit text-white font-mega flex items-center justify-center">
+        <div className="relative flex justify-start w-fit h-fit items-center whitespace-nowrap break-words">
           insert api key here
         </div>
-        <div className="relative flex flex-col justify-end w-fit h-fit items-center ml-auto">
+        <div className="relative flex w-full h-fit items-center justify-center">
+          <div
+            className="relative w-fit px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 -left-10 cursor-pointer active:scale-95"
+            onClick={() => scrollToCheckOut()}
+          >
+            <div className="relative text-white font-mana text-xs items-center justify-center">
+              {cartItems.length} items in cart
+            </div>
+            <div className="relative h-4 w-px bg-white/50"></div>
+            <div className="relative w-4 h-3 flex items-center justify-center">
+              <Image
+                src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}
+                layout="fill"
+                draggable={false}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="relative flex justify-end w-fit h-fit items-center ml-auto whitespace-nowrap break-words">
           coin op
         </div>
       </div>
