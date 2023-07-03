@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
 import { RootState } from "../../../../redux/store";
 import { Erc20 } from "../types/lens.types";
-import handleSetCollectValues from "../../../../lib/helpers/handleSetCollectValues";
+import handleSetCollectValues from "../../../../lib/lens/helpers/handleSetCollectValues";
 import availableCurrencies from "../../../../graphql/lens/queries/availableCurrencies";
 
 const useCollectOptions = () => {

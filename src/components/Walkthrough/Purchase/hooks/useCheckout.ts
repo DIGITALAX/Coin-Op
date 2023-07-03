@@ -5,6 +5,28 @@ const useCheckout = () => {
   const [cartItem, setCartItem] = useState<PreRoll | undefined>();
   const [startIndex, setStartIndex] = useState<number>(0);
   const [paymentType, setPaymentType] = useState<string>("fiat");
+  const [cryptoCheckoutLoading, setCryptoCheckoutLoading] =
+    useState<boolean>(false);
+  const [fiatCheckoutLoading, setFiatCheckoutLoading] =
+    useState<boolean>(false);
+  const [checkoutCurrency, setCheckoutCurrency] = useState<string>("USDT");
+
+  const handleCheckoutFiat = async () => {
+    setFiatCheckoutLoading(true);
+    try {
+    } catch (err: any) {
+      console.error(err.message);
+    }
+    setFiatCheckoutLoading(false);
+  };
+  const handleCheckoutCrypto = async () => {
+    setCryptoCheckoutLoading(true);
+    try {
+    } catch (err: any) {
+      console.error(err.message);
+    }
+    setCryptoCheckoutLoading(false);
+  };
 
   return {
     cartItem,
@@ -13,6 +35,12 @@ const useCheckout = () => {
     setStartIndex,
     paymentType,
     setPaymentType,
+    handleCheckoutFiat,
+    handleCheckoutCrypto,
+    cryptoCheckoutLoading,
+    fiatCheckoutLoading,
+    checkoutCurrency,
+    setCheckoutCurrency,
   };
 };
 

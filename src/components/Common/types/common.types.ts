@@ -21,7 +21,7 @@ export type PageContainerProps = {
   shareSet: boolean;
   setShareSet: (e: boolean) => void;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
-  cartItems: PreRoll[];
+  cartItems: CartItem[];
   synthConfig: SynthConfig;
   handleSynth: () => Promise<void>;
   synthLoading: boolean;
@@ -31,13 +31,19 @@ export type PageContainerProps = {
   profile: Profile | undefined;
   address: `0x${string}` | undefined;
   models: string[];
-  cartItem: PreRoll | undefined;
-  setCartItem: (e: PreRoll | undefined) => void;
+  cartItem: CartItem | undefined;
+  setCartItem: (e: CartItem | undefined) => void;
   startIndex: number;
   setStartIndex: Dispatch<SetStateAction<number>>;
   signInLoading: boolean;
   paymentType: string;
   setPaymentType: (e: string) => void;
+  handleCheckoutCrypto: () => Promise<void>;
+  handleCheckoutFiat: () => Promise<void>;
+  fiatCheckoutLoading: boolean;
+  cryptoCheckoutLoading: boolean;
+  setCheckoutCurrency: (e: string) => void;
+  checkoutCurrency: string;
 };
 
 export enum PrintType {
@@ -48,14 +54,28 @@ export enum PrintType {
 }
 
 export interface PreRoll {
+  id: number;
   name: string;
   image: string;
   colors: string[];
+  sizes: string[];
   price: number;
   type: string;
   bgColor: string;
   chosenColor: string;
+  chosenSize: string;
   tags: string[];
+}
+
+export interface CartItem {
+  id: number;
+  name: string;
+  image: string;
+  price: number;
+  type: string;
+  chosenColor: string;
+  chosenSize: string;
+  amount: number;
 }
 
 export type PreRollsProps = {
@@ -64,7 +84,7 @@ export type PreRollsProps = {
     right: PreRoll[];
   };
   dispatch: DispatchRedux<AnyAction>;
-  cartItems: PreRoll[];
+  cartItems: CartItem[];
   left?: boolean;
   right?: boolean;
   preRollAnim: boolean;
@@ -73,7 +93,7 @@ export type PreRollsProps = {
 export type PreRollProps = {
   preRoll: PreRoll;
   dispatch: DispatchRedux<AnyAction>;
-  cartItems: PreRoll[];
+  cartItems: CartItem[];
   preRolls: {
     left: PreRoll[];
     right: PreRoll[];

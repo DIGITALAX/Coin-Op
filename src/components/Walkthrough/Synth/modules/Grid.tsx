@@ -58,7 +58,18 @@ const Grid: FunctionComponent<GridProps> = ({
             <div className="relative h-10 w-full flex justify-center items-center flex-row gap-3">
               <div className="relative w-full h-full flex items-center justify-start">
                 <div className="relative w-fit h-full items-center justify-start flex flex-row gap-3">
-                  {synthLayer?.map((value: string, index: number) => {
+                  {(synthLayer?.length <= 4
+                    ? synthLayer
+                    : Array(4)
+                        .fill(null)
+                        .map(
+                          (_, index) =>
+                            synthLayer[
+                              (synthLayer.indexOf(synthLayerSelected) + index) %
+                                synthLayer.length
+                            ]
+                        )
+                  )?.map((value: string, index: number) => {
                     return (
                       <div
                         className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border cursor-pointer hover:opacity-70 rounded-lg ${

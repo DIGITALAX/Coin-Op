@@ -27,6 +27,7 @@ module.exports = {
         eme: "#6DD400",
         smo: "#32C5FF",
         gris: "#6D7278",
+        ligero: "#E5F0D4",
       },
       height: {
         100: "36rem",

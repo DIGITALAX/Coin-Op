@@ -1,11 +1,12 @@
 import { FunctionComponent } from "react";
-import { PreRollProps } from "../types/common.types";
+import { CartItem, PreRollProps } from "../types/common.types";
 import Image from "next/legacy/image";
-import { INFURA_GATEWAY } from "../../../../lib/constants";
+import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../lib/constants";
 import PrintTag from "./PrintTag";
 import ColorChoice from "./ColorChoice";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setImageViewer } from "../../../../redux/reducers/imageViewerSlice";
+import SizingChoice from "./SizingChoice";
 
 const PreRoll: FunctionComponent<PreRollProps> = ({
   preRoll,
@@ -48,13 +49,45 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
           right={right}
         />
       </div>
+      <SizingChoice
+        dispatch={dispatch}
+        preRolls={preRolls}
+        preRoll={preRoll}
+        left={left}
+        right={right}
+      />
       <div className="relative flex flex-row gap-2 w-full h-fit items-center">
         <div className="relative text-xl text-white font-aqua flex justify-start items-start w-fit h-fit">
           ${preRoll.price}
         </div>
         <div
           className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
-          onClick={() => dispatch(setCart([...cartItems, preRoll]))}
+          onClick={() => {
+            let { colors, sizes, bgColor, tags, ...newObj } = preRoll;
+            const existing = [...cartItems].findIndex(
+              (item) =>
+                item.id === newObj.id &&
+                item.chosenSize === newObj.chosenSize &&
+                item.chosenColor === newObj.chosenColor
+            );
+
+            let newCartItems: CartItem[] = [...cartItems];
+
+            if (existing !== -1) {
+              newCartItems = [
+                ...newCartItems.slice(0, existing),
+                {
+                  ...newCartItems[existing],
+                  amount: newCartItems[existing].amount + 1,
+                },
+                ...newCartItems.slice(existing + 1),
+              ];
+            } else {
+              newCartItems.push({ ...newObj, amount: 1 });
+            }
+
+            dispatch(setCart(newCartItems));
+          }}
         >
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}

@@ -1,11 +1,14 @@
 [
   {
+    "id": 1,
     "image": "QmZ9i943tpcHPcRS1sm9wBExSe3gstMRyZSK77khVepugg",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -15,15 +18,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 2,
     "image": "QmQnkqdVzZZs8a8GXjUdVwLppce1icpBBHrnf9NqfMyA4A",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -33,15 +39,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 3,
     "image": "QmPjBmYKpF26wVx9sfpbRE6PRTVrPzQPjXw6AB1Zw9MzJS",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -51,15 +60,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 4,
     "image": "Qmba1Ug2Hty1cgH6FfjEPT9bJGSDLYj651J5LJApdpf5fz",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -69,15 +81,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 5,
     "image": "QmWLd3kVbXUK5TEFsePuRMKR243B1LtkPXAod84ZBKyHif",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -87,15 +102,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 6,
     "image": "QmNZR4Q1FyFWLBrbUhSTQbaoMbLWVXQNHchG2dUB8DU2UT",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -105,15 +123,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 7,
     "image": "Qmcj9CFuRRHQSRW4Unmg35kiq7EV5VzezUswYgHaewFVdf",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -123,15 +144,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 8,
     "image": "QmZaNvACfRw7xuijg9wrTPzJa1VwAC9DZFBDet6kS5bUDf",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -141,15 +165,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 9,
     "image": "QmdD8sPRKAzkzwzvjAnjZsuycqni55rVksiJFbQY7wgzHH",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -159,15 +186,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 10,
     "image": "QmNWRLJ8ejjMN9LWYVDXHnbZ1QpfLRZMcMytYxkanSzeZG",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -177,15 +207,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 11,
     "image": "QmRRYgv9FzZ76bDBN2qFR2Z2ezmigAS55FKHCbbytRQHpH",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -195,15 +228,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 12,
     "image": "QmZWa3xZWrRFgRHWVjCVWstcU3QWsFPAuteHr4CehuHQpx",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -213,15 +249,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 13,
     "image": "QmeZ2bJQiCsYFuvp9zKAu4sCCZvwks1KsZJCZ2EgsZk4yK",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -231,15 +270,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 14,
     "image": "QmNrDtuNFujoYmqo4eGqAXKAKnnzqtUrwTCNwt9DN1asVG",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -249,15 +291,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 15,
     "image": "QmbvqBCwEa4w3CBVWR9aTapfXq4Jy8veAvCYmS5cYSkqvZ",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -267,15 +312,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 16,
     "image": "QmQfejMFYjudeaxKPofVxwux9vUn8kk351sskuKxNcgTPG",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -285,15 +333,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 17,
     "image": "QmXScVbqtjfiseqzc8iTr4coKfKwiofjX2wKyZKt62un7f",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -303,15 +354,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 18,
     "image": "QmaCnfRjqpmfRwmoigcQVvkXCmeFct1fvTyeMvkY8EQs6B",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -321,15 +375,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 19,
     "image": "QmSz8E2vpweFxpzuAWTWygS1NMKZRT4C1wJSAnNXJGHcZT",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -339,15 +396,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 20,
     "image": "QmT4pTYq6kQ3WihdA7iMXziZMUeYCBfTHs6hESrzWebrML",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -357,15 +417,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 21,
     "image": "QmZPRQMCm1bDZ2ZGLGjApSt2P9wgEwCmNPsvd45ahJX1rF",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -375,15 +438,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 22,
     "image": "QmbRaaoQ5CBMu1Br2rrprwu3P5czqiT4Km7JCSBqJP9Teq",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -393,15 +459,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 23,
     "image": "QmQWr92azLsLkLtisUJRBunz4MTSbyrLLpWBTiB7tBtUfa",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -411,15 +480,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 24,
     "image": "QmThaDb4JCQksow8bVNw4p3q3Xb3nUGc4wvs9Fimat74DZ",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -429,15 +501,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 25,
     "image": "QmPHxkVnLCPGhQNn5WbooMQYxbVcvEju77ov9jjQ3b747e",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "hoodie",
     "bgColor": "#32C5FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -447,15 +522,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 26,
     "image": "QmPaXb8XhDTLinWC6YxfJRNa4q8w4paASJffVDpMsL3p6T",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -465,15 +543,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 27,
     "image": "QmPvbrAiwRToQ76Xyt5NyZRRwLGtyZj3nXV53hwTqrD2w1",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -483,15 +564,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 28,
     "image": "QmTUhnbfG5XFSPmvuHkB5wpFpfBakzRxPDaaA1bHskcuv5",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -501,15 +585,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 29,
     "image": "QmeGDzCZKn6EopQS1ZBazGu29TZmL9ecvWKyGm9xZSuq2X",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -519,15 +606,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 30,
     "image": "QmXz55y1wmiHJ44HWos8VaNSNjchE8umsQFDpouJsWqhUL",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -537,15 +627,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 31,
     "image": "QmXhVf26YSkV2UK5tvLu3FpH8RvMoQP9sE86sRuT4kuobd",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -555,15 +648,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 32,
     "image": "QmNcht2Pn78udBkgaCRdiDmEQgdkss21y9MQiZatp7cYHs",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -573,15 +669,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 33,
     "image": "Qmam8BReMPwUm3VsxVU4UUo56iQQfuUH1BakvRBLG1qJsc",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -591,15 +690,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 34,
     "image": "Qmc9qBNRPNPS67qLu6BaetQTQtZvDKcZqVvaqJX2W2CJFE",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -609,15 +711,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 35,
     "image": "Qmdn69LyanCakuJgjq9GfQZU1UvtYkQU7iUb3Bp4EUQ3F4",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -627,15 +732,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 36,
     "image": "QmdSBtkNUDytkHk9aYx9netA5KCWMQMkZ9xGfCbjYXqKhd",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -645,15 +753,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 37,
     "image": "QmSMnx85NAu1ifwWc9Y8YGyEuf5Hrub9pSiJPVx8iz4zYf",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -663,15 +774,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 38,
     "image": "QmdiCSctckbePv73NFvkKEvJdw7LXcu4WX34oYtHTzAWg6",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -681,15 +795,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 39,
     "image": "QmWsVnt3SWMZbLZqCaWyjkmGdPXt3gXm4SHcNvB83wBq92",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -699,15 +816,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 40,
     "image": "QmexyweDvRexddAyAXsEit4T1NYRnENHv6AbaNLjSnV29o",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -717,15 +837,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 41,
     "image": "QmT8TijXXCP48nEVuCRFQx2yZN4MPM8pwNMWaTvM6XfHre",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -735,15 +858,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 42,
     "image": "QmSD5ukwPeSuK3UsbcWVGwH3L9oa8b76bBNpd7kPafsEDH",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -753,15 +879,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 43,
     "image": "QmddHjvVJuUwDXSbXM6fjukjvAQ5YfDr8XW4wn8f77prUT",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -771,15 +900,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 44,
     "image": "QmQwEupb5nVGcxxoXFT1nHKPgvmcba7dufXv9FnE4czMFd",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -789,15 +921,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 45,
     "image": "QmRECHgQkXCDhfzbsDGGgYswfFoYYqEvRYmoEzUNyxsSa4",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -807,15 +942,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 46,
     "image": "QmRGJGJv8uV2he1XXUSYqS2eiAkTvBt8Lmi9tKBBmM3t24",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -825,15 +963,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 47,
     "image": "QmaVkJuPtWGxbq5pi8iHdZ8m7XXRvgWreEtxeqA61Tcwmt",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -843,15 +984,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 48,
     "image": "Qmd9CaDSe5qSa9s51uvCYnByehRf9f25s3Bx1bBdgLo4GL",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -861,15 +1005,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 49,
     "image": "QmQPNGGbSZtupFJqCsKBRgbUBCBxVjBwwSsbC2uW1a7eMp",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -879,15 +1026,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 50,
     "image": "QmZbamWADf46ETahELjHC3JB5vEt4FiTcF4NEDi8KgbBwv",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "shirt",
     "bgColor": "#6236FF",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -897,15 +1047,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 51,
     "image": "QmVg4yym32XnzVruRSKcPjBDgoe2Hs8xdb7WLiw2e8WLjD",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "poster",
     "bgColor": "#FFC800",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -915,15 +1068,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 52,
     "image": "QmTDgk1RSksbGi28asZnnHqHjZpFVfApuywwszDK3aVzXo",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "poster",
     "bgColor": "#FFC800",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -933,15 +1089,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 53,
     "image": "QmTe716hqkMpuGyWy77k2NyRsGmreTZGDtMyZp34rWWNyM",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "poster",
     "bgColor": "#FFC800",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -951,15 +1110,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 54,
     "image": "QmdL4g15Fv1vnA5bJdUpxR3eS6DQ4R8qopMVBzBMSr9epT",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "poster",
     "bgColor": "#FFC800",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -969,15 +1131,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 55,
     "image": "QmYjv5PPMKGktvKG8Bg9CiyS1c8SZ399xuJES7ekV3z2NH",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "poster",
     "bgColor": "#FFC800",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -987,15 +1152,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 56,
     "image": "QmVarRjQBwVKgAjYMgWzgF4VTRxmDhAhDj5Rj2qsRdcV8y",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "poster",
     "bgColor": "#FFC800",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1005,15 +1173,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 57,
     "image": "QmYxbJ9dmEAyhubN7YLSTLbVcZ9ap1bturF9MYMmejVGmG",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "poster",
     "bgColor": "#FFC800",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1023,15 +1194,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 58,
     "image": "QmdCfhP8tmk9ivV9hvTqtPzXe6T1HPaxtzBAMo9K8Vy7Kb",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "poster",
     "bgColor": "#FFC800",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1041,15 +1215,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 59,
     "image": "QmZNGeGdewHhzZuc56z4eGfM3Z5VkHLaFTjRLNYWuMiP6p",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "poster",
     "bgColor": "#FFC800",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1059,15 +1236,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 60,
     "image": "QmPpuyXEt6mEyvyoEaZSZgqD27o1EK4c838xoELjGP7m27",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "stickers",
     "bgColor": "#B620E0",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1077,15 +1257,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 61,
     "image": "QmX7CbxGz1eueW8zdpfKVHScq5rDwW5wyNgyH1EFjFXQJx",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "stickers",
     "bgColor": "#B620E0",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1095,15 +1278,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 62,
     "image": "QmWCZWj4Fa2piy52jdcEBupFfWj5UPTUPPS6sBm1Bj1K7f",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "stickers",
     "bgColor": "#B620E0",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1113,15 +1299,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 63,
     "image": "QmaYS278k32hcYGRd4sA4nKmdYSWwaJ4zoccaPoNnjD4mz",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "stickers",
     "bgColor": "#B620E0",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1131,15 +1320,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 64,
     "image": "QmPNwc7a9PkzXJjQXuRzerf8uMYa4VgiNq1eQJxHuuNQ2a",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "stickers",
     "bgColor": "#B620E0",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1149,15 +1341,18 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   },
   {
+    "id": 65,
     "image": "QmS9YFfxqmJm9U8ACvqjbkuQHU3sQgdjhbXDucU16XJgjk",
     "colors": ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+    "sizes": ["xs", "s", "m", "l", "xl"],
     "price": 0,
     "type": "stickers",
     "bgColor": "#B620E0",
     "chosenColor": "#ffffff",
+    "chosenSize": "m",
     "tags": [
       "hoodie",
       "smile",
@@ -1167,6 +1362,6 @@
       "graffiti",
       "tagging"
     ],
-    "name": ""
+    "name": "moda"
   }
 ]

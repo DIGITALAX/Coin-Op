@@ -1,8 +1,8 @@
-import { PreRoll } from "@/components/Common/types/common.types";
+import { CartItem } from "@/components/Common/types/common.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartState {
-  value: PreRoll[];
+  value: CartItem[];
 }
 
 const initialCartState: CartState = {
@@ -13,7 +13,7 @@ export const cartSlice = createSlice({
   name: "cart",
   initialState: initialCartState,
   reducers: {
-    setCart: (state: CartState, action: PayloadAction<PreRoll[]>) => {
+    setCart: (state: CartState, action: PayloadAction<CartItem[]>) => {
       state.value = action.payload;
     },
   },

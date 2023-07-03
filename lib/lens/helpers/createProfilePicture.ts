@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "../constants";
+import { INFURA_GATEWAY } from "../../constants";
 
 const createProfilePicture = (publication: any, mirror?: boolean): string => {
   let profileImage: string;

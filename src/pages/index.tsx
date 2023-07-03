@@ -25,6 +25,12 @@ export default function Home(): JSX.Element {
     setStartIndex,
     paymentType,
     setPaymentType,
+    handleCheckoutCrypto,
+    handleCheckoutFiat,
+    fiatCheckoutLoading,
+    cryptoCheckoutLoading,
+    checkoutCurrency,
+    setCheckoutCurrency
   } = useCheckout();
   const { setShareSet, shareSet, models } = useComposite();
   const { handleSynth, synthLoading, presets } = useSynth();
@@ -93,6 +99,12 @@ export default function Home(): JSX.Element {
         signInLoading={signInLoading}
         paymentType={paymentType}
         setPaymentType={setPaymentType}
+        handleCheckoutCrypto={handleCheckoutCrypto}
+        handleCheckoutFiat={handleCheckoutFiat}
+        fiatCheckoutLoading={fiatCheckoutLoading}
+        cryptoCheckoutLoading={cryptoCheckoutLoading}
+        checkoutCurrency={checkoutCurrency}
+        setCheckoutCurrency={setCheckoutCurrency}
       />
       <PreRolls
         cartItems={cartItems}

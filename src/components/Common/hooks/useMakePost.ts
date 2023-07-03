@@ -28,8 +28,8 @@ import { setPostImages } from "../../../../redux/reducers/postImagesSlice";
 import { setImageLoading } from "../../../../redux/reducers/imageLoadingSlice";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../../../../lib/constants";
 import LensHubProxy from "../../../../abis/LensHubProxy.json";
-import getPostHTML from "../../../../lib/helpers/getPostHTML";
-import getCaretPos from "../../../../lib/helpers/getCaretPos";
+import getPostHTML from "../../../../lib/lens/helpers/getPostHTML";
+import getCaretPos from "../../../../lib/lens/helpers/getCaretPos";
 import { searchProfile } from "../../../../graphql/lens/queries/search";
 import { omit } from "lodash";
 import broadcast from "../../../../graphql/lens/mutations/broadcast";
@@ -38,8 +38,8 @@ import {
   createPostTypedData,
 } from "../../../../graphql/lens/mutations/post";
 import { setIndexModal } from "../../../../redux/reducers/indexModalSlice";
-import handleIndexCheck from "../../../../lib/helpers/handleIndexCheck";
-import uploadPostContent from "../../../../lib/helpers/uploadPostContent";
+import handleIndexCheck from "../../../../lib/lens/helpers/handleIndexCheck";
+import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import { setCollectOpen } from "../../../../redux/reducers/collectOpenSlice";
 
 const useMakePost = () => {

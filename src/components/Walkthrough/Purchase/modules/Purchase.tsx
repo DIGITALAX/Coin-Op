@@ -12,11 +12,15 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   startIndex,
   signInLoading,
   address,
-  profile,
-  handleLensSignIn,
   openConnectModal,
   setPaymentType,
   paymentType,
+  handleCheckoutCrypto,
+  handleCheckoutFiat,
+  fiatCheckoutLoading,
+  cryptoCheckoutLoading,
+  checkoutCurrency,
+  setCheckoutCurrency,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
@@ -30,11 +34,15 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
         setStartIndex={setStartIndex}
         address={address}
         openConnectModal={openConnectModal}
-        handleLensSignIn={handleLensSignIn}
-        profile={profile}
         signInLoading={signInLoading}
         paymentType={paymentType}
         setPaymentType={setPaymentType}
+        handleCheckoutCrypto={handleCheckoutCrypto}
+        handleCheckoutFiat={handleCheckoutFiat}
+        fiatCheckoutLoading={fiatCheckoutLoading}
+        cryptoCheckoutLoading={cryptoCheckoutLoading}
+        checkoutCurrency={checkoutCurrency}
+        setCheckoutCurrency={setCheckoutCurrency}
       />
     </div>
   );

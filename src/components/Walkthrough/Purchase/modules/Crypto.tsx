@@ -1,20 +1,37 @@
 import { FunctionComponent } from "react";
 import { CryptoProps } from "../types/synth.types";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const Crypto: FunctionComponent<CryptoProps> = ({
   openConnectModal,
-  handleLensSignIn,
   address,
-  profile,
   signInLoading,
+  handleCheckoutCrypto,
+  cryptoCheckoutLoading,
 }): JSX.Element => {
   return (
-    <div className="relative w-20 h-10 rounded-md border border-white bg-azul text-white font-mana">
+    <div
+      className="relative w-3/4 h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex cursor-pointer active:scale-95"
+      onClick={
+        !signInLoading && !address && !cryptoCheckoutLoading
+          ? openConnectModal
+          : () =>
+              !signInLoading && !cryptoCheckoutLoading && handleCheckoutCrypto()
+      }
+    >
       <div
         className={`relative w-fit h-fit flex justify-center items-center ${
-          signInLoading && "animate-spin"
+          (signInLoading || cryptoCheckoutLoading) && "animate-spin"
         }`}
-      ></div>
+      >
+        {signInLoading || cryptoCheckoutLoading ? (
+          <AiOutlineLoading size={15} color={"white"} />
+        ) : !address ? (
+          "CONNECT"
+        ) : (
+          "CHECKOUT"
+        )}
+      </div>
     </div>
   );
 };

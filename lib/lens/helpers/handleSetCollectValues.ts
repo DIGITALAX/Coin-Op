@@ -2,7 +2,7 @@ import { AnyAction, Dispatch } from "redux";
 import lodash from "lodash";
 import { Erc20 } from "@/components/Common/types/lens.types";
 import { CollectValueType } from "@/components/Common/types/common.types";
-import { setCollectValueType } from "../../redux/reducers/collectValueSlice";
+import { setCollectValueType } from "../../../redux/reducers/collectValueSlice";
 
 const handleSetCollectValues = (
   value: number,
