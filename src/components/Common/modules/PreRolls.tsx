@@ -11,6 +11,7 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
   preRolls,
   left,
   right,
+  preRollAnim,
 }): JSX.Element => {
   return (
     <div className="relative w-80 h-full flex overflow-y-scroll">
@@ -26,6 +27,7 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
                 preRolls={preRolls}
                 left={left}
                 right={right}
+                preRollAnim={preRollAnim}
               />
             );
           }

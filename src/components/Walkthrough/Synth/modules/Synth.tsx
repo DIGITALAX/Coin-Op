@@ -5,11 +5,23 @@ import Grid from "./Grid";
 const Synth: FunctionComponent<SynthProps> = ({
   dispatch,
   synthLayerSelected,
-  synthLayer
+  synthLayer,
+  synthConfig,
+  handleSynth,
+  synthLoading,
+  presets
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col ">
-      <Grid dispatch={dispatch} synthLayerSelected={synthLayerSelected} synthLayer={synthLayer} />
+      <Grid
+        dispatch={dispatch}
+        synthLayerSelected={synthLayerSelected}
+        synthLayer={synthLayer}
+        synthConfig={synthConfig}
+        handleSynth={handleSynth}
+        synthLoading={synthLoading}
+        presets={presets}
+      />
     </div>
   );
 };

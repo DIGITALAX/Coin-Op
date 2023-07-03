@@ -6,10 +6,24 @@ const Composite: FunctionComponent<CompositeProps> = ({
   dispatch,
   shareSet,
   setShareSet,
+  address,
+  profile,
+  handleLensSignIn,
+  openConnectModal,
+  models,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
-      <Grid dispatch={dispatch} shareSet={shareSet} setShareSet={setShareSet} />
+      <Grid
+        dispatch={dispatch}
+        shareSet={shareSet}
+        setShareSet={setShareSet}
+        address={address}
+        profile={profile}
+        handleLensSignIn={handleLensSignIn}
+        openConnectModal={openConnectModal}
+        models={models}
+      />
     </div>
   );
 };

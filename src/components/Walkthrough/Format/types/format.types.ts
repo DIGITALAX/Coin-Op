@@ -23,4 +23,5 @@ export type TemplateProps = {
   chosenTemplate: Template | undefined;
   height: string;
   dispatch: Dispatch<AnyAction>;
+  locked?: boolean;
 };

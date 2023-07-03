@@ -12,11 +12,18 @@ import {
 import { BiLogoTwitter } from "react-icons/bi";
 import { FaPinterestP, FaTelegramPlane } from "react-icons/fa";
 import { IoLogoReddit, IoLogoTumblr } from "react-icons/io";
+import { setLensPostBox } from "../../../../../redux/reducers/lensPostBoxSlice";
+import ModelSelect from "./ModelSelect";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
   shareSet,
   setShareSet,
+  openConnectModal,
+  handleLensSignIn,
+  profile,
+  address,
+  models,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -36,6 +43,7 @@ const Grid: FunctionComponent<GridProps> = ({
             objectFit="cover"
             draggable={false}
           />
+          <ModelSelect models={models} />
         </div>
       </div>
       <div className="absolute bottom-6 right-9 w-fit h-fit flex flex-row gap-3 text-white items-center justify-center text-center">
@@ -50,7 +58,17 @@ const Grid: FunctionComponent<GridProps> = ({
           share with friends
         </div>
         <div className="relative w-fit h-fit items-center justify-center flex flex-row gap-2 font-herm text-lg">
-          <div className="relative w-4 h-4 flex items-center justify-center cursor-pointer active:scale-95">
+          <div
+            className="relative w-4 h-4 flex items-center justify-center cursor-pointer active:scale-95"
+            onClick={
+              !address
+                ? openConnectModal
+                : () =>
+                    address && !profile
+                      ? handleLensSignIn()
+                      : dispatch(setLensPostBox(true))
+            }
+          >
             <Image
               src={`${INFURA_GATEWAY}/ipfs/QmPmpjnih3LZGeVfUmB2sFVTvvz8fwGkGL6YEaRYrJaXPF`}
               layout="fill"

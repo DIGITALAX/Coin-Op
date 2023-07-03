@@ -10,8 +10,8 @@ const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
   right,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-fit flex">
-      <div className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-start overflow-x-scroll">
+    <div className="relative w-full h-fit flex justify-end overflow-x-scroll">
+      <div className="relative w-fit h-fit flex flex-row gap-1.5 justify-start">
         {preRoll.colors?.map((color: string, index: number) => {
           return (
             <div

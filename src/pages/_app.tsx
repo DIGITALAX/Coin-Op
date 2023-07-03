@@ -14,6 +14,7 @@ import { MutableRefObject, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import RouterChange from "@/components/Common/modules/RouterChange";
 import { createContext, useRef } from "react";
+import Modals from "@/components/Common/modules/Modals/Modals";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [polygon],
@@ -97,6 +98,7 @@ export default function App({ Component, pageProps }: AppProps) {
               <Header />
               <Component {...pageProps} />
               <Footer />
+              <Modals />
             </div>
           </ScrollContext.Provider>
         </RainbowKitProvider>

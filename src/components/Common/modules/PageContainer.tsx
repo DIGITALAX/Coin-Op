@@ -18,6 +18,15 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   setShareSet,
   scrollRef,
   cartItems,
+  synthConfig,
+  handleSynth,
+  synthLoading,
+  presets,
+  address,
+  profile,
+  handleLensSignIn,
+  openConnectModal,
+  models,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -29,11 +38,20 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           dispatch={dispatch}
           synthLayerSelected={synthLayerSelected}
           synthLayer={synthLayer}
+          synthConfig={synthConfig}
+          handleSynth={handleSynth}
+          presets={presets}
+          synthLoading={synthLoading}
         />
         <Composite
           dispatch={dispatch}
           setShareSet={setShareSet}
           shareSet={shareSet}
+          address={address}
+          openConnectModal={openConnectModal}
+          handleLensSignIn={handleLensSignIn}
+          profile={profile}
+          models={models}
         />
         <Purchase
           dispatch={dispatch}

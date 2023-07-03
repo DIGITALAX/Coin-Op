@@ -13,9 +13,13 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
   preRolls,
   left,
   right,
+  preRollAnim,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-fit flex flex-col rounded-sm border border-white p-3 gap-5">
+    <div
+      className="relative w-full h-fit flex flex-col rounded-sm border border-white p-3 gap-5"
+      id={preRollAnim ? "anim" : ""}
+    >
       <div className="relative w-full h-80 flex flex-col object-cover bg-cross bg-cover bg-center	">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${preRoll.image}`}

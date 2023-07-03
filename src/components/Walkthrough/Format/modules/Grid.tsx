@@ -72,6 +72,7 @@ const Grid: FunctionComponent<GridProps> = ({
                   chosenTemplate={template}
                   height="6.5rem"
                   dispatch={dispatch}
+                  locked={true}
                 />
               );
             })}

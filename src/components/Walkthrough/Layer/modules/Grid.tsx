@@ -3,6 +3,7 @@ import { FunctionComponent } from "react";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
 import { GridProps, Layer } from "../types/layer.types";
 import Set from "./Set";
+import { setPreRollAnim } from "../../../../../redux/reducers/preRollAnimSlice";
 
 const Grid: FunctionComponent<GridProps> = ({
   layers,
@@ -33,7 +34,10 @@ const Grid: FunctionComponent<GridProps> = ({
           })}
         </div>
       </div>
-      <div className="absolute bottom-6 right-12 w-fit h-fit flex flex-row gap-3 text-white items-center justify-center text-center">
+      <div
+        className="absolute bottom-6 right-12 w-fit h-fit flex flex-row gap-3 text-white items-center justify-center text-center cursor-pointer"
+        onClick={() => dispatch(setPreRollAnim(true))}
+      >
         <div
           className="relative w-fit h-fit items-center justify-center flex font-herm text-lg"
           id="arrowsLeft"

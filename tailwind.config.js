@@ -24,19 +24,29 @@ module.exports = {
         mod: "#6236FF",
         sol: "#FFC800",
         azul: "#2A36F6",
+        eme: "#6DD400",
+        smo: "#32C5FF",
+        gris: "#6D7278",
       },
       height: {
         100: "36rem",
+      },
+      width: {
+        100: "30rem",
       },
       fontSize: {
         xxs: "0.5rem",
       },
       zIndex: {
         1: 1,
+        2: 2,
       },
       backgroundImage: {
         cross:
           "url('https://chromadin.infura-ipfs.io/ipfs/QmPKU1ck9PLyFchFpe2vzJh3eyxSYij28ixTdRzaHi4E1p')",
+      },
+      screens: {
+        preG: "480px",
       },
     },
   },
