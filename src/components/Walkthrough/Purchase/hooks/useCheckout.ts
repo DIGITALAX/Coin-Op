@@ -1,8 +1,8 @@
-import { PreRoll } from "@/components/Common/types/common.types";
+import { CartItem } from "@/components/Common/types/common.types";
 import { useState } from "react";
 
 const useCheckout = () => {
-  const [cartItem, setCartItem] = useState<PreRoll | undefined>();
+  const [cartItem, setCartItem] = useState<CartItem | undefined>();
   const [startIndex, setStartIndex] = useState<number>(0);
   const [paymentType, setPaymentType] = useState<string>("fiat");
   const [cryptoCheckoutLoading, setCryptoCheckoutLoading] =
