@@ -27,6 +27,13 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   handleLensSignIn,
   openConnectModal,
   models,
+  cartItem,
+  setCartItem,
+  startIndex,
+  setStartIndex,
+  signInLoading,
+  setPaymentType,
+  paymentType,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -52,11 +59,23 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           handleLensSignIn={handleLensSignIn}
           profile={profile}
           models={models}
+          signInLoading={signInLoading}
         />
         <Purchase
           dispatch={dispatch}
           scrollRef={scrollRef}
           cartItems={cartItems}
+          cartItem={cartItem}
+          setCartItem={setCartItem}
+          setStartIndex={setStartIndex}
+          startIndex={startIndex}
+          signInLoading={signInLoading}
+          address={address}
+          openConnectModal={openConnectModal}
+          handleLensSignIn={handleLensSignIn}
+          profile={profile}
+          setPaymentType={setPaymentType}
+          paymentType={paymentType}
         />
       </div>
     </div>

@@ -10,6 +10,7 @@ export type CompositeProps = {
   profile: Profile | undefined;
   address: `0x${string}` | undefined;
   models: string[];
+  signInLoading: boolean;
 };
 
 export type GridProps = {
@@ -21,6 +22,7 @@ export type GridProps = {
   profile: Profile | undefined;
   address: `0x${string}` | undefined;
   models: string[];
+  signInLoading: boolean;
 };
 
 export type ModelProps = {

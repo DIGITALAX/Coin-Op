@@ -10,13 +10,22 @@ import useSynth from "@/components/Walkthrough/Synth/hooks/useSynth";
 import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useSignIn from "@/components/Common/hooks/useSignIn";
+import useCheckout from "@/components/Walkthrough/Purchase/hooks/useCheckout";
 
 export default function Home(): JSX.Element {
   const scrollRef = useContext(ScrollContext);
   const dispatch = useDispatch();
   const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
-  const { handleLensSignIn } = useSignIn();
+  const { handleLensSignIn, signInLoading } = useSignIn();
+  const {
+    cartItem,
+    setCartItem,
+    startIndex,
+    setStartIndex,
+    paymentType,
+    setPaymentType,
+  } = useCheckout();
   const { setShareSet, shareSet, models } = useComposite();
   const { handleSynth, synthLoading, presets } = useSynth();
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
@@ -77,6 +86,13 @@ export default function Home(): JSX.Element {
         handleLensSignIn={handleLensSignIn}
         profile={profile}
         models={models}
+        cartItem={cartItem}
+        setCartItem={setCartItem}
+        startIndex={startIndex}
+        setStartIndex={setStartIndex}
+        signInLoading={signInLoading}
+        paymentType={paymentType}
+        setPaymentType={setPaymentType}
       />
       <PreRolls
         cartItems={cartItems}

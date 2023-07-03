@@ -8,6 +8,7 @@ import useCollectOptions from "../../hooks/useCollectOptions";
 import useMakePost from "../../hooks/useMakePost";
 import Index from "./Index";
 import { useEffect, useState } from "react";
+import ImageLarge from "./ImageLarge";
 
 const Modals = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,9 @@ const Modals = () => {
   );
   const collectOpen = useSelector(
     (state: RootState) => state.app.collectOpenReducer.value
+  );
+  const imageModal = useSelector(
+    (state: RootState) => state.app.imageViewerReducer
   );
   const noHandle = useSelector((state: RootState) => state.app.noHandleReducer);
   const postImagesDispatched = useSelector(
@@ -188,6 +192,9 @@ const Modals = () => {
           message={indexModal?.message}
           distanceFromBottom={distanceFromBottom}
         />
+      )}
+      {imageModal?.value && (
+        <ImageLarge mainImage={imageModal.image} dispatch={dispatch} />
       )}
     </>
   );

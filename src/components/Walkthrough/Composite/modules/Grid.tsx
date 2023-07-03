@@ -14,6 +14,7 @@ import { FaPinterestP, FaTelegramPlane } from "react-icons/fa";
 import { IoLogoReddit, IoLogoTumblr } from "react-icons/io";
 import { setLensPostBox } from "../../../../../redux/reducers/lensPostBoxSlice";
 import ModelSelect from "./ModelSelect";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -24,6 +25,7 @@ const Grid: FunctionComponent<GridProps> = ({
   profile,
   address,
   models,
+  signInLoading,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -59,7 +61,9 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
         <div className="relative w-fit h-fit items-center justify-center flex flex-row gap-2 font-herm text-lg">
           <div
-            className="relative w-4 h-4 flex items-center justify-center cursor-pointer active:scale-95"
+            className={`relative w-4 h-4 flex items-center justify-center cursor-pointer active:scale-95 ${
+              signInLoading && "animate-spin"
+            }`}
             onClick={
               !address
                 ? openConnectModal
@@ -69,11 +73,15 @@ const Grid: FunctionComponent<GridProps> = ({
                       : dispatch(setLensPostBox(true))
             }
           >
-            <Image
-              src={`${INFURA_GATEWAY}/ipfs/QmPmpjnih3LZGeVfUmB2sFVTvvz8fwGkGL6YEaRYrJaXPF`}
-              layout="fill"
-              draggable={false}
-            />
+            {signInLoading ? (
+              <AiOutlineLoading size={15} color="#FBDB86" />
+            ) : (
+              <Image
+                src={`${INFURA_GATEWAY}/ipfs/QmPmpjnih3LZGeVfUmB2sFVTvvz8fwGkGL6YEaRYrJaXPF`}
+                layout="fill"
+                draggable={false}
+              />
+            )}
           </div>
           {shareSet && (
             <div className="absolute -top-8 w-fit h-fit py-1 flex flex-row gap-1 px-2 rounded-md z-1 bg-black border border-ama">

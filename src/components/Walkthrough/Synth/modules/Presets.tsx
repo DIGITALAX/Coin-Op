@@ -18,7 +18,7 @@ const Presets: FunctionComponent<PresetProps> = ({
             return (
               <div
                 key={index}
-                className="relative w-fit h-fit px-2 py-1 border border-smo rounded-md cursor-pointer hover:opacity-80 flex items-center justify-center text-center break-words"
+                className="relative w-fit h-fit px-2 py-1 border border-smo rounded-md cursor-pointer hover:bg-azul flex items-center justify-center text-center break-words"
                 onClick={() =>
                   dispatch(
                     setSynthConfig({

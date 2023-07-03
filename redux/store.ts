@@ -18,6 +18,7 @@ import postImagesReducer from "./reducers/postImagesSlice";
 import indexModalReducer from "./reducers/indexModalSlice";
 import collectValueReducer from "./reducers/collectValueSlice";
 import collectOpenReducer from "./reducers/collectOpenSlice";
+import imageViewerReducer from "./reducers/imageViewerSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -37,7 +38,8 @@ const reducer = combineReducers({
   postImagesReducer,
   indexModalReducer,
   collectValueReducer,
-  collectOpenReducer
+  collectOpenReducer,
+  imageViewerReducer,
 });
 
 export const store = configureStore({

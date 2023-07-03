@@ -5,6 +5,7 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 import PrintTag from "./PrintTag";
 import ColorChoice from "./ColorChoice";
 import { setCart } from "../../../../redux/reducers/cartSlice";
+import { setImageViewer } from "../../../../redux/reducers/imageViewerSlice";
 
 const PreRoll: FunctionComponent<PreRollProps> = ({
   preRoll,
@@ -20,7 +21,14 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
       className="relative w-full h-fit flex flex-col rounded-sm border border-white p-3 gap-5"
       id={preRollAnim ? "anim" : ""}
     >
-      <div className="relative w-full h-80 flex flex-col object-cover bg-cross bg-cover bg-center	">
+      <div
+        className="relative w-full h-80 flex flex-col object-cover bg-cross bg-cover bg-center cursor-pointer"
+        onClick={() =>
+          dispatch(
+            setImageViewer({ actionValue: open, actionImage: preRoll?.image })
+          )
+        }
+      >
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${preRoll.image}`}
           layout="fill"

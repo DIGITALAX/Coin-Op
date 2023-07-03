@@ -7,12 +7,14 @@ import {
   KeyboardEvent,
   MutableRefObject,
   RefObject,
+  SetStateAction,
+  Dispatch,
 } from "react";
-import { AnyAction, Dispatch } from "redux";
+import { AnyAction, Dispatch as DispatchRedux } from "redux";
 import { Erc20, Profile } from "./lens.types";
 
 export type PageContainerProps = {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: DispatchRedux<AnyAction>;
   template: Template;
   synthLayer: string[];
   synthLayerSelected: string;
@@ -29,6 +31,13 @@ export type PageContainerProps = {
   profile: Profile | undefined;
   address: `0x${string}` | undefined;
   models: string[];
+  cartItem: PreRoll | undefined;
+  setCartItem: (e: PreRoll | undefined) => void;
+  startIndex: number;
+  setStartIndex: Dispatch<SetStateAction<number>>;
+  signInLoading: boolean;
+  paymentType: string;
+  setPaymentType: (e: string) => void;
 };
 
 export enum PrintType {
@@ -54,7 +63,7 @@ export type PreRollsProps = {
     left: PreRoll[];
     right: PreRoll[];
   };
-  dispatch: Dispatch<AnyAction>;
+  dispatch: DispatchRedux<AnyAction>;
   cartItems: PreRoll[];
   left?: boolean;
   right?: boolean;
@@ -63,7 +72,7 @@ export type PreRollsProps = {
 
 export type PreRollProps = {
   preRoll: PreRoll;
-  dispatch: Dispatch<AnyAction>;
+  dispatch: DispatchRedux<AnyAction>;
   cartItems: PreRoll[];
   preRolls: {
     left: PreRoll[];
@@ -80,7 +89,7 @@ export type PrintTagProps = {
 };
 
 export type ColorChoiceProps = {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: DispatchRedux<AnyAction>;
   preRolls: {
     left: PreRoll[];
     right: PreRoll[];
@@ -106,11 +115,11 @@ export type RollSearchProps = {
 
 export type GeneralProps = {
   message: string;
-  dispatch: Dispatch<AnyAction>;
+  dispatch: DispatchRedux<AnyAction>;
 };
 
 export type NoHandleProps = {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: DispatchRedux<AnyAction>;
 };
 
 export enum MediaType {
@@ -125,7 +134,7 @@ export interface UploadedMedia {
 }
 
 export type PostBoxProps = {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: DispatchRedux<AnyAction>;
   postLoading: boolean;
   handlePostDescription: (e: FormEvent<Element>) => Promise<void>;
   mentionProfiles: Profile[];
@@ -200,7 +209,7 @@ export type OptionsCommentProps = {
   gifOpen: boolean;
   collectOpen: boolean;
   postImages: UploadedMedia[];
-  dispatch: Dispatch<AnyAction>;
+  dispatch: DispatchRedux<AnyAction>;
 };
 
 export type CollectButtonProps = {
@@ -292,4 +301,9 @@ export interface CollectValueType {
 export type IndexProps = {
   message: string | undefined;
   distanceFromBottom: number;
+};
+
+export type ImageLargeProps = {
+  mainImage: string;
+  dispatch: DispatchRedux<AnyAction>;
 };
