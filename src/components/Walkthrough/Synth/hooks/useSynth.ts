@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import { useState } from "react";
+import { setCompletedSynths } from "../../../../../redux/reducers/completedSynthsSlice";
 
 const useSynth = () => {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ const useSynth = () => {
   const handleSynth = async () => {
     setSynthLoading(true);
     try {
-      dispatch(setCompletedSynths());
+      dispatch(setCompletedSynths([]));
     } catch (err: any) {
       console.error(err.message);
     }
