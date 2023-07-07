@@ -25,14 +25,14 @@ const SizingChoice: FunctionComponent<ColorChoiceProps> = ({
                 const updated = {
                   left: left
                     ? preRolls.left.map((obj) =>
-                        obj.image === preRoll.image
+                        obj.uri === preRoll.uri
                           ? { ...obj, chosenSize: size }
                           : obj
                       )
                     : preRolls.left,
                   right: right
                     ? preRolls.right.map((obj) =>
-                        obj.image === preRoll.image
+                        obj.uri === preRoll.uri
                           ? { ...obj, chosenSize: size }
                           : obj
                       )

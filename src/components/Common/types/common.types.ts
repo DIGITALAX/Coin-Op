@@ -54,13 +54,13 @@ export enum PrintType {
 }
 
 export interface PreRoll {
-  id: number;
-  name: string;
-  image: string;
+  collectionId: number;
+  uri: string;
+  amount: number;
   colors: string[];
   sizes: string[];
   price: number;
-  type: string;
+  printType: string;
   bgColor: string;
   chosenColor: string;
   chosenSize: string;
@@ -68,11 +68,10 @@ export interface PreRoll {
 }
 
 export interface CartItem {
-  id: number;
-  name: string;
-  image: string;
+  collectionId: number;
+  uri: string;
   price: number;
-  type: string;
+  printType: string;
   chosenColor: string;
   chosenSize: string;
   amount: number;
@@ -88,6 +87,7 @@ export type PreRollsProps = {
   left?: boolean;
   right?: boolean;
   preRollAnim: boolean;
+  preRollsLoading: boolean;
 };
 
 export type PreRollProps = {

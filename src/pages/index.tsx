@@ -11,6 +11,7 @@ import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useSignIn from "@/components/Common/hooks/useSignIn";
 import useCheckout from "@/components/Walkthrough/Purchase/hooks/useCheckout";
+import usePreRoll from "@/components/Common/hooks/usePreRoll";
 
 export default function Home(): JSX.Element {
   const scrollRef = useContext(ScrollContext);
@@ -30,10 +31,11 @@ export default function Home(): JSX.Element {
     fiatCheckoutLoading,
     cryptoCheckoutLoading,
     checkoutCurrency,
-    setCheckoutCurrency
+    setCheckoutCurrency,
   } = useCheckout();
   const { setShareSet, shareSet, models } = useComposite();
   const { handleSynth, synthLoading, presets } = useSynth();
+  const { preRollsLoading } = usePreRoll();
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
   const profile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
@@ -73,6 +75,7 @@ export default function Home(): JSX.Element {
         preRolls={preRolls}
         left={true}
         preRollAnim={preRollAnim}
+        preRollsLoading={preRollsLoading}
       />
       <PageContainer
         template={template}
@@ -112,6 +115,7 @@ export default function Home(): JSX.Element {
         preRolls={preRolls}
         right={true}
         preRollAnim={preRollAnim}
+        preRollsLoading={preRollsLoading}
       />
     </div>
   );

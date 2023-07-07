@@ -29,7 +29,9 @@ const Items: FunctionComponent<ItemsProps> = ({
                 >
                   <div className="relative w-10 h-10 rounded-lg bg-cross flex items-center justify-center">
                     <Image
-                      src={`${INFURA_GATEWAY}/ipfs/${item.image}`}
+                      src={`${INFURA_GATEWAY}/ipfs/${
+                        item.uri?.split("ipfs://")[1]
+                      }`}
                       layout="fill"
                       objectFit="cover"
                       className="rounded-lg"
@@ -37,7 +39,7 @@ const Items: FunctionComponent<ItemsProps> = ({
                     />
                   </div>
                   <div className="relative w-fit h-fit flex justify-start items-center uppercase">
-                    {item.name}
+                    FIGURE OUT WHAT GOES HERE
                   </div>
                   <div
                     className="relative w-4 h-4 border border-ligero flex justify-start items-center rounded-full"
