@@ -12,12 +12,14 @@ import {
 } from "react";
 import { AnyAction, Dispatch as DispatchRedux } from "redux";
 import { Erc20, Profile } from "./lens.types";
+import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
+import { StripeElementsOptions } from "@stripe/stripe-js";
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
   template: Template;
-  synthLayer: string[];
-  synthLayerSelected: string;
+  synthLayerSelected: Layer | undefined;
+  synthLayer: Layer | undefined;
   shareSet: boolean;
   setShareSet: (e: boolean) => void;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
@@ -31,19 +33,8 @@ export type PageContainerProps = {
   profile: Profile | undefined;
   address: `0x${string}` | undefined;
   models: string[];
-  cartItem: CartItem | undefined;
-  setCartItem: (e: CartItem | undefined) => void;
-  startIndex: number;
-  setStartIndex: Dispatch<SetStateAction<number>>;
   signInLoading: boolean;
-  paymentType: string;
-  setPaymentType: (e: string) => void;
-  handleCheckoutCrypto: () => Promise<void>;
-  handleCheckoutFiat: () => Promise<void>;
-  fiatCheckoutLoading: boolean;
-  cryptoCheckoutLoading: boolean;
-  setCheckoutCurrency: (e: string) => void;
-  checkoutCurrency: string;
+  layersLoading: boolean;
 };
 
 export enum PrintType {
@@ -325,5 +316,10 @@ export type IndexProps = {
 
 export type ImageLargeProps = {
   mainImage: string;
+  dispatch: DispatchRedux<AnyAction>;
+};
+
+export type MessagesProps = {
+  message: string;
   dispatch: DispatchRedux<AnyAction>;
 };

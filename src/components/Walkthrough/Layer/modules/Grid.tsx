@@ -9,6 +9,7 @@ const Grid: FunctionComponent<GridProps> = ({
   layers,
   dispatch,
   synthLayer,
+  layersLoading
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">

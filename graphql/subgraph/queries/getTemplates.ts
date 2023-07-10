@@ -2,31 +2,27 @@ import { gql } from "@apollo/client";
 import { graphClientTestnet } from "../../../lib/subgraph/client";
 
 const TEMPLATES_PRINTTYPE = `
-  query {
-    collectionMinteds(orderBy: blockTimestamp) {
-        amount
-        acceptedTokens
-        basePrices
-        blockTimestamp
-        collectionId
-        discount
-        dropId
-        fulfillerId
-        grantCollectorsOnly
-        grantName
-        owner
-        printType
-        uri
-        tokenIds
-        pubId
-        dynamicNFTAddress
-      }
+  query($printType: String) {
+    fgotemplateCreateds(where: {printType: $printType}) {
+      parentURI
+      childTokenURIs
+      childTokenIds
+      parentTokenId
+      price
+      childPrices
+      printType
+    }
   }
 `;
 
-export const getTemplatesByPrintType = async (): Promise<any> => {
+export const getTemplatesByPrintType = async (
+  printType: string
+): Promise<any> => {
   const queryPromise = graphClientTestnet.query({
     query: gql(TEMPLATES_PRINTTYPE),
+    variables: {
+      printType,
+    },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
   });

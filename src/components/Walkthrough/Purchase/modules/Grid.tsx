@@ -2,30 +2,38 @@ import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
 import { GridProps } from "../types/synth.types";
-import { CartItem, PreRoll } from "@/components/Common/types/common.types";
+import { CartItem } from "@/components/Common/types/common.types";
 import { setImageViewer } from "../../../../../redux/reducers/imageViewerSlice";
 import Checkout from "./Checkout";
+import useCheckout from "../hooks/useCheckout";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
   scrollRef,
   cartItems,
-  setCartItem,
-  cartItem,
-  startIndex,
-  setStartIndex,
   signInLoading,
   address,
   openConnectModal,
-  paymentType,
-  setPaymentType,
-  handleCheckoutCrypto,
-  handleCheckoutFiat,
-  fiatCheckoutLoading,
-  cryptoCheckoutLoading,
-  checkoutCurrency,
-  setCheckoutCurrency,
 }): JSX.Element => {
+  const {
+    cartItem,
+    paymentType,
+    setPaymentType,
+    handleCheckoutFiat,
+    handleCheckoutCrypto,
+    cryptoCheckoutLoading,
+    fiatCheckoutLoading,
+    checkoutCurrency,
+    setCheckoutCurrency,
+    setCartItem,
+    startIndex,
+    setStartIndex,
+    fulfillmentDetails,
+    setFulfillmentDetails,
+    approved,
+    handleApproveSpend,
+    oracleValue
+  } = useCheckout();
   return (
     <div className="relative w-full h-100 flex flex-col gap-2" ref={scrollRef}>
       <div className="absolute w-full h-full flex">
@@ -52,6 +60,11 @@ const Grid: FunctionComponent<GridProps> = ({
           dispatch={dispatch}
           checkoutCurrency={checkoutCurrency}
           setCheckoutCurrency={setCheckoutCurrency}
+          fulfillmentDetails={fulfillmentDetails}
+          setFulfillmentDetails={setFulfillmentDetails}
+          approved={approved}
+          handleApproveSpend={handleApproveSpend}
+          oracleValue={oracleValue}
         />
         <div className="relative w-96 h-80 justify-end flex items-center">
           <div
@@ -61,16 +74,18 @@ const Grid: FunctionComponent<GridProps> = ({
               dispatch(
                 setImageViewer({
                   actionValue: true,
-                  actionImage: cartItem?.image
-                    ? cartItem?.image
-                    : cartItems[0]?.image,
+                  actionImage: cartItem?.uri
+                    ? cartItem?.uri?.split("ipfs://")[1]
+                    : cartItems[0]?.uri?.split("ipfs://")[1],
                 })
               )
             }
           >
             <Image
               src={`${INFURA_GATEWAY}/ipfs/${
-                cartItem?.image ? cartItem?.image : cartItems[0]?.image
+                cartItem?.uri
+                  ? cartItem?.uri?.split("ipfs://")[1]
+                  : cartItems[0]?.uri?.split("ipfs://")[1]
               }`}
               layout="fill"
               objectFit="cover"
@@ -99,7 +114,9 @@ const Grid: FunctionComponent<GridProps> = ({
                   onClick={() => setCartItem(item)}
                 >
                   <Image
-                    src={`${INFURA_GATEWAY}/ipfs/${item.image}`}
+                    src={`${INFURA_GATEWAY}/ipfs/${
+                      item.uri?.split("ipfs://")[1]
+                    }`}
                     layout="fill"
                     objectFit="cover"
                     className="rounded-md"
@@ -112,11 +129,12 @@ const Grid: FunctionComponent<GridProps> = ({
           <div className="relative w-fit h-full flex flex-row items-center justify-center gap-1.5">
             <div
               className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center"
-              onClick={() =>
+              onClick={() => {
                 setStartIndex((prevIndex) =>
                   prevIndex === 0 ? cartItems.length - 1 : prevIndex - 1
-                )
-              }
+                );
+                setCartItem(cartItems[startIndex]);
+              }}
             >
               <Image
                 src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
@@ -126,9 +144,12 @@ const Grid: FunctionComponent<GridProps> = ({
             </div>
             <div
               className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center"
-              onClick={() =>
-                setStartIndex((prevIndex) => (prevIndex + 1) % cartItems.length)
-              }
+              onClick={() => {
+                setStartIndex(
+                  (prevIndex) => (prevIndex + 1) % cartItems.length
+                );
+                setCartItem(cartItems[startIndex]);
+              }}
             >
               <Image
                 src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}

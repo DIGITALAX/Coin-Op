@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import finalPropsSelectorFactory from "react-redux/es/connect/selectorFactory";
 import { getAllPreRolls } from "../../../../graphql/subgraph/queries/getPreRolls";
 import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
 import { PreRoll } from "../types/common.types";
@@ -15,36 +14,45 @@ const usePreRoll = () => {
     setPreRollsLoading(true);
     try {
       const data = await getAllPreRolls();
-      const preRollsAdded = data?.collectionCreateds?.forEach(
+      const preRollsAdded = data?.data?.collectionCreateds?.map(
         (obj: PreRoll) => {
-          (obj.tags = [
-            "hoodie",
-            "smile",
-            "oil",
-            "painting",
-            "streetwear",
-            "graffiti",
-            "tagging",
-          ]),
-            (obj.chosenSize = "M"),
-            (obj.chosenColor = "#ffffff"),
-            (obj.colors = ["#030D6B", "#FBDB86", "#ffffff", "#000000"]),
-            (obj.sizes = ["XS", "S", "M", "L", "XL"]),
-            (obj.bgColor =
+          const modifiedObj = {
+            ...obj,
+            tags: [
+              "hoodie",
+              "smile",
+              "oil",
+              "painting",
+              "streetwear",
+              "graffiti",
+              "tagging",
+            ],
+            chosenSize: "M",
+            chosenColor: "#ffffff",
+            colors: ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+            sizes: ["XS", "S", "M", "L", "XL"],
+            bgColor:
               obj.printType === "Hoodie"
                 ? "#32C5FF"
                 : obj.printType === "Shirt"
                 ? "#6236FF"
                 : obj.printType === "Poster"
                 ? "#FFC800"
-                : "#B620E0");
+                : "#B620E0",
+          };
+
+          return modifiedObj;
         }
       );
-      console.log({ preRolls, data });
       dispatch(
         setPreRoll({
-          left: preRollsAdded?.slice(0, Math.ceil(preRollsAdded.length / 2)),
-          right: preRollsAdded?.slice(Math.ceil(preRollsAdded.length / 2)),
+          actionLeft: preRollsAdded?.slice(
+            0,
+            Math.ceil(preRollsAdded.length / 2)
+          ),
+          actionRight: preRollsAdded?.slice(
+            Math.ceil(preRollsAdded.length / 2)
+          ),
         })
       );
     } catch (err: any) {

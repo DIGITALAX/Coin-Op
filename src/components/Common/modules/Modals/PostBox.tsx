@@ -299,12 +299,12 @@ const PostBox: FunctionComponent<PostBoxProps> = ({
                         ></textarea>
                         <pre
                           id="highlighting"
-                          className={`absolute w-full h-full bg-black font-mana text-white p-2 rounded-lg overflow-y-auto`}
+                          className={`absolute w-full h-full bg-black font-mana text-white p-2 rounded-lg overflow-y-auto whitespace-pre-wrap break-words`}
                           ref={preElement}
                         >
                           <code
                             id="highlighted-content"
-                            className={`w-full h-full place-self-center text-left whitespace-pre-wrap overflow-y-auto z-0`}
+                            className={`w-full h-full place-self-center text-left overflow-y-auto z-0 whitespace-pre-wrap break-words `}
                           >
                             Have Something to Say?
                           </code>

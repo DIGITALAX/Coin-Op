@@ -1,4 +1,4 @@
-import { CartItem, PreRoll } from "@/components/Common/types/common.types";
+import { CartItem } from "@/components/Common/types/common.types";
 import { Dispatch, MutableRefObject, SetStateAction } from "react";
 import { AnyAction, Dispatch as DispatchRedux } from "redux";
 
@@ -6,42 +6,18 @@ export type PurchaseProps = {
   dispatch: DispatchRedux<AnyAction>;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   cartItems: CartItem[];
-  cartItem: CartItem | undefined;
-  setCartItem: (e: CartItem | undefined) => void;
-  startIndex: number;
-  setStartIndex: Dispatch<SetStateAction<number>>;
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
-  paymentType: string;
-  setPaymentType: (e: string) => void;
-  handleCheckoutCrypto: () => Promise<void>;
-  handleCheckoutFiat: () => Promise<void>;
-  cryptoCheckoutLoading: boolean;
-  fiatCheckoutLoading: boolean;
-  setCheckoutCurrency: (e: string) => void;
-  checkoutCurrency: string;
 };
 
 export type GridProps = {
   dispatch: Dispatch<AnyAction>;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   cartItems: CartItem[];
-  cartItem: CartItem | undefined;
-  setCartItem: (e: CartItem | undefined) => void;
-  startIndex: number;
-  setStartIndex: Dispatch<SetStateAction<number>>;
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
-  paymentType: string;
-  setPaymentType: (e: string) => void;
-  handleCheckoutCrypto: () => Promise<void>;
-  handleCheckoutFiat: () => Promise<void>;
-  cryptoCheckoutLoading: boolean;
-  fiatCheckoutLoading: boolean;
-  setCheckoutCurrency: (e: string) => void;
-  checkoutCurrency: string;
 };
 
 export type CheckoutProps = {
@@ -59,6 +35,25 @@ export type CheckoutProps = {
   dispatch: Dispatch<AnyAction>;
   setCheckoutCurrency: (e: string) => void;
   checkoutCurrency: string;
+  fulfillmentDetails: {
+    name: string;
+    contact: string;
+    address: string;
+    zip: string;
+    city: string;
+    state: string;
+  };
+  setFulfillmentDetails: (e: {
+    name: string;
+    contact: string;
+    address: string;
+    zip: string;
+    city: string;
+    state: string;
+  }) => void;
+  approved: boolean;
+  handleApproveSpend: () => Promise<void>;
+  oracleValue: number;
 };
 
 export type CryptoProps = {
@@ -67,6 +62,8 @@ export type CryptoProps = {
   address: `0x${string}` | undefined;
   handleCheckoutCrypto: () => Promise<void>;
   cryptoCheckoutLoading: boolean;
+  approved: boolean;
+  handleApproveSpend: () => Promise<void>;
 };
 
 export type FiatProps = {
@@ -80,4 +77,23 @@ export type ItemsProps = {
   paymentType: string;
   dispatch: Dispatch<AnyAction>;
   checkoutCurrency: string;
+};
+
+export type ShippingInfoProps = {
+  fulfillmentDetails: {
+    name: string;
+    contact: string;
+    address: string;
+    zip: string;
+    city: string;
+    state: string;
+  };
+  setFulfillmentDetails: (e: {
+    name: string;
+    contact: string;
+    address: string;
+    zip: string;
+    city: string;
+    state: string;
+  }) => void;
 };

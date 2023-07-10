@@ -8,6 +8,8 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   signInLoading,
   handleCheckoutCrypto,
   cryptoCheckoutLoading,
+  approved,
+  handleApproveSpend,
 }): JSX.Element => {
   return (
     <div
@@ -15,8 +17,11 @@ const Crypto: FunctionComponent<CryptoProps> = ({
       onClick={
         !signInLoading && !address && !cryptoCheckoutLoading
           ? openConnectModal
-          : () =>
+          : approved
+          ? () =>
               !signInLoading && !cryptoCheckoutLoading && handleCheckoutCrypto()
+          : () =>
+              !signInLoading && !cryptoCheckoutLoading && handleApproveSpend()
       }
     >
       <div
@@ -28,6 +33,8 @@ const Crypto: FunctionComponent<CryptoProps> = ({
           <AiOutlineLoading size={15} color={"white"} />
         ) : !address ? (
           "CONNECT"
+        ) : !approved ? (
+          "APPROVE SPEND"
         ) : (
           "CHECKOUT"
         )}

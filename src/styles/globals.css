@@ -131,6 +131,7 @@ div:hover::-webkit-scrollbar {
   line-height: 1.5rem;
   overflow-y: auto;
   scrollbar-width: none;
+  white-space: pre-wrap;
 }
 
 #highlighted-content::-webkit-scrollbar {

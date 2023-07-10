@@ -26,18 +26,23 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
         className="relative w-full h-80 flex flex-col object-cover bg-cross bg-cover bg-center cursor-pointer"
         onClick={() =>
           dispatch(
-            setImageViewer({ actionValue: open, actionImage: preRoll?.uri })
+            setImageViewer({
+              actionValue: open,
+              actionImage: preRoll.uri?.split("ipfs://")[1],
+            })
           )
         }
       >
-        <Image
-          src={`${INFURA_GATEWAY}/ipfs/${preRoll.uri?.split("ipfs://")[1]}`}
-          layout="fill"
-          objectFit="cover"
-          draggable={false}
-          alt="preRoll"
-          priority
-        />
+        {preRoll.uri?.split("ipfs://")[1] && (
+          <Image
+            src={`${INFURA_GATEWAY}/ipfs/${preRoll.uri?.split("ipfs://")[1]}`}
+            layout="fill"
+            objectFit="cover"
+            draggable={false}
+            alt="preRoll"
+            priority
+          />
+        )}
       </div>
       <div className="relative flex flex-row gap-2 w-full h-fit justify-between">
         <PrintTag backgroundColor={preRoll.bgColor} type={preRoll.printType} />
@@ -58,7 +63,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
       />
       <div className="relative flex flex-row gap-2 w-full h-fit items-center">
         <div className="relative text-xl text-white font-aqua flex justify-start items-start w-fit h-fit">
-          ${preRoll.price}
+          ${preRoll.price / 10**18}
         </div>
         <div
           className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"

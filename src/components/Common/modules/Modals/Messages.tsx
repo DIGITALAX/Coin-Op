@@ -1,12 +1,11 @@
 import { FunctionComponent } from "react";
-import { GeneralProps } from "../../types/common.types";
+import { MessagesProps } from "../../types/common.types";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
-import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 import { ImCross } from "react-icons/im";
-import { setCompletedSynths } from "../../../../../redux/reducers/completedSynthsSlice";
+import { setMessagesModal } from "../../../../../redux/reducers/messagesModalSlice";
 
-const General: FunctionComponent<GeneralProps> = ({
+const Messages: FunctionComponent<MessagesProps> = ({
   message,
   dispatch,
 }): JSX.Element => {
@@ -22,7 +21,7 @@ const General: FunctionComponent<GeneralProps> = ({
                   size={15}
                   onClick={() =>
                     dispatch(
-                      setModalOpen({
+                      setMessagesModal({
                         actionOpen: false,
                         actionMessage: "",
                       })
@@ -43,20 +42,6 @@ const General: FunctionComponent<GeneralProps> = ({
                     draggable={false}
                   />
                 </div>
-                <div
-                  className={`relative w-24 h-fit px-2 py-1.5 bg-azul border border-smo rounded-md cursor-pointer font-mana text-white hover:bg-smo/10 justify-center flex items-center`}
-                  onClick={() => {
-                    dispatch(setCompletedSynths([]));
-                    dispatch(
-                      setModalOpen({
-                        actionOpen: false,
-                        actionMessage: "",
-                      })
-                    );
-                  }}
-                >
-                  clear
-                </div>
               </div>
             </div>
           </div>
@@ -66,4 +51,4 @@ const General: FunctionComponent<GeneralProps> = ({
   );
 };
 
-export default General;
+export default Messages;

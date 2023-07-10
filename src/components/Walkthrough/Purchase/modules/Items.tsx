@@ -39,7 +39,7 @@ const Items: FunctionComponent<ItemsProps> = ({
                     />
                   </div>
                   <div className="relative w-fit h-fit flex justify-start items-center uppercase">
-                    FIGURE OUT WHAT GOES HERE
+                    {/* {item.name} */}
                   </div>
                   <div
                     className="relative w-4 h-4 border border-ligero flex justify-start items-center rounded-full"
@@ -54,7 +54,7 @@ const Items: FunctionComponent<ItemsProps> = ({
                           (subArray) => subArray[1] === checkoutCurrency
                         )?.[1]
                       : "$"}{" "}
-                    {item.price}
+                    {item.price / 10 ** 18}
                   </div>
                   <div className="relative w-fit h-fit text-ama flex">
                     {item.amount}

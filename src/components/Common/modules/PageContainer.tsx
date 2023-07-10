@@ -1,13 +1,12 @@
 import { FunctionComponent } from "react";
 import { PageContainerProps } from "../types/common.types";
-import templates from "./../../../../public/items/templates.json";
-import layers from "./../../../../public/items/layers.json";
 import Format from "@/components/Walkthrough/Format/modules/Format";
 import Layer from "@/components/Walkthrough/Layer/modules/Layer";
 import Synth from "@/components/Walkthrough/Synth/modules/Synth";
 import TopBanner from "./TopBanner";
 import Composite from "@/components/Walkthrough/Composite/modules/Composite";
 import Purchase from "@/components/Walkthrough/Purchase/modules/Purchase";
+import templates from "./../../../../public/items/templates.json";
 
 const PageContainer: FunctionComponent<PageContainerProps> = ({
   dispatch,
@@ -27,26 +26,20 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   handleLensSignIn,
   openConnectModal,
   models,
-  cartItem,
-  setCartItem,
-  startIndex,
-  setStartIndex,
   signInLoading,
-  setPaymentType,
-  paymentType,
-  handleCheckoutCrypto,
-  handleCheckoutFiat,
-  fiatCheckoutLoading,
-  cryptoCheckoutLoading,
-  checkoutCurrency,
-  setCheckoutCurrency
+  layersLoading,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
       <TopBanner />
       <div className="relative w-full h-full flex flex-col overflow-y-scroll gap-20 justify-start items-center overflow-x-hidden">
         <Format dispatch={dispatch} template={template} templates={templates} />
-        <Layer layers={layers} dispatch={dispatch} synthLayer={synthLayer} />
+        <Layer
+          layers={[]}
+          dispatch={dispatch}
+          synthLayer={synthLayer}
+          layersLoading={layersLoading}
+        />
         <Synth
           dispatch={dispatch}
           synthLayerSelected={synthLayerSelected}
@@ -71,21 +64,9 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           dispatch={dispatch}
           scrollRef={scrollRef}
           cartItems={cartItems}
-          cartItem={cartItem}
-          setCartItem={setCartItem}
-          setStartIndex={setStartIndex}
-          startIndex={startIndex}
           signInLoading={signInLoading}
           address={address}
           openConnectModal={openConnectModal}
-          setPaymentType={setPaymentType}
-          paymentType={paymentType}
-          handleCheckoutCrypto={handleCheckoutCrypto}
-          handleCheckoutFiat={handleCheckoutFiat}
-          fiatCheckoutLoading={fiatCheckoutLoading}
-          cryptoCheckoutLoading={cryptoCheckoutLoading}
-          checkoutCurrency={checkoutCurrency}
-          setCheckoutCurrency={setCheckoutCurrency}
         />
       </div>
     </div>

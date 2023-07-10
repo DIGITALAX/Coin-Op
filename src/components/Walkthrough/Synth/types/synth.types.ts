@@ -1,9 +1,10 @@
 import { AnyAction, Dispatch } from "redux";
+import { Layer } from "../../Layer/types/layer.types";
 
 export type SynthProps = {
   dispatch: Dispatch<AnyAction>;
-  synthLayerSelected: string;
-  synthLayer: string[];
+  synthLayerSelected: Layer | undefined;
+  synthLayer: Layer | undefined;
   synthConfig: SynthConfig;
   handleSynth: () => Promise<void>;
   synthLoading: boolean;
@@ -12,8 +13,8 @@ export type SynthProps = {
 
 export type GridProps = {
   dispatch: Dispatch<AnyAction>;
-  synthLayerSelected: string;
-  synthLayer: string[];
+  synthLayerSelected: Layer | undefined;
+  synthLayer: Layer | undefined;
   synthConfig: SynthConfig;
   handleSynth: () => Promise<void>;
   synthLoading: boolean;

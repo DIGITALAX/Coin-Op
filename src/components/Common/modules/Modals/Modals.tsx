@@ -9,6 +9,7 @@ import useMakePost from "../../hooks/useMakePost";
 import Index from "./Index";
 import { useEffect, useState } from "react";
 import ImageLarge from "./ImageLarge";
+import Messages from "./Messages";
 
 const Modals = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,9 @@ const Modals = () => {
   );
   const generalModal = useSelector(
     (state: RootState) => state.app.modalOpenReducer
+  );
+  const messageModal = useSelector(
+    (state: RootState) => state.app.messagesModalReducer
   );
   const lensPost = useSelector(
     (state: RootState) => state.app.lensPostBoxReducer
@@ -183,6 +187,9 @@ const Modals = () => {
           preElement={preElement}
           handleImagePaste={handleImagePaste}
         />
+      )}
+      {messageModal?.open && (
+        <Messages message={messageModal.message} dispatch={dispatch} />
       )}
       {generalModal?.open && (
         <General message={generalModal.message} dispatch={dispatch} />

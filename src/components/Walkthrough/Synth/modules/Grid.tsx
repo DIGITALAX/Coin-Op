@@ -6,6 +6,7 @@ import { setLayerToSynth } from "../../../../../redux/reducers/layerToSynthSlice
 import Dash from "./Dash";
 import Presets from "./Presets";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
+import { Layer } from "../../Layer/types/layer.types";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -58,7 +59,7 @@ const Grid: FunctionComponent<GridProps> = ({
             <div className="relative h-10 w-full flex justify-center items-center flex-row gap-3">
               <div className="relative w-full h-full flex items-center justify-start">
                 <div className="relative w-fit h-full items-center justify-start flex flex-row gap-3">
-                  {(synthLayer?.length <= 4
+                  {/* {(synthLayer?.length <= 4
                     ? synthLayer
                     : Array(4)
                         .fill(null)
@@ -69,7 +70,7 @@ const Grid: FunctionComponent<GridProps> = ({
                                 synthLayer.length
                             ]
                         )
-                  )?.map((value: string, index: number) => {
+                  )?.map((value: Layer, index: number) => {
                     return (
                       <div
                         className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border cursor-pointer hover:opacity-70 rounded-lg ${
@@ -89,7 +90,7 @@ const Grid: FunctionComponent<GridProps> = ({
                         />
                       </div>
                     );
-                  })}
+                  })} */}
                 </div>
               </div>
               <div className="relative w-fit h-full flex flex-row items-center justify-center gap-1.5">
@@ -98,18 +99,18 @@ const Grid: FunctionComponent<GridProps> = ({
                     src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
                     layout="fill"
                     draggable={false}
-                    onClick={() =>
-                      dispatch(
-                        setLayerToSynth(
-                          synthLayer[
-                            (synthLayer.indexOf(synthLayerSelected) -
-                              1 +
-                              synthLayer?.length) %
-                              synthLayer?.length
-                          ]
-                        )
-                      )
-                    }
+                    // onClick={() =>
+                    //   dispatch(
+                    //     setLayerToSynth(
+                    //       synthLayer[
+                    //         (synthLayer.indexOf(synthLayerSelected) -
+                    //           1 +
+                    //           synthLayer?.length) %
+                    //           synthLayer?.length
+                    //       ]
+                    //     )
+                    //   )
+                    // }
                   />
                 </div>
                 <div className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center">
@@ -117,16 +118,16 @@ const Grid: FunctionComponent<GridProps> = ({
                     src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
                     layout="fill"
                     draggable={false}
-                    onClick={() =>
-                      dispatch(
-                        setLayerToSynth(
-                          synthLayer[
-                            (synthLayer.indexOf(synthLayerSelected) + 1) %
-                              synthLayer?.length
-                          ]
-                        )
-                      )
-                    }
+                    // onClick={() =>
+                    //   dispatch(
+                    //     setLayerToSynth(
+                    //       synthLayer[
+                    //         (synthLayer.indexOf(synthLayerSelected) + 1) %
+                    //           synthLayer?.length
+                    //       ]
+                    //     )
+                    //   )
+                    // }
                   />
                 </div>
               </div>

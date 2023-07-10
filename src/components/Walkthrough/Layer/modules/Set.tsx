@@ -7,9 +7,9 @@ import { setSynthLayer } from "../../../../../redux/reducers/synthLayerSlice";
 const Set: FunctionComponent<SetProps> = ({ layer, dispatch, synthLayer }): JSX.Element => {
   return (
     <div
-      className={`relative w-48 h-44 flex flex-col items-center justify-center cursor-pointer hover:opacity-70 ${layer.components === synthLayer && "opacity-60"}`}
+      className={`relative w-48 h-44 flex flex-col items-center justify-center cursor-pointer hover:opacity-70 ${layer.parentURI === synthLayer.parentURI && "opacity-60"}`}
       onClick={() => {
-        dispatch(setSynthLayer(layer.components));
+        dispatch(setSynthLayer(layer));
       }}
     >
       <div className="absolute w-full h-full">

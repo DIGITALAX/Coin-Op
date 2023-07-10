@@ -1,28 +1,31 @@
 import { AnyAction, Dispatch } from "redux";
-import { Template } from "../../Format/types/format.types";
 
 export interface Layer {
-  name: string;
-  templateName: string;
-  type: string;
-  components: string[];
-  image: string[];
+  parentURI: string;
+  childTokenURIs: string[];
+  childTokenIds: number[];
+  parentTokenId: number;
+  price: string;
+  childPrices: string[];
+  printType: string;
 }
 
 export type LayerProps = {
   layers: Layer[];
   dispatch: Dispatch<AnyAction>;
-  synthLayer: string[]
+  synthLayer: Layer | undefined;
+  layersLoading: boolean;
 };
 
 export type GridProps = {
   layers: Layer[];
   dispatch: Dispatch<AnyAction>;
-  synthLayer: string[]
+  synthLayer: Layer | undefined;
+  layersLoading: boolean;
 };
 
 export type SetProps = {
-  layer: Layer;
+  layer: Layer | undefined;
   dispatch: Dispatch<AnyAction>;
-  synthLayer: string[]
+  synthLayer: Layer | undefined;
 };

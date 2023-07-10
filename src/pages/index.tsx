@@ -10,8 +10,8 @@ import useSynth from "@/components/Walkthrough/Synth/hooks/useSynth";
 import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useSignIn from "@/components/Common/hooks/useSignIn";
-import useCheckout from "@/components/Walkthrough/Purchase/hooks/useCheckout";
 import usePreRoll from "@/components/Common/hooks/usePreRoll";
+import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
 
 export default function Home(): JSX.Element {
   const scrollRef = useContext(ScrollContext);
@@ -19,23 +19,10 @@ export default function Home(): JSX.Element {
   const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { handleLensSignIn, signInLoading } = useSignIn();
-  const {
-    cartItem,
-    setCartItem,
-    startIndex,
-    setStartIndex,
-    paymentType,
-    setPaymentType,
-    handleCheckoutCrypto,
-    handleCheckoutFiat,
-    fiatCheckoutLoading,
-    cryptoCheckoutLoading,
-    checkoutCurrency,
-    setCheckoutCurrency,
-  } = useCheckout();
   const { setShareSet, shareSet, models } = useComposite();
   const { handleSynth, synthLoading, presets } = useSynth();
   const { preRollsLoading } = usePreRoll();
+  const { layersLoading } = useLayer();
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
   const profile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
@@ -95,19 +82,8 @@ export default function Home(): JSX.Element {
         handleLensSignIn={handleLensSignIn}
         profile={profile}
         models={models}
-        cartItem={cartItem}
-        setCartItem={setCartItem}
-        startIndex={startIndex}
-        setStartIndex={setStartIndex}
         signInLoading={signInLoading}
-        paymentType={paymentType}
-        setPaymentType={setPaymentType}
-        handleCheckoutCrypto={handleCheckoutCrypto}
-        handleCheckoutFiat={handleCheckoutFiat}
-        fiatCheckoutLoading={fiatCheckoutLoading}
-        cryptoCheckoutLoading={cryptoCheckoutLoading}
-        checkoutCurrency={checkoutCurrency}
-        setCheckoutCurrency={setCheckoutCurrency}
+        layersLoading={layersLoading}
       />
       <PreRolls
         cartItems={cartItems}

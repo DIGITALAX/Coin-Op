@@ -1,5 +1,4 @@
-import { PreRoll } from "@/components/Common/types/common.types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface ModalOpenState {
   open: boolean;

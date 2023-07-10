@@ -33,3 +33,10 @@ export const ACCEPTED_TOKENS: string[][] = [
     "0x6968105460f67c3bf751be7c15f92f5286fd0ce5",
   ],
 ];
+
+export const COIN_OP_MARKET: `0x${string}` =
+  "0x29eFfb2B92E8d116E31a3300BE4a1C32112D3584";
+export const COIN_OP_ORACLE: `0x${string}` =
+  "0xe25F9302A6cf9FC00B8f2a878157177d9A4044A0";
+export const COIN_OP_FULFILLMENT: `0x${string}` =
+  "0x7370432A618E763D7a347575Fa732322072397A2";
