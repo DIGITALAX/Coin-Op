@@ -8,6 +8,9 @@ import { PreRoll } from "../types/common.types";
 const usePreRoll = () => {
   const dispatch = useDispatch();
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
+  const algoila = useSelector(
+    (state: RootState) => state.app.algoliaReducer.value
+  );
   const [preRollsLoading, setPreRollsLoading] = useState<boolean>(false);
 
   const getPreRolls = async () => {
@@ -55,6 +58,8 @@ const usePreRoll = () => {
           ),
         })
       );
+
+      algoila && algoila.saveObjects(preRollsAdded, { replaceExisting: true });
     } catch (err: any) {
       console.error(err.message);
     }
