@@ -9,7 +9,7 @@ const Grid: FunctionComponent<GridProps> = ({
   layers,
   dispatch,
   synthLayer,
-  layersLoading
+  layersLoading,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -23,16 +23,44 @@ const Grid: FunctionComponent<GridProps> = ({
       </div>
       <div className="relative w-full flex h-3/4 px-7 pt-4">
         <div className="relative w-fit flex flex-row flex-wrap h-full overflow-y-scroll gap-8 items-center justify-center">
-          {layers?.map((value: Layer, index: number) => {
-            return (
-              <Set
-                key={index}
-                dispatch={dispatch}
-                layer={value}
-                synthLayer={synthLayer}
-              />
-            );
-          })}
+          {layersLoading || layers?.length < 1
+            ? Array.from({ length: 6 }).map((_, index: number) => {
+                return (
+                  <div
+                    key={index}
+                    className="relative w-48 h-44 flex flex-col items-center justify-center cursor-pointer opacity-50"
+                    id="staticLoad"
+                  >
+                    <div className="absolute w-full h-full">
+                      <Image
+                        layout="fill"
+                        objectFit="cover"
+                        src={`${INFURA_GATEWAY}/ipfs/QmabrLTvs7EW8P9sZ2WGcf1gSrc4n3YmsFyvtcLYN8gtuP`}
+                        draggable={false}
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            : layers?.map((layer: Layer) => {
+                return layer.childTokenURIs?.map(
+                  (uri: string, indexTwo: number) => {
+                    return (
+                      <Set
+                        key={indexTwo}
+                        dispatch={dispatch}
+                        parentId={layer.parentTokenId}
+                        parentURI={layer.parentURI}
+                        childURI={uri}
+                        childId={layer.childTokenIds[indexTwo]}
+                        childPrice={layer.childPrices[indexTwo]}
+                        parentPrice={layer.price}
+                        synthLayer={synthLayer}
+                      />
+                    );
+                  }
+                );
+              })}
         </div>
       </div>
       <div

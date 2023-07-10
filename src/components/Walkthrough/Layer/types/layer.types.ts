@@ -13,19 +13,51 @@ export interface Layer {
 export type LayerProps = {
   layers: Layer[];
   dispatch: Dispatch<AnyAction>;
-  synthLayer: Layer | undefined;
+  synthLayer:
+    | {
+        parentURI: string;
+        childURIs: string[];
+        parentPrice: string;
+        childPrice: string;
+        parentId: number;
+        childId: number;
+      }
+    | undefined;
   layersLoading: boolean;
 };
 
 export type GridProps = {
   layers: Layer[];
   dispatch: Dispatch<AnyAction>;
-  synthLayer: Layer | undefined;
+  synthLayer:
+    | {
+        parentURI: string;
+        childURIs: string[];
+        parentPrice: string;
+        childPrice: string;
+        parentId: number;
+        childId: number;
+      }
+    | undefined;
   layersLoading: boolean;
 };
 
 export type SetProps = {
-  layer: Layer | undefined;
   dispatch: Dispatch<AnyAction>;
-  synthLayer: Layer | undefined;
+  synthLayer:
+    | {
+        parentURI: string;
+        childURIs: string[];
+        parentPrice: string;
+        childPrice: string;
+        parentId: number;
+        childId: number;
+      }
+    | undefined;
+  parentId: number;
+  parentURI: string;
+  childURIs: string[];
+  childId: number;
+  childPrice: string;
+  parentPrice: string;
 };

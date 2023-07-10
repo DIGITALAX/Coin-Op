@@ -10,7 +10,7 @@ export const graphClient = new ApolloClient({
 });
 
 const httpLinkTestnet = new HttpLink({
-  uri: "https://api.studio.thegraph.com/query/37770/coinop_test/version/latest",
+  uri: "https://api.studio.thegraph.com/query/37770/coinop_test/v0.0.11",
 });
 
 export const graphClientTestnet = new ApolloClient({

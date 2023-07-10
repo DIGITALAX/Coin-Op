@@ -1,8 +1,16 @@
-import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface SynthLayerState {
-  value: Layer | undefined;
+  value:
+    | {
+        parentURI: string;
+        childURIs: string[];
+        parentPrice: string;
+        childPrice: string;
+        parentId: number;
+        childId: number;
+      }
+    | undefined;
 }
 
 const initialSynthLayerState: SynthLayerState = {
@@ -13,7 +21,20 @@ export const synthLayerSlice = createSlice({
   name: "synthLayer",
   initialState: initialSynthLayerState,
   reducers: {
-    setSynthLayer: (state: SynthLayerState, action: PayloadAction<Layer>) => {
+    setSynthLayer: (
+      state: SynthLayerState,
+      action: PayloadAction<
+        | {
+            parentURI: string;
+            childURIs: string[];
+            parentPrice: string;
+            childPrice: string;
+            parentId: number;
+            childId: number;
+          }
+        | undefined
+      >
+    ) => {
       state.value = action.payload;
     },
   },

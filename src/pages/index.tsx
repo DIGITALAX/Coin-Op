@@ -39,6 +39,9 @@ export default function Home(): JSX.Element {
   const synthLayerSelected = useSelector(
     (state: RootState) => state.app.layerToSynthReducer.value
   );
+  const printTypeLayers = useSelector(
+    (state: RootState) => state.app.printTypeLayersReducer.value
+  );
   const synthConfig = useSelector(
     (state: RootState) => state.app.synthConfigReducer
   );
@@ -84,6 +87,7 @@ export default function Home(): JSX.Element {
         models={models}
         signInLoading={signInLoading}
         layersLoading={layersLoading}
+        printTypeLayers={printTypeLayers}
       />
       <PreRolls
         cartItems={cartItems}

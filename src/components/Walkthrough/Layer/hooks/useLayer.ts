@@ -17,7 +17,6 @@ const useLayer = () => {
     try {
       const data = await getTemplatesByPrintType(template.type);
       dispatch(setPrintTypeLayers(data?.data?.fgotemplateCreateds));
-      dispatch(setLayerToSynth(data?.data?.fgotemplateCreateds[0]));
     } catch (err: any) {
       console.error(err.message);
     }

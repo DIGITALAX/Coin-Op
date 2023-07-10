@@ -6,7 +6,6 @@ import { setLayerToSynth } from "../../../../../redux/reducers/layerToSynthSlice
 import Dash from "./Dash";
 import Presets from "./Presets";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
-import { Layer } from "../../Layer/types/layer.types";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -59,27 +58,30 @@ const Grid: FunctionComponent<GridProps> = ({
             <div className="relative h-10 w-full flex justify-center items-center flex-row gap-3">
               <div className="relative w-full h-full flex items-center justify-start">
                 <div className="relative w-fit h-full items-center justify-start flex flex-row gap-3">
-                  {/* {(synthLayer?.length <= 4
-                    ? synthLayer
+                  {(synthLayer?.childURIs && synthLayer?.childURIs?.length <= 4
+                    ? synthLayer?.childURIs
                     : Array(4)
                         .fill(null)
                         .map(
                           (_, index) =>
-                            synthLayer[
-                              (synthLayer.indexOf(synthLayerSelected) + index) %
-                                synthLayer.length
+                            synthLayer?.childURIs[
+                              (synthLayer?.childURIs.indexOf(
+                                synthLayerSelected?.childURIs?.[index]!
+                              ) +
+                                index) %
+                                synthLayer?.childURIs.length
                             ]
                         )
-                  )?.map((value: Layer, index: number) => {
+                  )?.map((uri: string | undefined, index: number) => {
                     return (
                       <div
                         className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border cursor-pointer hover:opacity-70 rounded-lg ${
-                          synthLayerSelected === value
+                          synthLayerSelected?.childURIs[index] === uri
                             ? "border-white"
                             : "border-ama"
                         }`}
                         key={index}
-                        onClick={() => dispatch(setLayerToSynth(value))}
+                        onClick={() => dispatch(setLayerToSynth(uri!))}
                       >
                         <Image
                           src={`${INFURA_GATEWAY}/ipfs/QmPKU1ck9PLyFchFpe2vzJh3eyxSYij28ixTdRzaHi4E1p`}
@@ -90,7 +92,7 @@ const Grid: FunctionComponent<GridProps> = ({
                         />
                       </div>
                     );
-                  })} */}
+                  })}
                 </div>
               </div>
               <div className="relative w-fit h-full flex flex-row items-center justify-center gap-1.5">

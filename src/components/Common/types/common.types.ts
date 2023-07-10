@@ -7,19 +7,34 @@ import {
   KeyboardEvent,
   MutableRefObject,
   RefObject,
-  SetStateAction,
-  Dispatch,
 } from "react";
 import { AnyAction, Dispatch as DispatchRedux } from "redux";
 import { Erc20, Profile } from "./lens.types";
 import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
-import { StripeElementsOptions } from "@stripe/stripe-js";
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
   template: Template;
-  synthLayerSelected: Layer | undefined;
-  synthLayer: Layer | undefined;
+  synthLayerSelected:
+    | {
+        parentURI: string;
+        childURIs: string[];
+        parentPrice: string;
+        childPrice: string;
+        parentId: number;
+        childId: number;
+      }
+    | undefined;
+  synthLayer:
+    | {
+        parentURI: string;
+        childURIs: string[];
+        parentPrice: string;
+        childPrice: string;
+        parentId: number;
+        childId: number;
+      }
+    | undefined;
   shareSet: boolean;
   setShareSet: (e: boolean) => void;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
@@ -35,6 +50,7 @@ export type PageContainerProps = {
   models: string[];
   signInLoading: boolean;
   layersLoading: boolean;
+  printTypeLayers: Layer[];
 };
 
 export enum PrintType {

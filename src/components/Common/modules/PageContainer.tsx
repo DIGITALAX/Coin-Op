@@ -28,6 +28,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   models,
   signInLoading,
   layersLoading,
+  printTypeLayers,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -35,7 +36,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
       <div className="relative w-full h-full flex flex-col overflow-y-scroll gap-20 justify-start items-center overflow-x-hidden">
         <Format dispatch={dispatch} template={template} templates={templates} />
         <Layer
-          layers={[]}
+          layers={printTypeLayers}
           dispatch={dispatch}
           synthLayer={synthLayer}
           layersLoading={layersLoading}

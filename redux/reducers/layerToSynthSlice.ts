@@ -2,7 +2,7 @@ import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface LayerToSynthState {
-  value: Layer | undefined;
+  value: string | undefined;
 }
 
 const initialLayerToSynthState: LayerToSynthState = {
@@ -15,7 +15,7 @@ export const layerToSynthSlice = createSlice({
   reducers: {
     setLayerToSynth: (
       state: LayerToSynthState,
-      action: PayloadAction<Layer>
+      action: PayloadAction<string>
     ) => {
       state.value = action.payload;
     },
