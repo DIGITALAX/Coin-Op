@@ -21,6 +21,7 @@ import collectOpenReducer from "./reducers/collectOpenSlice";
 import imageViewerReducer from "./reducers/imageViewerSlice";
 import printTypeLayersReducer from "./reducers/printTypeLayersSlice";
 import messagesModalReducer from "./reducers/messagesModalSlice";
+import litClientReducer from "./reducers/litClientSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -44,6 +45,7 @@ const reducer = combineReducers({
   imageViewerReducer,
   printTypeLayersReducer,
   messagesModalReducer,
+  litClientReducer,
 });
 
 export const store = configureStore({

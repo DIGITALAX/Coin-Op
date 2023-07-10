@@ -4,6 +4,7 @@ import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useDispatch, useSelector } from "react-redux";
 import { waitForTransaction } from "@wagmi/core";
 import { setMessagesModal } from "../../../../../redux/reducers/messagesModalSlice";
+import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import {
   useAccount,
   useContractRead,
@@ -21,6 +22,7 @@ import CoinOpMarketOracle from "../../../../../abis/CoinOpOracle.json";
 import { RootState } from "../../../../../redux/store";
 import { setCart } from "../../../../../redux/reducers/cartSlice";
 import { useRouter } from "next/router";
+import { setLitClient } from "../../../../../redux/reducers/litClientSlice";
 
 const useCheckout = () => {
   const router = useRouter();
@@ -30,6 +32,9 @@ const useCheckout = () => {
   const elements = useElements();
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
+  );
+  const litClient = useSelector(
+    (state: RootState) => state.app.litClientReducer.value
   );
   const [approved, setApproved] = useState<boolean>(false);
   const [cartItem, setCartItem] = useState<CartItem | undefined>();
@@ -41,6 +46,8 @@ const useCheckout = () => {
   const [fiatCheckoutLoading, setFiatCheckoutLoading] =
     useState<boolean>(false);
   const [checkoutCurrency, setCheckoutCurrency] = useState<string>("USDT");
+  const [encryptedFulfillmentDetails, setEncryptedFulfillmentDetails] =
+    useState<string>("");
   const [totalAmount, setTotalAmount] = useState<number>(
     cartItems?.length > 0
       ? cartItems?.reduce(
@@ -78,7 +85,7 @@ const useCheckout = () => {
     ),
   });
 
-  const { data } = useContractRead({
+  const { data, error } = useContractRead({
     address: ACCEPTED_TOKENS.find(
       ([_, token]) => token === checkoutCurrency
     )?.[2] as `0x${string}`,
@@ -110,7 +117,11 @@ const useCheckout = () => {
     ],
     functionName: "allowance",
     args: [address as `0x${string}`, COIN_OP_MARKET],
-    enabled: Boolean(address) || Boolean(approved),
+    enabled:
+      Boolean(address) &&
+      Boolean(approved) &&
+      Boolean(checkoutCurrency) &&
+      Boolean(cartItems?.length > 0),
   });
 
   const { config } = usePrepareContractWrite({
@@ -177,10 +188,10 @@ const useCheckout = () => {
     functionName: "approve",
     args: [COIN_OP_MARKET, ethers.utils.parseEther(totalAmount.toString())],
     enabled: Boolean(!Number.isNaN(totalAmount)),
-    value: BigInt("0"),
+    value: 0 as any,
   });
 
-  const { config: buyNFTConfig } = usePrepareContractWrite({
+  const { config: buyNFTConfig, isSuccess } = usePrepareContractWrite({
     address: COIN_OP_MARKET,
     abi: CoinOpMarketABI,
     args: [
@@ -196,14 +207,18 @@ const useCheckout = () => {
         customIds: [],
         customAmounts: [],
         customURIs: [],
-        fulfillmentDetails,
+        fulfillmentDetails: encryptedFulfillmentDetails,
         chosenTokenAddress: ACCEPTED_TOKENS.find(
           ([_, token]) => token === checkoutCurrency
         )?.[2],
       },
     ],
     functionName: "buyTokens",
-    enabled: Boolean(cartItems?.length > 0 && paymentType === "crypto"),
+    enabled: Boolean(
+      cartItems?.length > 0 &&
+        paymentType === "crypto" &&
+        encryptedFulfillmentDetails !== ""
+    ),
   });
 
   const { writeAsync } = useContractWrite(config as any);
@@ -220,10 +235,9 @@ const useCheckout = () => {
       );
 
       if (oracleData) {
-        const oracle =
-          Number((oracleData as BigNumber)?.toBigInt()?.toString()) / 10 ** 18;
+        const oracle = Number(oracleData as BigNumber) / 10 ** 18;
         setOracleValue(oracle);
-        setTotalAmount(Number((total / oracle).toFixed(2)));
+        setTotalAmount(Number(total) / Number(oracle));
       }
     }
   };
@@ -282,6 +296,60 @@ const useCheckout = () => {
   const handleCheckoutCrypto = async () => {
     setCryptoCheckoutLoading(true);
     try {
+      let client: LitJsSdk.LitNodeClient | undefined;
+      if (!litClient) {
+        client = await connectLit();
+      }
+      const authSig = await LitJsSdk.checkAndSignAuthMessage({
+        chain: "mumbai",
+      });
+      const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
+        JSON.stringify(fulfillmentDetails)
+      );
+      await (client ? client : litClient).saveEncryptionKey({
+        accessControlConditions: [
+          {
+            contractAddress: "",
+            standardContractType: "",
+            chain: "mumbai",
+            method: "",
+            parameters: [":userAddress"],
+            returnValueTest: {
+              comparator: "=",
+              value: address,
+            },
+          },
+        ],
+        symmetricKey,
+        authSig,
+        chain: "mumbai",
+      });
+      const buffer = await encryptedString.arrayBuffer();
+      const decoder = new TextDecoder();
+      setEncryptedFulfillmentDetails(decoder.decode(buffer));
+    } catch (err: any) {
+      console.error(err.message);
+    }
+    setCryptoCheckoutLoading(false);
+  };
+
+  const connectLit = async (): Promise<LitJsSdk.LitNodeClient | undefined> => {
+    try {
+      const client = new LitJsSdk.LitNodeClient({
+        debug: false,
+        alertWhenUnauthorized: false,
+      });
+      await client.connect();
+      dispatch(setLitClient(client));
+      return client;
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const writeTokens = async () => {
+    setCryptoCheckoutLoading(true);
+    try {
       const tx = await buyNFTAsync?.();
       const res = await waitForTransaction({
         hash: tx?.hash!,
@@ -296,6 +364,7 @@ const useCheckout = () => {
           city: "",
           state: "",
         });
+        setEncryptedFulfillmentDetails("");
         router.push("/success");
       }
     } catch (err: any) {
@@ -303,6 +372,12 @@ const useCheckout = () => {
     }
     setCryptoCheckoutLoading(false);
   };
+
+  useEffect(() => {
+    if (encryptedFulfillmentDetails !== "" && isSuccess) {
+      writeTokens();
+    }
+  }, [encryptedFulfillmentDetails]);
 
   useEffect(() => {
     if (!stripe) {
@@ -336,6 +411,7 @@ const useCheckout = () => {
             city: "",
             state: "",
           });
+          setEncryptedFulfillmentDetails("");
           router.push("/success");
           break;
         case "processing":
