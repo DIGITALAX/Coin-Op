@@ -301,32 +301,77 @@ const useCheckout = () => {
         client = await connectLit();
       }
       const authSig = await LitJsSdk.checkAndSignAuthMessage({
-        chain: "mumbai",
+        chain: "polygon",
       });
       const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
         JSON.stringify(fulfillmentDetails)
       );
-      await (client ? client : litClient).saveEncryptionKey({
-        accessControlConditions: [
-          {
-            contractAddress: "",
-            standardContractType: "",
-            chain: "mumbai",
-            method: "",
-            parameters: [":userAddress"],
-            returnValueTest: {
-              comparator: "=",
-              value: address,
+
+      let fulfillerGroups: { [key: string]: CartItem[] } = {};
+      for (let i = 0; i < cartItems.length; i++) {
+        if (fulfillerGroups[cartItems[i].fulfillerAddress]) {
+          fulfillerGroups[cartItems[i].fulfillerAddress].push(cartItems[i]);
+        } else {
+          fulfillerGroups[cartItems[i].fulfillerAddress] = [cartItems[i]];
+        }
+      }
+
+      let fulfillerDetails = [];
+
+      for (let fulfillerAddress in fulfillerGroups) {
+        let fulfillerEditions = fulfillerGroups[fulfillerAddress].map(
+          (item) => {
+            return {
+              contractAddress: "",
+              standardContractType: "",
+              chain: "polygon",
+              method: "",
+              parameters: [":userAddress"],
+              returnValueTest: {
+                comparator: "=",
+                value: item.fulfillerAddress,
+              },
+            };
+          }
+        );
+
+        const encryptedSymmetricKey = await (client
+          ? client
+          : litClient
+        ).saveEncryptionKey({
+          accessControlConditions: [
+            ...fulfillerEditions,
+            {
+              contractAddress: "",
+              standardContractType: "",
+              chain: "polygon",
+              method: "",
+              parameters: [":userAddress"],
+              returnValueTest: {
+                comparator: "=",
+                value: address as string,
+              },
             },
-          },
-        ],
-        symmetricKey,
-        authSig,
-        chain: "mumbai",
-      });
-      const buffer = await encryptedString.arrayBuffer();
-      const decoder = new TextDecoder();
-      setEncryptedFulfillmentDetails(decoder.decode(buffer));
+          ],
+          symmetricKey,
+          authSig,
+          chain: "polygon",
+        });
+
+        const buffer = await encryptedString.arrayBuffer();
+        fulfillerDetails.push(
+          JSON.stringify({
+            fulfillerAddress,
+            encryptedString: JSON.stringify(Array.from(new Uint8Array(buffer))),
+            encryptedSymmetricKey: LitJsSdk.uint8arrayToString(
+              encryptedSymmetricKey,
+              "base16"
+            ),
+          })
+        );
+      }
+
+      setEncryptedFulfillmentDetails(JSON.stringify(fulfillmentDetails));
     } catch (err: any) {
       console.error(err.message);
     }
@@ -336,8 +381,10 @@ const useCheckout = () => {
   const connectLit = async (): Promise<LitJsSdk.LitNodeClient | undefined> => {
     try {
       const client = new LitJsSdk.LitNodeClient({
-        debug: false,
-        alertWhenUnauthorized: false,
+        debug: true,
+        alertWhenUnauthorized: true,
+        chain: 137,
+        provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_POLYGON_KEY}`,
       });
       await client.connect();
       dispatch(setLitClient(client));

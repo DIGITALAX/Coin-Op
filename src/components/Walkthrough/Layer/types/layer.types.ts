@@ -2,10 +2,11 @@ import { AnyAction, Dispatch } from "redux";
 
 export interface Layer {
   parentURI: string;
-  childTokenURIs: string[];
+  childTokenURIs: string[][];
   childTokenIds: number[];
   parentTokenId: number;
   price: string;
+  childPosters: string[];
   childPrices: string[];
   printType: string;
 }
@@ -19,6 +20,7 @@ export type LayerProps = {
         childURIs: string[];
         parentPrice: string;
         childPrice: string;
+        childPoster: string;
         parentId: number;
         childId: number;
       }
@@ -35,6 +37,7 @@ export type GridProps = {
         childURIs: string[];
         parentPrice: string;
         childPrice: string;
+        childPoster: string;
         parentId: number;
         childId: number;
       }
@@ -50,6 +53,7 @@ export type SetProps = {
         childURIs: string[];
         parentPrice: string;
         childPrice: string;
+        childPoster: string;
         parentId: number;
         childId: number;
       }
@@ -57,6 +61,7 @@ export type SetProps = {
   parentId: number;
   parentURI: string;
   childURIs: string[];
+  childPoster: string;
   childId: number;
   childPrice: string;
   parentPrice: string;

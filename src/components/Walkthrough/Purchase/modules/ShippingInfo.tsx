@@ -7,7 +7,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 h-fit flex flex-col gap-3 items-center justify-center">
-      <div className="relative flex w-full h-full overflow-y-scroll">
+      <div className="relative flex w-full h-full">
         <div className="relative flex flex-col w-full h-fit justify-start items-start gap-3">
           <div className="relative w-full flex flex-row gap-3 items-center justify-start">
             <input

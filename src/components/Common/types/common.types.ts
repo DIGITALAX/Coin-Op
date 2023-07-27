@@ -21,6 +21,7 @@ export type PageContainerProps = {
         childURIs: string[];
         parentPrice: string;
         childPrice: string;
+        childPoster: string;
         parentId: number;
         childId: number;
       }
@@ -31,6 +32,7 @@ export type PageContainerProps = {
         childURIs: string[];
         parentPrice: string;
         childPrice: string;
+        childPoster: string;
         parentId: number;
         childId: number;
       }
@@ -72,6 +74,8 @@ export interface PreRoll {
   chosenColor: string;
   chosenSize: string;
   tags: string[];
+  name: string;
+  fulfillerAddress: string;
 }
 
 export interface CartItem {
@@ -82,6 +86,8 @@ export interface CartItem {
   chosenColor: string;
   chosenSize: string;
   amount: number;
+  name: string;
+  fulfillerAddress: string;
 }
 
 export type PreRollsProps = {

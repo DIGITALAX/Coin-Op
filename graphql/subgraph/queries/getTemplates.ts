@@ -4,12 +4,14 @@ import { graphClientTestnet } from "../../../lib/subgraph/client";
 const TEMPLATES_PRINTTYPE = `
   query($printType: String) {
     fgotemplateCreateds(where: {printType: $printType}) {
-      printType
-      price
-      parentURI
-      parentTokenId
       childTokenURIs
       childTokenIds
+      id
+      parentTokenId
+      parentURI
+      childPosterURIs
+      printType
+      price
       childPrices
       blockTimestamp
     }

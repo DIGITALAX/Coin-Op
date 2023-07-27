@@ -1,24 +1,19 @@
 import { gql } from "@apollo/client";
 import { graphClientTestnet } from "../../../lib/subgraph/client";
 
-const ALL_PREROLLS = `
+const ALL_FULFILLERS = `
   query {
-    collectionCreateds {
-        printType
-        price
-        discount
-        collectionId
-        amount
-        blockTimestamp
-        uri
+    fulfillerCreateds {
+        fulfillerPercent
+        fulfillerId
         fulfillerAddress
-      }
+    }
   }
 `;
 
-export const getAllPreRolls = async (): Promise<any> => {
+export const getFulfillers = async (): Promise<any> => {
   const queryPromise = graphClientTestnet.query({
-    query: gql(ALL_PREROLLS),
+    query: gql(ALL_FULFILLERS),
     fetchPolicy: "no-cache",
     errorPolicy: "all",
   });

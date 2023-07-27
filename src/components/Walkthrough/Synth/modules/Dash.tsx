@@ -120,7 +120,9 @@ const Dash: FunctionComponent<DashProps> = ({
               />
             )}
           </div>
-          <div className="relative flex flex-row gap-1.5 bg-black p-2 w-4/5 h-fit break-words border border-ama rounded-md justify-center items-center text-center">
+          <div className={`relative flex flex-row gap-1.5 bg-black p-2 w-4/5 h-fit break-words border border-ama rounded-md justify-center items-center text-center ${
+            synthConfig.type !== "img2img" && "opacity-50"
+          }`}>
             <label
               className={`relative w-4 h-4 items-center justify-center flex ${
                 !synthLoading &&
