@@ -17,12 +17,17 @@ const usePreRoll = () => {
     setPreRollsLoading(true);
     try {
       const data = await getAllPreRolls();
+      console.log(data);
       const preRollsAdded = data?.data?.collectionCreateds?.map(
         (obj: PreRoll) => {
           const modifiedObj = {
             ...obj,
             tags: [
-              "hoodie",
+              ...(obj.printType === "Stickers" ? ["stickers"] : []),
+              ...(obj.printType === "Posters" ? ["posters"] : []),
+              ...(obj.printType === "Hoodie"
+                ? ["hoodie", "hoodies", "apparel"]
+                : ["shirt", "shirts", "apparel"]),
               "smile",
               "oil",
               "painting",
@@ -30,10 +35,25 @@ const usePreRoll = () => {
               "graffiti",
               "tagging",
             ],
-            chosenSize: "M",
+            chosenSize:
+              obj.printType === "Stickers"
+                ? '2"x2"'
+                : obj.printType === "Poster"
+                ? '11"x17"'
+                : "M",
             chosenColor: "#ffffff",
-            colors: ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
-            sizes: ["XS", "S", "M", "L", "XL"],
+            colors:
+              obj.printType === "Stickers"
+                ? ["#ffffff", "#000000"]
+                : obj.printType === "Poster"
+                ? ["#ffffff", "#000000"]
+                : ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
+            sizes:
+              obj.printType === "Stickers"
+                ? ['2"x2"', '4"x4"', '6"x6"']
+                : obj.printType === "Poster"
+                ? ['11"x17"', '18"x24"', '24"x36"']
+                : ["XS", "S", "M", "L", "XL"],
             bgColor:
               obj.printType === "Hoodie"
                 ? "#32C5FF"

@@ -1,25 +1,33 @@
 import { FunctionComponent } from "react";
-import { ColorChoiceProps } from "../types/common.types";
+import { SizingChoiceProps } from "../types/common.types";
 import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
 
-const SizingChoice: FunctionComponent<ColorChoiceProps> = ({
+const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
   dispatch,
   preRolls,
   preRoll,
   left,
   right,
+  printType,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex justify-center">
-      <div className="relative w-fit h-fit flex flex-row gap-1.5 justify-start">
+      <div
+        className="relative w-fit h-fit flex flex-row gap-1.5 justify-start overflow-x-scroll"
+        id="xScroll"
+      >
         {preRoll.sizes?.map((size: string, index: number) => {
           return (
             <div
               key={index}
-              className={`relative w-6 h-6 border rounded-full cursor-pointer flex items-center justify-center  uppercase font-mana text-xs ${
+              className={`relative border rounded-full cursor-pointer flex items-center justify-center text-xs h-6 uppercase font-mana ${
                 preRoll.chosenSize === size
                   ? "border-fresa bg-white text-black"
                   : "border-white text-white"
+              } ${
+                preRoll.printType === "Shirt" || preRoll.printType === "Hoodie"
+                  ? "w-6"
+                  : "w-fit px-1.5"
               }`}
               onClick={() => {
                 const updated = {

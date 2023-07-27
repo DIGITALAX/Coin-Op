@@ -68,7 +68,7 @@ export interface PreRoll {
   amount: number;
   colors: string[];
   sizes: string[];
-  price: number;
+  price: number[];
   printType: string;
   bgColor: string;
   chosenColor: string;
@@ -130,6 +130,18 @@ export type ColorChoiceProps = {
   preRoll: PreRoll;
   left?: boolean;
   right?: boolean;
+};
+
+export type SizingChoiceProps = {
+  dispatch: DispatchRedux<AnyAction>;
+  preRolls: {
+    left: PreRoll[];
+    right: PreRoll[];
+  };
+  preRoll: PreRoll;
+  left?: boolean;
+  right?: boolean;
+  printType: string
 };
 
 export type SearchBoxProps = {

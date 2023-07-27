@@ -59,11 +59,16 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
         preRolls={preRolls}
         preRoll={preRoll}
         left={left}
+        printType={preRoll?.printType}
         right={right}
       />
       <div className="relative flex flex-row gap-2 w-full h-fit items-center">
         <div className="relative text-xl text-white font-aqua flex justify-start items-start w-fit h-fit">
-          ${preRoll.price / 10**18}
+          $
+          {(preRoll?.printType === "Shirt" || preRoll?.printType === "Hoodie"
+            ? preRoll.price?.[0]
+            : preRoll.price?.[preRoll.sizes.indexOf(preRoll.chosenSize)]) /
+            10 ** 18}
         </div>
         <div
           className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
@@ -88,7 +93,17 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                 ...newCartItems.slice(existing + 1),
               ];
             } else {
-              newCartItems.push({ ...newObj, amount: 1 });
+              newCartItems.push({
+                ...newObj,
+                amount: 1,
+                price:
+                  preRoll?.printType === "Shirt" ||
+                  preRoll?.printType === "Hoodie"
+                    ? preRoll.price?.[0]
+                    : preRoll.price?.[
+                        preRoll.sizes.indexOf(preRoll.chosenSize)
+                      ],
+              });
             }
 
             dispatch(setCart(newCartItems));

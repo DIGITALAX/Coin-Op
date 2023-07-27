@@ -23,14 +23,14 @@ const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
                 const updated = {
                   left: left
                     ? preRolls.left.map((obj) =>
-                        obj.image === preRoll.image
+                        obj.uri === preRoll.uri
                           ? { ...obj, chosenColor: color }
                           : obj
                       )
                     : preRolls.left,
                   right: right
                     ? preRolls.right.map((obj) =>
-                        obj.image === preRoll.image
+                        obj.uri === preRoll.uri
                           ? { ...obj, chosenColor: color }
                           : obj
                       )

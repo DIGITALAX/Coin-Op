@@ -2,15 +2,9 @@ import { CartItem } from "@/components/Common/types/common.types";
 import { useEffect, useState } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useDispatch, useSelector } from "react-redux";
-import { waitForTransaction } from "@wagmi/core";
 import { setMessagesModal } from "../../../../../redux/reducers/messagesModalSlice";
 import * as LitJsSdk from "@lit-protocol/lit-node-client";
-import {
-  useAccount,
-  useContractRead,
-  useContractWrite,
-  usePrepareContractWrite,
-} from "wagmi";
+import { useAccount } from "wagmi";
 import {
   ACCEPTED_TOKENS,
   COIN_OP_MARKET,
@@ -18,16 +12,22 @@ import {
 } from "../../../../../lib/constants";
 import { BigNumber, ethers } from "ethers";
 import CoinOpMarketABI from "../../../../../abis/CoinOpMarket.json";
-import CoinOpMarketOracle from "../../../../../abis/CoinOpOracle.json";
 import { RootState } from "../../../../../redux/store";
 import { setCart } from "../../../../../redux/reducers/cartSlice";
 import { useRouter } from "next/router";
 import { setLitClient } from "../../../../../redux/reducers/litClientSlice";
+import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { polygonMumbai, polygon } from "viem/chains";
 
 const useCheckout = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { address } = useAccount();
+  const publicClient = createPublicClient({
+    chain: polygonMumbai,
+    transport: http("https://rpc-mumbai.maticvigil.com/"),
+  });
+
   const stripe = useStripe();
   const elements = useElements();
   const cartItems = useSelector(
@@ -46,8 +46,6 @@ const useCheckout = () => {
   const [fiatCheckoutLoading, setFiatCheckoutLoading] =
     useState<boolean>(false);
   const [checkoutCurrency, setCheckoutCurrency] = useState<string>("USDT");
-  const [encryptedFulfillmentDetails, setEncryptedFulfillmentDetails] =
-    useState<string>("");
   const [totalAmount, setTotalAmount] = useState<number>(
     cartItems?.length > 0
       ? cartItems?.reduce(
@@ -73,158 +71,62 @@ const useCheckout = () => {
     state: "",
   });
 
-  const { data: oracleData } = useContractRead({
-    address: COIN_OP_ORACLE,
-    abi: CoinOpMarketOracle,
-    functionName: "getRateByAddress",
-    args: [
-      ACCEPTED_TOKENS.find(([_, token]) => token === checkoutCurrency)?.[2],
-    ],
-    enabled: Boolean(
-      ACCEPTED_TOKENS.find(([_, token]) => token === checkoutCurrency)?.[2]
-    ),
-  });
-
-  const { data, error } = useContractRead({
-    address: ACCEPTED_TOKENS.find(
-      ([_, token]) => token === checkoutCurrency
-    )?.[2] as `0x${string}`,
-    abi: [
-      {
-        inputs: [
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "spender",
-            type: "address",
-          },
-        ],
-        name: "allowance",
-        outputs: [
-          {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
-      },
-    ],
-    functionName: "allowance",
-    args: [address as `0x${string}`, COIN_OP_MARKET],
-    enabled:
-      Boolean(address) &&
-      Boolean(approved) &&
-      Boolean(checkoutCurrency) &&
-      Boolean(cartItems?.length > 0),
-  });
-
-  const { config } = usePrepareContractWrite({
-    address: ACCEPTED_TOKENS.find(
-      ([_, token]) => token === checkoutCurrency
-    )?.[2]! as `0x${string}`,
-    abi:
-      checkoutCurrency === "MONA"
-        ? [
-            {
-              inputs: [
-                { internalType: "address", name: "spender", type: "address" },
-                { internalType: "uint256", name: "tokens", type: "uint256" },
-              ],
-              name: "approve",
-              outputs: [
-                { internalType: "bool", name: "success", type: "bool" },
-              ],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-          ]
-        : checkoutCurrency === "WMATIC"
-        ? [
-            {
-              constant: false,
-              inputs: [
-                { name: "guy", type: "address" },
-                { name: "wad", type: "uint256" },
-              ],
-              name: "approve",
-              outputs: [{ name: "", type: "bool" }],
-              payable: false,
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-          ]
-        : [
-            {
-              inputs: [
-                {
-                  internalType: "address",
-                  name: "spender",
-                  type: "address",
-                },
-                {
-                  internalType: "uint256",
-                  name: "amount",
-                  type: "uint256",
-                },
-              ],
-              name: "approve",
-              outputs: [
-                {
-                  internalType: "bool",
-                  name: "",
-                  type: "bool",
-                },
-              ],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-          ],
-    functionName: "approve",
-    args: [COIN_OP_MARKET, ethers.utils.parseEther(totalAmount.toString())],
-    enabled: Boolean(!Number.isNaN(totalAmount)),
-    value: 0 as any,
-  });
-
-  const { config: buyNFTConfig, isSuccess } = usePrepareContractWrite({
-    address: COIN_OP_MARKET,
-    abi: CoinOpMarketABI,
-    args: [
-      {
-        preRollIds: cartItems?.reduce((accumulator: number[], item) => {
-          accumulator.push(item.collectionId);
-          return accumulator;
-        }, []),
-        preRollAmounts: cartItems?.reduce((accumulator: number[], item) => {
-          accumulator.push(item.amount);
-          return accumulator;
-        }, []),
-        customIds: [],
-        customAmounts: [],
-        customURIs: [],
-        fulfillmentDetails: encryptedFulfillmentDetails,
-        chosenTokenAddress: ACCEPTED_TOKENS.find(
+  const getAddressApproved = async () => {
+    try {
+      const data = await publicClient.readContract({
+        address: ACCEPTED_TOKENS.find(
           ([_, token]) => token === checkoutCurrency
-        )?.[2],
-      },
-    ],
-    functionName: "buyTokens",
-    enabled: Boolean(
-      cartItems?.length > 0 &&
-        paymentType === "crypto" &&
-        encryptedFulfillmentDetails !== ""
-    ),
-  });
+        )?.[2] as `0x${string}`,
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "owner",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+              },
+            ],
+            name: "allowance",
+            outputs: [
+              {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ],
+        functionName: "allowance",
+        args: [address as `0x${string}`, COIN_OP_MARKET],
+      });
 
-  const { writeAsync } = useContractWrite(config as any);
-  const { writeAsync: buyNFTAsync } = useContractWrite(buyNFTConfig);
+      if (
+        Number(data as BigNumber) /
+          ((ACCEPTED_TOKENS.find(
+            ([_, token]) => token === checkoutCurrency
+          )?.[2] as `0x${string}`) ===
+          "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+            ? 10 ** 6
+            : 10 ** 18) >=
+        totalAmount
+      ) {
+        setApproved(true);
+      } else {
+        setApproved(false);
+      }
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
 
-  const getTotalAmount = () => {
+  const getTotalAmount = async () => {
     if (cartItems.length < 1) {
       setTotalAmount(0);
     } else {
@@ -234,8 +136,37 @@ const useCheckout = () => {
         0
       );
 
-      if (oracleData) {
-        const oracle = Number(oracleData as BigNumber) / 10 ** 18;
+      const data = await publicClient.readContract({
+        address: COIN_OP_ORACLE,
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "_tokenAddress",
+                type: "address",
+              },
+            ],
+            name: "getRateByAddress",
+            outputs: [
+              {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ],
+        functionName: "getRateByAddress",
+        args: [
+          ACCEPTED_TOKENS.find(([_, token]) => token === checkoutCurrency)?.[2],
+        ],
+      });
+
+      if (data) {
+        const oracle = Number(data as BigNumber) / 10 ** 18;
         setOracleValue(oracle);
         setTotalAmount(Number(total) / Number(oracle));
       }
@@ -280,11 +211,80 @@ const useCheckout = () => {
   const handleApproveSpend = async () => {
     setCryptoCheckoutLoading(true);
     try {
-      const tx = await writeAsync?.();
-      const res = await waitForTransaction({
-        hash: tx?.hash!,
+      const { request } = await publicClient.simulateContract({
+        address: ACCEPTED_TOKENS.find(
+          ([_, token]) => token === checkoutCurrency
+        )?.[2]! as `0x${string}`,
+        abi: (checkoutCurrency === "MONA"
+          ? [
+              {
+                inputs: [
+                  { internalType: "address", name: "spender", type: "address" },
+                  { internalType: "uint256", name: "tokens", type: "uint256" },
+                ],
+                name: "approve",
+                outputs: [
+                  { internalType: "bool", name: "success", type: "bool" },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+              },
+            ]
+          : checkoutCurrency === "WMATIC"
+          ? [
+              {
+                constant: false,
+                inputs: [
+                  { name: "guy", type: "address" },
+                  { name: "wad", type: "uint256" },
+                ],
+                name: "approve",
+                outputs: [{ name: "", type: "bool" }],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "function",
+              },
+            ]
+          : [
+              {
+                inputs: [
+                  {
+                    internalType: "address",
+                    name: "spender",
+                    type: "address",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "amount",
+                    type: "uint256",
+                  },
+                ],
+                name: "approve",
+                outputs: [
+                  {
+                    internalType: "bool",
+                    name: "",
+                    type: "bool",
+                  },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+              },
+            ]) as any,
+        functionName: "approve",
+        args: [
+          COIN_OP_MARKET,
+          ethers.utils.parseEther(totalAmount.toString() || "0"),
+        ],
+        account: address,
       });
-      if (res.status === "success") {
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+      const res = await clientWallet.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash: res });
+      if (res) {
         setApproved(true);
       }
     } catch (err: any) {
@@ -371,7 +371,48 @@ const useCheckout = () => {
         );
       }
 
-      setEncryptedFulfillmentDetails(JSON.stringify(fulfillmentDetails));
+      const { request } = await publicClient.simulateContract({
+        address: COIN_OP_MARKET,
+        abi: CoinOpMarketABI,
+        functionName: "buyTokens",
+        args: [
+          {
+            preRollIds: cartItems?.reduce((accumulator: number[], item) => {
+              accumulator.push(item.collectionId);
+              return accumulator;
+            }, []),
+            preRollAmounts: cartItems?.reduce((accumulator: number[], item) => {
+              accumulator.push(item.amount);
+              return accumulator;
+            }, []),
+            customIds: [],
+            customAmounts: [],
+            customURIs: [],
+            fulfillmentDetails: JSON.stringify(fulfillerDetails),
+            chosenTokenAddress: ACCEPTED_TOKENS.find(
+              ([_, token]) => token === checkoutCurrency
+            )?.[2],
+          },
+        ],
+        account: address,
+      });
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+      const res = await clientWallet.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash: res });
+
+      dispatch(setCart([]));
+      setFulfillmentDetails({
+        name: "",
+        contact: "",
+        address: "",
+        zip: "",
+        city: "",
+        state: "",
+      });
+      router.push("/success");
     } catch (err: any) {
       console.error(err.message);
     }
@@ -384,7 +425,7 @@ const useCheckout = () => {
         debug: true,
         alertWhenUnauthorized: true,
         chain: 137,
-        provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_POLYGON_KEY}`,
+        provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
       });
       await client.connect();
       dispatch(setLitClient(client));
@@ -393,38 +434,6 @@ const useCheckout = () => {
       console.error(err.message);
     }
   };
-
-  const writeTokens = async () => {
-    setCryptoCheckoutLoading(true);
-    try {
-      const tx = await buyNFTAsync?.();
-      const res = await waitForTransaction({
-        hash: tx?.hash!,
-      });
-      if (res.status === "success") {
-        dispatch(setCart([]));
-        setFulfillmentDetails({
-          name: "",
-          contact: "",
-          address: "",
-          zip: "",
-          city: "",
-          state: "",
-        });
-        setEncryptedFulfillmentDetails("");
-        router.push("/success");
-      }
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setCryptoCheckoutLoading(false);
-  };
-
-  useEffect(() => {
-    if (encryptedFulfillmentDetails !== "" && isSuccess) {
-      writeTokens();
-    }
-  }, [encryptedFulfillmentDetails]);
 
   useEffect(() => {
     if (!stripe) {
@@ -458,7 +467,6 @@ const useCheckout = () => {
             city: "",
             state: "",
           });
-          setEncryptedFulfillmentDetails("");
           router.push("/success");
           break;
         case "processing":
@@ -494,25 +502,6 @@ const useCheckout = () => {
   }, [stripe]);
 
   useEffect(() => {
-    if (address) {
-      if (Number(data as BigNumber) / 10 ** 18 >= totalAmount) {
-        setApproved(true);
-      } else {
-        setApproved(false);
-      }
-    }
-  }, [
-    address,
-    totalAmount,
-    cartItems?.reduce(
-      (accumulator, currentItem) =>
-        accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
-      0
-    ),
-    data,
-  ]);
-
-  useEffect(() => {
     if (paymentType !== "fiat") {
       getTotalAmount();
     }
@@ -520,6 +509,19 @@ const useCheckout = () => {
     checkoutCurrency,
     paymentType,
     cartItems?.length,
+    cartItems?.reduce(
+      (accumulator, currentItem) =>
+        accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
+      0
+    ),
+  ]);
+
+  useEffect(() => {
+    getAddressApproved();
+  }, [
+    address,
+    totalAmount,
+    checkoutCurrency,
     cartItems?.reduce(
       (accumulator, currentItem) =>
         accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
