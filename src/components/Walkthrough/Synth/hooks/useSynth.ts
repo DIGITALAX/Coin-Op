@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { setCompletedSynths } from "../../../../../redux/reducers/completedSynthsSlice";
 
 const useSynth = () => {
   const dispatch = useDispatch();
+  const compositeRef = useRef<HTMLDivElement>(null);
   const synthConfig = useSelector(
     (state: RootState) => state.app.synthConfigReducer
   );
@@ -34,7 +35,26 @@ const useSynth = () => {
     setSynthLoading(false);
   };
 
-  return { handleSynth, synthLoading, presets };
+  const scrollToComposite = () => {
+    if (!compositeRef || !compositeRef?.current) return;
+
+    compositeRef?.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    setTimeout(() => {
+      compositeRef.current!.scrollTop = compositeRef.current!.scrollHeight;
+    }, 500);
+  };
+
+  return {
+    handleSynth,
+    synthLoading,
+    presets,
+    scrollToComposite,
+    compositeRef,
+  };
 };
 
 export default useSynth;

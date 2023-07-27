@@ -29,6 +29,8 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   signInLoading,
   layersLoading,
   printTypeLayers,
+  scrollToComposite,
+  compositeRef
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -49,6 +51,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           handleSynth={handleSynth}
           presets={presets}
           synthLoading={synthLoading}
+          scrollToComposite={scrollToComposite}
         />
         <Composite
           dispatch={dispatch}
@@ -60,6 +63,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           profile={profile}
           models={models}
           signInLoading={signInLoading}
+          compositeRef={compositeRef}
         />
         <Purchase
           dispatch={dispatch}

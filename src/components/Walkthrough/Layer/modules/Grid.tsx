@@ -44,18 +44,19 @@ const Grid: FunctionComponent<GridProps> = ({
               })
             : layers?.map((layer: Layer) => {
                 return layer.childTokenURIs?.map(
-                  (uri: string, indexTwo: number) => {
+                  (childTokenURI: string[], indexTwo: number) => {
                     return (
                       <Set
                         key={indexTwo}
                         dispatch={dispatch}
                         parentId={layer.parentTokenId}
                         parentURI={layer.parentURI}
-                        childURI={uri}
+                        childTokenURIs={childTokenURI}
                         childId={layer.childTokenIds[indexTwo]}
                         childPrice={layer.childPrices[indexTwo]}
                         parentPrice={layer.price}
                         synthLayer={synthLayer}
+                        childPoster={layer.childPosterURIs[indexTwo]}
                       />
                     );
                   }

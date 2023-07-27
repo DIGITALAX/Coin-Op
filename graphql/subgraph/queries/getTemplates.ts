@@ -6,14 +6,12 @@ const TEMPLATES_PRINTTYPE = `
     fgotemplateCreateds(where: {printType: $printType}) {
       childTokenURIs
       childTokenIds
-      id
       parentTokenId
       parentURI
       childPosterURIs
       printType
       price
       childPrices
-      blockTimestamp
     }
   }
 `;

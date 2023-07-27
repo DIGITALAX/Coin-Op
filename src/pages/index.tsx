@@ -20,7 +20,13 @@ export default function Home(): JSX.Element {
   const { openConnectModal } = useConnectModal();
   const { handleLensSignIn, signInLoading } = useSignIn();
   const { setShareSet, shareSet, models } = useComposite();
-  const { handleSynth, synthLoading, presets } = useSynth();
+  const {
+    handleSynth,
+    synthLoading,
+    presets,
+    scrollToComposite,
+    compositeRef,
+  } = useSynth();
   const { preRollsLoading } = usePreRoll();
   const { layersLoading } = useLayer();
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
@@ -88,6 +94,8 @@ export default function Home(): JSX.Element {
         signInLoading={signInLoading}
         layersLoading={layersLoading}
         printTypeLayers={printTypeLayers}
+        scrollToComposite={scrollToComposite}
+        compositeRef={compositeRef}
       />
       <PreRolls
         cartItems={cartItems}

@@ -11,7 +11,8 @@ const Composite: FunctionComponent<CompositeProps> = ({
   handleLensSignIn,
   openConnectModal,
   models,
-  signInLoading
+  signInLoading,
+  compositeRef
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
@@ -25,6 +26,7 @@ const Composite: FunctionComponent<CompositeProps> = ({
         openConnectModal={openConnectModal}
         models={models}
         signInLoading={signInLoading}
+        compositeRef={compositeRef}
       />
     </div>
   );

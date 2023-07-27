@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 
 const Success: NextPage = (): JSX.Element => {
-  return <div>// view orders in account page</div>;
+  return <div></div>;
 };
 
 export default Success;

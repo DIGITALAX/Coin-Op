@@ -26,9 +26,10 @@ const Grid: FunctionComponent<GridProps> = ({
   address,
   models,
   signInLoading,
+  compositeRef
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-100 flex flex-col gap-2">
+    <div className="relative w-full h-100 flex flex-col gap-2" ref={compositeRef}>
       <div className="absolute w-full h-full flex">
         <Image
           alt="copy"

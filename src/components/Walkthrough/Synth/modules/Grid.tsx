@@ -15,6 +15,7 @@ const Grid: FunctionComponent<GridProps> = ({
   handleSynth,
   synthLoading,
   presets,
+  scrollToComposite
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -146,7 +147,9 @@ const Grid: FunctionComponent<GridProps> = ({
           />
         </div>
         <div className="relative w-fit h-fit items-center justify-center text-center flex font-mega text-xl uppercase flex-row gap-1">
-          <div className="relative w-fit h-fit px-1.5 py-1 border border-eme rounded-md cursor-pointer flex items-center justify-center active:scale-95">
+          <div className="relative w-fit h-fit px-1.5 py-1 border border-eme rounded-md cursor-pointer flex items-center justify-center active:scale-95"
+           onClick={() => scrollToComposite()}
+          >
             continue
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center">

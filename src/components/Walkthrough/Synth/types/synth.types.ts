@@ -2,6 +2,7 @@ import { AnyAction, Dispatch } from "redux";
 
 export type SynthProps = {
   dispatch: Dispatch<AnyAction>;
+  scrollToComposite: () => void
   synthLayerSelected:
     | {
         parentURI: string;
@@ -32,6 +33,7 @@ export type SynthProps = {
 
 export type GridProps = {
   dispatch: Dispatch<AnyAction>;
+  scrollToComposite: () => void
   synthLayerSelected:
     | {
         parentURI: string;

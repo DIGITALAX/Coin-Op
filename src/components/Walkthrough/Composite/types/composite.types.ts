@@ -1,4 +1,5 @@
 import { Profile } from "@/components/Common/types/lens.types";
+import { LegacyRef, RefObject } from "react";
 import { AnyAction, Dispatch } from "redux";
 
 export type CompositeProps = {
@@ -11,6 +12,7 @@ export type CompositeProps = {
   address: `0x${string}` | undefined;
   models: string[];
   signInLoading: boolean;
+  compositeRef: LegacyRef<HTMLDivElement> | undefined
 };
 
 export type GridProps = {
@@ -23,6 +25,7 @@ export type GridProps = {
   address: `0x${string}` | undefined;
   models: string[];
   signInLoading: boolean;
+  compositeRef: LegacyRef<HTMLDivElement> | undefined
 };
 
 export type ModelProps = {

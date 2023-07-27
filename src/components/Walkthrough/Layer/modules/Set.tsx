@@ -9,10 +9,11 @@ const Set: FunctionComponent<SetProps> = ({
   synthLayer,
   childId,
   childPrice,
-  childURI,
+  childTokenURIs,
   parentId,
   parentPrice,
   parentURI,
+  childPoster,
 }): JSX.Element => {
   return (
     <div
@@ -23,7 +24,7 @@ const Set: FunctionComponent<SetProps> = ({
         dispatch(
           setSynthLayer({
             parentURI,
-            childURI,
+            childTokenURIs,
             parentPrice,
             childPrice,
             parentId,
@@ -57,7 +58,7 @@ const Set: FunctionComponent<SetProps> = ({
             <Image
               layout="fill"
               objectFit="contain"
-              src={`${INFURA_GATEWAY}/ipfs/${childURI?.split("ipfs://")[1]}`}
+              src={`${INFURA_GATEWAY}/ipfs/${childPoster?.split("ipfs://")[1]}`}
               draggable={false}
             />
           </div>

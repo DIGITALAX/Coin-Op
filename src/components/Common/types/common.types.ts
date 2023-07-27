@@ -5,6 +5,7 @@ import {
   ClipboardEvent,
   FormEvent,
   KeyboardEvent,
+  LegacyRef,
   MutableRefObject,
   RefObject,
 } from "react";
@@ -14,6 +15,8 @@ import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
+  scrollToComposite: () => void
+  compositeRef: LegacyRef<HTMLDivElement> | undefined
   template: Template;
   synthLayerSelected:
     | {

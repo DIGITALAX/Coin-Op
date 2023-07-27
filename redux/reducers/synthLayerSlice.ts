@@ -4,7 +4,7 @@ export interface SynthLayerState {
   value:
     | {
         parentURI: string;
-        childURIs: string[];
+        childTokenURIs: string[];
         parentPrice: string;
         childPrice: string;
         parentId: number;
@@ -26,7 +26,7 @@ export const synthLayerSlice = createSlice({
       action: PayloadAction<
         | {
             parentURI: string;
-            childURIs: string[];
+            childTokenURIs: string[];
             parentPrice: string;
             childPrice: string;
             parentId: number;

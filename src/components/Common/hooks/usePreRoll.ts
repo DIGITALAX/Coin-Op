@@ -17,7 +17,7 @@ const usePreRoll = () => {
     setPreRollsLoading(true);
     try {
       const data = await getAllPreRolls();
-      console.log(data);
+
       const preRollsAdded = data?.data?.collectionCreateds?.map(
         (obj: PreRoll) => {
           const modifiedObj = {
