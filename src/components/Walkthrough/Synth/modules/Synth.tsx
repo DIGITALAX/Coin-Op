@@ -10,7 +10,13 @@ const Synth: FunctionComponent<SynthProps> = ({
   handleSynth,
   synthLoading,
   presets,
-  scrollToComposite
+  scrollToComposite,
+  canvasRef,
+  handleMouseDown,
+  handleMouseUp,
+  handleWheel,
+  handleMouseMove,
+  newLayersLoading
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col ">
@@ -23,6 +29,12 @@ const Synth: FunctionComponent<SynthProps> = ({
         synthLoading={synthLoading}
         presets={presets}
         scrollToComposite={scrollToComposite}
+        canvasRef={canvasRef}
+        handleMouseDown={handleMouseDown}
+        handleMouseUp={handleMouseUp}
+        handleMouseMove={handleMouseMove}
+        handleWheel={handleWheel}
+        newLayersLoading={newLayersLoading}
       />
     </div>
   );

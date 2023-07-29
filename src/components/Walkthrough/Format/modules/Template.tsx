@@ -19,7 +19,7 @@ const Template: FunctionComponent<TemplateProps> = ({
           : "border-ama border"
       } ${!locked && "cursor-pointer hover:opacity-80"}`}
       style={{ height }}
-      onClick={() => !locked && dispatch(setTemplate(template!))}
+      onClick={() => {!locked && dispatch(setTemplate(template!))}}
     >
       <div className="relative w-full h-full object-cover">
         <Image

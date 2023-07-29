@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import { useRef, useState } from "react";
 import { setCompletedSynths } from "../../../../../redux/reducers/completedSynthsSlice";
+import { setSynthLoading } from "../../../../../redux/reducers/synthLoadingSlice";
 
 const useSynth = () => {
   const dispatch = useDispatch();
@@ -9,7 +10,6 @@ const useSynth = () => {
   const synthConfig = useSelector(
     (state: RootState) => state.app.synthConfigReducer
   );
-  const [synthLoading, setSynthLoading] = useState<boolean>(false);
   const presets: string[] = [
     "none",
     "abstract",
@@ -26,13 +26,13 @@ const useSynth = () => {
   ];
 
   const handleSynth = async () => {
-    setSynthLoading(true);
+    dispatch(setSynthLoading(true));
     try {
       dispatch(setCompletedSynths([]));
     } catch (err: any) {
       console.error(err.message);
     }
-    setSynthLoading(false);
+    dispatch(setSynthLoading(false));
   };
 
   const scrollToComposite = () => {
@@ -50,7 +50,6 @@ const useSynth = () => {
 
   return {
     handleSynth,
-    synthLoading,
     presets,
     scrollToComposite,
     compositeRef,

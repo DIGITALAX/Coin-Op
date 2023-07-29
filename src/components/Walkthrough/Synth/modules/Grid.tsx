@@ -6,6 +6,7 @@ import { setLayerToSynth } from "../../../../../redux/reducers/layerToSynthSlice
 import Dash from "./Dash";
 import Presets from "./Presets";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
+import Canvas from "./Canvas";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -15,7 +16,13 @@ const Grid: FunctionComponent<GridProps> = ({
   handleSynth,
   synthLoading,
   presets,
-  scrollToComposite
+  scrollToComposite,
+  canvasRef,
+  handleMouseDown,
+  handleMouseUp,
+  handleWheel,
+  newLayersLoading,
+  handleMouseMove,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -47,37 +54,38 @@ const Grid: FunctionComponent<GridProps> = ({
             </div>
           </div>
           <div className="relative w-full h-full flex flex-col gap-3">
-            <div className="relative h-full w-full h-full flex items-center justify-center rounded-md border border-ama">
-              <Image
-                src={`${INFURA_GATEWAY}/ipfs/QmPKU1ck9PLyFchFpe2vzJh3eyxSYij28ixTdRzaHi4E1p`}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-md"
-                draggable={false}
-              />
-            </div>
+            <Canvas
+              synthLayerSelected={synthLayerSelected}
+              canvasRef={canvasRef}
+              handleMouseDown={handleMouseDown}
+              handleMouseUp={handleMouseUp}
+              handleMouseMove={handleMouseMove}
+              handleWheel={handleWheel}
+              newLayersLoading={newLayersLoading}
+            />
             <div className="relative h-10 w-full flex justify-center items-center flex-row gap-3">
               <div className="relative w-full h-full flex items-center justify-start">
                 <div className="relative w-fit h-full items-center justify-start flex flex-row gap-3">
-                  {(synthLayer?.childURIs && synthLayer?.childURIs?.length <= 4
-                    ? synthLayer?.childURIs
-                    : Array(4)
+                  {(synthLayer?.childTokenURIs &&
+                  synthLayer?.childTokenURIs?.length < 4
+                    ? synthLayer?.childTokenURIs
+                    : Array(3)
                         .fill(null)
                         .map(
                           (_, index) =>
-                            synthLayer?.childURIs[
-                              (synthLayer?.childURIs.indexOf(
-                                synthLayerSelected?.childURIs?.[index]!
+                            synthLayer?.childTokenURIs[
+                              (synthLayer?.childTokenURIs.indexOf(
+                                synthLayerSelected!
                               ) +
                                 index) %
-                                synthLayer?.childURIs.length
+                                synthLayer?.childTokenURIs.length
                             ]
                         )
                   )?.map((uri: string | undefined, index: number) => {
                     return (
                       <div
                         className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border cursor-pointer hover:opacity-70 rounded-lg ${
-                          synthLayerSelected?.childURIs[index] === uri
+                          synthLayerSelected === uri
                             ? "border-white"
                             : "border-ama"
                         }`}
@@ -88,9 +96,21 @@ const Grid: FunctionComponent<GridProps> = ({
                           src={`${INFURA_GATEWAY}/ipfs/QmPKU1ck9PLyFchFpe2vzJh3eyxSYij28ixTdRzaHi4E1p`}
                           layout="fill"
                           objectFit="cover"
-                          className="rounded-lg"
+                          className="rounded-lg absolute"
                           draggable={false}
                         />
+                        <div className="relative w-full h-full flex items-center justify-center">
+                          {uri?.split("ipfs://")[1] && (
+                            <Image
+                              src={`${INFURA_GATEWAY}/ipfs/${
+                                uri?.split("ipfs://")[1]
+                              }`}
+                              layout="fill"
+                              objectFit="contain"
+                              draggable={false}
+                            />
+                          )}
+                        </div>
                       </div>
                     );
                   })}
@@ -102,18 +122,20 @@ const Grid: FunctionComponent<GridProps> = ({
                     src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
                     layout="fill"
                     draggable={false}
-                    // onClick={() =>
-                    //   dispatch(
-                    //     setLayerToSynth(
-                    //       synthLayer[
-                    //         (synthLayer.indexOf(synthLayerSelected) -
-                    //           1 +
-                    //           synthLayer?.length) %
-                    //           synthLayer?.length
-                    //       ]
-                    //     )
-                    //   )
-                    // }
+                    onClick={() =>
+                      dispatch(
+                        setLayerToSynth(
+                          synthLayer?.childTokenURIs?.[
+                            (synthLayer?.childTokenURIs?.indexOf(
+                              synthLayerSelected!
+                            ) -
+                              1 +
+                              synthLayer?.childTokenURIs?.length) %
+                              synthLayer?.childTokenURIs?.length
+                          ]!
+                        )
+                      )
+                    }
                   />
                 </div>
                 <div className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center">
@@ -121,16 +143,19 @@ const Grid: FunctionComponent<GridProps> = ({
                     src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
                     layout="fill"
                     draggable={false}
-                    // onClick={() =>
-                    //   dispatch(
-                    //     setLayerToSynth(
-                    //       synthLayer[
-                    //         (synthLayer.indexOf(synthLayerSelected) + 1) %
-                    //           synthLayer?.length
-                    //       ]
-                    //     )
-                    //   )
-                    // }
+                    onClick={() =>
+                      dispatch(
+                        setLayerToSynth(
+                          synthLayer?.childTokenURIs?.[
+                            (synthLayer?.childTokenURIs?.indexOf(
+                              synthLayerSelected!
+                            ) +
+                              1) %
+                              synthLayer?.childTokenURIs?.length
+                          ]!
+                        )
+                      )
+                    }
                   />
                 </div>
               </div>
@@ -147,8 +172,9 @@ const Grid: FunctionComponent<GridProps> = ({
           />
         </div>
         <div className="relative w-fit h-fit items-center justify-center text-center flex font-mega text-xl uppercase flex-row gap-1">
-          <div className="relative w-fit h-fit px-1.5 py-1 border border-eme rounded-md cursor-pointer flex items-center justify-center active:scale-95"
-           onClick={() => scrollToComposite()}
+          <div
+            className="relative w-fit h-fit px-1.5 py-1 border border-eme rounded-md cursor-pointer flex items-center justify-center active:scale-95"
+            onClick={() => scrollToComposite()}
           >
             continue
           </div>

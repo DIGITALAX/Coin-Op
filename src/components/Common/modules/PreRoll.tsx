@@ -101,7 +101,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                   preRoll?.printType === "Hoodie"
                     ? preRoll.price?.[0]
                     : preRoll.price?.[
-                        preRoll.sizes.indexOf(preRoll.chosenSize)
+                        preRoll.sizes?.indexOf(preRoll.chosenSize)
                       ],
               });
             }

@@ -12,6 +12,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useSignIn from "@/components/Common/hooks/useSignIn";
 import usePreRoll from "@/components/Common/hooks/usePreRoll";
 import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
+import useCanvas from "@/components/Walkthrough/Synth/hooks/useCanvas";
 
 export default function Home(): JSX.Element {
   const scrollRef = useContext(ScrollContext);
@@ -20,18 +21,23 @@ export default function Home(): JSX.Element {
   const { openConnectModal } = useConnectModal();
   const { handleLensSignIn, signInLoading } = useSignIn();
   const { setShareSet, shareSet, models } = useComposite();
+  const { handleSynth, presets, scrollToComposite, compositeRef } = useSynth();
   const {
-    handleSynth,
-    synthLoading,
-    presets,
-    scrollToComposite,
-    compositeRef,
-  } = useSynth();
+    canvasRef,
+    handleWheel,
+    handleMouseDown,
+    handleMouseUp,
+    handleMouseMove,
+    newLayersLoading,
+  } = useCanvas();
   const { preRollsLoading } = usePreRoll();
   const { layersLoading } = useLayer();
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
   const profile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
+  );
+  const synthLoading = useSelector(
+    (state: RootState) => state.app.synthLoadingReducer.value
   );
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
@@ -96,6 +102,12 @@ export default function Home(): JSX.Element {
         printTypeLayers={printTypeLayers}
         scrollToComposite={scrollToComposite}
         compositeRef={compositeRef}
+        canvasRef={canvasRef}
+        handleWheel={handleWheel}
+        handleMouseDown={handleMouseDown}
+        handleMouseUp={handleMouseUp}
+        newLayersLoading={newLayersLoading}
+        handleMouseMove={handleMouseMove}
       />
       <PreRolls
         cartItems={cartItems}

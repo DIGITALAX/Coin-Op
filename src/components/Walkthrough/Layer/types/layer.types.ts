@@ -20,7 +20,7 @@ export type LayerProps = {
         childTokenURIs: string[];
         parentPrice: string;
         childPrice: string;
-        childPoster: string;
+        childPosterURI: string;
         parentId: number;
         childId: number;
       }
@@ -37,7 +37,7 @@ export type GridProps = {
         childTokenURIs: string[];
         parentPrice: string;
         childPrice: string;
-        childPoster: string;
+        childPosterURI: string;
         parentId: number;
         childId: number;
       }
@@ -53,7 +53,7 @@ export type SetProps = {
         childTokenURIs: string[];
         parentPrice: string;
         childPrice: string;
-        childPoster: string;
+        childPosterURI: string;
         parentId: number;
         childId: number;
       }
@@ -61,7 +61,7 @@ export type SetProps = {
   parentId: number;
   parentURI: string;
   childTokenURIs: string[];
-  childPoster: string;
+  childPosterURI: string;
   childId: number;
   childPrice: string;
   parentPrice: string;

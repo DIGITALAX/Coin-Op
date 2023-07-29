@@ -6,8 +6,11 @@ import {
   FormEvent,
   KeyboardEvent,
   LegacyRef,
+  MouseEvent,
   MutableRefObject,
+  Ref,
   RefObject,
+  WheelEvent,
 } from "react";
 import { AnyAction, Dispatch as DispatchRedux } from "redux";
 import { Erc20, Profile } from "./lens.types";
@@ -15,27 +18,23 @@ import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
-  scrollToComposite: () => void
-  compositeRef: LegacyRef<HTMLDivElement> | undefined
+  scrollToComposite: () => void;
+  newLayersLoading: boolean;
+  compositeRef: LegacyRef<HTMLDivElement> | undefined;
   template: Template;
-  synthLayerSelected:
-    | {
-        parentURI: string;
-        childURIs: string[];
-        parentPrice: string;
-        childPrice: string;
-        childPoster: string;
-        parentId: number;
-        childId: number;
-      }
-    | undefined;
+  canvasRef: Ref<HTMLCanvasElement>;
+  handleMouseDown: (e: MouseEvent) => void;
+  handleMouseMove: (e: MouseEvent) => void;
+  handleMouseUp: (e: MouseEvent) => void;
+  handleWheel: (e: WheelEvent) => void;
+  synthLayerSelected: string | undefined;
   synthLayer:
     | {
         parentURI: string;
-        childURIs: string[];
+        childTokenURIs: string[];
         parentPrice: string;
         childPrice: string;
-        childPoster: string;
+        childPosterURI: string;
         parentId: number;
         childId: number;
       }
@@ -144,7 +143,7 @@ export type SizingChoiceProps = {
   preRoll: PreRoll;
   left?: boolean;
   right?: boolean;
-  printType: string
+  printType: string;
 };
 
 export type SearchBoxProps = {

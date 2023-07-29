@@ -22,6 +22,9 @@ import imageViewerReducer from "./reducers/imageViewerSlice";
 import printTypeLayersReducer from "./reducers/printTypeLayersSlice";
 import messagesModalReducer from "./reducers/messagesModalSlice";
 import litClientReducer from "./reducers/litClientSlice";
+import selectSynthElementReducer from "./reducers/selectSynthElementSlice";
+import synthLoadingReducer from "./reducers/synthLoadingSlice";
+import initImagePromptReducer from "./reducers/initImagePromptSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -46,6 +49,9 @@ const reducer = combineReducers({
   printTypeLayersReducer,
   messagesModalReducer,
   litClientReducer,
+  selectSynthElementReducer,
+  synthLoadingReducer,
+  initImagePromptReducer
 });
 
 export const store = configureStore({

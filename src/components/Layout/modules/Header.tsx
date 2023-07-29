@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
+import Link from "next/link";
 
 const Header: FunctionComponent = (): JSX.Element => {
   const {
@@ -47,9 +48,12 @@ const Header: FunctionComponent = (): JSX.Element => {
             </div>
           </div>
         </div>
-        <div className="relative flex justify-end w-fit h-fit items-center ml-auto whitespace-nowrap break-words">
-          coin op
-        </div>
+        <Link
+          href={"/account"}
+          className="relative flex justify-end w-fit h-fit items-center ml-auto whitespace-nowrap break-words cursor-pointer"
+        >
+          account
+        </Link>
       </div>
       <div className="relative flex flex-col items-center justify-center w-full h-fit gap-28">
         <RollSearch

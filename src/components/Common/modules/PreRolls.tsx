@@ -15,7 +15,7 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
   preRollsLoading,
 }): JSX.Element => {
   return (
-    <div className="relative w-80 h-full flex overflow-y-scroll">
+    <div className="relative min-w-80 w-80 h-full flex overflow-y-scroll">
       <div className="relative w-full h-fit flex flex-col justify-start items-center gap-10">
         {preRollsLoading
           ? Array.from({ length: 40 }).map((_, index: number) => {

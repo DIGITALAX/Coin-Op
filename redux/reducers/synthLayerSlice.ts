@@ -7,6 +7,7 @@ export interface SynthLayerState {
         childTokenURIs: string[];
         parentPrice: string;
         childPrice: string;
+        childPosterURI: string;
         parentId: number;
         childId: number;
       }
@@ -29,6 +30,7 @@ export const synthLayerSlice = createSlice({
             childTokenURIs: string[];
             parentPrice: string;
             childPrice: string;
+            childPosterURI: string;
             parentId: number;
             childId: number;
           }

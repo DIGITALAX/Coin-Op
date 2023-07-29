@@ -30,7 +30,13 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   layersLoading,
   printTypeLayers,
   scrollToComposite,
-  compositeRef
+  compositeRef,
+  canvasRef,
+  handleMouseDown,
+  handleMouseUp,
+  handleWheel,
+  handleMouseMove,
+  newLayersLoading
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -52,6 +58,12 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           presets={presets}
           synthLoading={synthLoading}
           scrollToComposite={scrollToComposite}
+          canvasRef={canvasRef}
+          handleMouseDown={handleMouseDown}
+          handleMouseUp={handleMouseUp}
+          handleMouseMove={handleMouseMove}
+          handleWheel={handleWheel}
+          newLayersLoading={newLayersLoading}
         />
         <Composite
           dispatch={dispatch}

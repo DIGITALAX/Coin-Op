@@ -56,7 +56,7 @@ const Grid: FunctionComponent<GridProps> = ({
                         childPrice={layer.childPrices[indexTwo]}
                         parentPrice={layer.price}
                         synthLayer={synthLayer}
-                        childPoster={layer.childPosterURIs[indexTwo]}
+                        childPosterURI={layer.childPosterURIs[indexTwo]}
                       />
                     );
                   }

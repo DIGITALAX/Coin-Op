@@ -3,6 +3,7 @@ import { SetProps } from "../types/layer.types";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
 import { setSynthLayer } from "../../../../../redux/reducers/synthLayerSlice";
+import { setLayerToSynth } from "../../../../../redux/reducers/layerToSynthSlice";
 
 const Set: FunctionComponent<SetProps> = ({
   dispatch,
@@ -13,14 +14,14 @@ const Set: FunctionComponent<SetProps> = ({
   parentId,
   parentPrice,
   parentURI,
-  childPoster,
+  childPosterURI,
 }): JSX.Element => {
   return (
     <div
-      className={`relative w-48 h-44 flex flex-col items-center justify-center cursor-pointer hover:opacity-70 ${
-        childId === synthLayer?.childId && "opacity-60"
+      className={`relative w-48 h-44 flex flex-col items-center justify-center cursor-pointer overflow-hidden hover:opacity-70 ${
+        childId === synthLayer?.childId && "opacity-40"
       }`}
-      onClick={async () => {
+      onClick={() => {
         dispatch(
           setSynthLayer({
             parentURI,
@@ -29,8 +30,10 @@ const Set: FunctionComponent<SetProps> = ({
             childPrice,
             parentId,
             childId,
+            childPosterURI,
           })
         );
+        dispatch(setLayerToSynth(childTokenURIs?.[0]!));
       }}
     >
       <div className="absolute w-full h-full">
@@ -47,10 +50,7 @@ const Set: FunctionComponent<SetProps> = ({
             <Image
               layout="fill"
               objectFit="contain"
-              src={`${INFURA_GATEWAY}/ipfs/${parentURI?.replace(
-                /^"ipfs:\/\/(.+)"$/,
-                "$1"
-              )}`}
+              src={`${INFURA_GATEWAY}/ipfs/${parentURI?.split("ipfs://")[1]}`}
               draggable={false}
             />
           </div>
@@ -58,7 +58,9 @@ const Set: FunctionComponent<SetProps> = ({
             <Image
               layout="fill"
               objectFit="contain"
-              src={`${INFURA_GATEWAY}/ipfs/${childPoster?.split("ipfs://")[1]}`}
+              src={`${INFURA_GATEWAY}/ipfs/${
+                childPosterURI?.split("ipfs://")[1]
+              }`}
               draggable={false}
             />
           </div>
