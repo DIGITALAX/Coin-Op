@@ -4,8 +4,20 @@ import { AnyAction, Dispatch } from "redux";
 export type SynthProps = {
   dispatch: Dispatch<AnyAction>;
   scrollToComposite: () => void;
+  isDragging: boolean;
   newLayersLoading: boolean;
   synthLayerSelected: string | undefined;
+  showBottomOptions: boolean;
+  setShowBottomOptions: (e: boolean) => void;
+  colorPicker: boolean;
+  setColorPicker: (e: boolean) => void;
+  hex: string;
+  setHex: (e: string) => void;
+  setThickness: (e: boolean) => void;
+  thickness: boolean;
+  setBrushWidth: (e: number) => void;
+  brushWidth: number;
+  setTool: (e: string) => void;
   synthLayer:
     | {
         parentURI: string;
@@ -25,7 +37,19 @@ export type SynthProps = {
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
   handleMouseUp: (e: MouseEvent) => void;
-  handleWheel: (e: WheelEvent) => void;
+};
+
+export type CanvasOptionProps = {
+  bool_option?: boolean;
+  string_option?: string;
+  image: string;
+  bgColor?: string;
+  setShowBool?: (bool_option: boolean) => void;
+  setShowString?: (string_option: string) => void;
+  width: number;
+  height: number;
+  color?: boolean;
+  text?: string;
 };
 
 export type GridProps = {
@@ -33,6 +57,7 @@ export type GridProps = {
   scrollToComposite: () => void;
   newLayersLoading: boolean;
   synthLayerSelected: string | undefined;
+  isDragging: boolean;
   synthLayer:
     | {
         parentURI: string;
@@ -45,6 +70,17 @@ export type GridProps = {
       }
     | undefined;
   synthConfig: SynthConfig;
+  showBottomOptions: boolean;
+  setShowBottomOptions: (e: boolean) => void;
+  colorPicker: boolean;
+  setColorPicker: (e: boolean) => void;
+  hex: string;
+  setHex: (e: string) => void;
+  setThickness: (e: boolean) => void;
+  thickness: boolean;
+  setBrushWidth: (e: number) => void;
+  brushWidth: number;
+  setTool: (e: string) => void;
   handleSynth: () => Promise<void>;
   synthLoading: boolean;
   presets: string[];
@@ -52,7 +88,6 @@ export type GridProps = {
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
   handleMouseUp: (e: MouseEvent) => void;
-  handleWheel: (e: WheelEvent) => void;
 };
 
 export interface SynthConfig {
@@ -79,9 +114,33 @@ export type CanvasProps = {
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
   handleMouseUp: (e: MouseEvent) => void;
-  handleWheel: (e: WheelEvent) => void;
-  synthLayerSelected: string | undefined;
   newLayersLoading: boolean;
+  isDragging: boolean;
+  showBottomOptions: boolean;
+  setShowBottomOptions: (e: boolean) => void;
+  colorPicker: boolean;
+  setColorPicker: (e: boolean) => void;
+  hex: string;
+  setHex: (e: string) => void;
+  setThickness: (e: boolean) => void;
+  thickness: boolean;
+  setBrushWidth: (e: number) => void;
+  brushWidth: number;
+  setTool: (e: string) => void;
+};
+
+export type BottomMenuProps = {
+  showBottomOptions: boolean;
+  setShowBottomOptions: (e: boolean) => void;
+  colorPicker: boolean;
+  setColorPicker: (e: boolean) => void;
+  hex: string;
+  setHex: (e: string) => void;
+  setThickness: (e: boolean) => void;
+  thickness: boolean;
+  setBrushWidth: (e: number) => void;
+  brushWidth: number;
+  setTool: (e: string) => void;
 };
 
 export interface SvgPatternType {

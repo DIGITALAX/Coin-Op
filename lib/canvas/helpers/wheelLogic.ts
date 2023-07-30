@@ -20,17 +20,22 @@ const wheelLogic = (
   maxZoom: number
 ) => {
   const zoomFactor = 1 + e.deltaY / 100;
-  const mouseX = e.clientX - canvasState.offsetLeft;
-  const mouseY = e.clientY - canvasState.offsetTop;
-  const newZoom = Math.min(Math.max(zoom * zoomFactor, 0.1), maxZoom);
+  const mouseX = canvasState.width / 2;
+  const mouseY = canvasState.height / 2;
+  let newZoom = Math.min(Math.max(zoom * zoomFactor, 1), maxZoom);
   const x = mouseX / zoom - pan.xOffset / zoom;
   const y = mouseY / zoom - pan.yOffset / zoom;
-  setZoom(newZoom);
-  setPan({
-    xInitial: pan.xInitial,
-    yInitial: pan.yInitial,
-    xOffset: mouseX - x * newZoom,
-    yOffset: mouseY - y * newZoom,
+  let newXOffset = mouseX - x * newZoom;
+  let newYOffset = mouseY - y * newZoom;
+
+  requestAnimationFrame(() => {
+    setZoom(newZoom);
+    setPan({
+      xInitial: pan.xInitial,
+      yInitial: pan.yInitial,
+      xOffset: newXOffset,
+      yOffset: newYOffset,
+    });
   });
 };
 

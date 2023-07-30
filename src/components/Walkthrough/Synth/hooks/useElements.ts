@@ -15,7 +15,6 @@ const useElements = (initialState: any, pattern: boolean) => {
       setHistory(historyCopy);
     } else {
       const updatedState = [...history].slice(0, index + 1);
-      console.log({updatedState})
       setHistory([...updatedState, newState]);
       setIndex((prevState) => prevState + 1);
     }

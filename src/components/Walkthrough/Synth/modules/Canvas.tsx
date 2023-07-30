@@ -1,42 +1,32 @@
-import Image from "next/legacy/image";
-import {
-  FunctionComponent,
-  MouseEvent,
-  WheelEvent,
-  useEffect,
-  useState,
-} from "react";
-import { INFURA_GATEWAY } from "../../../../../lib/constants";
+import { FunctionComponent, MouseEvent } from "react";
 import { CanvasProps } from "../types/synth.types";
 import { AiOutlineLoading } from "react-icons/ai";
+import BottomMenu from "./BottomMenu";
 
 const Canvas: FunctionComponent<CanvasProps> = ({
-  synthLayerSelected,
   canvasRef,
   handleMouseDown,
   handleMouseUp,
-  handleWheel,
   handleMouseMove,
   newLayersLoading,
+  isDragging,
+  hex,
+  setHex,
+  setColorPicker,
+  showBottomOptions,
+  setShowBottomOptions,
+  thickness,
+  setThickness,
+  brushWidth,
+  setBrushWidth,
+  setTool,
+  colorPicker,
 }): JSX.Element => {
-  const [dimensions, setDimensions] = useState({
-    width: "100%",
-    height: "100%",
-  });
-
-  useEffect(() => {
-    const parent = document.getElementById("parent");
-    if (parent) {
-      setDimensions({
-        width: String(parent.offsetWidth),
-        height: String(parent.offsetHeight),
-      });
-    }
-  }, []);
-
   return (
     <div
-      className="relative h-full w-full flex items-center justify-center rounded-md border border-ama cursor-cell"
+      className={`relative h-full w-full flex items-center justify-center rounded-md border border-ama ${
+        isDragging ? "cursor-grabbing" : "cursor-cell"
+      }`}
       id="parent"
     >
       {/* <Image
@@ -51,16 +41,37 @@ const Canvas: FunctionComponent<CanvasProps> = ({
           <AiOutlineLoading size={30} color="#FBDB86" />
         </div>
       ) : (
-        <canvas
-          id="canvasId"
-          ref={canvasRef}
-          className="relative z-0 rounded-lg"
-          style={{ width: "100%", height: "100%" }}
-          onMouseDown={(e: MouseEvent<HTMLCanvasElement>) => handleMouseDown(e)}
-          onMouseUp={(e: MouseEvent<HTMLCanvasElement>) => handleMouseUp(e)}
-          onMouseMove={(e: MouseEvent<HTMLCanvasElement>) => handleMouseMove(e)}
-          onWheel={(e: WheelEvent<HTMLCanvasElement>) => handleWheel(e)}
-        ></canvas>
+        <>
+          <div className="absolute w-full h-fit flex z-1 bottom-1 left-1">
+            <BottomMenu
+              showBottomOptions={showBottomOptions}
+              setShowBottomOptions={setShowBottomOptions}
+              colorPicker={colorPicker}
+              setColorPicker={setColorPicker}
+              hex={hex}
+              setHex={setHex}
+              setThickness={setThickness}
+              thickness={thickness}
+              setBrushWidth={setBrushWidth}
+              brushWidth={brushWidth}
+              setTool={setTool}
+            />
+          </div>
+          <canvas
+            id="canvasId"
+            ref={canvasRef}
+            className="relative z-0 rounded-lg"
+            style={{ width: "100%", height: "100%" }}
+            onMouseDown={(e: MouseEvent<HTMLCanvasElement>) =>
+              handleMouseDown(e)
+            }
+            onMouseUp={(e: MouseEvent<HTMLCanvasElement>) => handleMouseUp(e)}
+            onMouseMove={(e: MouseEvent<HTMLCanvasElement>) =>
+              handleMouseMove(e)
+            }
+            // onWheel={(e: WheelEvent<HTMLCanvasElement>) => handleWheel(e)}
+          ></canvas>
+        </>
       )}
     </div>
   );

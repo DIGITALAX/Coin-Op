@@ -20,9 +20,20 @@ const Grid: FunctionComponent<GridProps> = ({
   canvasRef,
   handleMouseDown,
   handleMouseUp,
-  handleWheel,
   newLayersLoading,
   handleMouseMove,
+  isDragging,
+  hex,
+  setHex,
+  setColorPicker,
+  showBottomOptions,
+  setShowBottomOptions,
+  thickness,
+  setThickness,
+  brushWidth,
+  setBrushWidth,
+  setTool,
+  colorPicker,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -55,13 +66,23 @@ const Grid: FunctionComponent<GridProps> = ({
           </div>
           <div className="relative w-full h-full flex flex-col gap-3">
             <Canvas
-              synthLayerSelected={synthLayerSelected}
               canvasRef={canvasRef}
               handleMouseDown={handleMouseDown}
               handleMouseUp={handleMouseUp}
               handleMouseMove={handleMouseMove}
-              handleWheel={handleWheel}
               newLayersLoading={newLayersLoading}
+              isDragging={isDragging}
+              showBottomOptions={showBottomOptions}
+              setShowBottomOptions={setShowBottomOptions}
+              colorPicker={colorPicker}
+              setColorPicker={setColorPicker}
+              hex={hex}
+              setHex={setHex}
+              setThickness={setThickness}
+              thickness={thickness}
+              setBrushWidth={setBrushWidth}
+              brushWidth={brushWidth}
+              setTool={setTool}
             />
             <div className="relative h-10 w-full flex justify-center items-center flex-row gap-3">
               <div className="relative w-full h-full flex items-center justify-start">

@@ -14,9 +14,20 @@ const Synth: FunctionComponent<SynthProps> = ({
   canvasRef,
   handleMouseDown,
   handleMouseUp,
-  handleWheel,
   handleMouseMove,
-  newLayersLoading
+  newLayersLoading,
+  isDragging,
+  hex,
+  setHex,
+  setColorPicker,
+  showBottomOptions,
+  setShowBottomOptions,
+  thickness,
+  setThickness,
+  brushWidth,
+  setBrushWidth,
+  setTool,
+  colorPicker,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col ">
@@ -33,8 +44,19 @@ const Synth: FunctionComponent<SynthProps> = ({
         handleMouseDown={handleMouseDown}
         handleMouseUp={handleMouseUp}
         handleMouseMove={handleMouseMove}
-        handleWheel={handleWheel}
         newLayersLoading={newLayersLoading}
+        isDragging={isDragging}
+        showBottomOptions={showBottomOptions}
+        setShowBottomOptions={setShowBottomOptions}
+        colorPicker={colorPicker}
+        setColorPicker={setColorPicker}
+        hex={hex}
+        setHex={setHex}
+        setThickness={setThickness}
+        thickness={thickness}
+        setBrushWidth={setBrushWidth}
+        brushWidth={brushWidth}
+        setTool={setTool}
       />
     </div>
   );

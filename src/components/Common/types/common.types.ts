@@ -20,14 +20,25 @@ export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
   scrollToComposite: () => void;
   newLayersLoading: boolean;
+  isDragging: boolean;
   compositeRef: LegacyRef<HTMLDivElement> | undefined;
   template: Template;
   canvasRef: Ref<HTMLCanvasElement>;
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
   handleMouseUp: (e: MouseEvent) => void;
-  handleWheel: (e: WheelEvent) => void;
   synthLayerSelected: string | undefined;
+  showBottomOptions: boolean;
+  setShowBottomOptions: (e: boolean) => void;
+  colorPicker: boolean;
+  setColorPicker: (e: boolean) => void;
+  hex: string;
+  setHex: (e: string) => void;
+  setThickness: (e: boolean) => void;
+  thickness: boolean;
+  setBrushWidth: (e: number) => void;
+  brushWidth: number;
+  setTool: (e: string) => void;
   synthLayer:
     | {
         parentURI: string;

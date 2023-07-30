@@ -24,11 +24,22 @@ export default function Home(): JSX.Element {
   const { handleSynth, presets, scrollToComposite, compositeRef } = useSynth();
   const {
     canvasRef,
-    handleWheel,
     handleMouseDown,
     handleMouseUp,
     handleMouseMove,
     newLayersLoading,
+    isDragging,
+    hex,
+    setHex,
+    setColorPicker,
+    showBottomOptions,
+    setShowBottomOptions,
+    thickness,
+    setThickness,
+    brushWidth,
+    setBrushWidth,
+    setTool,
+    colorPicker,
   } = useCanvas();
   const { preRollsLoading } = usePreRoll();
   const { layersLoading } = useLayer();
@@ -82,6 +93,7 @@ export default function Home(): JSX.Element {
       <PageContainer
         template={template}
         dispatch={dispatch}
+        isDragging={isDragging}
         synthLayer={synthLayer}
         synthLayerSelected={synthLayerSelected}
         setShareSet={setShareSet}
@@ -103,11 +115,21 @@ export default function Home(): JSX.Element {
         scrollToComposite={scrollToComposite}
         compositeRef={compositeRef}
         canvasRef={canvasRef}
-        handleWheel={handleWheel}
         handleMouseDown={handleMouseDown}
         handleMouseUp={handleMouseUp}
         newLayersLoading={newLayersLoading}
         handleMouseMove={handleMouseMove}
+        showBottomOptions={showBottomOptions}
+        setShowBottomOptions={setShowBottomOptions}
+        colorPicker={colorPicker}
+        setColorPicker={setColorPicker}
+        hex={hex}
+        setHex={setHex}
+        setThickness={setThickness}
+        thickness={thickness}
+        setBrushWidth={setBrushWidth}
+        brushWidth={brushWidth}
+        setTool={setTool}
       />
       <PreRolls
         cartItems={cartItems}

@@ -34,9 +34,20 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   canvasRef,
   handleMouseDown,
   handleMouseUp,
-  handleWheel,
   handleMouseMove,
-  newLayersLoading
+  newLayersLoading,
+  isDragging,
+  hex,
+  setHex,
+  setColorPicker,
+  showBottomOptions,
+  setShowBottomOptions,
+  thickness,
+  setThickness,
+  brushWidth,
+  setBrushWidth,
+  setTool,
+  colorPicker,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -62,8 +73,19 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           handleMouseDown={handleMouseDown}
           handleMouseUp={handleMouseUp}
           handleMouseMove={handleMouseMove}
-          handleWheel={handleWheel}
           newLayersLoading={newLayersLoading}
+          isDragging={isDragging}
+          showBottomOptions={showBottomOptions}
+          setShowBottomOptions={setShowBottomOptions}
+          colorPicker={colorPicker}
+          setColorPicker={setColorPicker}
+          hex={hex}
+          setHex={setHex}
+          setThickness={setThickness}
+          thickness={thickness}
+          setBrushWidth={setBrushWidth}
+          brushWidth={brushWidth}
+          setTool={setTool}
         />
         <Composite
           dispatch={dispatch}
