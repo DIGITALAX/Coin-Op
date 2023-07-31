@@ -45,7 +45,7 @@ const useCanvas = () => {
   }, []);
   const writingRef = useRef<HTMLTextAreaElement>(null);
   const ctx = canvas?.getContext("2d") as any;
-  const [elements, setElements, undo, redo] = useElements([]);
+  const { history, index, setState: setElements, undo, redo } = useElements();
   const [zoom, setZoom] = useState<number>(1);
   const [font, setFont] = useState<string>("Manaspace");
   const [fontOpen, setFontOpen] = useState<boolean>(false);
@@ -80,7 +80,15 @@ const useCanvas = () => {
 
   const synthLayerSwitch = async () => {
     setNewLayersLoading(true);
-    await addRashToCanvas(setElements, layerToSynth!, canvas!);
+
+    if (!history.get(String(layerToSynth.id))) {
+      await addRashToCanvas(
+        setElements,
+        layerToSynth.layer!,
+        layerToSynth.id!,
+        canvas!
+      );
+    }
     setZoom(1);
     setPan({
       xInitial: 0,
@@ -103,7 +111,6 @@ const useCanvas = () => {
 
   const handleMouseDown = (e: MouseEvent): void => {
     const bounds = canvas?.getBoundingClientRect();
-
     if (tool === "default") {
       setAction("none");
       setIsDragging(true);
@@ -117,9 +124,11 @@ const useCanvas = () => {
       isPointInPattern(
         e.clientX - bounds.left,
         e.clientY - bounds.top,
-        elements[0],
+        history.get(String(layerToSynth.id))?.[0] || [],
         ctx,
-        elements[0].type === "circle" ? true : false
+        (history.get(String(layerToSynth.id))?.[0] || []).type === "circle"
+          ? true
+          : false
       )
     ) {
       const newElement = createElement(
@@ -134,7 +143,7 @@ const useCanvas = () => {
         e.clientX,
         e.clientY,
         tool,
-        elements.length,
+        (history.get(String(layerToSynth.id)) || []).length,
         brushWidth,
         tool !== "erase" ? hex : materialBackground,
         tool !== "text" ? undefined : font
@@ -143,7 +152,10 @@ const useCanvas = () => {
         tool === "pencil" ? "drawing" : tool === "erase" ? "erasing" : "writing"
       );
       setSelectedElement(newElement!);
-      setElements([...elements, newElement]);
+      setElements(String(layerToSynth.id), [
+        ...(history.get(String(layerToSynth.id)) || []),
+        newElement,
+      ]);
     }
   };
 
@@ -171,16 +183,18 @@ const useCanvas = () => {
       isPointInPattern(
         e.clientX - bounds.left,
         e.clientY - bounds.top,
-        elements[0],
+        history.get(String(layerToSynth.id))?.[0] || [],
         ctx,
-        elements[0].type === "circle" ? true : false
+        (history.get(String(layerToSynth.id))?.[0] || []).type === "circle"
+          ? true
+          : false
       )
     ) {
       setColorPicker(false);
       setFontOpen(false);
       setThickness(false);
-      const index = elements?.length - 1;
-      const values = elements?.[index];
+      const index = (history.get(String(layerToSynth.id)) || [])?.length - 1;
+      const values = (history.get(String(layerToSynth.id)) || [])?.[index];
       updateElement(
         {
           xOffset: pan.xOffset * 0.5,
@@ -188,8 +202,9 @@ const useCanvas = () => {
         },
         canvas,
         zoom,
-        elements,
+        history.get(String(layerToSynth.id)) || [],
         setElements,
+        String(layerToSynth.id),
         ctx!,
         values?.x1!,
         values?.y1!,
@@ -261,7 +276,7 @@ const useCanvas = () => {
           const imageObject = new Image();
           imageObject.src = e.target?.result as string;
           imageObject.onload = () => {
-            let newElements = [...elements];
+            let newElements = [...(history.get(String(layerToSynth.id)) || [])];
 
             newElements = newElements.filter(
               (element) => element.type !== "image"
@@ -270,7 +285,7 @@ const useCanvas = () => {
             const patternWidth = canvas?.width;
             const scaleFactor = patternWidth / imageObject.width;
             const newElement = {
-              clipElement: elements[0],
+              clipElement: history.get(String(layerToSynth.id))?.[0] || [],
               image: imageObject,
               type: "image",
               width: patternWidth,
@@ -282,6 +297,7 @@ const useCanvas = () => {
             newElements.splice(insertIndex, 0, newElement);
 
             setElements(
+              String(layerToSynth.id),
               newElements?.map((element, index) => ({ ...element, id: index }))
             );
             resolve(undefined);
@@ -324,12 +340,15 @@ const useCanvas = () => {
 
   useLayoutEffect(() => {
     if (clear) {
-      const newElements = lodash.filter(elements, (element: SvgPatternType) => {
-        if (element.type === "pattern" || element.type === "circle") {
-          return true;
+      const newElements = lodash.filter(
+        history.get(String(layerToSynth.id)) || [],
+        (element: SvgPatternType) => {
+          if (element.type === "pattern" || element.type === "circle") {
+            return true;
+          }
         }
-      });
-      setElements(newElements);
+      );
+      setElements(String(layerToSynth.id), newElements);
       setClear(false);
     }
   }, [clear]);
@@ -346,8 +365,9 @@ const useCanvas = () => {
         },
         canvas,
         zoom,
-        elements,
+        history.get(String(layerToSynth.id)) || [],
         setElements,
+        String(layerToSynth.id),
         ctx!,
         (selectedElement?.x1! * devicePixelRatio +
           bounds.left * zoom -
@@ -396,6 +416,12 @@ const useCanvas = () => {
       ctx.scale(zoom, zoom);
       ctx.beginPath();
 
+      let patternId = String(layerToSynth.id);
+      let elements = history.get(patternId) || [];
+      let currentIndex = index.get(patternId) || 0;
+
+      elements = elements.slice(0, currentIndex + 1);
+
       (ctx as CanvasRenderingContext2D).globalCompositeOperation =
         "source-over";
       elements?.forEach((element: SvgPatternType | ElementInterface) => {
@@ -423,7 +449,8 @@ const useCanvas = () => {
       ctx.restore();
     }
   }, [
-    elements,
+    history,
+    index,
     synthElementMove,
     zoom,
     pan,
@@ -461,9 +488,9 @@ const useCanvas = () => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "z") {
         if (event.shiftKey) {
-          redo();
+          redo(String(layerToSynth.id));
         } else {
-          undo();
+          undo(String(layerToSynth.id));
         }
         event.preventDefault();
       }

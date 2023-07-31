@@ -88,7 +88,7 @@ const convertSvgToPath = async (image: string, scale: number) => {
     let command = commands[i];
     let type = command[0];
     let args = command
-      .slice(1)
+      ?.slice(1)
       .trim()
       .split(/[\s,]+/)
       .map(parseFloat);

@@ -24,15 +24,16 @@ export type PageContainerProps = {
   scrollToComposite: () => void;
   newLayersLoading: boolean;
   isDragging: boolean;
-  materialBackground: string
-  setMaterialBackground: (e: string) => void
-  materialOpen: boolean
+  materialBackground: string;
+  setMaterialBackground: (e: string) => void;
+  materialOpen: boolean;
   setMaterialOpen: (e: boolean) => void;
+  
   compositeRef: LegacyRef<HTMLDivElement> | undefined;
   template: Template;
   canvasExpand: boolean;
-  undo: () => void;
-  redo: () => void;
+  undo: (patternId: string) => void;
+  redo: (patternId: string) => void;
   selectedElement: ElementInterface | null;
   action: string;
   writingRef: Ref<HTMLTextAreaElement>;
@@ -42,7 +43,10 @@ export type PageContainerProps = {
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
   handleMouseUp: (e: MouseEvent) => void;
-  synthLayerSelected: string | undefined;
+  synthLayerSelected: {
+    id: number;
+    layer: string | undefined;
+  };
   showBottomOptions: boolean;
   setShowBottomOptions: (e: boolean) => void;
   colorPicker: boolean;

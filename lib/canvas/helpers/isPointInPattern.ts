@@ -8,7 +8,9 @@ export const isPointInPattern = (
   circle: boolean
 ): boolean => {
   let isInPath = false;
-  for (const path of element.points!) {
+  if (!element || !element.points) return isInPath;
+
+  for (const path of element?.points!) {
     if (!circle) {
       ctx.save();
       ctx.beginPath();

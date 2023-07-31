@@ -8,14 +8,17 @@ export type SynthProps = {
   canvasExpand: boolean;
   selectedElement: ElementInterface | null;
   newLayersLoading: boolean;
-  synthLayerSelected: string | undefined;
+  synthLayerSelected: {
+    id: number;
+    layer: string | undefined;
+  };
   showBottomOptions: boolean;
   setShowBottomOptions: (e: boolean) => void;
   colorPicker: boolean;
   setColorPicker: (e: boolean) => void;
   hex: string;
-  undo: () => void;
-  redo: () => void;
+  undo: (patternId: string) => void;
+  redo: (patternId: string) => void;
   action: string;
   writingRef: Ref<HTMLTextAreaElement>;
   handleBlur: (e: FormEvent) => void;
@@ -50,9 +53,9 @@ export type SynthProps = {
   setFont: (e: string) => void;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
-  materialBackground: string
-  setMaterialBackground: (e: string) => void
-  materialOpen: boolean
+  materialBackground: string;
+  setMaterialBackground: (e: string) => void;
+  materialOpen: boolean;
   setMaterialOpen: (e: boolean) => void;
 };
 
@@ -76,7 +79,10 @@ export type GridProps = {
   scrollToComposite: () => void;
   canvasExpand: boolean;
   newLayersLoading: boolean;
-  synthLayerSelected: string | undefined;
+  synthLayerSelected: {
+    id: number;
+    layer: string | undefined;
+  };
   isDragging: boolean;
   selectedElement: ElementInterface | null;
   synthLayer:
@@ -106,8 +112,8 @@ export type GridProps = {
   synthLoading: boolean;
   tool: string;
   presets: string[];
-  undo: () => void;
-  redo: () => void;
+  undo: (patternId: string) => void;
+  redo: (patternId: string) => void;
   action: string;
   writingRef: Ref<HTMLTextAreaElement>;
   handleBlur: (e: FormEvent) => void;
@@ -120,9 +126,9 @@ export type GridProps = {
   setFont: (e: string) => void;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
-  materialBackground: string
-  setMaterialBackground: (e: string) => void
-  materialOpen: boolean
+  materialBackground: string;
+  setMaterialBackground: (e: string) => void;
+  materialOpen: boolean;
   setMaterialOpen: (e: boolean) => void;
 };
 
@@ -165,8 +171,8 @@ export type CanvasProps = {
   brushWidth: number;
   setTool: (e: string) => void;
   tool: string;
-  undo: () => void;
-  redo: () => void;
+  undo: (patternId: string) => void;
+  redo: (patternId: string) => void;
   handleReset: () => void;
   dispatch: Dispatch<AnyAction>;
   action: string;
@@ -177,10 +183,14 @@ export type CanvasProps = {
   setFont: (e: string) => void;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
-  materialBackground: string
-  setMaterialBackground: (e: string) => void
-  materialOpen: boolean
+  materialBackground: string;
+  setMaterialBackground: (e: string) => void;
+  materialOpen: boolean;
   setMaterialOpen: (e: boolean) => void;
+  layerToSynth: {
+    id: number;
+    layer: string | undefined;
+  };
 };
 
 export type BottomMenuProps = {
@@ -196,18 +206,22 @@ export type BottomMenuProps = {
   setBrushWidth: (e: number) => void;
   brushWidth: number;
   setTool: (e: string) => void;
-  undo: () => void;
-  redo: () => void;
+  undo: (patternId: string) => void;
+  redo: (patternId: string) => void;
   handleReset: () => void;
   font: string;
   setFont: (e: string) => void;
   dispatch: Dispatch<AnyAction>;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
-  materialBackground: string
-  setMaterialBackground: (e: string) => void
-  materialOpen: boolean
+  materialBackground: string;
+  setMaterialBackground: (e: string) => void;
+  materialOpen: boolean;
   setMaterialOpen: (e: boolean) => void;
+  layerToSynth: {
+    id: number;
+    layer: string | undefined;
+  };
 };
 
 export interface SvgPatternType {

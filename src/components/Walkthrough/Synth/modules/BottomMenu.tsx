@@ -32,6 +32,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
   setMaterialBackground,
   materialOpen,
   setMaterialOpen,
+  layerToSynth
 }): JSX.Element => {
   return (
     <div
@@ -172,7 +173,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
           />
           <div
             className="relative row-start-2 w-fit h-fit"
-            onClick={() => undo()}
+            onClick={() => undo(String(layerToSynth.id))}
           >
             <CanvasOption
               image="QmZJQePuwQBP8vsa86vrPSVwsqwzam3PRbEbNxdgH7bBe9"
@@ -185,7 +186,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
           </div>
           <div
             className="relative row-start-1 w-fit h-fit"
-            onClick={() => redo()}
+            onClick={() => redo(String(layerToSynth.id))}
           >
             <CanvasOption
               image="QmeNcEGW5pAFjPsgLsTDPgUsEm9sy2b1F1WteotshzcKvW"

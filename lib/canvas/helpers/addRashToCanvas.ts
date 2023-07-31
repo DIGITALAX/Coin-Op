@@ -2,8 +2,13 @@ import { SvgPatternType } from "@/components/Walkthrough/Synth/types/synth.types
 import convertSvgToPath from "./convertSVGToPath";
 
 const addRashToCanvas = async (
-  setElements: (e: SvgPatternType[]) => void,
+  setElements: (
+    patternId: string,
+    action: any,
+    overwrite?: boolean | undefined
+  ) => void,
   image: string,
+  id: number,
   canvas: HTMLCanvasElement
 ) => {
   try {
@@ -14,7 +19,7 @@ const addRashToCanvas = async (
     const scaleFactorX = canvas.width / bboxWidth;
     const scaleFactorY = canvas.height / bboxHeight;
 
-    setElements([
+    setElements(String(id), [
       {
         id: 1,
         points: subpaths.map((subpath) =>

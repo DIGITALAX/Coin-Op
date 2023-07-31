@@ -48,7 +48,7 @@ const drawPatternElement = (
       break;
 
     case "pattern":
-      for (const subpath of element.points!) {
+      for (const subpath of element?.points!) {
         ctx?.beginPath();
         ctx?.save();
 

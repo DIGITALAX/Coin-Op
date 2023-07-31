@@ -128,6 +128,7 @@ const Grid: FunctionComponent<GridProps> = ({
               redo={redo}
               handleReset={handleReset}
               canvasExpand={canvasExpand}
+              layerToSynth={synthLayerSelected}
             />
             <div
               className={`w-full flex justify-center items-center flex-row gap-3 ${
@@ -145,7 +146,7 @@ const Grid: FunctionComponent<GridProps> = ({
                           (_, index) =>
                             synthLayer?.childTokenURIs[
                               (synthLayer?.childTokenURIs.indexOf(
-                                synthLayerSelected!
+                                synthLayerSelected.layer!
                               ) +
                                 index) %
                                 synthLayer?.childTokenURIs.length
@@ -155,12 +156,19 @@ const Grid: FunctionComponent<GridProps> = ({
                     return (
                       <div
                         className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border cursor-pointer hover:opacity-70 rounded-lg ${
-                          synthLayerSelected === uri
+                          synthLayerSelected.layer === uri
                             ? "border-white"
                             : "border-ama"
                         }`}
                         key={index}
-                        onClick={() => dispatch(setLayerToSynth(uri!))}
+                        onClick={() =>
+                          dispatch(
+                            setLayerToSynth({
+                              id: synthLayer?.childId! + index,
+                              layer: uri!,
+                            })
+                          )
+                        }
                       >
                         <Image
                           src={`${INFURA_GATEWAY}/ipfs/QmPKU1ck9PLyFchFpe2vzJh3eyxSYij28ixTdRzaHi4E1p`}
@@ -198,16 +206,25 @@ const Grid: FunctionComponent<GridProps> = ({
                     draggable={false}
                     onClick={() =>
                       dispatch(
-                        setLayerToSynth(
-                          synthLayer?.childTokenURIs?.[
-                            (synthLayer?.childTokenURIs?.indexOf(
-                              synthLayerSelected!
-                            ) -
+                        setLayerToSynth({
+                          id:
+                            synthLayer?.childId! +
+                            ((synthLayer?.childTokenURIs?.indexOf(
+                              synthLayerSelected.layer!
+                            )! -
                               1 +
-                              synthLayer?.childTokenURIs?.length) %
-                              synthLayer?.childTokenURIs?.length
-                          ]!
-                        )
+                              synthLayer?.childTokenURIs?.length!) %
+                              synthLayer?.childTokenURIs?.length!),
+                          layer:
+                            synthLayer?.childTokenURIs?.[
+                              (synthLayer?.childTokenURIs?.indexOf(
+                                synthLayerSelected.layer!
+                              ) -
+                                1 +
+                                synthLayer?.childTokenURIs?.length) %
+                                synthLayer?.childTokenURIs?.length
+                            ]!,
+                        })
                       )
                     }
                   />
@@ -219,15 +236,23 @@ const Grid: FunctionComponent<GridProps> = ({
                     draggable={false}
                     onClick={() =>
                       dispatch(
-                        setLayerToSynth(
-                          synthLayer?.childTokenURIs?.[
-                            (synthLayer?.childTokenURIs?.indexOf(
-                              synthLayerSelected!
-                            ) +
+                        setLayerToSynth({
+                          id:
+                            synthLayer?.childId! +
+                            ((synthLayer?.childTokenURIs?.indexOf(
+                              synthLayerSelected.layer!
+                            )! +
                               1) %
-                              synthLayer?.childTokenURIs?.length
-                          ]!
-                        )
+                              synthLayer?.childTokenURIs?.length!),
+                          layer:
+                            synthLayer?.childTokenURIs?.[
+                              (synthLayer?.childTokenURIs?.indexOf(
+                                synthLayerSelected.layer!
+                              ) +
+                                1) %
+                                synthLayer?.childTokenURIs?.length
+                            ]!,
+                        })
                       )
                     }
                   />

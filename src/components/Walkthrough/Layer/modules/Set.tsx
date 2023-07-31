@@ -33,7 +33,10 @@ const Set: FunctionComponent<SetProps> = ({
             childPosterURI,
           })
         );
-        dispatch(setLayerToSynth(childTokenURIs?.[0]!));
+        dispatch(setLayerToSynth({
+          id: childId + 0,
+          layer: childTokenURIs?.[0]!
+        }));
       }}
     >
       <div className="absolute w-full h-full">

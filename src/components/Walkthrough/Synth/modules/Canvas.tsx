@@ -39,6 +39,7 @@ const Canvas: FunctionComponent<CanvasProps> = ({
   materialOpen,
   setMaterialBackground,
   setMaterialOpen,
+  layerToSynth
 }): JSX.Element => {
   return (
     <div
@@ -75,6 +76,7 @@ const Canvas: FunctionComponent<CanvasProps> = ({
               materialOpen={materialOpen}
               setMaterialOpen={setMaterialOpen}
               font={font}
+              layerToSynth={layerToSynth}
               setFont={setFont}
               fontOpen={fontOpen}
               setFontOpen={setFontOpen}

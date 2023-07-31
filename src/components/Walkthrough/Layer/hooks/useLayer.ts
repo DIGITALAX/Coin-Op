@@ -52,7 +52,12 @@ const useLayer = () => {
           childPosterURI: newLayers[0].childPosterURIs?.[0],
         })
       );
-      dispatch(setLayerToSynth(newLayers[0]?.childTokenURIs?.[0]?.[0]));
+      dispatch(
+        setLayerToSynth({
+          id: newLayers[0].childTokenIds?.[0] + 0,
+          layer: newLayers[0]?.childTokenURIs?.[0]?.[0],
+        })
+      );
     } catch (err: any) {
       console.error(err.message);
     }
