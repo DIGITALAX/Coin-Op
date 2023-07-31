@@ -19,7 +19,6 @@ import wheelLogic from "../../../../../lib/canvas/helpers/wheelLogic";
 import drawElement from "../../../../../lib/canvas/helpers/drawElement";
 import drawPatternElement from "../../../../../lib/canvas/helpers/drawPatternElement";
 import createElement from "../../../../../lib/canvas/helpers/createElement";
-import createCanvasInit from "../../../../../lib/canvas/helpers/createCanvasInit";
 import { setInitImagePrompt } from "../../../../../redux/reducers/initImagePromptSlice";
 import updateElement from "../../../../../lib/canvas/helpers/updateElement";
 import { isPointInPattern } from "../../../../../lib/canvas/helpers/isPointInPattern";
