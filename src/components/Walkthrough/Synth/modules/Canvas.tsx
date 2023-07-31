@@ -24,7 +24,6 @@ const Canvas: FunctionComponent<CanvasProps> = ({
   tool,
   undo,
   redo,
-  handleImageAdd,
   handleReset,
   handleBlur,
   action,
@@ -34,10 +33,12 @@ const Canvas: FunctionComponent<CanvasProps> = ({
   fontOpen,
   setFont,
   setFontOpen,
+  dispatch,
+  canvasExpand,
 }): JSX.Element => {
   return (
     <div
-      className={`relative h-full w-full flex items-center justify-center rounded-md border border-ama ${
+      className={`h-full w-full flex items-center justify-center rounded-md border border-ama relative ${
         isDragging
           ? "cursor-grabbing"
           : tool === "text"
@@ -59,7 +60,11 @@ const Canvas: FunctionComponent<CanvasProps> = ({
         </div>
       ) : (
         <>
-          <div className="absolute w-full h-fit flex z-1 bottom-px left-px">
+          <div
+            className={`w-full h-fit flex z-1 left-px ${
+              canvasExpand ? "fixed bottom-4 left-4" : "absolute bottom-px"
+            }`}
+          >
             <BottomMenu
               font={font}
               setFont={setFont}
@@ -78,8 +83,9 @@ const Canvas: FunctionComponent<CanvasProps> = ({
               setTool={setTool}
               undo={undo}
               redo={redo}
-              handleImageAdd={handleImageAdd}
+              dispatch={dispatch}
               handleReset={handleReset}
+              canvasExpand={canvasExpand}
             />
           </div>
           {action === "writing" && (

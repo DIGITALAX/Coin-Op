@@ -32,7 +32,6 @@ const Synth: FunctionComponent<SynthProps> = ({
   tool,
   undo,
   redo,
-  handleImageAdd,
   handleReset,
   writingRef,
   handleBlur,
@@ -41,9 +40,10 @@ const Synth: FunctionComponent<SynthProps> = ({
   fontOpen,
   setFont,
   setFontOpen,
+  canvasExpand,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-fit flex flex-col ">
+    <div className={`relative w-full h-fit flex flex-col`}>
       <Grid
         font={font}
         setFont={setFont}
@@ -63,6 +63,7 @@ const Synth: FunctionComponent<SynthProps> = ({
         selectedElement={selectedElement}
         scrollToComposite={scrollToComposite}
         canvasRef={canvasRef}
+        canvasExpand={canvasExpand}
         handleMouseDown={handleMouseDown}
         handleMouseUp={handleMouseUp}
         handleMouseMove={handleMouseMove}
@@ -81,7 +82,6 @@ const Synth: FunctionComponent<SynthProps> = ({
         setTool={setTool}
         undo={undo}
         redo={redo}
-        handleImageAdd={handleImageAdd}
         handleReset={handleReset}
       />
     </div>

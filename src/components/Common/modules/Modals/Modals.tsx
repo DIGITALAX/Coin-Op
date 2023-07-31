@@ -22,6 +22,9 @@ const Modals = () => {
   const messageModal = useSelector(
     (state: RootState) => state.app.messagesModalReducer
   );
+  const canvasExpand = useSelector(
+    (state: RootState) => state.app.expandCanvasReducer
+  );
   const lensPost = useSelector(
     (state: RootState) => state.app.lensPostBoxReducer
   );

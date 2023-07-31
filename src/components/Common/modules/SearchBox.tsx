@@ -14,7 +14,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
         onClick={() => handlePromptChoose(promptSearch)}
       >
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/${promptSearch.image}`}
+          src={`${INFURA_GATEWAY}/ipfs/${promptSearch.uri}`}
           layout="fill"
           objectFit="cover"
           alt="searchPrompt"

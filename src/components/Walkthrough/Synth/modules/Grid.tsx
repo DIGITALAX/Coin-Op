@@ -37,7 +37,6 @@ const Grid: FunctionComponent<GridProps> = ({
   tool,
   undo,
   redo,
-  handleImageAdd,
   handleReset,
   action,
   handleBlur,
@@ -47,6 +46,7 @@ const Grid: FunctionComponent<GridProps> = ({
   fontOpen,
   setFont,
   setFontOpen,
+  canvasExpand,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -58,9 +58,19 @@ const Grid: FunctionComponent<GridProps> = ({
           draggable={false}
         />
       </div>
-      <div className="relative w-full flex h-5/6 px-7 pt-4">
-        <div className="relative w-full flex flex-row h-full gap-8 items-center justify-center">
-          <div className="relative flex flex-col gap-3 w-full h-full">
+      <div className={`relative w-full flex h-5/6 px-7 pt-4`}>
+        <div
+          className={`w-full flex h-full gap-8 items-center justify-center ${
+            canvasExpand
+              ? "flex-col z-30 bg-opacity-90 backdrop-blur-sm bg-black inset-0 fixed p-2"
+              : "flex-row relative"
+          }`}
+        >
+          <div
+            className={`relative flex gap-3 w-full ${
+              canvasExpand ? "flex-row h-52" : "flex-col h-full"
+            }`}
+          >
             <div className="relative w-full h-full flex items-center justify-center rounded-md border border-ama">
               <Dash
                 synthConfig={synthConfig}
@@ -77,8 +87,9 @@ const Grid: FunctionComponent<GridProps> = ({
               />
             </div>
           </div>
-          <div className="relative w-full h-full flex flex-col gap-3">
+          <div className={`relative w-full h-full flex flex-col gap-3`}>
             <Canvas
+              dispatch={dispatch}
               font={font}
               setFont={setFont}
               fontOpen={fontOpen}
@@ -107,10 +118,14 @@ const Grid: FunctionComponent<GridProps> = ({
               setTool={setTool}
               undo={undo}
               redo={redo}
-              handleImageAdd={handleImageAdd}
               handleReset={handleReset}
+              canvasExpand={canvasExpand}
             />
-            <div className="relative h-10 w-full flex justify-center items-center flex-row gap-3">
+            <div
+              className={`w-full flex justify-center items-center flex-row gap-3 ${
+                canvasExpand ? "fixed p-2 h-14" : "relative h-10"
+              }`}
+            >
               <div className="relative w-full h-full flex items-center justify-start">
                 <div className="relative w-fit h-full items-center justify-start flex flex-row gap-3">
                   {(synthLayer?.childTokenURIs &&
@@ -163,7 +178,11 @@ const Grid: FunctionComponent<GridProps> = ({
                   })}
                 </div>
               </div>
-              <div className="relative w-fit h-full flex flex-row items-center justify-center gap-1.5">
+              <div
+                className={`relative w-fit h-full flex flex-row items-center justify-center gap-1.5 ${
+                  canvasExpand && "right-6"
+                }`}
+              >
                 <div className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center">
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}

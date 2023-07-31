@@ -15,12 +15,13 @@ const CanvasOption: FunctionComponent<CanvasOptionProps> = ({
   color,
   text,
   toolTip,
+  canvasExpand,
 }): JSX.Element => {
   return (
     <div
-      className={`relative w-6 h-6 rounded-md ${
-        bgColor ? `bg-${bgColor}` : !color && "bg-ocean"
-      } ${
+      className={`relative ${
+        canvasExpand ? "w-10 h-10" : "w-6 h-6"
+      } rounded-md ${bgColor ? `bg-${bgColor}` : !color && "bg-ocean"} ${
         !color && "border border-white"
       } grid grid-flow-col auto-cols-auto drop-shadow-lg cursor-pointer active:scale-95 justify-self-end self-start`}
       onClick={
@@ -45,8 +46,8 @@ const CanvasOption: FunctionComponent<CanvasOptionProps> = ({
         ) : (
           <Image
             src={`${INFURA_GATEWAY}/ipfs/${image}`}
-            width={width}
-            height={height}
+            width={canvasExpand ? width * 1.4 : width}
+            height={canvasExpand ? height * 1.4 : height}
             draggable={false}
           />
         )}

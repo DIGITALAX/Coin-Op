@@ -26,13 +26,13 @@ export type PageContainerProps = {
   isDragging: boolean;
   compositeRef: LegacyRef<HTMLDivElement> | undefined;
   template: Template;
+  canvasExpand: boolean;
   undo: () => void;
   redo: () => void;
   selectedElement: ElementInterface | null;
   action: string;
   writingRef: Ref<HTMLTextAreaElement>;
   handleBlur: (e: FormEvent) => void;
-  handleImageAdd: (e: FormEvent) => Promise<void>;
   handleReset: () => void;
   canvasRef: Ref<HTMLCanvasElement>;
   handleMouseDown: (e: MouseEvent) => void;

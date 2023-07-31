@@ -51,7 +51,6 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   tool,
   undo,
   redo,
-  handleImageAdd,
   handleReset,
   action,
   handleBlur,
@@ -61,6 +60,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   fontOpen,
   setFont,
   setFontOpen,
+  canvasExpand
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -84,6 +84,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           writingRef={writingRef}
           tool={tool}
           dispatch={dispatch}
+          canvasExpand={canvasExpand}
           synthLayerSelected={synthLayerSelected}
           synthLayer={synthLayer}
           synthConfig={synthConfig}
@@ -110,7 +111,6 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           setTool={setTool}
           undo={undo}
           redo={redo}
-          handleImageAdd={handleImageAdd}
           handleReset={handleReset}
         />
         <Composite

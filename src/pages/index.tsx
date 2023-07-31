@@ -43,7 +43,6 @@ export default function Home(): JSX.Element {
     tool,
     undo,
     redo,
-    handleImageAdd,
     handleReset,
     writingRef,
     handleBlur,
@@ -59,6 +58,9 @@ export default function Home(): JSX.Element {
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
   const profile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
+  );
+  const canvasExpand = useSelector(
+    (state: RootState) => state.app.expandCanvasReducer.value
   );
   const synthLoading = useSelector(
     (state: RootState) => state.app.synthLoadingReducer.value
@@ -115,7 +117,7 @@ export default function Home(): JSX.Element {
         fontOpen={fontOpen}
         setFontOpen={setFontOpen}
         redo={redo}
-        handleImageAdd={handleImageAdd}
+        canvasExpand={canvasExpand}
         handleReset={handleReset}
         synthLayerSelected={synthLayerSelected}
         setShareSet={setShareSet}

@@ -5,6 +5,7 @@ export type SynthProps = {
   dispatch: Dispatch<AnyAction>;
   scrollToComposite: () => void;
   isDragging: boolean;
+  canvasExpand: boolean;
   selectedElement: ElementInterface | null;
   newLayersLoading: boolean;
   synthLayerSelected: string | undefined;
@@ -18,7 +19,6 @@ export type SynthProps = {
   action: string;
   writingRef: Ref<HTMLTextAreaElement>;
   handleBlur: (e: FormEvent) => void;
-  handleImageAdd: (e: FormEvent) => Promise<void>;
   handleReset: () => void;
   setHex: (e: string) => void;
   setThickness: (e: boolean) => void;
@@ -64,11 +64,13 @@ export type CanvasOptionProps = {
   color?: boolean;
   text?: string;
   toolTip: string;
+  canvasExpand: boolean;
 };
 
 export type GridProps = {
   dispatch: Dispatch<AnyAction>;
   scrollToComposite: () => void;
+  canvasExpand: boolean;
   newLayersLoading: boolean;
   synthLayerSelected: string | undefined;
   isDragging: boolean;
@@ -105,7 +107,6 @@ export type GridProps = {
   action: string;
   writingRef: Ref<HTMLTextAreaElement>;
   handleBlur: (e: FormEvent) => void;
-  handleImageAdd: (e: FormEvent) => Promise<void>;
   handleReset: () => void;
   canvasRef: Ref<HTMLCanvasElement>;
   handleMouseDown: (e: MouseEvent) => void;
@@ -113,7 +114,6 @@ export type GridProps = {
   handleMouseUp: (e: MouseEvent) => void;
   font: string;
   setFont: (e: string) => void;
-
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
 };
@@ -144,6 +144,7 @@ export type CanvasProps = {
   handleMouseUp: (e: MouseEvent) => void;
   newLayersLoading: boolean;
   isDragging: boolean;
+  canvasExpand: boolean;
   showBottomOptions: boolean;
   setShowBottomOptions: (e: boolean) => void;
   colorPicker: boolean;
@@ -159,14 +160,13 @@ export type CanvasProps = {
   undo: () => void;
   redo: () => void;
   handleReset: () => void;
-  handleImageAdd: (e: FormEvent) => Promise<void>;
+  dispatch: Dispatch<AnyAction>;
   action: string;
   writingRef: Ref<HTMLTextAreaElement>;
   handleBlur: (e: FormEvent) => void;
   selectedElement: ElementInterface | null;
   font: string;
   setFont: (e: string) => void;
-
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
 };
@@ -177,6 +177,7 @@ export type BottomMenuProps = {
   colorPicker: boolean;
   setColorPicker: (e: boolean) => void;
   hex: string;
+  canvasExpand: boolean;
   setHex: (e: string) => void;
   setThickness: (e: boolean) => void;
   thickness: boolean;
@@ -185,11 +186,10 @@ export type BottomMenuProps = {
   setTool: (e: string) => void;
   undo: () => void;
   redo: () => void;
-  handleImageAdd: (e: FormEvent) => Promise<void>;
   handleReset: () => void;
   font: string;
   setFont: (e: string) => void;
-
+  dispatch: Dispatch<AnyAction>;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
 };

@@ -24,6 +24,7 @@ import messagesModalReducer from "./reducers/messagesModalSlice";
 import litClientReducer from "./reducers/litClientSlice";
 import synthLoadingReducer from "./reducers/synthLoadingSlice";
 import initImagePromptReducer from "./reducers/initImagePromptSlice";
+import expandCanvasReducer from "./reducers/expandCanvasSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -50,6 +51,7 @@ const reducer = combineReducers({
   litClientReducer,
   synthLoadingReducer,
   initImagePromptReducer,
+  expandCanvasReducer
 });
 
 export const store = configureStore({
