@@ -37,12 +37,14 @@ const drawPatternElement = (
         ctx?.scale(3, 3);
         ctx?.translate(-centerXCircle, -centerYCircle);
         ctx?.arc(centerXCircle, centerYCircle, radius, 0, 2 * Math.PI, false);
+
         ctx?.closePath();
-        ctx?.clip();
-        ctx?.fill();
         ctx?.stroke();
+        ctx?.fill();
         ctx?.restore();
       }
+
+      ctx?.clip();
       break;
 
     case "pattern":

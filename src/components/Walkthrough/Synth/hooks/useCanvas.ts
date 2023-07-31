@@ -116,8 +116,7 @@ const useCanvas = () => {
         e.clientY - bounds.top,
         elements[0],
         ctx,
-        zoom,
-        pan
+        elements[0].type === "circle" ? true : false
       )
     ) {
       const newElement = createElement(
@@ -171,8 +170,7 @@ const useCanvas = () => {
         e.clientY - bounds.top,
         elements[0],
         ctx,
-        zoom,
-        pan
+        elements[0].type === "circle" ? true : false
       )
     ) {
       setColorPicker(false);
