@@ -14,6 +14,7 @@ const CanvasOption: FunctionComponent<CanvasOptionProps> = ({
   height,
   color,
   text,
+  toolTip,
 }): JSX.Element => {
   return (
     <div
@@ -29,6 +30,7 @@ const CanvasOption: FunctionComponent<CanvasOptionProps> = ({
           ? () => setShowString(string_option as string)
           : () => {}
       }
+      title={toolTip}
     >
       <div className="col-start-1 relative w-fit h-fit place-self-center flex">
         {text ? (

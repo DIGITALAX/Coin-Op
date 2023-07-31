@@ -34,6 +34,19 @@ const Grid: FunctionComponent<GridProps> = ({
   setBrushWidth,
   setTool,
   colorPicker,
+  tool,
+  undo,
+  redo,
+  handleImageAdd,
+  handleReset,
+  action,
+  handleBlur,
+  writingRef,
+  selectedElement,
+  font,
+  fontOpen,
+  setFont,
+  setFontOpen,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -66,6 +79,15 @@ const Grid: FunctionComponent<GridProps> = ({
           </div>
           <div className="relative w-full h-full flex flex-col gap-3">
             <Canvas
+              font={font}
+              setFont={setFont}
+              fontOpen={fontOpen}
+              setFontOpen={setFontOpen}
+              tool={tool}
+              action={action}
+              handleBlur={handleBlur}
+              writingRef={writingRef}
+              selectedElement={selectedElement}
               canvasRef={canvasRef}
               handleMouseDown={handleMouseDown}
               handleMouseUp={handleMouseUp}
@@ -83,6 +105,10 @@ const Grid: FunctionComponent<GridProps> = ({
               setBrushWidth={setBrushWidth}
               brushWidth={brushWidth}
               setTool={setTool}
+              undo={undo}
+              redo={redo}
+              handleImageAdd={handleImageAdd}
+              handleReset={handleReset}
             />
             <div className="relative h-10 w-full flex justify-center items-center flex-row gap-3">
               <div className="relative w-full h-full flex items-center justify-start">

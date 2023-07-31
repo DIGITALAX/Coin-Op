@@ -12,39 +12,11 @@ const createElement = (
   id: number,
   strokeWidth?: number,
   fill?: string,
-  fillStyle?: string,
-  stroke?: string,
-  image?: HTMLImageElement
+  font?: string
 ): ElementInterface | undefined => {
   const bounds = canvas?.getBoundingClientRect();
   switch (type) {
-    case "line":
-    case "ell":
-      return {
-        id,
-        type,
-        x1,
-        y1,
-        x2: x2 - x1,
-        y2: y2 - y1,
-        fill,
-        stroke,
-        strokeWidth,
-        fillStyle,
-      };
-    case "rect":
-      return {
-        id,
-        type,
-        x1,
-        y1,
-        x2: x2 - x1,
-        y2: y2 - y1,
-        fill,
-        stroke,
-        strokeWidth,
-        fillStyle,
-      };
+    case "erase":
     case "pencil":
       return {
         id,
@@ -69,27 +41,7 @@ const createElement = (
         fill,
         strokeWidth,
         text: "",
-      };
-    case "image":
-      return {
-        id,
-        type,
-        x1: ((x1 - pan.xOffset) / zoom) * devicePixelRatio,
-        y1: ((y1 - pan.yOffset) / zoom) * devicePixelRatio,
-        x2: ((x2 - pan.xOffset) / zoom) * devicePixelRatio,
-        y2: ((y2 - pan.yOffset) / zoom) * devicePixelRatio,
-        image,
-      };
-    case "marquee":
-      return {
-        id,
-        type,
-        x1,
-        y1,
-        x2: x2 - x1,
-        y2: y2 - y1,
-        stroke: "#929292",
-        lineDash: [10, 10],
+        font,
       };
   }
 };

@@ -1,4 +1,4 @@
-import { FunctionComponent, MouseEvent } from "react";
+import { FormEvent, FunctionComponent, MouseEvent } from "react";
 import { CanvasProps } from "../types/synth.types";
 import { AiOutlineLoading } from "react-icons/ai";
 import BottomMenu from "./BottomMenu";
@@ -21,11 +21,28 @@ const Canvas: FunctionComponent<CanvasProps> = ({
   setBrushWidth,
   setTool,
   colorPicker,
+  tool,
+  undo,
+  redo,
+  handleImageAdd,
+  handleReset,
+  handleBlur,
+  action,
+  writingRef,
+  selectedElement,
+  font,
+  fontOpen,
+  setFont,
+  setFontOpen,
 }): JSX.Element => {
   return (
     <div
       className={`relative h-full w-full flex items-center justify-center rounded-md border border-ama ${
-        isDragging ? "cursor-grabbing" : "cursor-cell"
+        isDragging
+          ? "cursor-grabbing"
+          : tool === "text"
+          ? "cursor-text"
+          : "cursor-default"
       }`}
       id="parent"
     >
@@ -42,8 +59,12 @@ const Canvas: FunctionComponent<CanvasProps> = ({
         </div>
       ) : (
         <>
-          <div className="absolute w-full h-fit flex z-1 bottom-1 left-1">
+          <div className="absolute w-full h-fit flex z-1 bottom-px left-px">
             <BottomMenu
+              font={font}
+              setFont={setFont}
+              fontOpen={fontOpen}
+              setFontOpen={setFontOpen}
               showBottomOptions={showBottomOptions}
               setShowBottomOptions={setShowBottomOptions}
               colorPicker={colorPicker}
@@ -55,8 +76,27 @@ const Canvas: FunctionComponent<CanvasProps> = ({
               setBrushWidth={setBrushWidth}
               brushWidth={brushWidth}
               setTool={setTool}
+              undo={undo}
+              redo={redo}
+              handleImageAdd={handleImageAdd}
+              handleReset={handleReset}
             />
           </div>
+          {action === "writing" && (
+            <textarea
+              ref={writingRef}
+              autoFocus
+              className={`w-40 h-16 p-1.5 bg-black/50 border border-white rounded-md text-white text-sm z-10 caret-white`}
+              onKeyDown={(e: FormEvent) => handleBlur(e)}
+              style={{
+                resize: "none",
+                position: "absolute",
+                top: selectedElement?.y1,
+                left: selectedElement?.x1,
+                fontFamily: font,
+              }}
+            ></textarea>
+          )}
           <canvas
             id="canvasId"
             ref={canvasRef}
@@ -69,7 +109,6 @@ const Canvas: FunctionComponent<CanvasProps> = ({
             onMouseMove={(e: MouseEvent<HTMLCanvasElement>) =>
               handleMouseMove(e)
             }
-            // onWheel={(e: WheelEvent<HTMLCanvasElement>) => handleWheel(e)}
           ></canvas>
         </>
       )}

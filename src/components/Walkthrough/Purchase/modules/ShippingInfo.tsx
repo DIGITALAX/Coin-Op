@@ -78,6 +78,17 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                 })
               }
             />
+            <input
+              placeholder="country"
+              className="bg-black border border-white p-1.5 rounded-md font-mana w-full text-white text-xs  h-full"
+              value={fulfillmentDetails.country}
+              onChange={(e) =>
+                setFulfillmentDetails({
+                  ...fulfillmentDetails,
+                  country: e.target.value,
+                })
+              }
+            />
           </div>
         </div>
       </div>

@@ -62,6 +62,7 @@ const useCheckout = () => {
     zip: string;
     city: string;
     state: string;
+    country: string;
   }>({
     name: "",
     contact: "",
@@ -69,6 +70,7 @@ const useCheckout = () => {
     zip: "",
     city: "",
     state: "",
+    country: "",
   });
 
   const getAddressApproved = async () => {
@@ -411,6 +413,7 @@ const useCheckout = () => {
         zip: "",
         city: "",
         state: "",
+        country: "",
       });
       router.push("/success");
     } catch (err: any) {
@@ -466,6 +469,7 @@ const useCheckout = () => {
             zip: "",
             city: "",
             state: "",
+            country: "",
           });
           router.push("/success");
           break;

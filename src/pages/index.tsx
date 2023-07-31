@@ -40,6 +40,19 @@ export default function Home(): JSX.Element {
     setBrushWidth,
     setTool,
     colorPicker,
+    tool,
+    undo,
+    redo,
+    handleImageAdd,
+    handleReset,
+    writingRef,
+    handleBlur,
+    action,
+    selectedElement,
+    font,
+    fontOpen,
+    setFont,
+    setFontOpen,
   } = useCanvas();
   const { preRollsLoading } = usePreRoll();
   const { layersLoading } = useLayer();
@@ -92,9 +105,18 @@ export default function Home(): JSX.Element {
       />
       <PageContainer
         template={template}
+        tool={tool}
         dispatch={dispatch}
         isDragging={isDragging}
         synthLayer={synthLayer}
+        undo={undo}
+        font={font}
+        setFont={setFont}
+        fontOpen={fontOpen}
+        setFontOpen={setFontOpen}
+        redo={redo}
+        handleImageAdd={handleImageAdd}
+        handleReset={handleReset}
         synthLayerSelected={synthLayerSelected}
         setShareSet={setShareSet}
         shareSet={shareSet}
@@ -105,6 +127,7 @@ export default function Home(): JSX.Element {
         synthLoading={synthLoading}
         presets={presets}
         address={address}
+        selectedElement={selectedElement}
         openConnectModal={openConnectModal}
         handleLensSignIn={handleLensSignIn}
         profile={profile}
@@ -130,6 +153,9 @@ export default function Home(): JSX.Element {
         setBrushWidth={setBrushWidth}
         brushWidth={brushWidth}
         setTool={setTool}
+        action={action}
+        handleBlur={handleBlur}
+        writingRef={writingRef}
       />
       <PreRolls
         cartItems={cartItems}

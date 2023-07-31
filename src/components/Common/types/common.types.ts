@@ -1,5 +1,8 @@
 import { Template } from "@/components/Walkthrough/Format/types/format.types";
-import { SynthConfig } from "@/components/Walkthrough/Synth/types/synth.types";
+import {
+  ElementInterface,
+  SynthConfig,
+} from "@/components/Walkthrough/Synth/types/synth.types";
 import { NextRouter } from "next/router";
 import {
   ClipboardEvent,
@@ -23,6 +26,14 @@ export type PageContainerProps = {
   isDragging: boolean;
   compositeRef: LegacyRef<HTMLDivElement> | undefined;
   template: Template;
+  undo: () => void;
+  redo: () => void;
+  selectedElement: ElementInterface | null;
+  action: string;
+  writingRef: Ref<HTMLTextAreaElement>;
+  handleBlur: (e: FormEvent) => void;
+  handleImageAdd: (e: FormEvent) => Promise<void>;
+  handleReset: () => void;
   canvasRef: Ref<HTMLCanvasElement>;
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
@@ -38,6 +49,7 @@ export type PageContainerProps = {
   thickness: boolean;
   setBrushWidth: (e: number) => void;
   brushWidth: number;
+  tool: string;
   setTool: (e: string) => void;
   synthLayer:
     | {
@@ -66,6 +78,10 @@ export type PageContainerProps = {
   signInLoading: boolean;
   layersLoading: boolean;
   printTypeLayers: Layer[];
+  font: string;
+  setFont: (e: string) => void;
+  setFontOpen: (e: boolean) => void;
+  fontOpen: boolean;
 };
 
 export enum PrintType {

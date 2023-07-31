@@ -3,24 +3,26 @@ import { SvgPatternType } from "@/components/Walkthrough/Synth/types/synth.types
 const drawPatternElement = (
   element: SvgPatternType,
   ctx: CanvasRenderingContext2D | null,
+  materialBackground: string
 ) => {
   ctx?.setLineDash([0, 0]);
   (ctx as CanvasRenderingContext2D).lineWidth = 0.3;
   (ctx as CanvasRenderingContext2D).strokeStyle = "#FFC800";
+  (ctx as CanvasRenderingContext2D).fillStyle = materialBackground;
   (ctx as CanvasRenderingContext2D).imageSmoothingEnabled = false;
   switch (element?.type) {
     case "circle":
-      for (const subpath of element.points!) {
-        let minXCircle = subpath[0].x,
-          maxXCircle = subpath[0].x,
-          minYCircle = subpath[0].y,
-          maxYCircle = subpath[0].y;
+      for (const subpath of element?.points!) {
+        let minXCircle = subpath[0]?.x,
+          maxXCircle = subpath[0]?.x,
+          minYCircle = subpath[0]?.y,
+          maxYCircle = subpath[0]?.y;
 
         for (let i = 1; i < subpath.length; i++) {
-          minXCircle = Math.min(minXCircle, subpath[i].x);
-          maxXCircle = Math.max(maxXCircle, subpath[i].x);
-          minYCircle = Math.min(minYCircle, subpath[i].y);
-          maxYCircle = Math.max(maxYCircle, subpath[i].y);
+          minXCircle = Math.min(minXCircle, subpath[i]?.x);
+          maxXCircle = Math.max(maxXCircle, subpath[i]?.x);
+          minYCircle = Math.min(minYCircle, subpath[i]?.y);
+          maxYCircle = Math.max(maxYCircle, subpath[i]?.y);
         }
 
         const centerXCircle = (minXCircle + maxXCircle) / 2;
@@ -36,6 +38,8 @@ const drawPatternElement = (
         ctx?.translate(-centerXCircle, -centerYCircle);
         ctx?.arc(centerXCircle, centerYCircle, radius, 0, 2 * Math.PI, false);
         ctx?.closePath();
+        ctx?.clip();
+        ctx?.fill();
         ctx?.stroke();
         ctx?.restore();
       }
@@ -46,16 +50,16 @@ const drawPatternElement = (
         ctx?.beginPath();
         ctx?.save();
 
-        let minX = subpath[0].x,
-          maxX = subpath[0].x,
-          minY = subpath[0].y,
-          maxY = subpath[0].y;
+        let minX = subpath[0]?.x,
+          maxX = subpath[0]?.x,
+          minY = subpath[0]?.y,
+          maxY = subpath[0]?.y;
 
         for (let i = 1; i < subpath.length; i++) {
-          minX = Math.min(minX, subpath[i].x);
-          maxX = Math.max(maxX, subpath[i].x);
-          minY = Math.min(minY, subpath[i].y);
-          maxY = Math.max(maxY, subpath[i].y);
+          minX = Math.min(minX, subpath[i]?.x);
+          maxX = Math.max(maxX, subpath[i]?.x);
+          minY = Math.min(minY, subpath[i]?.y);
+          maxY = Math.max(maxY, subpath[i]?.y);
         }
 
         const centerX = (minX + maxX) / 2;
@@ -65,15 +69,18 @@ const drawPatternElement = (
         ctx?.scale(10, 10);
         ctx?.translate(-centerX, -centerY);
 
-        ctx?.moveTo(subpath[0].x, subpath[0].y);
+        ctx?.moveTo(subpath[0]?.x, subpath[0]?.y);
         for (let i = 1; i < subpath.length; i++) {
-          ctx?.lineTo(subpath[i].x, subpath[i].y);
+          ctx?.lineTo(subpath[i]?.x, subpath[i]?.y);
         }
 
         ctx?.closePath();
         ctx?.stroke();
+        ctx?.fill();
         ctx?.restore();
       }
+
+      ctx?.clip();
       break;
 
     case "image":

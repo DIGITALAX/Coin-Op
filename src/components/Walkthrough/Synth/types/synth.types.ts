@@ -1,10 +1,11 @@
-import { MouseEvent, Ref, WheelEvent } from "react";
+import { FormEvent, MouseEvent, Ref, WheelEvent } from "react";
 import { AnyAction, Dispatch } from "redux";
 
 export type SynthProps = {
   dispatch: Dispatch<AnyAction>;
   scrollToComposite: () => void;
   isDragging: boolean;
+  selectedElement: ElementInterface | null;
   newLayersLoading: boolean;
   synthLayerSelected: string | undefined;
   showBottomOptions: boolean;
@@ -12,12 +13,20 @@ export type SynthProps = {
   colorPicker: boolean;
   setColorPicker: (e: boolean) => void;
   hex: string;
+  undo: () => void;
+  redo: () => void;
+  action: string;
+  writingRef: Ref<HTMLTextAreaElement>;
+  handleBlur: (e: FormEvent) => void;
+  handleImageAdd: (e: FormEvent) => Promise<void>;
+  handleReset: () => void;
   setHex: (e: string) => void;
   setThickness: (e: boolean) => void;
   thickness: boolean;
   setBrushWidth: (e: number) => void;
   brushWidth: number;
   setTool: (e: string) => void;
+  tool: string;
   synthLayer:
     | {
         parentURI: string;
@@ -37,6 +46,10 @@ export type SynthProps = {
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
   handleMouseUp: (e: MouseEvent) => void;
+  font: string;
+  setFont: (e: string) => void;
+  setFontOpen: (e: boolean) => void;
+  fontOpen: boolean;
 };
 
 export type CanvasOptionProps = {
@@ -50,6 +63,7 @@ export type CanvasOptionProps = {
   height: number;
   color?: boolean;
   text?: string;
+  toolTip: string;
 };
 
 export type GridProps = {
@@ -58,6 +72,7 @@ export type GridProps = {
   newLayersLoading: boolean;
   synthLayerSelected: string | undefined;
   isDragging: boolean;
+  selectedElement: ElementInterface | null;
   synthLayer:
     | {
         parentURI: string;
@@ -83,11 +98,24 @@ export type GridProps = {
   setTool: (e: string) => void;
   handleSynth: () => Promise<void>;
   synthLoading: boolean;
+  tool: string;
   presets: string[];
+  undo: () => void;
+  redo: () => void;
+  action: string;
+  writingRef: Ref<HTMLTextAreaElement>;
+  handleBlur: (e: FormEvent) => void;
+  handleImageAdd: (e: FormEvent) => Promise<void>;
+  handleReset: () => void;
   canvasRef: Ref<HTMLCanvasElement>;
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
   handleMouseUp: (e: MouseEvent) => void;
+  font: string;
+  setFont: (e: string) => void;
+
+  setFontOpen: (e: boolean) => void;
+  fontOpen: boolean;
 };
 
 export interface SynthConfig {
@@ -127,6 +155,20 @@ export type CanvasProps = {
   setBrushWidth: (e: number) => void;
   brushWidth: number;
   setTool: (e: string) => void;
+  tool: string;
+  undo: () => void;
+  redo: () => void;
+  handleReset: () => void;
+  handleImageAdd: (e: FormEvent) => Promise<void>;
+  action: string;
+  writingRef: Ref<HTMLTextAreaElement>;
+  handleBlur: (e: FormEvent) => void;
+  selectedElement: ElementInterface | null;
+  font: string;
+  setFont: (e: string) => void;
+
+  setFontOpen: (e: boolean) => void;
+  fontOpen: boolean;
 };
 
 export type BottomMenuProps = {
@@ -141,6 +183,15 @@ export type BottomMenuProps = {
   setBrushWidth: (e: number) => void;
   brushWidth: number;
   setTool: (e: string) => void;
+  undo: () => void;
+  redo: () => void;
+  handleImageAdd: (e: FormEvent) => Promise<void>;
+  handleReset: () => void;
+  font: string;
+  setFont: (e: string) => void;
+
+  setFontOpen: (e: boolean) => void;
+  fontOpen: boolean;
 };
 
 export interface SvgPatternType {
@@ -168,6 +219,8 @@ export interface SvgPatternType {
   height?: number;
   offsetXs?: number[];
   offsetYs?: number[];
+  scaleFactorX?: number;
+  scaleFactorY?: number;
 }
 
 export interface ElementInterface {
@@ -176,7 +229,14 @@ export interface ElementInterface {
   x1?: number;
   y1?: number;
   x2?: number;
+  clipElement?: SvgPatternType;
+  width?: number;
+  height?: number;
   y2?: number;
+  offsetY?: number;
+  offsetX?: number;
+  offsetXs?: number[];
+  offsetYs?: number[];
   points?: {
     x: number;
     y: number;
@@ -189,6 +249,7 @@ export interface ElementInterface {
   image?: HTMLImageElement;
   position?: string;
   lineDash?: number[];
+  font?: string;
 }
 
 export interface Point2 {

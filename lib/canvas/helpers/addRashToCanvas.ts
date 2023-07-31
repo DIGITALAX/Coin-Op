@@ -1,7 +1,8 @@
+import { SvgPatternType } from "@/components/Walkthrough/Synth/types/synth.types";
 import convertSvgToPath from "./convertSVGToPath";
 
 const addRashToCanvas = async (
-  setElements: (e: any) => void,
+  setElements: (e: SvgPatternType[]) => void,
   image: string,
   canvas: HTMLCanvasElement
 ) => {
@@ -26,7 +27,8 @@ const addRashToCanvas = async (
         posX: 0,
         posY: 0,
         stroke: "#ffc800",
-        subpaths,
+        scaleFactorX,
+        scaleFactorY,
       },
     ]);
   } catch (err: any) {

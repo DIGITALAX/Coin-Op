@@ -1,5 +1,4 @@
 import { INFURA_GATEWAY } from "../../constants";
-import { describeArc } from "./describeArc";
 
 const convertSvgToPath = async (image: string, scale: number) => {
   const base: Response = await fetch(
@@ -273,7 +272,6 @@ const convertSvgToPath = async (image: string, scale: number) => {
   if (currentSubpath.length > 0) {
     subpathsData.push(currentSubpath);
   }
-
   return { subpaths: subpathsData, bbox: { xMin, xMax, yMin, yMax }, circle };
 };
 

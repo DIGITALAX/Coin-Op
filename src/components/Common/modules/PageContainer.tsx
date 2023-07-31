@@ -48,6 +48,19 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   setBrushWidth,
   setTool,
   colorPicker,
+  tool,
+  undo,
+  redo,
+  handleImageAdd,
+  handleReset,
+  action,
+  handleBlur,
+  writingRef,
+  selectedElement,
+  font,
+  fontOpen,
+  setFont,
+  setFontOpen,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -61,6 +74,15 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           layersLoading={layersLoading}
         />
         <Synth
+          font={font}
+          setFont={setFont}
+          fontOpen={fontOpen}
+          setFontOpen={setFontOpen}
+          action={action}
+          selectedElement={selectedElement}
+          handleBlur={handleBlur}
+          writingRef={writingRef}
+          tool={tool}
           dispatch={dispatch}
           synthLayerSelected={synthLayerSelected}
           synthLayer={synthLayer}
@@ -86,6 +108,10 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           setBrushWidth={setBrushWidth}
           brushWidth={brushWidth}
           setTool={setTool}
+          undo={undo}
+          redo={redo}
+          handleImageAdd={handleImageAdd}
+          handleReset={handleReset}
         />
         <Composite
           dispatch={dispatch}

@@ -40,3 +40,13 @@ export const COIN_OP_ORACLE: `0x${string}` =
   "0x31bbf0CD528aCb595E9F2dEdeb2f0771AeFD6368";
 export const COIN_OP_FULFILLMENT: `0x${string}` =
   "0xF80D3044B28807f52EFB38e37b681eFF9D2867b9";
+
+export const allFonts: string[] = [
+  "Manaspace",
+  "Hermano Alto Stamp",
+  "Megamax Jones",
+  "Monument Regular",
+  "Aquatico Regular",
+  "Satoshi Regular",
+  "Satoshi Black",
+];

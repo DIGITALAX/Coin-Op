@@ -18,60 +18,13 @@ const updateElement = (
   index: number,
   strokeWidth: number | null,
   fill: string | null,
-  fillStyle: string | null,
-  stroke: string | null,
   text?: string,
-  image?: any
+  font?: string
 ) => {
   const elementsCopy = [...(elements || [])];
   const bounds = canvas?.getBoundingClientRect();
   switch (type) {
-    case "line":
-    case "ell":
-    case "rect":
-      elementsCopy[index] = createElement(
-        {
-          xOffset: pan.xOffset,
-          yOffset: pan.yOffset,
-        },
-        canvas,
-        zoom,
-        x1!,
-        y1!,
-        x2!,
-        y2!,
-        type,
-        index,
-        strokeWidth!,
-        fill!,
-        fillStyle!,
-        stroke!,
-        undefined
-      ) as any;
-      break;
-
-    case "image":
-      elementsCopy[index] = createElement(
-        {
-          xOffset: pan.xOffset,
-          yOffset: pan.yOffset,
-        },
-        canvas,
-        zoom,
-        x1!,
-        y1!,
-        x2!,
-        y2!,
-        type,
-        index,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        image
-      ) as any;
-      break;
-
+    case "erase":
     case "pencil":
       elementsCopy[index].points = [
         ...(elementsCopy[index]?.points as any),
@@ -85,7 +38,7 @@ const updateElement = (
     case "text":
       (ctx as CanvasRenderingContext2D).font = `${
         strokeWidth! * devicePixelRatio
-      }px dosis`;
+      }px ${font}`;
       const textWidth = ctx?.measureText(text!).width!;
       const textHeight = ctx?.measureText("M").width! / 2;
       elementsCopy[index] = {
@@ -104,29 +57,10 @@ const updateElement = (
           index,
           strokeWidth!,
           fill!,
-          undefined,
-          undefined,
-          undefined
+          font
         ),
         text,
       };
-      break;
-
-    case "marquee":
-      elementsCopy[index] = createElement(
-        {
-          xOffset: pan.xOffset,
-          yOffset: pan.yOffset,
-        },
-        canvas,
-        zoom,
-        x1!,
-        y1!,
-        x2!,
-        y2!,
-        type,
-        index
-      ) as any;
       break;
   }
   setElements(elementsCopy, true);
