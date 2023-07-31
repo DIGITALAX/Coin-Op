@@ -52,6 +52,10 @@ export default function Home(): JSX.Element {
     fontOpen,
     setFont,
     setFontOpen,
+    materialBackground,
+    materialOpen,
+    setMaterialBackground,
+    setMaterialOpen,
   } = useCanvas();
   const { preRollsLoading } = usePreRoll();
   const { layersLoading } = useLayer();
@@ -158,6 +162,10 @@ export default function Home(): JSX.Element {
         action={action}
         handleBlur={handleBlur}
         writingRef={writingRef}
+        materialBackground={materialBackground}
+        setMaterialBackground={setMaterialBackground}
+        materialOpen={materialOpen}
+        setMaterialOpen={setMaterialOpen}
       />
       <PreRolls
         cartItems={cartItems}

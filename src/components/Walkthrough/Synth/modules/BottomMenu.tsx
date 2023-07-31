@@ -28,6 +28,10 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
   fontOpen,
   dispatch,
   canvasExpand,
+  materialBackground,
+  setMaterialBackground,
+  materialOpen,
+  setMaterialOpen,
 }): JSX.Element => {
   return (
     <div
@@ -201,6 +205,44 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
             setShowString={setTool}
             string_option={"erase"}
             toolTip={"eraser"}
+          />
+          {materialOpen && (
+            <div
+              className={`absolute w-fit h-fit ${
+                canvasExpand ? "bottom-20" : "bottom-16"
+              }`}
+            >
+              <div className="relative w-fit h-fit flex flex-row justify-center items-center gap-1.5">
+                {["#ffffff", "#000000", "#9B9B9B", "#558FF7"]?.map(
+                  (value: string, index: number) => {
+                    return (
+                      <div
+                        className={`relative rounded-full h-4 w-4 cursor-pointer flex items-center justify-center hover:opacity-60 border ${
+                          materialBackground === value
+                            ? "border-sol"
+                            : "border-white"
+                        }`}
+                        key={index}
+                        onClick={() => setMaterialBackground(value)}
+                        style={{
+                          backgroundColor: value,
+                        }}
+                      ></div>
+                    );
+                  }
+                )}
+              </div>
+            </div>
+          )}
+          <CanvasOption
+            canvasExpand={canvasExpand}
+            image="QmaoXfAac5o8CYeTGYXX6dCjqvKneURgqcUri59qsHqVFW"
+            bgColor="black"
+            width={13}
+            height={12}
+            setShowBool={setMaterialOpen}
+            bool_option={materialOpen}
+            toolTip={"material background"}
           />
           {colorPicker && (
             <div className="absolute bottom-8 flex flex-col w-fit h-fit">

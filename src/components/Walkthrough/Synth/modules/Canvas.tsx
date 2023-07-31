@@ -35,6 +35,10 @@ const Canvas: FunctionComponent<CanvasProps> = ({
   setFontOpen,
   dispatch,
   canvasExpand,
+  materialBackground,
+  materialOpen,
+  setMaterialBackground,
+  setMaterialOpen,
 }): JSX.Element => {
   return (
     <div
@@ -66,6 +70,10 @@ const Canvas: FunctionComponent<CanvasProps> = ({
             }`}
           >
             <BottomMenu
+              materialBackground={materialBackground}
+              setMaterialBackground={setMaterialBackground}
+              materialOpen={materialOpen}
+              setMaterialOpen={setMaterialOpen}
               font={font}
               setFont={setFont}
               fontOpen={fontOpen}

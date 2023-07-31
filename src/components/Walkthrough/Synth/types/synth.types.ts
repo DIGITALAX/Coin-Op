@@ -50,6 +50,10 @@ export type SynthProps = {
   setFont: (e: string) => void;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
+  materialBackground: string
+  setMaterialBackground: (e: string) => void
+  materialOpen: boolean
+  setMaterialOpen: (e: boolean) => void;
 };
 
 export type CanvasOptionProps = {
@@ -116,6 +120,10 @@ export type GridProps = {
   setFont: (e: string) => void;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
+  materialBackground: string
+  setMaterialBackground: (e: string) => void
+  materialOpen: boolean
+  setMaterialOpen: (e: boolean) => void;
 };
 
 export interface SynthConfig {
@@ -169,6 +177,10 @@ export type CanvasProps = {
   setFont: (e: string) => void;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
+  materialBackground: string
+  setMaterialBackground: (e: string) => void
+  materialOpen: boolean
+  setMaterialOpen: (e: boolean) => void;
 };
 
 export type BottomMenuProps = {
@@ -192,6 +204,10 @@ export type BottomMenuProps = {
   dispatch: Dispatch<AnyAction>;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
+  materialBackground: string
+  setMaterialBackground: (e: string) => void
+  materialOpen: boolean
+  setMaterialOpen: (e: boolean) => void;
 };
 
 export interface SvgPatternType {

@@ -60,7 +60,11 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   fontOpen,
   setFont,
   setFontOpen,
-  canvasExpand
+  canvasExpand,
+  materialBackground,
+  materialOpen,
+  setMaterialBackground,
+  setMaterialOpen,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -74,6 +78,10 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           layersLoading={layersLoading}
         />
         <Synth
+          materialBackground={materialBackground}
+          setMaterialBackground={setMaterialBackground}
+          materialOpen={materialOpen}
+          setMaterialOpen={setMaterialOpen}
           font={font}
           setFont={setFont}
           fontOpen={fontOpen}

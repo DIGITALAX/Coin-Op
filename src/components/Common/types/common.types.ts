@@ -24,6 +24,10 @@ export type PageContainerProps = {
   scrollToComposite: () => void;
   newLayersLoading: boolean;
   isDragging: boolean;
+  materialBackground: string
+  setMaterialBackground: (e: string) => void
+  materialOpen: boolean
+  setMaterialOpen: (e: boolean) => void;
   compositeRef: LegacyRef<HTMLDivElement> | undefined;
   template: Template;
   canvasExpand: boolean;

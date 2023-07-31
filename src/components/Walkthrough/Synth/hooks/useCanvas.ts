@@ -36,6 +36,9 @@ const useCanvas = () => {
   const synthLoading = useSelector(
     (state: RootState) => state.app.synthLoadingReducer.value
   );
+  const canvasOpen = useSelector(
+    (state: RootState) => state.app.expandCanvasReducer.value
+  );
   const [canvas, setCanvas] = useState<any>(null);
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
     setCanvas(canvas);
@@ -47,6 +50,7 @@ const useCanvas = () => {
   const [font, setFont] = useState<string>("Manaspace");
   const [fontOpen, setFontOpen] = useState<boolean>(false);
   const [materialBackground, setMaterialBackground] = useState<string>("black");
+  const [materialOpen, setMaterialOpen] = useState<boolean>(false);
   const [tool, setTool] = useState<string>("default");
   const [showBottomOptions, setShowBottomOptions] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -413,7 +417,7 @@ const useCanvas = () => {
             materialBackground
           );
         } else {
-          drawElement(element as ElementInterface, ctx);
+          drawElement(element as ElementInterface, ctx, materialBackground);
         }
       });
       ctx.restore();
@@ -429,6 +433,8 @@ const useCanvas = () => {
     canvas,
     ctx,
     isDragging,
+    materialBackground,
+    canvasOpen,
   ]);
 
   useEffect(() => {
@@ -501,6 +507,10 @@ const useCanvas = () => {
     fontOpen,
     setFont,
     setFontOpen,
+    materialBackground,
+    materialOpen,
+    setMaterialBackground,
+    setMaterialOpen,
   };
 };
 

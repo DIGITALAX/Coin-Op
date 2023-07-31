@@ -41,6 +41,10 @@ const Synth: FunctionComponent<SynthProps> = ({
   setFont,
   setFontOpen,
   canvasExpand,
+  materialBackground,
+  materialOpen,
+  setMaterialBackground,
+  setMaterialOpen,
 }): JSX.Element => {
   return (
     <div className={`relative w-full h-fit flex flex-col`}>
@@ -83,6 +87,10 @@ const Synth: FunctionComponent<SynthProps> = ({
         undo={undo}
         redo={redo}
         handleReset={handleReset}
+        materialBackground={materialBackground}
+        setMaterialBackground={setMaterialBackground}
+        materialOpen={materialOpen}
+        setMaterialOpen={setMaterialOpen}
       />
     </div>
   );

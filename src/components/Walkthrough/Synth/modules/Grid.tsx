@@ -47,6 +47,10 @@ const Grid: FunctionComponent<GridProps> = ({
   setFont,
   setFontOpen,
   canvasExpand,
+  materialBackground,
+  materialOpen,
+  setMaterialBackground,
+  setMaterialOpen,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -89,6 +93,10 @@ const Grid: FunctionComponent<GridProps> = ({
           </div>
           <div className={`relative w-full h-full flex flex-col gap-3`}>
             <Canvas
+              materialBackground={materialBackground}
+              setMaterialBackground={setMaterialBackground}
+              materialOpen={materialOpen}
+              setMaterialOpen={setMaterialOpen}
               dispatch={dispatch}
               font={font}
               setFont={setFont}

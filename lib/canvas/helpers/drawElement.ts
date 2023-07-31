@@ -1,12 +1,11 @@
 import getStroke from "perfect-freehand";
 import getSvgPathFromStroke from "./getSvgPathFromStroke";
-import {
-  ElementInterface,
-} from "@/components/Walkthrough/Synth/types/synth.types";
+import { ElementInterface } from "@/components/Walkthrough/Synth/types/synth.types";
 
 const drawElement = (
   element: ElementInterface,
-  ctx: CanvasRenderingContext2D | null
+  ctx: CanvasRenderingContext2D | null,
+  materialBackground: string
 ) => {
   ctx?.setLineDash(element?.lineDash ? element?.lineDash : [0]);
   (ctx as CanvasRenderingContext2D).imageSmoothingEnabled = false;
@@ -17,7 +16,10 @@ const drawElement = (
     case "erase":
     case "pencil":
       ctx?.beginPath();
-      (ctx as CanvasRenderingContext2D).fillStyle = element?.fill as string;
+      (ctx as CanvasRenderingContext2D).fillStyle =
+        element?.type === "erase"
+          ? materialBackground
+          : (element?.fill as string);
       const pathData = getSvgPathFromStroke(
         getStroke(element?.points as { x: number; y: number }[], {
           size: (element?.strokeWidth as number) * devicePixelRatio,
