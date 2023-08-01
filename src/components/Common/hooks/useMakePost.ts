@@ -11,16 +11,10 @@ import {
   removePostData,
   setPostData,
 } from "../../../../lib/lens/utils";
-import { waitForTransaction } from "@wagmi/core";
 import { splitSignature } from "ethers/lib/utils.js";
 import { MediaType, UploadedMedia } from "../types/common.types";
 import { Profile } from "../types/lens.types";
 import useImageUpload from "./useImageUpload";
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useSignTypedData,
-} from "wagmi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { setLensPostBox } from "../../../../redux/reducers/lensPostBoxSlice";
@@ -41,10 +35,16 @@ import { setIndexModal } from "../../../../redux/reducers/indexModalSlice";
 import handleIndexCheck from "../../../../lib/lens/helpers/handleIndexCheck";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import { setCollectOpen } from "../../../../redux/reducers/collectOpenSlice";
+import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { polygon } from "viem/chains";
+import { useAccount } from "wagmi";
 
 const useMakePost = () => {
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
   const [postLoading, setPostLoading] = useState<boolean>(false);
-  const [postArgs, setPostArgs] = useState<any>();
   const [postDescription, setPostDescription] = useState<string>("");
   const [caretCoord, setCaretCoord] = useState<{ x: number; y: number }>({
     x: 0,
@@ -62,8 +62,8 @@ const useMakePost = () => {
   const [searchGif, setSearchGif] = useState<string>("");
   const [postHTML, setPostHTML] = useState<string>("");
   const [contentURI, setContentURI] = useState<string>();
-  const { signTypedDataAsync } = useSignTypedData();
   const dispatch = useDispatch();
+  const { address } = useAccount();
   const { uploadImage } = useImageUpload();
   const profile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
@@ -77,16 +77,6 @@ const useMakePost = () => {
   const collectModuleType = useSelector(
     (state: RootState) => state?.app?.collectValueReducer?.type
   );
-
-  const { config, isSuccess } = usePrepareContractWrite({
-    address: LENS_HUB_PROXY_ADDRESS_MATIC,
-    abi: LensHubProxy,
-    functionName: "postWithSig",
-    enabled: Boolean(postArgs),
-    args: [postArgs],
-  });
-
-  const { writeAsync } = useContractWrite(config);
 
   const handleGif = (e: FormEvent): void => {
     setSearchGif((e.target as HTMLFormElement).value);
@@ -294,11 +284,17 @@ const useMakePost = () => {
 
         const typedData: any = result.data.createPostTypedData.typedData;
 
-        const signature: any = await signTypedDataAsync({
+        const clientWallet = createWalletClient({
+          chain: polygon,
+          transport: custom((window as any).ethereum),
+        });
+
+        const signature: any = await clientWallet.signTypedData({
           domain: omit(typedData?.domain, ["__typename"]),
           types: omit(typedData?.types, ["__typename"]),
           primaryType: "PostWithSig",
           message: omit(typedData?.value, ["__typename"]),
+          account: address as `0x${string}`,
         });
 
         const broadcastResult: any = await broadcast({
@@ -309,24 +305,35 @@ const useMakePost = () => {
         if (broadcastResult?.data?.broadcast?.__typename !== "RelayerResult") {
           const { v, r, s } = splitSignature(signature);
 
-          const postArgs = {
-            profileId: typedData.value.profileId,
-            contentURI: typedData.value.contentURI,
-            profileIdPointed: typedData.value.profileIdPointed,
-            pubIdPointed: typedData.value.pubIdPointed,
-            referenceModuleData: typedData.value.referenceModuleData,
-            referenceModule: typedData.value.referenceModule,
-            referenceModuleInitData: typedData.value.referenceModuleInitData,
-            collectModule: typedData.value.collectModule,
-            collectModuleInitData: typedData.value.collectModuleInitData,
-            sig: {
-              v,
-              r,
-              s,
-              deadline: typedData.value.deadline,
-            },
-          };
-          setPostArgs(postArgs);
+          const { request } = await publicClient.simulateContract({
+            address: LENS_HUB_PROXY_ADDRESS_MATIC,
+            abi: LensHubProxy,
+            functionName: "postWithSig",
+            args: [
+              {
+                profileId: typedData.value.profileId,
+                contentURI: typedData.value.contentURI,
+                profileIdPointed: typedData.value.profileIdPointed,
+                pubIdPointed: typedData.value.pubIdPointed,
+                referenceModuleData: typedData.value.referenceModuleData,
+                referenceModule: typedData.value.referenceModule,
+                referenceModuleInitData:
+                  typedData.value.referenceModuleInitData,
+                collectModule: typedData.value.collectModule,
+                collectModuleInitData: typedData.value.collectModuleInitData,
+                sig: {
+                  v,
+                  r,
+                  s,
+                  deadline: typedData.value.deadline,
+                },
+              },
+            ],
+            account: address,
+          });
+          const res = await clientWallet.writeContract(request);
+          await publicClient.waitForTransactionReceipt({ hash: res });
+          await handleIndexCheck(res, dispatch, true);
         } else {
           clearPost();
           setTimeout(async () => {
@@ -342,21 +349,6 @@ const useMakePost = () => {
       console.error(err.message);
     }
     setPostLoading(false);
-  };
-
-  const handlePostWrite = async (): Promise<void> => {
-    setPostLoading(true);
-    try {
-      const tx = await writeAsync?.();
-      clearPost();
-      const res = await waitForTransaction({
-        hash: tx?.hash!,
-      });
-      await handleIndexCheck(res?.transactionHash, dispatch, true);
-    } catch (err) {
-      console.error(err);
-      setPostLoading(false);
-    }
   };
 
   const handleMentionClick = (user: any) => {
@@ -402,12 +394,6 @@ const useMakePost = () => {
       dispatch(setImageLoading(false));
     }
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      handlePostWrite();
-    }
-  }, [isSuccess]);
 
   useEffect(() => {
     const savedData = getPostData();
