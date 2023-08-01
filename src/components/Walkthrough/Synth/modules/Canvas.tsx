@@ -52,13 +52,6 @@ const Canvas: FunctionComponent<CanvasProps> = ({
       }`}
       id="parent"
     >
-      {/* <Image
-        src={`${INFURA_GATEWAY}/ipfs/QmPKU1ck9PLyFchFpe2vzJh3eyxSYij28ixTdRzaHi4E1p`}
-        layout="fill"
-        objectFit="cover"
-        className="rounded-md absolute"
-        draggable={false}
-      /> */}
       {newLayersLoading ? (
         <div className="relative w-fit h-fit items-center justify-center flex animate-spin">
           <AiOutlineLoading size={30} color="#FBDB86" />

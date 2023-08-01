@@ -13,7 +13,12 @@ const useElements = (): UseElementsReturnType => {
   const [history, setHistory] = useState(new Map<string, any[]>());
   const [redoStack, setRedoStack] = useState(new Map<string, any[]>());
 
-  const setState = (patternId: string, action: any, overwrite = false) => {
+  const setState = (
+    patternId: string,
+    action: any,
+    overwrite = false,
+    resize = false
+  ) => {
     setHistory((prevHistory) => {
       const newHistory = new Map(prevHistory);
 
@@ -27,7 +32,9 @@ const useElements = (): UseElementsReturnType => {
           ? action(newHistory.get(patternId)![index.get(patternId)!])
           : action;
 
-      if (overwrite) {
+      if (resize) {
+        newHistory.set(patternId, newState);
+      } else if (overwrite) {
         newHistory.set(patternId, newState);
         setIndex(
           (prevIndex) => new Map(prevIndex.set(patternId, newState.length - 1))

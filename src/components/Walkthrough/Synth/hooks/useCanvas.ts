@@ -69,6 +69,17 @@ const useCanvas = () => {
     useState<ElementInterface | null>(null);
   const [synthElementMove, setSynthElementMove] =
     useState<ElementInterface | null>();
+  const [canvasSize, setCanvasSize] = useState<{
+    width: number;
+    height: number;
+    oldWidth: number;
+    oldHeight: number;
+  }>({
+    width: 0,
+    height: 0,
+    oldWidth: 0,
+    oldHeight: 0,
+  });
   const [hex, setHex] = useState<string>("#000000");
   const [colorPicker, setColorPicker] = useState<boolean>(false);
   const [brushWidth, setBrushWidth] = useState<number>(3);
@@ -79,6 +90,8 @@ const useCanvas = () => {
   const [action, setAction] = useState<string>("none");
 
   const synthLayerSwitch = async () => {
+    if (!layerToSynth.layer) return;
+
     setNewLayersLoading(true);
 
     if (!history.get(String(layerToSynth.id))) {
@@ -87,6 +100,15 @@ const useCanvas = () => {
         layerToSynth.layer!,
         layerToSynth.id!,
         canvas!
+      );
+    } else {
+      await addRashToCanvas(
+        setElements,
+        layerToSynth.layer!,
+        layerToSynth.id!,
+        canvas!,
+        history.get(String(layerToSynth.id)),
+        canvasSize
       );
     }
     setZoom(1);
@@ -104,9 +126,9 @@ const useCanvas = () => {
   const handleWheel = useCallback(
     (e: WheelEvent) => {
       e.preventDefault();
-      wheelLogic(e, zoom, setZoom, canvas!, pan, setPan, 14);
+      wheelLogic(e, zoom, setZoom, canvas!, pan, setPan, canvasOpen ? 30 : 14);
     },
-    [zoom, setZoom, canvas, pan, setPan]
+    [zoom, setZoom, canvas, pan, setPan, canvasOpen]
   );
 
   const handleMouseDown = (e: MouseEvent): void => {
@@ -401,15 +423,33 @@ const useCanvas = () => {
   };
 
   useEffect(() => {
-    if (layerToSynth && canvas && ctx) {
+    if (
+      layerToSynth &&
+      canvas &&
+      ctx &&
+      canvasSize.width > 0 &&
+      canvasSize.height > 0
+    ) {
       synthLayerSwitch();
     }
-  }, [layerToSynth, synthLayerSelected]);
+  }, [layerToSynth, synthLayerSelected, canvasSize]);
 
   useEffect(() => {
     if (ctx) {
-      canvas.width = canvas?.offsetWidth * devicePixelRatio;
-      canvas.height = canvas?.offsetHeight * devicePixelRatio;
+      canvas.width = canvas.offsetWidth * devicePixelRatio;
+      canvas.height = canvas.offsetHeight * devicePixelRatio;
+      if (
+        canvasSize.width !== canvas.width ||
+        canvasSize.height !== canvas.height
+      ) {
+        setCanvasSize({
+          width: canvas.width,
+          height: canvas.height,
+          oldWidth: canvasSize.width,
+          oldHeight: canvasSize.height,
+        });
+      }
+
       ctx.clearRect(0, 0, canvas?.width!, canvas?.height!);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.translate(pan.xOffset, pan.yOffset);
@@ -480,7 +520,7 @@ const useCanvas = () => {
         canvas.removeEventListener("touchmove", preventZoom);
       }
     };
-  }, [canvas, handleWheel]);
+  }, [canvas, handleWheel, canvasOpen]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
