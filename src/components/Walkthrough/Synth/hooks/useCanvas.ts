@@ -406,7 +406,7 @@ const useCanvas = () => {
     }
   }, [layerToSynth, synthLayerSelected]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (ctx) {
       canvas.width = canvas?.offsetWidth * devicePixelRatio;
       canvas.height = canvas?.offsetHeight * devicePixelRatio;
@@ -416,11 +416,9 @@ const useCanvas = () => {
       ctx.scale(zoom, zoom);
       ctx.beginPath();
 
-      let patternId = String(layerToSynth.id);
-      let elements = history.get(patternId) || [];
-      let currentIndex = index.get(patternId) || 0;
-
-      elements = elements.slice(0, currentIndex + 1);
+      const currentIndex = index.get(String(layerToSynth.id)) || 0;
+      const allElements = history.get(String(layerToSynth.id)) || [];
+      const elements = allElements.slice(0, currentIndex + 1);
 
       (ctx as CanvasRenderingContext2D).globalCompositeOperation =
         "source-over";

@@ -21,7 +21,7 @@ const addRashToCanvas = async (
 
     setElements(String(id), [
       {
-        id: 1,
+        id: 0,
         points: subpaths.map((subpath) =>
           subpath.map((point) => ({
             x: ((point.x - bbox.xMin) * scaleFactorX) / devicePixelRatio,
