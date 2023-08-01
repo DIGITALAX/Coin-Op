@@ -62,10 +62,16 @@ const addRashToCanvas = async (
                 x2: (element.x2 * canvasSize.width) / canvasSize.oldWidth,
                 y1: (element.y1 * canvasSize.height) / canvasSize.oldHeight,
                 y2: (element.y2 * canvasSize.height) / canvasSize.oldHeight,
+                strokeWidth:
+                  (element.strokeWidth * canvasSize.width) /
+                  canvasSize.oldWidth,
               };
             } else {
               return {
                 ...element,
+                strokeWidth:
+                  (element.strokeWidth * canvasSize.width) /
+                  canvasSize.oldWidth,
                 points: element.points?.map(
                   (point: { x: number; y: number }) => {
                     return {
