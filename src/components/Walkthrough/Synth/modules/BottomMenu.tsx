@@ -36,8 +36,8 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className={`relative h-fit inline-flex flex-wrap pb-1 px-1 gap-2 ${
-        canvasExpand ? "w-full" : "w-1/2"
+      className={`relative h-fit inline-flex flex-wrap gap-2 ${
+        canvasExpand ? "w-full pb-2 px-4" : "w-1/2 pb-1 px-1"
       }`}
     >
       <div
@@ -67,6 +67,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmVpncAteeF7voaGu1ZV5qP63UpZW2xmiCWVftL1QnL5ja`}
             layout="fill"
+            draggable={false}
           />
         </div>
       </div>

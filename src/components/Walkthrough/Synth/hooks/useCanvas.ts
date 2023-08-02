@@ -1,11 +1,9 @@
 import {
   FormEvent,
   MouseEvent,
-  MutableRefObject,
   WheelEvent,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -360,7 +358,7 @@ const useCanvas = () => {
     }
   }, [tool, action, selectedElement]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (clear) {
       const newElements = lodash.filter(
         history.get(String(layerToSynth.id)) || [],

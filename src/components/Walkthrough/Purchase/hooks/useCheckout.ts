@@ -306,7 +306,28 @@ const useCheckout = () => {
         chain: "polygon",
       });
       const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
-        JSON.stringify(fulfillmentDetails)
+        JSON.stringify({
+          ...fulfillmentDetails,
+          sizes: cartItems?.reduce((accumulator: string[], item) => {
+            accumulator.push(String(item.chosenSize));
+            return accumulator;
+          }, []),
+          colors: cartItems?.reduce((accumulator: string[], item) => {
+            accumulator.push(String(item.chosenColor));
+            return accumulator;
+          }, []),
+          collectionIds: cartItems?.reduce((accumulator: number[], item) => {
+            accumulator.push(Number(item.collectionId));
+            return accumulator;
+          }, []),
+          collectionAmounts: cartItems?.reduce(
+            (accumulator: number[], item) => {
+              accumulator.push(Number(item.amount));
+              return accumulator;
+            },
+            []
+          ),
+        })
       );
 
       let fulfillerGroups: { [key: string]: CartItem[] } = {};
