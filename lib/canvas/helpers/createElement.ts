@@ -12,7 +12,7 @@ const createElement = (
   id: number,
   strokeWidth?: number,
   fill?: string,
-  font?: string
+  font?: string,
 ): ElementInterface | undefined => {
   const bounds = canvas?.getBoundingClientRect();
   switch (type) {
@@ -28,7 +28,7 @@ const createElement = (
           },
         ],
         fill,
-        strokeWidth,
+        strokeWidth
       };
     case "text":
       return {

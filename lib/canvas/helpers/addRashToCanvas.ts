@@ -11,7 +11,12 @@ const addRashToCanvas = async (
   id: number,
   canvas: HTMLCanvasElement,
   elements?: any[],
-  canvasSize?: any
+  canvasSize?: {
+    width: number;
+    height: number;
+    oldWidth: number;
+    oldHeight: number;
+  }
 ) => {
   try {
     const { subpaths, bbox, circle } = await convertSvgToPath(image, 1);
@@ -55,28 +60,28 @@ const addRashToCanvas = async (
           if (index === 0) {
             return newElement;
           } else {
+            const scaleFactorWidth = canvasSize!.width / canvasSize!.oldWidth;
+            const scaleFactorHeight =
+              canvasSize!.height / canvasSize!.oldHeight;
+            const scaleFactor = Math.sqrt(scaleFactorWidth * scaleFactorHeight);
             if (element.type === "text") {
               return {
                 ...element,
-                x1: (element.x1 * canvasSize.width) / canvasSize.oldWidth,
-                x2: (element.x2 * canvasSize.width) / canvasSize.oldWidth,
-                y1: (element.y1 * canvasSize.height) / canvasSize.oldHeight,
-                y2: (element.y2 * canvasSize.height) / canvasSize.oldHeight,
-                strokeWidth:
-                  (element.strokeWidth * canvasSize.width) /
-                  canvasSize.oldWidth,
+                x1: (element.x1 * canvasSize!.width) / canvasSize!.oldWidth,
+                x2: (element.x2 * canvasSize!.width) / canvasSize!.oldWidth,
+                y1: (element.y1 * canvasSize!.height) / canvasSize!.oldHeight,
+                y2: (element.y2 * canvasSize!.height) / canvasSize!.oldHeight,
+                strokeWidth: element.strokeWidth * scaleFactor,
               };
             } else {
               return {
                 ...element,
-                strokeWidth:
-                  (element.strokeWidth * canvasSize.width) /
-                  canvasSize.oldWidth,
+                strokeWidth: element.strokeWidth * scaleFactor,
                 points: element.points?.map(
                   (point: { x: number; y: number }) => {
                     return {
-                      x: (point.x * canvasSize.width) / canvasSize.oldWidth,
-                      y: (point.y * canvasSize.height) / canvasSize.oldHeight,
+                      x: (point.x * canvasSize!.width) / canvasSize!.oldWidth,
+                      y: (point.y * canvasSize!.height) / canvasSize!.oldHeight,
                     };
                   }
                 ),

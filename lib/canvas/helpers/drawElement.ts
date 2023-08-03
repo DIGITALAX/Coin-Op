@@ -9,7 +9,6 @@ const drawElement = (
 ) => {
   ctx?.setLineDash(element?.lineDash ? element?.lineDash : [0]);
   (ctx as CanvasRenderingContext2D).imageSmoothingEnabled = false;
-
   ctx?.save();
 
   switch (element?.type) {

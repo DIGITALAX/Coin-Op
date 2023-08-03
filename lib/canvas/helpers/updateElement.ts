@@ -34,6 +34,8 @@ const updateElement = (
           y: ((y2! - bounds?.top - pan.yOffset) / zoom) * devicePixelRatio,
         },
       ];
+      elementsCopy[index].canvasWidth = canvas.width;
+      elementsCopy[index].canvasHeight = canvas.height;
       break;
 
     case "text":
@@ -58,7 +60,7 @@ const updateElement = (
           index,
           strokeWidth!,
           fill!,
-          font
+          font,
         ),
         text,
       };

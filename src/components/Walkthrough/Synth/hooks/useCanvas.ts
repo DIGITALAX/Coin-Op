@@ -88,19 +88,18 @@ const useCanvas = () => {
   const [action, setAction] = useState<string>("none");
 
   const synthLayerSwitch = async () => {
-    if (!layerToSynth.layer) return;
-
+    if (!layerToSynth.layer || newLayersLoading) return;
     setNewLayersLoading(true);
-
+    let addRashToCanvasPromise;
     if (!history.get(String(layerToSynth.id))) {
-      await addRashToCanvas(
+      addRashToCanvasPromise = addRashToCanvas(
         setElements,
         layerToSynth.layer!,
         layerToSynth.id!,
         canvas!
       );
     } else {
-      await addRashToCanvas(
+      addRashToCanvasPromise = addRashToCanvas(
         setElements,
         layerToSynth.layer!,
         layerToSynth.id!,
@@ -109,16 +108,25 @@ const useCanvas = () => {
         canvasSize
       );
     }
-    setZoom(1);
-    setPan({
-      xInitial: 0,
-      yInitial: 0,
-      xOffset: 0,
-      yOffset: 0,
-    });
-    setTimeout(() => {
-      setNewLayersLoading(false);
-    }, 1000);
+
+    addRashToCanvasPromise
+      .then(() => {
+        setZoom(1);
+        setPan({
+          xInitial: 0,
+          yInitial: 0,
+          xOffset: 0,
+          yOffset: 0,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setNewLayersLoading(false);
+        }, 1000);
+      });
   };
 
   const handleWheel = useCallback(
@@ -166,7 +174,7 @@ const useCanvas = () => {
         (history.get(String(layerToSynth.id)) || []).length,
         brushWidth,
         tool !== "erase" ? hex : materialBackground,
-        tool !== "text" ? undefined : font
+        tool !== "text" ? undefined : font,
       );
       setAction(
         tool === "pencil" ? "drawing" : tool === "erase" ? "erasing" : "writing"
@@ -425,8 +433,9 @@ const useCanvas = () => {
       layerToSynth &&
       canvas &&
       ctx &&
-      canvasSize.width > 0 &&
-      canvasSize.height > 0
+      canvasSize.width === canvas.width &&
+      canvasSize.height === canvas.height &&
+      !newLayersLoading
     ) {
       synthLayerSwitch();
     }
@@ -440,6 +449,7 @@ const useCanvas = () => {
         canvasSize.width !== canvas.width ||
         canvasSize.height !== canvas.height
       ) {
+        if (newLayersLoading) return;
         setCanvasSize({
           width: canvas.width,
           height: canvas.height,
