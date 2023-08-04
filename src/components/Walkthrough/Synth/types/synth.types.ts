@@ -60,7 +60,6 @@ export type SynthProps = {
   materialOpen: boolean;
   setMaterialOpen: (e: boolean) => void;
   completedSynths: Map<string, SynthData>;
-  synthProgress: number;
 };
 
 export type CanvasOptionProps = {
@@ -136,7 +135,6 @@ export type GridProps = {
   materialOpen: boolean;
   setMaterialOpen: (e: boolean) => void;
   completedSynths: Map<string, SynthData>;
-  synthProgress: number;
 };
 
 export interface SynthConfig {
@@ -343,4 +341,5 @@ export type CompleteImagesProps = {
     id: number;
     layer: string | undefined;
   };
+  synthLoading: boolean;
 };

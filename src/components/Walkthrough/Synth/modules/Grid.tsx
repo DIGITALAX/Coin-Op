@@ -52,7 +52,6 @@ const Grid: FunctionComponent<GridProps> = ({
   setMaterialBackground,
   setMaterialOpen,
   completedSynths,
-  synthProgress,
   handleDownloadImage,
   synthLoading,
 }): JSX.Element => {
@@ -104,6 +103,7 @@ const Grid: FunctionComponent<GridProps> = ({
                 dispatch={dispatch}
                 synthLayerSelected={synthLayerSelected}
                 handleDownloadImage={handleDownloadImage}
+                synthLoading={synthLoading}
               />
             )}
             <Canvas
@@ -170,13 +170,14 @@ const Grid: FunctionComponent<GridProps> = ({
                   )?.map((uri: string | undefined, index: number) => {
                     return (
                       <div
-                        className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border cursor-pointer hover:opacity-70 rounded-lg ${
+                        className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border hover:opacity-70 rounded-lg ${
                           synthLayerSelected.layer === uri
                             ? "border-white"
                             : "border-ama"
-                        }`}
+                        } ${!synthLoading && "cursor-pointer"}`}
                         key={index}
                         onClick={() =>
+                          !synthLoading &&
                           dispatch(
                             setLayerToSynth({
                               id: synthLayer?.childId! + index,
@@ -214,12 +215,17 @@ const Grid: FunctionComponent<GridProps> = ({
                   canvasExpand && "right-6"
                 }`}
               >
-                <div className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center">
+                <div
+                  className={`relative w-5 h-5 flex items-center justify-center ${
+                    !synthLoading && "cursor-pointer active:scale-95"
+                  }`}
+                >
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
                     layout="fill"
                     draggable={false}
                     onClick={() =>
+                      !synthLoading &&
                       dispatch(
                         setLayerToSynth({
                           id:
@@ -244,12 +250,17 @@ const Grid: FunctionComponent<GridProps> = ({
                     }
                   />
                 </div>
-                <div className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center">
+                <div
+                  className={`relative w-5 h-5 flex items-center justify-center  ${
+                    !synthLoading && "cursor-pointer active:scale-95"
+                  }`}
+                >
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
                     layout="fill"
                     draggable={false}
                     onClick={() =>
+                      !synthLoading &&
                       dispatch(
                         setLayerToSynth({
                           id:

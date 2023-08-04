@@ -452,7 +452,7 @@ const useCanvas = () => {
         "source-over";
       elements?.forEach(
         (element: SvgPatternType | ElementInterface, index: number) => {
-          if (synthLoading && synthProgress < 0.95) {
+          if (synthLoading && synthProgress < 0.99) {
             if (index === 0) {
               const animate = () => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);

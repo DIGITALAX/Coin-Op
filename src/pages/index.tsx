@@ -75,10 +75,6 @@ export default function Home(): JSX.Element {
   const synthLoading = useSelector(
     (state: RootState) => state.app.synthLoadingReducer.value
   );
-  const synthProgress = useSelector(
-    (state: RootState) => state.app.synthProgressReducer.value
-  );
-
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
@@ -180,7 +176,6 @@ export default function Home(): JSX.Element {
         materialOpen={materialOpen}
         setMaterialOpen={setMaterialOpen}
         completedSynths={completedSynths}
-        synthProgress={synthProgress}
         handleDownloadImage={handleDownloadImage}
       />
       <PreRolls

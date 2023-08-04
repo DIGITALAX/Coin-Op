@@ -31,7 +31,6 @@ export type PageContainerProps = {
   handleDownloadImage: () => void;
   setMaterialOpen: (e: boolean) => void;
   completedSynths: Map<string, SynthData>;
-  synthProgress: number;
   compositeRef: LegacyRef<HTMLDivElement> | undefined;
   template: Template;
   canvasExpand: boolean;

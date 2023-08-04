@@ -66,7 +66,6 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   setMaterialBackground,
   setMaterialOpen,
   completedSynths,
-  synthProgress,
   handleDownloadImage,
 }): JSX.Element => {
   return (
@@ -124,7 +123,6 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           redo={redo}
           handleReset={handleReset}
           completedSynths={completedSynths}
-          synthProgress={synthProgress}
           handleDownloadImage={handleDownloadImage}
         />
         <Composite

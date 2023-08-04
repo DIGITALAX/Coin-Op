@@ -45,7 +45,6 @@ const Synth: FunctionComponent<SynthProps> = ({
   setMaterialBackground,
   setMaterialOpen,
   completedSynths,
-  synthProgress,
   handleDownloadImage,
   synthLoading
 }): JSX.Element => {
@@ -95,7 +94,6 @@ const Synth: FunctionComponent<SynthProps> = ({
         materialOpen={materialOpen}
         setMaterialOpen={setMaterialOpen}
         completedSynths={completedSynths}
-        synthProgress={synthProgress}
         handleDownloadImage={handleDownloadImage}
       />
     </div>

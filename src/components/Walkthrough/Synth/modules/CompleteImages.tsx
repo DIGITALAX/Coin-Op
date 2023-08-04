@@ -12,6 +12,7 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
   dispatch,
   synthLayerSelected,
   handleDownloadImage,
+  synthLoading,
 }): JSX.Element => {
   return (
     <div
@@ -47,14 +48,15 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
           )?.map((image: string, index: number) => {
             return (
               <div
-                className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border cursor-pointer rounded-lg ${
+                className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border rounded-lg ${
                   completeImages.get(String(synthLayerSelected.id))?.chosen ===
                   image
                     ? "border-white"
                     : "border-ama"
-                }`}
+                } ${!synthLoading && "cursor-pointer"}`}
                 key={index}
                 onClick={() => {
+                  if (synthLoading) return;
                   let newCompletedSynths = new Map(completeImages);
                   newCompletedSynths.set(String(synthLayerSelected.id), {
                     synths:
@@ -86,13 +88,17 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
                 </div>
                 <div
                   className="absolute -top-2 -left-1 w-4 h-4 rounded-full bg-black flex items-center justify-center cursor-pointer bg-white z-1 hover:opacity-70"
-                  onClick={() => handleDownloadImage()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDownloadImage();
+                  }}
                 >
                   <MdDownloadForOffline size={8} color="black" />
                 </div>
                 <div
                   className="absolute -top-2 -right-1 w-4 h-4 bg-white flex items-center justify-center cursor-pointer rounded-full z-1 hover:opacity-70"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     let newCompletedSynths = new Map(completeImages);
                     const newArray = (
                       completeImages.get(String(synthLayerSelected.id))
@@ -117,12 +123,17 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
           canvasExpand && "right-6"
         }`}
       >
-        <div className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center">
+        <div
+          className={`relative w-5 h-5 flex items-center justify-center ${
+            !synthLoading && "cursor-pointer active:scale-95"
+          }`}
+        >
           <Image
             src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
             layout="fill"
             draggable={false}
             onClick={() => {
+              if (synthLoading) return;
               let newCompletedSynths = new Map(completeImages);
               newCompletedSynths.set(String(synthLayerSelected.id), {
                 synths:
@@ -151,12 +162,17 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
             }}
           />
         </div>
-        <div className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center">
+        <div
+          className={`relative w-5 h-5 flex items-center justify-center ${
+            !synthLoading && "cursor-pointer active:scale-95"
+          }`}
+        >
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
             layout="fill"
             draggable={false}
             onClick={() => {
+              if (synthLoading) return;
               let newCompletedSynths = new Map(completeImages);
               newCompletedSynths.set(String(synthLayerSelected.id), {
                 synths:

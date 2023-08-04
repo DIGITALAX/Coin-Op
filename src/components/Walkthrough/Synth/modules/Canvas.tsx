@@ -40,12 +40,14 @@ const Canvas: FunctionComponent<CanvasProps> = ({
   setMaterialBackground,
   setMaterialOpen,
   layerToSynth,
-  synthLoading
+  synthLoading,
 }): JSX.Element => {
   return (
     <div
       className={`h-full w-full flex items-center justify-center rounded-md border border-ama relative ${
-        isDragging
+        synthLoading
+          ? "cursor-wait"
+          : isDragging
           ? "cursor-grabbing"
           : tool === "text"
           ? "cursor-text"
@@ -112,7 +114,11 @@ const Canvas: FunctionComponent<CanvasProps> = ({
             id="canvasId"
             ref={canvasRef}
             className="relative z-0 rounded-lg"
-            style={{ width: "100%", height: "100%" }}
+            style={{
+              width: "100%",
+              height: canvasExpand ? "100%" : "373px",
+              maxHeight: canvasExpand ? "100%" : "373px",
+            }}
             onMouseDown={(e: MouseEvent<HTMLCanvasElement>) =>
               handleMouseDown(e)
             }
