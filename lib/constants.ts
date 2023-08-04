@@ -50,3 +50,5 @@ export const allFonts: string[] = [
   "Satoshi Regular",
   "Satoshi Black",
 ];
+
+export const negative_prompt: string = ""

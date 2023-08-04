@@ -1,4 +1,7 @@
+import { AnyAction, Dispatch } from "redux";
 import convertSvgToPath from "./convertSVGToPath";
+import { setSynthArea } from "../../../redux/reducers/synthAreaSlice";
+import { getArea } from "./getArea";
 
 const addRashToCanvas = async (
   setElements: (
@@ -10,6 +13,7 @@ const addRashToCanvas = async (
   image: string,
   id: number,
   canvas: HTMLCanvasElement,
+  dispatch: Dispatch<AnyAction>,
   elements?: any[],
   canvasSize?: {
     width: number;
@@ -46,6 +50,35 @@ const addRashToCanvas = async (
       },
     };
 
+    const newBBox = getArea(newElement);
+    let originalWidth = newBBox.width / devicePixelRatio;
+    let originalHeight = newBBox.height / devicePixelRatio;
+
+    let scale = 768 / Math.min(originalWidth, originalHeight);
+    let width = scale * originalWidth;
+    let height = scale * originalHeight;
+
+    if (width > 1080 || height > 1080) {
+      if (width > height) {
+        scale = 1080 / width;
+        width = 1080;
+        height = 768;
+      } else {
+        scale = 1080 / height;
+        height = 1080;
+        width = 768;
+      }
+    }
+
+    dispatch(
+      setSynthArea({
+        width,
+        height,
+        originalWidth,
+        originalHeight,
+      })
+    );
+
     if (!elements) {
       setElements(String(id), [newElement]);
     } else {
@@ -64,7 +97,15 @@ const addRashToCanvas = async (
             const scaleFactorHeight =
               canvasSize!.height / canvasSize!.oldHeight;
             const scaleFactor = Math.sqrt(scaleFactorWidth * scaleFactorHeight);
-            if (element.type === "text") {
+            if (element.type === "image") {
+              return {
+                ...element,
+                width:
+                  (element.width * canvasSize!.width) / canvasSize!.oldWidth,
+                height:
+                  (element.height * canvasSize!.width) / canvasSize!.oldWidth,
+              };
+            } else if (element.type === "text") {
               return {
                 ...element,
                 x1: (element.x1 * canvasSize!.width) / canvasSize!.oldWidth,

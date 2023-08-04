@@ -46,7 +46,7 @@ const General: FunctionComponent<GeneralProps> = ({
                 <div
                   className={`relative w-24 h-fit px-2 py-1.5 bg-azul border border-smo rounded-md cursor-pointer font-mana text-white hover:bg-smo/10 justify-center flex items-center`}
                   onClick={() => {
-                    dispatch(setCompletedSynths([]));
+                    dispatch(setCompletedSynths(new Map()));
                     dispatch(
                       setModalOpen({
                         actionOpen: false,

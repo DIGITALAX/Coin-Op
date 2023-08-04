@@ -32,7 +32,8 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
   setMaterialBackground,
   materialOpen,
   setMaterialOpen,
-  layerToSynth
+  layerToSynth,
+  synthLoading,
 }): JSX.Element => {
   return (
     <div
@@ -60,8 +61,12 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
       <div
         className={`relative ${
           canvasExpand ? "w-10 h-10" : "w-6 h-6"
-        } rounded-md bg-black grid grid-flow-col auto-cols-auto drop-shadow-lg cursor-pointer active:scale-95 justify-self-end self-end border border-white`}
-        onClick={() => dispatch(setExpandCanvas(!canvasExpand))}
+        } rounded-md bg-black grid grid-flow-col auto-cols-auto drop-shadow-lg justify-self-end self-end border border-white ${
+          !synthLoading && "cursor-pointer active:scale-95"
+        }`}
+        onClick={() =>
+          !synthLoading && dispatch(setExpandCanvas(!canvasExpand))
+        }
       >
         <div className="relative w-4 h-4 place-self-center">
           <Image

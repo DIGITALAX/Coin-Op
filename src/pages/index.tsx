@@ -21,7 +21,13 @@ export default function Home(): JSX.Element {
   const { openConnectModal } = useConnectModal();
   const { handleLensSignIn, signInLoading } = useSignIn();
   const { setShareSet, shareSet, models } = useComposite();
-  const { handleSynth, presets, scrollToComposite, compositeRef } = useSynth();
+  const {
+    handleSynth,
+    presets,
+    scrollToComposite,
+    compositeRef,
+    handleDownloadImage,
+  } = useSynth();
   const {
     canvasRef,
     handleMouseDown,
@@ -69,8 +75,15 @@ export default function Home(): JSX.Element {
   const synthLoading = useSelector(
     (state: RootState) => state.app.synthLoadingReducer.value
   );
+  const synthProgress = useSelector(
+    (state: RootState) => state.app.synthProgressReducer.value
+  );
+
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
+  );
+  const completedSynths = useSelector(
+    (state: RootState) => state.app.completedSynthsReducer.value
   );
   const synthLayer = useSelector(
     (state: RootState) => state.app.synthLayerReducer.value
@@ -166,6 +179,9 @@ export default function Home(): JSX.Element {
         setMaterialBackground={setMaterialBackground}
         materialOpen={materialOpen}
         setMaterialOpen={setMaterialOpen}
+        completedSynths={completedSynths}
+        synthProgress={synthProgress}
+        handleDownloadImage={handleDownloadImage}
       />
       <PreRolls
         cartItems={cartItems}

@@ -39,7 +39,8 @@ const Canvas: FunctionComponent<CanvasProps> = ({
   materialOpen,
   setMaterialBackground,
   setMaterialOpen,
-  layerToSynth
+  layerToSynth,
+  synthLoading
 }): JSX.Element => {
   return (
     <div
@@ -89,6 +90,7 @@ const Canvas: FunctionComponent<CanvasProps> = ({
               dispatch={dispatch}
               handleReset={handleReset}
               canvasExpand={canvasExpand}
+              synthLoading={synthLoading}
             />
           </div>
           {action === "writing" && (

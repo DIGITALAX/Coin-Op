@@ -17,26 +17,38 @@ import wheelLogic from "../../../../../lib/canvas/helpers/wheelLogic";
 import drawElement from "../../../../../lib/canvas/helpers/drawElement";
 import drawPatternElement from "../../../../../lib/canvas/helpers/drawPatternElement";
 import createElement from "../../../../../lib/canvas/helpers/createElement";
-import { setInitImagePrompt } from "../../../../../redux/reducers/initImagePromptSlice";
 import updateElement from "../../../../../lib/canvas/helpers/updateElement";
 import { isPointInPattern } from "../../../../../lib/canvas/helpers/isPointInPattern";
+import { setCanvasSize } from "../../../../../redux/reducers/canvasSizeSlice";
 
 const useCanvas = () => {
   const dispatch = useDispatch();
+  let animationFrameId: number | null = null;
   const layerToSynth = useSelector(
     (state: RootState) => state.app.layerToSynthReducer.value
   );
-  let animationFrameId: number | null = null;
-
   const synthLayerSelected = useSelector(
     (state: RootState) => state.app.synthLayerReducer.value
   );
   const synthLoading = useSelector(
     (state: RootState) => state.app.synthLoadingReducer.value
   );
+  const completedSynths = useSelector(
+    (state: RootState) => state.app.completedSynthsReducer.value
+  );
+  const synthProgress = useSelector(
+    (state: RootState) => state.app.synthProgressReducer.value
+  );
+  const patternSize = useSelector(
+    (state: RootState) => state.app.synthAreaReducer.value
+  );
+  const canvasSize = useSelector(
+    (state: RootState) => state.app.canvasSizeReducer.value
+  );
   const canvasOpen = useSelector(
     (state: RootState) => state.app.expandCanvasReducer.value
   );
+  const frameId = useRef<number | null>();
   const [canvas, setCanvas] = useState<any>(null);
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
     setCanvas(canvas);
@@ -65,25 +77,11 @@ const useCanvas = () => {
   });
   const [selectedElement, setSelectedElement] =
     useState<ElementInterface | null>(null);
-  const [synthElementMove, setSynthElementMove] =
-    useState<ElementInterface | null>();
-  const [canvasSize, setCanvasSize] = useState<{
-    width: number;
-    height: number;
-    oldWidth: number;
-    oldHeight: number;
-  }>({
-    width: 0,
-    height: 0,
-    oldWidth: 0,
-    oldHeight: 0,
-  });
   const [hex, setHex] = useState<string>("#000000");
   const [colorPicker, setColorPicker] = useState<boolean>(false);
   const [brushWidth, setBrushWidth] = useState<number>(3);
   const [thickness, setThickness] = useState<boolean>(false);
   const [newLayersLoading, setNewLayersLoading] = useState<boolean>(false);
-  const [saveImagesLocal, setSaveImagesLocal] = useState<boolean>(false);
   const [clear, setClear] = useState<boolean>(false);
   const [action, setAction] = useState<string>("none");
 
@@ -96,7 +94,8 @@ const useCanvas = () => {
         setElements,
         layerToSynth.layer!,
         layerToSynth.id!,
-        canvas!
+        canvas!,
+        dispatch
       );
     } else {
       addRashToCanvasPromise = addRashToCanvas(
@@ -104,6 +103,7 @@ const useCanvas = () => {
         layerToSynth.layer!,
         layerToSynth.id!,
         canvas!,
+        dispatch,
         history.get(String(layerToSynth.id)),
         canvasSize
       );
@@ -125,7 +125,7 @@ const useCanvas = () => {
       .finally(() => {
         setTimeout(() => {
           setNewLayersLoading(false);
-        }, 1000);
+        }, 500);
       });
   };
 
@@ -138,6 +138,7 @@ const useCanvas = () => {
   );
 
   const handleMouseDown = (e: MouseEvent): void => {
+    if (synthLoading) return;
     const bounds = canvas?.getBoundingClientRect();
     if (tool === "default") {
       setAction("none");
@@ -174,7 +175,7 @@ const useCanvas = () => {
         (history.get(String(layerToSynth.id)) || []).length,
         brushWidth,
         tool !== "erase" ? hex : materialBackground,
-        tool !== "text" ? undefined : font,
+        tool !== "text" ? undefined : font
       );
       setAction(
         tool === "pencil" ? "drawing" : tool === "erase" ? "erasing" : "writing"
@@ -188,6 +189,7 @@ const useCanvas = () => {
   };
 
   const handleMouseMove = (e: MouseEvent): void => {
+    if (synthLoading) return;
     const bounds = canvas?.getBoundingClientRect();
 
     if (!action || action === "writing") return;
@@ -259,103 +261,78 @@ const useCanvas = () => {
     setSelectedElement(null);
   };
 
-  const addImageToCanvas = async (imgURL: any): Promise<void> => {
-    try {
-      let postImage;
-      let blob: Blob;
-      postImage = "data:image/png;base64," + imgURL;
-      const res: Response = await fetch(imgURL);
-      blob = await res.blob();
-      postImage = new File([blob], "thedial_drafts", {
-        type: "image/png",
-      });
-      if (saveImagesLocal) {
-        const binary = window.atob(imgURL);
-        const buffer = new ArrayBuffer(binary.length);
-        const view = new Uint8Array(buffer);
-        for (let i = 0; i < binary.length; i++) {
-          view[i] = binary.charCodeAt(i);
-        }
-        blob = new Blob([buffer], { type: "image/png" });
+  const addImageToCanvas = async (): Promise<void> => {
+    if (!completedSynths.get(String(layerToSynth.id))) return;
+    let imgURL: string;
 
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob!);
-        link.download = "the_dial_synth";
-        link.click();
-        URL.revokeObjectURL(link.href);
-      }
-      await handleImageAdd(postImage);
-    } catch (err: any) {
-      console.error(err.message);
+    if (completedSynths.get(String(layerToSynth.id))?.chosen) {
+      imgURL = completedSynths.get(String(layerToSynth.id))?.chosen!;
+    } else {
+      imgURL = completedSynths.get(String(layerToSynth.id))?.synths![
+        completedSynths.get(String(layerToSynth.id))?.synths!?.length - 1
+      ]!;
     }
-  };
 
-  const handleImageAdd = async (e: any): Promise<void> => {
-    if ((e as any).target.files.length < 1) {
-      return;
-    }
+    let postImage = "data:image/png;base64," + imgURL;
+
     try {
-      let image: File;
-      image = (e.target as HTMLFormElement).files[0];
-      const reader = new FileReader();
-      reader?.readAsDataURL(image);
-      reader.onloadend = async (e) => {
-        return new Promise((resolve, reject) => {
-          const imageObject = new Image();
-          imageObject.src = e.target?.result as string;
-          imageObject.onload = () => {
-            let newElements = [...(history.get(String(layerToSynth.id)) || [])];
-
-            newElements = newElements.filter(
-              (element) => element.type !== "image"
-            );
-
-            const patternWidth = canvas?.width;
-            const scaleFactor = patternWidth / imageObject.width;
-            const newElement = {
-              clipElement: history.get(String(layerToSynth.id))?.[0] || [],
-              image: imageObject,
-              type: "image",
-              width: patternWidth,
-              height: imageObject.height * scaleFactor,
-            };
-
-            const insertIndex = newElements[1]?.type === "image" ? 2 : 1;
-
-            newElements.splice(insertIndex, 0, newElement);
-
-            setElements(
-              String(layerToSynth.id),
-              newElements?.map((element, index) => ({ ...element, id: index }))
-            );
-            resolve(undefined);
-          };
-          imageObject.onerror = reject;
-          setSynthElementMove(undefined);
-        }).catch((err) => {
-          console.error(err.message);
-        });
+      const imageObject = new Image();
+      imageObject.src = postImage;
+      imageObject.onload = () => {
+        handleImageAdd(imageObject);
       };
     } catch (err: any) {
       console.error(err.message);
     }
   };
 
-  const handlePatternSave = () => {
-    const img = canvas.toDataURL("image/png");
-    let xhr = new XMLHttpRequest();
-    xhr.responseType = "blob";
-    xhr.onload = () => {
-      let a = document.createElement("a");
-      a.href = window.URL.createObjectURL(xhr.response);
-      a.download = "pattern_aop_template.png";
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    };
-    xhr.open("GET", img);
-    xhr.send();
+  const handleImageAdd = (imageObject: HTMLImageElement): void => {
+    try {
+      let newElements = [...(history.get(String(layerToSynth.id)) || [])];
+
+      newElements = newElements.filter((element) => element.type !== "image");
+
+      const widthScaleFactor = patternSize.originalWidth / imageObject.width;
+      const heightScaleFactor = patternSize.originalHeight / imageObject.height;
+      const scaleFactor = Math.min(widthScaleFactor, heightScaleFactor);
+      const newElement = {
+        clipElement: history.get(String(layerToSynth.id))?.[0] || [],
+        image: imageObject,
+        type: "image",
+        width: imageObject.width * scaleFactor,
+        height: imageObject.height * scaleFactor,
+      };
+
+      const insertIndex = newElements[1]?.type === "image" ? 2 : 1;
+
+      newElements.splice(insertIndex, 0, newElement);
+
+      setElements(
+        String(layerToSynth.id),
+        newElements?.map((element, index) => ({ ...element, id: index }))
+      );
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const generateLoadNoise = () => {
+    let offset = 0;
+    const blockSize = 8 + synthProgress * 24;
+
+    for (let y = 0; y < canvasSize.height; y += blockSize) {
+      for (let x = 0; x < canvasSize.width; x += blockSize) {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        const alpha = Math.max(0.4, 1 - synthProgress);
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        ctx.fillRect(x + offset, y + offset, blockSize, blockSize);
+      }
+    }
+
+    offset += 0.5;
+    if (offset > blockSize) offset = 0;
   };
 
   useEffect(() => {
@@ -382,6 +359,7 @@ const useCanvas = () => {
   }, [clear]);
 
   const handleBlur = (e: FormEvent) => {
+    if (synthLoading) return;
     if ((e as any).key === "Enter") {
       const bounds = canvas?.getBoundingClientRect();
       setAction("none");
@@ -450,12 +428,14 @@ const useCanvas = () => {
         canvasSize.height !== canvas.height
       ) {
         if (newLayersLoading) return;
-        setCanvasSize({
-          width: canvas.width,
-          height: canvas.height,
-          oldWidth: canvasSize.width,
-          oldHeight: canvasSize.height,
-        });
+        dispatch(
+          setCanvasSize({
+            width: canvas.width,
+            height: canvas.height,
+            oldWidth: canvasSize.width,
+            oldHeight: canvasSize.height,
+          })
+        );
       }
 
       ctx.clearRect(0, 0, canvas?.width!, canvas?.height!);
@@ -470,34 +450,61 @@ const useCanvas = () => {
 
       (ctx as CanvasRenderingContext2D).globalCompositeOperation =
         "source-over";
-      elements?.forEach((element: SvgPatternType | ElementInterface) => {
-        if (
-          action === "writing" &&
-          selectedElement?.id === element.id &&
-          element.type === "text"
-        ) {
-          return;
+      elements?.forEach(
+        (element: SvgPatternType | ElementInterface, index: number) => {
+          if (synthLoading && synthProgress < 0.95) {
+            if (index === 0) {
+              const animate = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawPatternElement(
+                  element as SvgPatternType,
+                  ctx,
+                  materialBackground
+                );
+                ctx.save();
+                ctx.clip();
+                generateLoadNoise();
+                ctx.restore();
+
+                frameId.current = window.requestAnimationFrame(animate);
+              };
+              animate();
+            }
+          } else {
+            if (
+              action === "writing" &&
+              selectedElement?.id === element.id &&
+              element.type === "text"
+            ) {
+              return;
+            }
+            if (
+              element.type === "image" ||
+              element.type === "pattern" ||
+              element.type === "circle"
+            ) {
+              drawPatternElement(
+                element as SvgPatternType,
+                ctx,
+                materialBackground
+              );
+            } else {
+              drawElement(element as ElementInterface, ctx, materialBackground);
+            }
+          }
         }
-        if (
-          element.type === "image" ||
-          element.type === "pattern" ||
-          element.type === "circle"
-        ) {
-          drawPatternElement(
-            element as SvgPatternType,
-            ctx,
-            materialBackground
-          );
-        } else {
-          drawElement(element as ElementInterface, ctx, materialBackground);
-        }
-      });
+      );
       ctx.restore();
     }
+
+    return () => {
+      if (frameId.current) {
+        window.cancelAnimationFrame(frameId.current);
+      }
+    };
   }, [
     history,
     index,
-    synthElementMove,
     zoom,
     pan,
     tool,
@@ -508,6 +515,8 @@ const useCanvas = () => {
     isDragging,
     materialBackground,
     canvasOpen,
+    synthProgress,
+    synthLoading,
   ]);
 
   useEffect(() => {
@@ -548,6 +557,16 @@ const useCanvas = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [undo, redo]);
+
+  useEffect(() => {
+    if (completedSynths.get(String(layerToSynth.id))?.synths && canvas) {
+      completedSynths.get(String(layerToSynth.id))!.synths.length > 0 &&
+        addImageToCanvas();
+    }
+  }, [
+    completedSynths.get(String(layerToSynth.id))?.chosen,
+    completedSynths.get(String(layerToSynth.id))?.synths,
+  ]);
 
   return {
     canvasRef,

@@ -8,7 +8,6 @@ const Synth: FunctionComponent<SynthProps> = ({
   synthLayer,
   synthConfig,
   handleSynth,
-  synthLoading,
   presets,
   selectedElement,
   scrollToComposite,
@@ -45,6 +44,10 @@ const Synth: FunctionComponent<SynthProps> = ({
   materialOpen,
   setMaterialBackground,
   setMaterialOpen,
+  completedSynths,
+  synthProgress,
+  handleDownloadImage,
+  synthLoading
 }): JSX.Element => {
   return (
     <div className={`relative w-full h-fit flex flex-col`}>
@@ -91,6 +94,9 @@ const Synth: FunctionComponent<SynthProps> = ({
         setMaterialBackground={setMaterialBackground}
         materialOpen={materialOpen}
         setMaterialOpen={setMaterialOpen}
+        completedSynths={completedSynths}
+        synthProgress={synthProgress}
+        handleDownloadImage={handleDownloadImage}
       />
     </div>
   );

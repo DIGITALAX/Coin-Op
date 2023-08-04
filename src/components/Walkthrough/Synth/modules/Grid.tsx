@@ -7,6 +7,7 @@ import Dash from "./Dash";
 import Presets from "./Presets";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 import Canvas from "./Canvas";
+import CompleteImages from "./CompleteImages";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -14,7 +15,6 @@ const Grid: FunctionComponent<GridProps> = ({
   synthLayer,
   synthConfig,
   handleSynth,
-  synthLoading,
   presets,
   scrollToComposite,
   canvasRef,
@@ -51,6 +51,10 @@ const Grid: FunctionComponent<GridProps> = ({
   materialOpen,
   setMaterialBackground,
   setMaterialOpen,
+  completedSynths,
+  synthProgress,
+  handleDownloadImage,
+  synthLoading,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -64,7 +68,7 @@ const Grid: FunctionComponent<GridProps> = ({
       </div>
       <div className={`relative w-full flex h-5/6 px-7 pt-4`}>
         <div
-          className={`w-full flex h-full gap-8 items-center justify-center ${
+          className={`w-full flex h-full gap-8 items-center justify-center transition-all duration-300 ease-in-out ${
             canvasExpand
               ? "flex-col z-30 bg-opacity-90 backdrop-blur-sm bg-black inset-0 fixed p-2"
               : "flex-row relative"
@@ -92,6 +96,16 @@ const Grid: FunctionComponent<GridProps> = ({
             </div>
           </div>
           <div className={`relative w-full h-full flex flex-col gap-3`}>
+            {(completedSynths.get(String(synthLayerSelected.id))?.synths || [])
+              ?.length > 0 && (
+              <CompleteImages
+                canvasExpand={canvasExpand}
+                completeImages={completedSynths}
+                dispatch={dispatch}
+                synthLayerSelected={synthLayerSelected}
+                handleDownloadImage={handleDownloadImage}
+              />
+            )}
             <Canvas
               materialBackground={materialBackground}
               setMaterialBackground={setMaterialBackground}
@@ -104,6 +118,7 @@ const Grid: FunctionComponent<GridProps> = ({
               setFontOpen={setFontOpen}
               tool={tool}
               action={action}
+              synthLoading={synthLoading}
               handleBlur={handleBlur}
               writingRef={writingRef}
               selectedElement={selectedElement}
@@ -132,7 +147,7 @@ const Grid: FunctionComponent<GridProps> = ({
             />
             <div
               className={`w-full flex justify-center items-center flex-row gap-3 ${
-                canvasExpand ? "fixed p-2 h-14" : "relative h-10"
+                canvasExpand ? "absolute top-16 p-2 h-14" : "relative h-10"
               }`}
             >
               <div className="relative w-full h-full flex items-center justify-start">

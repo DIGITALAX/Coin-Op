@@ -1,11 +1,13 @@
 import { FormEvent, MouseEvent, Ref, WheelEvent } from "react";
 import { AnyAction, Dispatch } from "redux";
+import { SynthData } from "../../../../../redux/reducers/completedSynthsSlice";
 
 export type SynthProps = {
   dispatch: Dispatch<AnyAction>;
   scrollToComposite: () => void;
   isDragging: boolean;
   canvasExpand: boolean;
+  handleDownloadImage: () => void;
   selectedElement: ElementInterface | null;
   newLayersLoading: boolean;
   synthLayerSelected: {
@@ -57,6 +59,8 @@ export type SynthProps = {
   setMaterialBackground: (e: string) => void;
   materialOpen: boolean;
   setMaterialOpen: (e: boolean) => void;
+  completedSynths: Map<string, SynthData>;
+  synthProgress: number;
 };
 
 export type CanvasOptionProps = {
@@ -83,6 +87,7 @@ export type GridProps = {
     id: number;
     layer: string | undefined;
   };
+  handleDownloadImage: () => void;
   isDragging: boolean;
   selectedElement: ElementInterface | null;
   synthLayer:
@@ -130,6 +135,8 @@ export type GridProps = {
   setMaterialBackground: (e: string) => void;
   materialOpen: boolean;
   setMaterialOpen: (e: boolean) => void;
+  completedSynths: Map<string, SynthData>;
+  synthProgress: number;
 };
 
 export interface SynthConfig {
@@ -152,6 +159,7 @@ export type PresetProps = {
 };
 
 export type CanvasProps = {
+  synthLoading: boolean;
   canvasRef: Ref<HTMLCanvasElement>;
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
@@ -199,6 +207,7 @@ export type BottomMenuProps = {
   colorPicker: boolean;
   setColorPicker: (e: boolean) => void;
   hex: string;
+  synthLoading: boolean;
   canvasExpand: boolean;
   setHex: (e: string) => void;
   setThickness: (e: boolean) => void;
@@ -290,3 +299,48 @@ export interface Point2 {
   x: number;
   y: number;
 }
+
+export interface InputTypeAutomatic {
+  prompt: string;
+  steps: number;
+  cfg_scale: number;
+  negative_prompt?: string;
+  batch_size: number;
+  init_images?: string[];
+  image_cfg_scale?: number;
+  restore_faces: boolean;
+  sampler_name: string;
+  seed: number;
+  width: number;
+  height: number;
+  sampler_index: string;
+  controlnet_units: [
+    {
+      input_image: string;
+      mask: string;
+      module: string;
+      model: string;
+      weight: number;
+      resize_mode: string;
+      lowvram: boolean;
+      processor_res: number;
+      threshold_a: number;
+      threshold_b: number;
+      guidance: number;
+      guidance_start: number;
+      guidance_end: number;
+      guessmode: boolean;
+    }
+  ];
+}
+
+export type CompleteImagesProps = {
+  canvasExpand: boolean;
+  completeImages: Map<string, SynthData>;
+  handleDownloadImage: () => void;
+  dispatch: Dispatch<AnyAction>;
+  synthLayerSelected: {
+    id: number;
+    layer: string | undefined;
+  };
+};

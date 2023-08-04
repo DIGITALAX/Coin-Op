@@ -18,6 +18,7 @@ import {
 import { AnyAction, Dispatch as DispatchRedux } from "redux";
 import { Erc20, Profile } from "./lens.types";
 import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
+import { SynthData } from "../../../../redux/reducers/completedSynthsSlice";
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
@@ -27,8 +28,10 @@ export type PageContainerProps = {
   materialBackground: string;
   setMaterialBackground: (e: string) => void;
   materialOpen: boolean;
+  handleDownloadImage: () => void;
   setMaterialOpen: (e: boolean) => void;
-  
+  completedSynths: Map<string, SynthData>;
+  synthProgress: number;
   compositeRef: LegacyRef<HTMLDivElement> | undefined;
   template: Template;
   canvasExpand: boolean;

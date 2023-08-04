@@ -1,12 +1,16 @@
-import { PreRoll } from "@/components/Common/types/common.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export interface SynthData {
+  synths: string[];
+  chosen: string;
+}
+
 export interface CompletedSynthsState {
-  value: { image: string; layer: string }[];
+  value: Map<string, SynthData>;
 }
 
 const initialCompletedSynthsState: CompletedSynthsState = {
-  value: [],
+  value: new Map(),
 };
 
 export const completedSynthsSlice = createSlice({
@@ -15,7 +19,7 @@ export const completedSynthsSlice = createSlice({
   reducers: {
     setCompletedSynths: (
       state: CompletedSynthsState,
-      action: PayloadAction<{ image: string; layer: string }[]>
+      action: PayloadAction<Map<string, SynthData>>
     ) => {
       state.value = action.payload;
     },

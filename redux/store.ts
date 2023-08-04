@@ -23,8 +23,11 @@ import printTypeLayersReducer from "./reducers/printTypeLayersSlice";
 import messagesModalReducer from "./reducers/messagesModalSlice";
 import litClientReducer from "./reducers/litClientSlice";
 import synthLoadingReducer from "./reducers/synthLoadingSlice";
-import initImagePromptReducer from "./reducers/initImagePromptSlice";
 import expandCanvasReducer from "./reducers/expandCanvasSlice";
+import canvasSizeReducer from "./reducers/canvasSizeSlice";
+import completedSynthsReducer from "./reducers/completedSynthsSlice";
+import synthAreaReducer from "./reducers/synthAreaSlice";
+import synthProgressReducer from "./reducers/synthProgressSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -50,8 +53,11 @@ const reducer = combineReducers({
   messagesModalReducer,
   litClientReducer,
   synthLoadingReducer,
-  initImagePromptReducer,
-  expandCanvasReducer
+  expandCanvasReducer,
+  canvasSizeReducer,
+  completedSynthsReducer,
+  synthAreaReducer,
+  synthProgressReducer,
 });
 
 export const store = configureStore({

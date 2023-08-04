@@ -65,6 +65,9 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   materialOpen,
   setMaterialBackground,
   setMaterialOpen,
+  completedSynths,
+  synthProgress,
+  handleDownloadImage,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -120,6 +123,9 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           undo={undo}
           redo={redo}
           handleReset={handleReset}
+          completedSynths={completedSynths}
+          synthProgress={synthProgress}
+          handleDownloadImage={handleDownloadImage}
         />
         <Composite
           dispatch={dispatch}
