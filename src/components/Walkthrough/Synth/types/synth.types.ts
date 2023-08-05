@@ -258,8 +258,6 @@ export interface SvgPatternType {
   offsetYs?: number[];
   scaleFactorX?: number;
   scaleFactorY?: number;
-  centerX?: number;
-  centerY?: number;
   bounds?: {
     left: number;
     top: number;

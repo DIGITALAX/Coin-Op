@@ -88,13 +88,10 @@ const drawPatternElement = (
     case "image":
       ctx?.save();
       ctx?.clip();
-      const imageX = element.centerX! - element.width! / 2;
-      const imageY = element.centerY! - element.height! / 2;
-
       ctx?.drawImage(
         element.image!,
-        imageX,
-        imageY,
+        element.x1!,
+        element.y1!,
         (element?.width as number) * devicePixelRatio,
         (element?.height as number) * devicePixelRatio
       );

@@ -174,7 +174,7 @@ const useCanvas = () => {
         offsetY: number;
       }[] = [];
       allElements.forEach((element) => {
-        if (element.type === "pencil") {
+        if (element.type === "pencil" || element.type === "erase") {
           const offsetXs = element.points?.map(
             (point: { x: number; y: number }) =>
               ((e.clientX - pan.xOffset * 0.5) * devicePixelRatio) / zoom -
@@ -195,11 +195,11 @@ const useCanvas = () => {
           const offsetX =
             ((e.clientX - bounds.left - pan.xOffset * 0.5) * devicePixelRatio) /
               zoom -
-            (element[element?.length - 1]?.x1 as number);
+            (element?.x1 as number);
           const offsetY =
             ((e.clientY - bounds.top - pan.yOffset * 0.5) * devicePixelRatio) /
               zoom -
-            (element[element?.length - 1]?.y1 as number);
+            (element?.y1 as number);
           newOffsets.push({
             offsetXs: [],
             offsetYs: [],
@@ -314,7 +314,7 @@ const useCanvas = () => {
       const allElements = history.get(String(layerToSynth.id)) || [];
       let newElements: (SvgPatternType | ElementInterface)[] = [];
       allElements.forEach((element, index: number) => {
-        if (element.type === "pencil") {
+        if (element.type === "pencil" || element.type === "erase") {
           newElements.push({
             ...element,
             points: element.points?.map(
@@ -329,53 +329,51 @@ const useCanvas = () => {
             ),
           });
         } else if (element.type === "image") {
-          const afterOffsetX =
-            e.clientX -
-            bounds?.left -
-            pan.xOffset * 0.5 -
-            (element.offsetX * zoom - pan.xOffset) / devicePixelRatio;
-          const afterOffsetY =
-            e.clientY -
-            bounds?.top -
-            pan.yOffset * 0.5 -
-            (element.offsetY * zoom - pan.yOffset) / devicePixelRatio;
-
+          const mouseXOnCanvas =
+            ((e.clientX - bounds.left - pan.xOffset * 0.5) * devicePixelRatio) /
+            zoom;
+          const mouseYOnCanvas =
+            ((e.clientY - bounds.top - pan.yOffset * 0.5) * devicePixelRatio) /
+            zoom;
+          const newX1 = mouseXOnCanvas - offsets[index].offsetX;
+          const newY1 = mouseYOnCanvas - offsets[index].offsetY;
           newElements.push({
             ...element,
             xOffset: pan.xOffset * 0.5,
             yOffset: pan.yOffset * 0.5,
-            x1: afterOffsetX,
-            y1: afterOffsetY,
-            x2:
-              afterOffsetX +
-              ((element.x2 - element.x1) * zoom) / devicePixelRatio,
-            y2:
-              afterOffsetY +
-              ((element.y2 - element.y1) * zoom) / devicePixelRatio,
+            x1: newX1,
+            y1: newY1,
+            x2: newX1 + element.width! * devicePixelRatio,
+            y2: newY1 + element.height! * devicePixelRatio,
           });
         } else if (element.type === "text") {
           const textWidth = ctx?.measureText(element?.text!).width!;
           const textHeight = ctx?.measureText("M").width! / 2;
+
           newElements.push({
             ...element,
             x1:
               ((e.clientX - bounds.left - pan.xOffset * 0.5) *
                 devicePixelRatio) /
-              zoom,
+                zoom -
+              offsets[index].offsetX,
             y1:
               ((e.clientY - bounds.top - pan.yOffset * 0.5) *
                 devicePixelRatio) /
-              zoom,
+                zoom -
+              offsets[index].offsetY,
             x2:
               ((e.clientX - bounds.left - pan.xOffset * 0.5) *
                 devicePixelRatio) /
                 zoom +
-              textWidth * zoom,
+              textWidth * zoom -
+              offsets[index].offsetX,
             y2:
               ((e.clientY - bounds.top - pan.yOffset * 0.5) *
                 devicePixelRatio) /
                 zoom +
-              textHeight * zoom,
+              textHeight * zoom -
+              offsets[index].offsetY,
           });
         } else {
           newElements.push(element);
@@ -451,8 +449,8 @@ const useCanvas = () => {
         type: "image",
         width: newWidth,
         height: newHeight,
-        centerX: region?.x,
-        centerY: region?.y,
+        x1: region?.x! - newWidth / 2,
+        y1: region?.y! - newHeight / 2,
       };
 
       newElements = [newElements[0], newElement];
