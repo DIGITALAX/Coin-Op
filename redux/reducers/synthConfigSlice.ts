@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface SynthConfigState {
   type: string;
   prompt: string;
-  image?:  Blob | MediaSource;
+  image?: Blob | MediaSource;
 }
 
 const initialSynthConfigState: SynthConfigState = {

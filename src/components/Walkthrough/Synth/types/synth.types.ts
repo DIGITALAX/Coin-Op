@@ -7,7 +7,7 @@ export type SynthProps = {
   scrollToComposite: () => void;
   isDragging: boolean;
   canvasExpand: boolean;
-  handleDownloadImage: () => void;
+  handleDownloadImage: (image: string) => void;
   selectedElement: ElementInterface | null;
   newLayersLoading: boolean;
   synthLayerSelected: {
@@ -86,7 +86,7 @@ export type GridProps = {
     id: number;
     layer: string | undefined;
   };
-  handleDownloadImage: () => void;
+  handleDownloadImage: (image: string) => void;
   isDragging: boolean;
   selectedElement: ElementInterface | null;
   synthLayer:
@@ -258,6 +258,8 @@ export interface SvgPatternType {
   offsetYs?: number[];
   scaleFactorX?: number;
   scaleFactorY?: number;
+  centerX?: number;
+  centerY?: number;
   bounds?: {
     left: number;
     top: number;
@@ -335,7 +337,7 @@ export interface InputTypeAutomatic {
 export type CompleteImagesProps = {
   canvasExpand: boolean;
   completeImages: Map<string, SynthData>;
-  handleDownloadImage: () => void;
+  handleDownloadImage: (image: string) => void;
   dispatch: Dispatch<AnyAction>;
   synthLayerSelected: {
     id: number;

@@ -5,7 +5,8 @@ import { ElementInterface } from "@/components/Walkthrough/Synth/types/synth.typ
 const drawElement = (
   element: ElementInterface,
   ctx: CanvasRenderingContext2D | null,
-  materialBackground: string
+  materialBackground: string,
+  synth?: boolean
 ) => {
   ctx?.setLineDash(element?.lineDash ? element?.lineDash : [0]);
   (ctx as CanvasRenderingContext2D).imageSmoothingEnabled = false;
@@ -15,10 +16,16 @@ const drawElement = (
     case "erase":
     case "pencil":
       ctx?.beginPath();
-      (ctx as CanvasRenderingContext2D).fillStyle =
-        element?.type === "erase"
-          ? materialBackground
-          : (element?.fill as string);
+      if (synth && element?.type === "erase") {
+        ctx!.globalCompositeOperation = "destination-out";
+      } else {
+        ctx!.globalCompositeOperation = "source-over";
+        (ctx as CanvasRenderingContext2D).fillStyle =
+          element?.type === "erase"
+            ? materialBackground
+            : (element?.fill as string);
+      }
+
       const pathData = getSvgPathFromStroke(
         getStroke(element?.points as { x: number; y: number }[], {
           size: (element?.strokeWidth as number) * devicePixelRatio,

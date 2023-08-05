@@ -3,16 +3,26 @@ import { RootState } from "../../../../../redux/store";
 import { useEffect, useRef } from "react";
 import { setCompletedSynths } from "../../../../../redux/reducers/completedSynthsSlice";
 import { setSynthLoading } from "../../../../../redux/reducers/synthLoadingSlice";
-import { InputTypeAutomatic } from "../types/synth.types";
+import {
+  ElementInterface,
+  InputTypeAutomatic,
+  SvgPatternType,
+} from "../types/synth.types";
 import { negative_prompt } from "../../../../../lib/constants";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 import { setSynthProgress } from "../../../../../redux/reducers/synthProgressSlice";
+import drawElement from "../../../../../lib/canvas/helpers/drawElement";
+import drawPatternElement from "../../../../../lib/canvas/helpers/drawPatternElement";
+import { getRegionOfInterest } from "../../../../../lib/canvas/helpers/getRegionOfInterest";
 
 const useSynth = () => {
   const dispatch = useDispatch();
   const compositeRef = useRef<HTMLDivElement>(null);
   const synthConfig = useSelector(
     (state: RootState) => state.app.synthConfigReducer
+  );
+  const elements = useSelector(
+    (state: RootState) => state.app.setElementsReducer.value
   );
   const layerToSynth = useSelector(
     (state: RootState) => state.app.layerToSynthReducer.value
@@ -49,6 +59,7 @@ const useSynth = () => {
     dispatch(setSynthLoading(true));
     try {
       let input: InputTypeAutomatic;
+      let patternImg: string | undefined = undefined;
       if (synthConfig.type === "img2img") {
         const reader = new FileReader();
         const img: string = await new Promise((resolve) => {
@@ -65,7 +76,7 @@ const useSynth = () => {
           batch_size: 1,
           image_cfg_scale: 7,
           restore_faces: true,
-          seed: Math.random(),
+          seed: Math.floor(Math.random() * (1e10 - 1e9) + 1e9),
           width: canvasSize.width,
           height: canvasSize.height,
           sampler_name: "DPM++ 2M Karras",
@@ -90,14 +101,96 @@ const useSynth = () => {
           ],
         };
       } else {
+        if (elements.length > 1) {
+          const region = getRegionOfInterest(elements[0]);
+          if (region) {
+            const scale = 8;
+            const originalCanvas = document.createElement("canvas");
+            originalCanvas.width = canvasSize.width * scale;
+            originalCanvas.height = canvasSize.height * scale;
+            const originalCtx = originalCanvas.getContext("2d");
+
+            const scaleFactorWidth = originalCanvas.width / canvasSize.width;
+            const scaleFactorHeight = originalCanvas.height / canvasSize.height;
+            const scaleFactor = Math.sqrt(scaleFactorWidth * scaleFactorHeight);
+            elements
+              .slice(1)
+              .forEach((element: ElementInterface | SvgPatternType) => {
+                let newElement;
+                if (element.type === "image") {
+                  newElement = {
+                    ...element,
+                    width: element.width! * scaleFactor,
+                    height: element.height! * scaleFactor,
+                  };
+                } else if (element.type === "text") {
+                  newElement = {
+                    ...element,
+                    x1: element.x1! * scaleFactorWidth,
+                    x2: element.x2! * scaleFactorWidth,
+                    y1: element.y1! * scaleFactorHeight,
+                    y2: element.y2! * scaleFactorHeight,
+                    strokeWidth: element.strokeWidth! * scaleFactor,
+                  };
+                } else {
+                  newElement = {
+                    ...element,
+                    strokeWidth: element.strokeWidth! * scaleFactor,
+                    points: (element as ElementInterface).points?.map(
+                      (point: { x: number; y: number }) => {
+                        return {
+                          x: point.x * scaleFactorWidth,
+                          y: point.y * scaleFactorHeight,
+                        };
+                      }
+                    ),
+                  };
+                }
+
+                if (newElement.type === "image") {
+                  drawPatternElement(
+                    newElement as SvgPatternType,
+                    originalCtx,
+                    "rgba(0,0,0,0)"
+                  );
+                } else {
+                  drawElement(
+                    newElement as ElementInterface,
+                    originalCtx,
+                    "rgba(0,0,0,0)",
+                    true
+                  );
+                }
+              });
+
+            const regionCanvas = document.createElement("canvas");
+            regionCanvas.width = region.width * scaleFactorWidth;
+            regionCanvas.height = region.height * scaleFactorHeight;
+            const regionCtx = regionCanvas.getContext("2d");
+            regionCtx?.drawImage(
+              originalCanvas,
+              region.x * scaleFactorWidth,
+              region.y * scaleFactorHeight,
+              regionCanvas.width,
+              regionCanvas.height,
+              0,
+              0,
+              regionCanvas.width,
+              regionCanvas.height
+            );
+            patternImg = regionCanvas.toDataURL();
+          }
+        }
+
         input = {
           prompt: synthConfig.prompt,
+          init_images: patternImg ? [patternImg] : undefined,
           steps: 40,
           cfg_scale: 8,
           negative_prompt: negative_prompt,
           batch_size: 1,
           restore_faces: true,
-          seed: Math.random(),
+          seed: Math.floor(Math.random() * (1e10 - 1e9) + 1e9),
           width: canvasSize.width,
           height: canvasSize.height,
           sampler_name: "DPM++ 2M Karras",
@@ -125,7 +218,9 @@ const useSynth = () => {
 
       await promptToAutomatic(
         input,
-        synthConfig.type === "img2img" ? "sdapi/v1/img2img" : "sdapi/v1/txt2img"
+        synthConfig.type === "img2img" || patternImg
+          ? "sdapi/v1/img2img"
+          : "sdapi/v1/txt2img"
       );
     } catch (err: any) {
       console.error(err.message);
@@ -184,43 +279,47 @@ const useSynth = () => {
       console.error(err.message);
     }
   };
-
-  const handleDownloadImage = () => {
-    const imgElement = document.getElementById("base64Img") as HTMLImageElement;
-    const originalWidth = imgElement.naturalWidth;
-    const originalHeight = imgElement.naturalHeight;
-
-    let newWidth = originalWidth;
-    let newHeight = originalHeight;
-
-    const minWidth = 768;
-    const minHeight = 768;
-
-    if (originalWidth < minWidth || originalHeight < minHeight) {
-      const aspectRatio = originalWidth / originalHeight;
-      if (originalWidth < minWidth) {
-        newWidth = minWidth;
-        newHeight = newWidth / aspectRatio;
+  const handleDownloadImage = (imageSrc: string) => {
+    const imgElement = new Image(); 
+    imgElement.src = imageSrc; 
+  
+    imgElement.onload = () => {
+      const originalWidth = imgElement.naturalWidth;
+      const originalHeight = imgElement.naturalHeight;
+  
+      let newWidth = originalWidth;
+      let newHeight = originalHeight;
+  
+      const minWidth = 768;
+      const minHeight = 768;
+  
+      if (originalWidth < minWidth || originalHeight < minHeight) {
+        const aspectRatio = originalWidth / originalHeight;
+        if (originalWidth < minWidth) {
+          newWidth = minWidth;
+          newHeight = newWidth / aspectRatio;
+        }
+        if (newHeight < minHeight) {
+          newHeight = minHeight;
+          newWidth = newHeight * aspectRatio;
+        }
       }
-      if (newHeight < minHeight) {
-        newHeight = minHeight;
-        newWidth = newHeight * aspectRatio;
+  
+      const newCanvas = document.createElement("canvas");
+      newCanvas.width = newWidth;
+      newCanvas.height = newHeight;
+  
+      const newCtx = newCanvas.getContext("2d");
+      if (newCtx) {
+        newCtx.drawImage(imgElement, 0, 0, newWidth, newHeight);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = newCanvas.toDataURL();
+        downloadLink.download = "coin-op-synth";
+        downloadLink.click();
       }
-    }
-
-    const newCanvas = document.createElement("canvas");
-    newCanvas.width = newWidth;
-    newCanvas.height = newHeight;
-
-    const newCtx = newCanvas.getContext("2d");
-    if (newCtx) {
-      newCtx.drawImage(imgElement, 0, 0, newWidth, newHeight);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = newCanvas.toDataURL();
-      downloadLink.download = "coin-op-synth";
-      downloadLink.click();
     }
   };
+  
 
   const checkSynthProgress = async (): Promise<void> => {
     try {

@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setElements } from "../../../../../redux/reducers/setElementsSlice";
+import lodash from "lodash";
 
 type UseElementsReturnType = {
   history: Map<string, any[]>;
@@ -9,9 +12,11 @@ type UseElementsReturnType = {
 };
 
 const useElements = (): UseElementsReturnType => {
+  const dispatch = useDispatch();
   const [index, setIndex] = useState(new Map<string, number>());
   const [history, setHistory] = useState(new Map<string, any[]>());
   const [redoStack, setRedoStack] = useState(new Map<string, any[]>());
+  const [updatedHistory, setUpdatedHistory] = useState<any[]>([]);
 
   const setState = (
     patternId: string,
@@ -43,7 +48,7 @@ const useElements = (): UseElementsReturnType => {
         const currentIndex = index.get(patternId)!;
         const updatedHistory = newHistory
           .get(patternId)!
-          .slice(0, currentIndex); // change here
+          .slice(0, currentIndex);
         newHistory.set(patternId, [
           ...updatedHistory,
           newState[newState.length - 1],
@@ -52,7 +57,7 @@ const useElements = (): UseElementsReturnType => {
           (prevIndex) => new Map(prevIndex.set(patternId, currentIndex + 1))
         );
       }
-
+      setUpdatedHistory(lodash.cloneDeep(newHistory.get(patternId)!));
       return newHistory;
     });
   };
@@ -114,6 +119,13 @@ const useElements = (): UseElementsReturnType => {
       return newIndex;
     });
   };
+
+  useEffect(() => {
+    if (updatedHistory?.length > 0) {
+      dispatch(setElements(updatedHistory));
+      setUpdatedHistory([]);
+    }
+  }, [updatedHistory]);
 
   return {
     history,

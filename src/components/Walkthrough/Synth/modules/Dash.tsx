@@ -120,52 +120,56 @@ const Dash: FunctionComponent<DashProps> = ({
               />
             )}
           </div>
-          <div
-            className={`relative flex flex-row gap-1.5 bg-black p-2 w-4/5 h-fit break-words border border-ama rounded-md justify-center items-center text-center ${
-              synthConfig.type !== "img2img" && "opacity-50"
+          <label
+            className={`relative flex flex-col gap-1.5 bg-black p-2 w-4/5 h-fit break-words border border-ama rounded-md justify-center items-center text-center ${
+              synthConfig.type !== "img2img" ? "opacity-50" : "cursor-pointer"
             }`}
-          >
-            <label
-              className={`relative w-4 h-4 items-center justify-center flex ${
-                !synthLoading &&
+            onChange={(e: FormEvent) => {
+              !synthLoading &&
                 synthConfig.type === "img2img" &&
-                "cursor-pointer active:scale-95"
-              } `}
-              onChange={(e: FormEvent) => {
-                !synthLoading &&
-                  synthConfig.type === "img2img" &&
-                  dispatch(
-                    setSynthConfig({
-                      actionType: synthConfig.type,
-                      actionPrompt: synthConfig.prompt,
-                      actionImage: (e.target as HTMLFormElement).files[0],
-                    })
-                  );
-              }}
-            >
-              <Image
-                draggable={false}
-                layout="fill"
-                src={`${INFURA_GATEWAY}/ipfs/QmRc4iqPS81k9QMaHUcYoS5cPvZPBDErQtXCqPQfepg51w`}
-              />
-              <input
-                type="file"
-                accept="image/png"
-                hidden
-                required
-                id="files"
-                multiple={true}
-                name="images"
-                className="caret-transparent"
-                disabled={
-                  synthLoading || synthConfig.type === "txt2img" ? true : false
-                }
-              />
-            </label>
-            <div className="relative w-fit h-fit font-mana text-white text-xs flex justify-center items-center">
-              add image inspiration
+                dispatch(
+                  setSynthConfig({
+                    actionType: synthConfig.type,
+                    actionPrompt: synthConfig.prompt,
+                    actionImage: (e.target as HTMLFormElement).files[0],
+                  })
+                );
+            }}
+          >
+            <div className="relative w-full h-full flex flex-row gap-1.5 break-words justify-center items-center text-center ">
+              <div
+                className={`relative w-4 h-4 items-center justify-center flex`}
+              >
+                <Image
+                  draggable={false}
+                  layout="fill"
+                  src={`${INFURA_GATEWAY}/ipfs/QmRc4iqPS81k9QMaHUcYoS5cPvZPBDErQtXCqPQfepg51w`}
+                />
+                <input
+                  type="file"
+                  accept="image/png"
+                  hidden
+                  required
+                  id="files"
+                  multiple={true}
+                  name="images"
+                  className="caret-transparent"
+                  disabled={
+                    synthLoading || synthConfig.type === "txt2img"
+                      ? true
+                      : false
+                  }
+                />
+              </div>
+              <div className="relative w-fit h-fit font-mana text-white text-xs flex justify-center items-center">
+                add image inspiration
+              </div>
             </div>
-          </div>
+            <div className="relative flex items-center justify-center break-words text-xxs text-white font-mana">
+              {`( On txt2img, the pattern element's drawing is
+              used as an init. )`}
+            </div>
+          </label>
         </div>
       </div>
     </div>

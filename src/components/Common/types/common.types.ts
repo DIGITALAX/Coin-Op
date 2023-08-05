@@ -1,6 +1,7 @@
 import { Template } from "@/components/Walkthrough/Format/types/format.types";
 import {
   ElementInterface,
+  SvgPatternType,
   SynthConfig,
 } from "@/components/Walkthrough/Synth/types/synth.types";
 import { NextRouter } from "next/router";
@@ -28,7 +29,7 @@ export type PageContainerProps = {
   materialBackground: string;
   setMaterialBackground: (e: string) => void;
   materialOpen: boolean;
-  handleDownloadImage: () => void;
+  handleDownloadImage: (image: string) => void;
   setMaterialOpen: (e: boolean) => void;
   completedSynths: Map<string, SynthData>;
   compositeRef: LegacyRef<HTMLDivElement> | undefined;

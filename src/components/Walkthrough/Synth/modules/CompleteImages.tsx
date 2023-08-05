@@ -90,7 +90,7 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
                   className="absolute -top-2 -left-1 w-4 h-4 rounded-full bg-black flex items-center justify-center cursor-pointer bg-white z-1 hover:opacity-70"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDownloadImage();
+                    handleDownloadImage(`data:image/jpeg;base64,${image}`);
                   }}
                 >
                   <MdDownloadForOffline size={8} color="black" />

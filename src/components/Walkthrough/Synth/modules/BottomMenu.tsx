@@ -113,7 +113,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
             canvasExpand={canvasExpand}
           />
           {thickness && (
-            <div className="absolute bottom-16 flex flex-col w-fit h-fit">
+            <div className="absolute z-1 bottom-16 flex flex-col w-fit h-fit">
               <input
                 type="range"
                 className="w-full"
@@ -121,7 +121,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
                 onChange={(e) => setBrushWidth(Number(e.target.value))}
               />
             </div>
-          )}
+          )} 
           <CanvasOption
             image="QmXsWSdgvoieTtWYFskRmZCUnTN7WHvffxd3kSZMTcBjxm"
             bgColor="black"
@@ -144,7 +144,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
           />
           {fontOpen && (
             <div
-              className={`absolute w-fit  overflow-y-scroll ${
+              className={`absolute w-fit z-1 overflow-y-scroll ${
                 canvasExpand ? "bottom-20 h-32" : "bottom-16 h-20"
               }`}
             >
@@ -204,6 +204,26 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
             />
           </div>
           <CanvasOption
+            bgColor="black"
+            image="QmPvfTS6brNvnTN6e6L2Btp8eAMxC8XhErrtQEjYF1nB8o"
+            width={14}
+            height={14}
+            setShowString={setTool}
+            string_option={"move"}
+            toolTip={"move"}
+            canvasExpand={canvasExpand}
+          />
+          <CanvasOption
+            bgColor="black"
+            image="QmPVmyozQu3DwX2f5dQnv6MgRtmDckrnKNje2A4ettN9qS"
+            width={20}
+            height={20}
+            setShowString={setTool}
+            string_option={"resize"}
+            toolTip={"resize"}
+            canvasExpand={canvasExpand}
+          />
+          <CanvasOption
             canvasExpand={canvasExpand}
             image="QmNQ36ibTtP1PRmwUwVr857q7CcosmQrQWmfXJ5sQeVp7Y"
             bgColor="black"
@@ -215,7 +235,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
           />
           {materialOpen && (
             <div
-              className={`absolute w-fit h-fit ${
+              className={`absolute w-fit h-fit z-1 ${
                 canvasExpand ? "bottom-20" : "bottom-16"
               }`}
             >

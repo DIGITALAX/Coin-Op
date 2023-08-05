@@ -20,6 +20,7 @@ import createElement from "../../../../../lib/canvas/helpers/createElement";
 import updateElement from "../../../../../lib/canvas/helpers/updateElement";
 import { isPointInPattern } from "../../../../../lib/canvas/helpers/isPointInPattern";
 import { setCanvasSize } from "../../../../../redux/reducers/canvasSizeSlice";
+import { getRegionOfInterest } from "../../../../../lib/canvas/helpers/getRegionOfInterest";
 
 const useCanvas = () => {
   const dispatch = useDispatch();
@@ -38,9 +39,6 @@ const useCanvas = () => {
   );
   const synthProgress = useSelector(
     (state: RootState) => state.app.synthProgressReducer.value
-  );
-  const patternSize = useSelector(
-    (state: RootState) => state.app.synthAreaReducer.value
   );
   const canvasSize = useSelector(
     (state: RootState) => state.app.canvasSizeReducer.value
@@ -82,6 +80,14 @@ const useCanvas = () => {
   const [brushWidth, setBrushWidth] = useState<number>(3);
   const [thickness, setThickness] = useState<boolean>(false);
   const [newLayersLoading, setNewLayersLoading] = useState<boolean>(false);
+  const [offsets, setOffsets] = useState<
+    {
+      offsetXs: number[];
+      offsetYs: number[];
+      offsetX: number;
+      offsetY: number;
+    }[]
+  >([]);
   const [clear, setClear] = useState<boolean>(false);
   const [action, setAction] = useState<string>("none");
 
@@ -148,6 +154,63 @@ const useCanvas = () => {
         xInitial: e.clientX - pan.xOffset,
         yInitial: e.clientY - pan.yOffset,
       });
+    } else if (
+      (tool === "move" || tool == "resize") &&
+      isPointInPattern(
+        e.clientX - bounds.left,
+        e.clientY - bounds.top,
+        history.get(String(layerToSynth.id))?.[0] || [],
+        ctx,
+        (history.get(String(layerToSynth.id))?.[0] || []).type === "circle"
+          ? true
+          : false
+      )
+    ) {
+      const allElements = history.get(String(layerToSynth.id)) || [];
+      let newOffsets: {
+        offsetXs: number[];
+        offsetYs: number[];
+        offsetX: number;
+        offsetY: number;
+      }[] = [];
+      allElements.forEach((element) => {
+        if (element.type === "pencil") {
+          const offsetXs = element.points?.map(
+            (point: { x: number; y: number }) =>
+              ((e.clientX - pan.xOffset * 0.5) * devicePixelRatio) / zoom -
+              point.x
+          );
+          const offsetYs = element.points?.map(
+            (point: { x: number; y: number }) =>
+              ((e.clientY - pan.yOffset * 0.5) * devicePixelRatio) / zoom -
+              point.y
+          );
+          newOffsets.push({
+            offsetXs,
+            offsetYs,
+            offsetX: 0,
+            offsetY: 0,
+          });
+        } else {
+          const offsetX =
+            ((e.clientX - bounds.left - pan.xOffset * 0.5) * devicePixelRatio) /
+              zoom -
+            (element[element?.length - 1]?.x1 as number);
+          const offsetY =
+            ((e.clientY - bounds.top - pan.yOffset * 0.5) * devicePixelRatio) /
+              zoom -
+            (element[element?.length - 1]?.y1 as number);
+          newOffsets.push({
+            offsetXs: [],
+            offsetYs: [],
+            offsetX,
+            offsetY,
+          });
+        }
+      });
+
+      setOffsets(newOffsets);
+      setAction(tool === "move" ? "moving" : "resizing");
     } else if (
       (tool === "pencil" || tool === "text" || tool === "erase") &&
       isPointInPattern(
@@ -247,6 +310,80 @@ const useCanvas = () => {
         undefined,
         undefined
       );
+    } else if (action === "moving") {
+      const allElements = history.get(String(layerToSynth.id)) || [];
+      let newElements: (SvgPatternType | ElementInterface)[] = [];
+      allElements.forEach((element, index: number) => {
+        if (element.type === "pencil") {
+          newElements.push({
+            ...element,
+            points: element.points?.map(
+              (_: { x: number; y: number }, indexTwo: number) => ({
+                x:
+                  ((e.clientX - pan.xOffset * 0.5) / zoom) * devicePixelRatio -
+                  offsets[index]?.offsetXs[indexTwo],
+                y:
+                  ((e.clientY - pan.yOffset * 0.5) / zoom) * devicePixelRatio -
+                  offsets[index]?.offsetYs[indexTwo],
+              })
+            ),
+          });
+        } else if (element.type === "image") {
+          const afterOffsetX =
+            e.clientX -
+            bounds?.left -
+            pan.xOffset * 0.5 -
+            (element.offsetX * zoom - pan.xOffset) / devicePixelRatio;
+          const afterOffsetY =
+            e.clientY -
+            bounds?.top -
+            pan.yOffset * 0.5 -
+            (element.offsetY * zoom - pan.yOffset) / devicePixelRatio;
+
+          newElements.push({
+            ...element,
+            xOffset: pan.xOffset * 0.5,
+            yOffset: pan.yOffset * 0.5,
+            x1: afterOffsetX,
+            y1: afterOffsetY,
+            x2:
+              afterOffsetX +
+              ((element.x2 - element.x1) * zoom) / devicePixelRatio,
+            y2:
+              afterOffsetY +
+              ((element.y2 - element.y1) * zoom) / devicePixelRatio,
+          });
+        } else if (element.type === "text") {
+          const textWidth = ctx?.measureText(element?.text!).width!;
+          const textHeight = ctx?.measureText("M").width! / 2;
+          newElements.push({
+            ...element,
+            x1:
+              ((e.clientX - bounds.left - pan.xOffset * 0.5) *
+                devicePixelRatio) /
+              zoom,
+            y1:
+              ((e.clientY - bounds.top - pan.yOffset * 0.5) *
+                devicePixelRatio) /
+              zoom,
+            x2:
+              ((e.clientX - bounds.left - pan.xOffset * 0.5) *
+                devicePixelRatio) /
+                zoom +
+              textWidth * zoom,
+            y2:
+              ((e.clientY - bounds.top - pan.yOffset * 0.5) *
+                devicePixelRatio) /
+                zoom +
+              textHeight * zoom,
+          });
+        } else {
+          newElements.push(element);
+        }
+      });
+
+      setElements(String(layerToSynth.id), newElements, true);
+    } else if (action === "resizing") {
     }
   };
 
@@ -285,31 +422,44 @@ const useCanvas = () => {
       console.error(err.message);
     }
   };
-
   const handleImageAdd = (imageObject: HTMLImageElement): void => {
     try {
-      let newElements = [...(history.get(String(layerToSynth.id)) || [])];
+      const oldElements = history.get(String(layerToSynth.id)) || [];
 
-      newElements = newElements.filter((element) => element.type !== "image");
+      let newElements = oldElements.filter(
+        (element) => element.type !== "image"
+      );
 
-      const widthScaleFactor = patternSize.originalWidth / imageObject.width;
-      const heightScaleFactor = patternSize.originalHeight / imageObject.height;
-      const scaleFactor = Math.min(widthScaleFactor, heightScaleFactor);
+      const region = getRegionOfInterest(newElements[0]);
+
+      const aspectRatio = imageObject.width / imageObject.height;
+      const regionMax = Math.max(region?.width!, region?.height!);
+
+      let newWidth: number, newHeight: number;
+
+      if (imageObject.width < imageObject.height) {
+        newHeight = regionMax;
+        newWidth = newHeight * aspectRatio;
+      } else {
+        newWidth = regionMax;
+        newHeight = newWidth / aspectRatio;
+      }
+
       const newElement = {
         clipElement: history.get(String(layerToSynth.id))?.[0] || [],
         image: imageObject,
         type: "image",
-        width: imageObject.width * scaleFactor,
-        height: imageObject.height * scaleFactor,
+        width: newWidth,
+        height: newHeight,
+        centerX: region?.x,
+        centerY: region?.y,
       };
 
-      const insertIndex = newElements[1]?.type === "image" ? 2 : 1;
-
-      newElements.splice(insertIndex, 0, newElement);
-
+      newElements = [newElements[0], newElement];
       setElements(
         String(layerToSynth.id),
-        newElements?.map((element, index) => ({ ...element, id: index }))
+        newElements?.map((element, index) => ({ ...element, id: index })),
+        true
       );
     } catch (err: any) {
       console.error(err.message);
@@ -452,7 +602,7 @@ const useCanvas = () => {
         "source-over";
       elements?.forEach(
         (element: SvgPatternType | ElementInterface, index: number) => {
-          if (synthLoading && synthProgress < 0.99) {
+          if (synthLoading && synthProgress < 0.97) {
             if (index === 0) {
               const animate = () => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -563,10 +713,7 @@ const useCanvas = () => {
       completedSynths.get(String(layerToSynth.id))!.synths.length > 0 &&
         addImageToCanvas();
     }
-  }, [
-    completedSynths.get(String(layerToSynth.id))?.chosen,
-    completedSynths.get(String(layerToSynth.id))?.synths,
-  ]);
+  }, [completedSynths.get(String(layerToSynth.id))?.chosen]);
 
   return {
     canvasRef,
@@ -603,6 +750,7 @@ const useCanvas = () => {
     materialOpen,
     setMaterialBackground,
     setMaterialOpen,
+    history,
   };
 };
 

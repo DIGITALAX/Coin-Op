@@ -46,7 +46,7 @@ const Synth: FunctionComponent<SynthProps> = ({
   setMaterialOpen,
   completedSynths,
   handleDownloadImage,
-  synthLoading
+  synthLoading,
 }): JSX.Element => {
   return (
     <div className={`relative w-full h-fit flex flex-col`}>

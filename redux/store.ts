@@ -28,6 +28,7 @@ import canvasSizeReducer from "./reducers/canvasSizeSlice";
 import completedSynthsReducer from "./reducers/completedSynthsSlice";
 import synthAreaReducer from "./reducers/synthAreaSlice";
 import synthProgressReducer from "./reducers/synthProgressSlice";
+import setElementsReducer from "./reducers/setElementsSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -58,6 +59,7 @@ const reducer = combineReducers({
   completedSynthsReducer,
   synthAreaReducer,
   synthProgressReducer,
+  setElementsReducer
 });
 
 export const store = configureStore({
