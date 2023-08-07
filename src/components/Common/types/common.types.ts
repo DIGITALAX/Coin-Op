@@ -144,16 +144,8 @@ export interface CartItem {
 }
 
 export type PreRollsProps = {
-  preRolls: {
-    left: PreRoll[];
-    right: PreRoll[];
-  };
-  dispatch: DispatchRedux<AnyAction>;
-  cartItems: CartItem[];
   left?: boolean;
   right?: boolean;
-  preRollAnim: boolean;
-  preRollsLoading: boolean;
 };
 
 export type PreRollProps = {

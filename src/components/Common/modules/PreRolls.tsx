@@ -4,16 +4,23 @@ import {
   PreRollsProps,
 } from "../types/common.types";
 import PreRoll from "./PreRoll";
+import usePreRoll from "../hooks/usePreRoll";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
 const PreRolls: FunctionComponent<PreRollsProps> = ({
-  dispatch,
-  cartItems,
-  preRolls,
   left,
   right,
-  preRollAnim,
-  preRollsLoading,
 }): JSX.Element => {
+  const dispatch = useDispatch();
+  const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
+  const cartItems = useSelector(
+    (state: RootState) => state.app.cartReducer.value
+  );
+  const preRollAnim = useSelector(
+    (state: RootState) => state.app.preRollAnimReducer.value
+  );
+  const { preRollsLoading } = usePreRoll();
   return (
     <div className="relative min-w-80 w-80 h-full flex overflow-y-scroll">
       <div className="relative w-full h-fit flex flex-col justify-start items-center gap-10">

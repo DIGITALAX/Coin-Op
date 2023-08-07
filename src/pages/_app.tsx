@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import RouterChange from "@/components/Common/modules/RouterChange";
 import { createContext, useRef } from "react";
 import Modals from "@/components/Common/modules/Modals/Modals";
+import PreRolls from "@/components/Common/modules/PreRolls";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [polygon],
@@ -101,7 +102,11 @@ export default function App({ Component, pageProps }: AppProps) {
           <ScrollContext.Provider value={{ scrollRef, synthRef }}>
             <div className="relative overflow-x-hidden w-full h-fit flex flex-col selection:bg-oscurazul selection:text-white gap-5">
               <Header />
-              <Component {...pageProps} />
+              <div className="relative overflow-hidden w-full h-[60rem] flex flex-row px-6 gap-10">
+                <PreRolls left={true} />
+                <Component {...pageProps} />
+                <PreRolls right={true} />
+              </div>
               <Footer />
               <Modals />
             </div>
