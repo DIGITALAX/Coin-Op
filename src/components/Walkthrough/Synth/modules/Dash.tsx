@@ -14,13 +14,10 @@ const Dash: FunctionComponent<DashProps> = ({
   setControlType,
   canvasExpand,
 }): JSX.Element => {
-  let imageUrl;
-  if (synthConfig?.image) {
-    imageUrl = useMemo(
-      () => URL.createObjectURL(synthConfig?.image!),
-      [synthConfig?.image]
-    );
-  }
+  const imageUrl = useMemo(
+    () => (synthConfig?.image ? URL.createObjectURL(synthConfig.image) : ""),
+    [synthConfig?.image]
+  );
 
   return (
     <div className="relative w-full h-full flex flex-row gap-5 items-start justify-center px-2 py-2.5">
@@ -117,7 +114,7 @@ const Dash: FunctionComponent<DashProps> = ({
           <div className="absolute w-full h-full">
             {synthConfig?.image &&
             synthConfig?.type === "img2img" &&
-            imageUrl ? (
+            imageUrl !== "" ? (
               <Image
                 src={imageUrl}
                 layout="fill"
