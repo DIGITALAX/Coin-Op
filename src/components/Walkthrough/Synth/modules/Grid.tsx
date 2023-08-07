@@ -54,6 +54,10 @@ const Grid: FunctionComponent<GridProps> = ({
   completedSynths,
   handleDownloadImage,
   synthLoading,
+  itemClicked,
+  setItemClicked,
+  controlType,
+  setControlType,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -84,6 +88,9 @@ const Grid: FunctionComponent<GridProps> = ({
                 dispatch={dispatch}
                 handleSynth={handleSynth}
                 synthLoading={synthLoading}
+                controlType={controlType}
+                setControlType={setControlType}
+                canvasExpand={canvasExpand}
               />
             </div>
             <div className="relative w-100 h-52 flex items-center justify-center rounded-md border border-ama">
@@ -104,6 +111,8 @@ const Grid: FunctionComponent<GridProps> = ({
                 synthLayerSelected={synthLayerSelected}
                 handleDownloadImage={handleDownloadImage}
                 synthLoading={synthLoading}
+                itemClicked={itemClicked}
+                setItemClicked={setItemClicked}
               />
             )}
             <Canvas
@@ -147,7 +156,16 @@ const Grid: FunctionComponent<GridProps> = ({
             />
             <div
               className={`w-full flex justify-center items-center flex-row gap-3 ${
-                canvasExpand ? "absolute top-16 p-2 h-14" : "relative h-10"
+                canvasExpand
+                  ? `absolute p-2 h-14 ${
+                      (
+                        completedSynths.get(String(synthLayerSelected.id))
+                          ?.synths || []
+                      )?.length > 0
+                        ? "top-10"
+                        : "top-2"
+                    }`
+                  : "relative h-10"
               }`}
             >
               <div className="relative w-full h-full flex items-center justify-start">

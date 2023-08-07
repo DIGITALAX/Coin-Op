@@ -10,6 +10,9 @@ import Index from "./Index";
 import { useEffect, useState } from "react";
 import ImageLarge from "./ImageLarge";
 import Messages from "./Messages";
+import SearchExpand from "./SearchExpand";
+import useRollSearch from "@/components/Layout/hooks/useRollSearch";
+import ApiAdd from "./ApiAdd";
 
 const Modals = () => {
   const dispatch = useDispatch();
@@ -22,8 +25,8 @@ const Modals = () => {
   const messageModal = useSelector(
     (state: RootState) => state.app.messagesModalReducer
   );
-  const canvasExpand = useSelector(
-    (state: RootState) => state.app.expandCanvasReducer
+  const searchExpand = useSelector(
+    (state: RootState) => state.app.searchExpandReducer
   );
   const lensPost = useSelector(
     (state: RootState) => state.app.lensPostBoxReducer
@@ -37,6 +40,11 @@ const Modals = () => {
   const imageModal = useSelector(
     (state: RootState) => state.app.imageViewerReducer
   );
+  const cartItems = useSelector(
+    (state: RootState) => state.app.cartReducer.value
+  );
+  const apiAdd = useSelector((state: RootState) => state.app.apiAddReducer);
+  const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
   const noHandle = useSelector((state: RootState) => state.app.noHandleReducer);
   const postImagesDispatched = useSelector(
     (state: RootState) => state.app.postImagesReducer.value
@@ -123,7 +131,7 @@ const Modals = () => {
     value,
     setValue,
   } = useCollectOptions();
-
+  const { handlePromptChoose, handleSearchSimilar } = useRollSearch();
   return (
     <>
       {noHandle.value && <NoHandle dispatch={dispatch} />}
@@ -201,6 +209,17 @@ const Modals = () => {
         <Index
           message={indexModal?.message}
           distanceFromBottom={distanceFromBottom}
+        />
+      )}
+      {apiAdd?.open && <ApiAdd dispatch={dispatch} />}
+      {searchExpand?.value && (
+        <SearchExpand
+          searchItem={searchExpand?.value}
+          dispatch={dispatch}
+          cartItems={cartItems}
+          preRolls={preRolls}
+          handlePromptChoose={handlePromptChoose}
+          handleSearchSimilar={handleSearchSimilar}
         />
       )}
       {imageModal?.value && (

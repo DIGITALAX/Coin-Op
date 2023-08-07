@@ -4,6 +4,9 @@ import { RootState } from "../../../../redux/store";
 import { getAllPreRolls } from "../../../../graphql/subgraph/queries/getPreRolls";
 import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
 import { PreRoll } from "../types/common.types";
+import { fetchIpfsJson } from "../../../../lib/algolia/helpers/fetchIpfsJson";
+import { initializeAlgolia } from "../../../../lib/algolia/client";
+import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
 
 const usePreRoll = () => {
   const dispatch = useDispatch();
@@ -18,10 +21,11 @@ const usePreRoll = () => {
     try {
       const data = await getAllPreRolls();
 
-      const preRollsAdded = data?.data?.collectionCreateds?.map(
-        (obj: PreRoll) => {
+      const preRollsAddedPromises = data?.data?.collectionCreateds?.map(
+        async (obj: PreRoll) => {
           const modifiedObj = {
             ...obj,
+            uri: await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]),
             tags: [
               ...(obj.printType === "Stickers" ? ["stickers"] : []),
               ...(obj.printType === "Posters" ? ["posters"] : []),
@@ -67,6 +71,7 @@ const usePreRoll = () => {
           return modifiedObj;
         }
       );
+      const preRollsAdded = await Promise.all(preRollsAddedPromises);
       dispatch(
         setPreRoll({
           actionLeft: preRollsAdded?.slice(
@@ -79,7 +84,17 @@ const usePreRoll = () => {
         })
       );
 
-      algoila && algoila.saveObjects(preRollsAdded, { replaceExisting: true });
+      let algoilaIndex = algoila;
+
+      if (!algoila) {
+        const index = initializeAlgolia();
+        dispatch(setAlgolia(index));
+        algoilaIndex = index;
+      }
+
+      await algoilaIndex!.replaceAllObjects(preRollsAdded, {
+        autoGenerateObjectIDIfNotExist: true,
+      });
     } catch (err: any) {
       console.error(err.message);
     }

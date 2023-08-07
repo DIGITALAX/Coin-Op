@@ -32,7 +32,7 @@ const Grid: FunctionComponent<GridProps> = ({
     setFulfillmentDetails,
     approved,
     handleApproveSpend,
-    oracleValue
+    oracleValue,
   } = useCheckout();
   return (
     <div className="relative w-full h-100 flex flex-col gap-2" ref={scrollRef}>
@@ -65,6 +65,7 @@ const Grid: FunctionComponent<GridProps> = ({
           approved={approved}
           handleApproveSpend={handleApproveSpend}
           oracleValue={oracleValue}
+          setCartItem={setCartItem}
         />
         <div className="relative w-96 h-80 justify-end flex items-center">
           <div
@@ -75,8 +76,8 @@ const Grid: FunctionComponent<GridProps> = ({
                 setImageViewer({
                   actionValue: true,
                   actionImage: cartItem?.uri
-                    ? cartItem?.uri?.split("ipfs://")[1]
-                    : cartItems[0]?.uri?.split("ipfs://")[1],
+                    ? cartItem?.uri?.image?.split("ipfs://")[1]
+                    : cartItems[0]?.uri?.image?.split("ipfs://")[1],
                 })
               )
             }
@@ -84,8 +85,8 @@ const Grid: FunctionComponent<GridProps> = ({
             <Image
               src={`${INFURA_GATEWAY}/ipfs/${
                 cartItem?.uri
-                  ? cartItem?.uri?.split("ipfs://")[1]
-                  : cartItems[0]?.uri?.split("ipfs://")[1]
+                  ? cartItem?.uri?.image?.split("ipfs://")[1]
+                  : cartItems[0]?.uri?.image?.split("ipfs://")[1]
               }`}
               layout="fill"
               objectFit="cover"
@@ -115,7 +116,7 @@ const Grid: FunctionComponent<GridProps> = ({
                 >
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/${
-                      item.uri?.split("ipfs://")[1]
+                      item?.uri?.image?.split("ipfs://")[1]
                     }`}
                     layout="fill"
                     objectFit="cover"

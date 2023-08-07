@@ -1,4 +1,4 @@
-import { FormEvent, FunctionComponent } from "react";
+import { FormEvent, FunctionComponent, useMemo } from "react";
 import { DashProps } from "../types/synth.types";
 import { setSynthConfig } from "../../../../../redux/reducers/synthConfigSlice";
 import { AiOutlineLoading } from "react-icons/ai";
@@ -10,7 +10,18 @@ const Dash: FunctionComponent<DashProps> = ({
   dispatch,
   handleSynth,
   synthLoading,
+  controlType,
+  setControlType,
+  canvasExpand,
 }): JSX.Element => {
+  let imageUrl;
+  if (synthConfig?.image) {
+    imageUrl = useMemo(
+      () => URL.createObjectURL(synthConfig?.image!),
+      [synthConfig?.image]
+    );
+  }
+
   return (
     <div className="relative w-full h-full flex flex-row gap-5 items-start justify-center px-2 py-2.5">
       <div className="relative flex flex-col w-full h-full gap-4 items-start justify-start">
@@ -34,7 +45,7 @@ const Dash: FunctionComponent<DashProps> = ({
           }}
         ></textarea>
       </div>
-      <div className="relative flex flex-col w-fit h-full gap-5">
+      <div className="relative flex flex-col w-fit h-full gap-4">
         <div className="relative flex flex-row w-full h-fit gap-2 justify-start items-start">
           <div className="relative flex flex-col gap-2 text-white font-mana text-xs">
             <div
@@ -104,12 +115,15 @@ const Dash: FunctionComponent<DashProps> = ({
         </div>
         <div className="relative w-full h-full flex items-center justify-center border border-smo rounded-md">
           <div className="absolute w-full h-full">
-            {synthConfig?.image && synthConfig?.type === "img2img" ? (
+            {synthConfig?.image &&
+            synthConfig?.type === "img2img" &&
+            imageUrl ? (
               <Image
-                src={URL.createObjectURL(synthConfig?.image)}
+                src={imageUrl}
                 layout="fill"
                 className="rounded-md"
                 draggable={false}
+                objectFit="cover"
               />
             ) : (
               <Image
@@ -136,7 +150,7 @@ const Dash: FunctionComponent<DashProps> = ({
                 );
             }}
           >
-            <div className="relative w-full h-full flex flex-row gap-1.5 break-words justify-center items-center text-center ">
+            <div className="relative w-full h-full flex flex-row gap-1.5 break-words justify-center items-center text-center">
               <div
                 className={`relative w-4 h-4 items-center justify-center flex`}
               >
@@ -161,15 +175,39 @@ const Dash: FunctionComponent<DashProps> = ({
                   }
                 />
               </div>
-              <div className="relative w-fit h-fit font-mana text-white text-xs flex justify-center items-center">
+              <div
+                className={`relative w-fit h-fit font-mana text-white flex justify-center items-center ${
+                  canvasExpand ? "text-xxs" : "text-xs"
+                }`}
+              >
                 add image inspiration
               </div>
             </div>
-            <div className="relative flex items-center justify-center break-words text-xxs text-white font-mana">
-              {`( On txt2img, the pattern element's drawing is
+            {!canvasExpand && (
+              <div className="relative flex items-center justify-center break-words text-xxs text-white font-mana">
+                {`( On txt2img, the pattern element's drawing is
               used as an init. )`}
-            </div>
+              </div>
+            )}
           </label>
+        </div>
+        <div className="relative w-full h-fit flex flex-col gap-1.5">
+          <div className="relative w-full h-fit justify-between text-white font-mana flex flex-row break-words text-xxs">
+            <div className="relative w-fit h-fit">trace</div>
+            <div className="relative w-fit h-fit">remix</div>
+            <div className="relative w-fit h-fit">freestyle</div>
+          </div>
+          <div className="relative flex flex-col w-full h-fit">
+            <input
+              type="range"
+              className="w-full"
+              value={controlType}
+              max={1}
+              min={0}
+              step={0.01}
+              onChange={(e) => setControlType(Number(e.target.value))}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -100,10 +100,12 @@ const addRashToCanvas = async (
             if (element.type === "image") {
               return {
                 ...element,
+                x1: (element.x1 * canvasSize!.width) / canvasSize!.oldWidth,
+                y1: (element.y1 * canvasSize!.height) / canvasSize!.oldHeight,
                 width:
                   (element.width * canvasSize!.width) / canvasSize!.oldWidth,
                 height:
-                  (element.height * canvasSize!.width) / canvasSize!.oldWidth,
+                  (element.height * canvasSize!.height) / canvasSize!.oldHeight,
               };
             } else if (element.type === "text") {
               return {

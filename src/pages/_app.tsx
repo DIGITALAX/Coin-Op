@@ -38,13 +38,18 @@ const config = createConfig({
   connectors,
 });
 
-export const ScrollContext = createContext<
-  MutableRefObject<HTMLDivElement | null>
->(null!);
+export const ScrollContext = createContext<{
+  scrollRef: MutableRefObject<HTMLDivElement | null>;
+  synthRef: MutableRefObject<HTMLDivElement | null>;
+}>({
+  scrollRef: null!,
+  synthRef: null!,
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const synthRef = useRef<HTMLDivElement>(null);
   const [routerChangeLoading, setRouterChangeLoading] =
     useState<boolean>(false);
   useEffect(() => {
@@ -93,7 +98,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <Provider store={store}>
       <WagmiConfig config={config}>
         <RainbowKitProvider chains={chains}>
-          <ScrollContext.Provider value={scrollRef}>
+          <ScrollContext.Provider value={{ scrollRef, synthRef }}>
             <div className="relative overflow-x-hidden w-full h-fit flex flex-col selection:bg-oscurazul selection:text-white gap-5">
               <Header />
               <Component {...pageProps} />

@@ -15,7 +15,7 @@ import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
 import useCanvas from "@/components/Walkthrough/Synth/hooks/useCanvas";
 
 export default function Home(): JSX.Element {
-  const scrollRef = useContext(ScrollContext);
+  const {scrollRef, synthRef} = useContext(ScrollContext);
   const dispatch = useDispatch();
   const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
@@ -27,6 +27,8 @@ export default function Home(): JSX.Element {
     scrollToComposite,
     compositeRef,
     handleDownloadImage,
+    controlType,
+    setControlType,
   } = useSynth();
   const {
     canvasRef,
@@ -62,6 +64,8 @@ export default function Home(): JSX.Element {
     materialOpen,
     setMaterialBackground,
     setMaterialOpen,
+    itemClicked,
+    setItemClicked,
   } = useCanvas();
   const { preRollsLoading } = usePreRoll();
   const { layersLoading } = useLayer();
@@ -119,6 +123,8 @@ export default function Home(): JSX.Element {
         preRollsLoading={preRollsLoading}
       />
       <PageContainer
+        controlType={controlType}
+        setControlType={setControlType}
         template={template}
         tool={tool}
         dispatch={dispatch}
@@ -177,6 +183,9 @@ export default function Home(): JSX.Element {
         setMaterialOpen={setMaterialOpen}
         completedSynths={completedSynths}
         handleDownloadImage={handleDownloadImage}
+        itemClicked={itemClicked}
+        setItemClicked={setItemClicked}
+        synthRef={synthRef}
       />
       <PreRolls
         cartItems={cartItems}

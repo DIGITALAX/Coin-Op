@@ -47,10 +47,17 @@ const Synth: FunctionComponent<SynthProps> = ({
   completedSynths,
   handleDownloadImage,
   synthLoading,
+  itemClicked,
+  setItemClicked,
+  controlType,
+  setControlType,
+  synthRef,
 }): JSX.Element => {
   return (
-    <div className={`relative w-full h-fit flex flex-col`}>
+    <div className={`relative w-full h-fit flex flex-col`} ref={synthRef}>
       <Grid
+        controlType={controlType}
+        setControlType={setControlType}
         font={font}
         setFont={setFont}
         fontOpen={fontOpen}
@@ -95,6 +102,8 @@ const Synth: FunctionComponent<SynthProps> = ({
         setMaterialOpen={setMaterialOpen}
         completedSynths={completedSynths}
         handleDownloadImage={handleDownloadImage}
+        itemClicked={itemClicked}
+        setItemClicked={setItemClicked}
       />
     </div>
   );

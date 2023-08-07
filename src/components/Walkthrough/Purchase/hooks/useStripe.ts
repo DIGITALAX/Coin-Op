@@ -38,7 +38,7 @@ const useStripe = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount,
+          amount: amount * 100,
         }),
       });
       const data = await response.json();

@@ -10,18 +10,29 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   cryptoCheckoutLoading,
   approved,
   handleApproveSpend,
+  cartItems,
 }): JSX.Element => {
   return (
     <div
-      className="relative w-3/4 h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex cursor-pointer active:scale-95"
+      className={`relative w-3/4 h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex  ${
+        !signInLoading && !cryptoCheckoutLoading && cartItems?.length > 0
+          ? "cursor-pointer active:scale-95"
+          : "opacity-70"
+      }`}
       onClick={
         !signInLoading && !address && !cryptoCheckoutLoading
           ? openConnectModal
           : approved
           ? () =>
-              !signInLoading && !cryptoCheckoutLoading && handleCheckoutCrypto()
+              !signInLoading &&
+              !cryptoCheckoutLoading &&
+              cartItems?.length > 0 &&
+              handleCheckoutCrypto()
           : () =>
-              !signInLoading && !cryptoCheckoutLoading && handleApproveSpend()
+              !signInLoading &&
+              !cryptoCheckoutLoading &&
+              cartItems?.length > 0 &&
+              handleApproveSpend()
       }
     >
       <div

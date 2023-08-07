@@ -27,6 +27,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   approved,
   handleApproveSpend,
   oracleValue,
+  setCartItem,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 h-full flex overflow-y-scroll">
@@ -50,6 +51,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           </div>
         </div>
         <Items
+          setCartItem={setCartItem}
           cartItems={cartItems}
           cartItem={cartItem}
           paymentType={paymentType}
@@ -110,11 +112,13 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
             cryptoCheckoutLoading={cryptoCheckoutLoading}
             approved={approved}
             handleApproveSpend={handleApproveSpend}
+            cartItems={cartItems}
           />
         ) : (
           <Fiat
             handleCheckoutFiat={handleCheckoutFiat}
             fiatCheckoutLoading={fiatCheckoutLoading}
+            cartItems={cartItems}
           />
         )}
       </div>

@@ -3,9 +3,14 @@ import { AnyAction, Dispatch } from "redux";
 import { SynthData } from "../../../../../redux/reducers/completedSynthsSlice";
 
 export type SynthProps = {
+  synthRef: Ref<HTMLDivElement>
   dispatch: Dispatch<AnyAction>;
   scrollToComposite: () => void;
+  controlType: number;
+  setControlType: (e: number) => void;
   isDragging: boolean;
+  itemClicked: boolean;
+  setItemClicked: (e: boolean) => void;
   canvasExpand: boolean;
   handleDownloadImage: (image: string) => void;
   selectedElement: ElementInterface | null;
@@ -82,6 +87,10 @@ export type GridProps = {
   scrollToComposite: () => void;
   canvasExpand: boolean;
   newLayersLoading: boolean;
+  itemClicked: boolean;
+  controlType: number;
+  setControlType: (e: number) => void;
+  setItemClicked: (e: boolean) => void;
   synthLayerSelected: {
     id: number;
     layer: string | undefined;
@@ -148,6 +157,9 @@ export type DashProps = {
   dispatch: Dispatch<AnyAction>;
   handleSynth: () => Promise<void>;
   synthLoading: boolean;
+  controlType: number;
+  canvasExpand: boolean;
+  setControlType: (e: number) => void;
 };
 
 export type PresetProps = {
@@ -312,7 +324,7 @@ export interface InputTypeAutomatic {
   width: number;
   height: number;
   sampler_index: string;
-  controlnet_units: [
+  controlnet_units?: [
     {
       input_image: string;
       mask: string;
@@ -342,4 +354,6 @@ export type CompleteImagesProps = {
     layer: string | undefined;
   };
   synthLoading: boolean;
+  itemClicked: boolean;
+  setItemClicked: (e: boolean) => void;
 };

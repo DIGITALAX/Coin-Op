@@ -8,7 +8,6 @@ const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
   preRoll,
   left,
   right,
-  printType,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex justify-center">
@@ -33,14 +32,14 @@ const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
                 const updated = {
                   left: left
                     ? preRolls.left.map((obj) =>
-                        obj.uri === preRoll.uri
+                        obj.uri.image === preRoll.uri.image
                           ? { ...obj, chosenSize: size }
                           : obj
                       )
                     : preRolls.left,
                   right: right
                     ? preRolls.right.map((obj) =>
-                        obj.uri === preRoll.uri
+                        obj.uri.image === preRoll.uri.image
                           ? { ...obj, chosenSize: size }
                           : obj
                       )

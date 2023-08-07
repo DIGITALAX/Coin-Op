@@ -6,6 +6,7 @@ import { PaymentElement } from "@stripe/react-stripe-js";
 const Fiat: FunctionComponent<FiatProps> = ({
   handleCheckoutFiat,
   fiatCheckoutLoading,
+  cartItems,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 h-fit flex flex-col gap-5 pt-4">
@@ -16,8 +17,14 @@ const Fiat: FunctionComponent<FiatProps> = ({
         />
       </div>
       <div
-        className="relative w-full h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex cursor-pointer active:scale-95"
-        onClick={() => !fiatCheckoutLoading && handleCheckoutFiat()}
+        className={`relative w-full h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex ${
+          !fiatCheckoutLoading && cartItems?.length > 0
+            ? "cursor-pointer active:scale-95"
+            : "opacity-70"
+        }`}
+        onClick={() =>
+          !fiatCheckoutLoading && cartItems?.length > 0 && handleCheckoutFiat()
+        }
       >
         <div
           className={`relative w-fit h-fit flex justify-center items-center ${

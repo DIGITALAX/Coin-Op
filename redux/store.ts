@@ -29,6 +29,8 @@ import completedSynthsReducer from "./reducers/completedSynthsSlice";
 import synthAreaReducer from "./reducers/synthAreaSlice";
 import synthProgressReducer from "./reducers/synthProgressSlice";
 import setElementsReducer from "./reducers/setElementsSlice";
+import searchExpandReducer from "./reducers/searchExpandSlice";
+import apiAddReducer from "./reducers/apiAddSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -59,7 +61,9 @@ const reducer = combineReducers({
   completedSynthsReducer,
   synthAreaReducer,
   synthProgressReducer,
-  setElementsReducer
+  setElementsReducer,
+  searchExpandReducer,
+  apiAddReducer
 });
 
 export const store = configureStore({

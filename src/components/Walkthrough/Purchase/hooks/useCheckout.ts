@@ -24,8 +24,8 @@ const useCheckout = () => {
   const dispatch = useDispatch();
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
-    transport: http("https://rpc-mumbai.maticvigil.com/"),
+    chain: polygon,
+    transport: http(),
   });
 
   const stripe = useStripe();
@@ -109,6 +109,8 @@ const useCheckout = () => {
         args: [address as `0x${string}`, COIN_OP_MARKET],
       });
 
+      console.log(data);
+
       if (
         Number(data as BigNumber) /
           ((ACCEPTED_TOKENS.find(
@@ -185,7 +187,7 @@ const useCheckout = () => {
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `/success"`,
+          return_url: `/account"`,
         },
       });
 
@@ -280,6 +282,7 @@ const useCheckout = () => {
         ],
         account: address,
       });
+      console.log({ request });
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),
@@ -410,6 +413,11 @@ const useCheckout = () => {
             }, []),
             customIds: [],
             customAmounts: [],
+            indexes: cartItems.map((item) =>
+              ["shirt", "hoodie"].includes(item.printType.toLowerCase())
+                ? 0
+                : item.sizes.indexOf(item.chosenSize)
+            ),
             customURIs: [],
             fulfillmentDetails: JSON.stringify(fulfillerDetails),
             chosenTokenAddress: ACCEPTED_TOKENS.find(
@@ -436,7 +444,7 @@ const useCheckout = () => {
         state: "",
         country: "",
       });
-      router.push("/success");
+      router.push("/account");
     } catch (err: any) {
       console.error(err.message);
     }
@@ -492,7 +500,7 @@ const useCheckout = () => {
             state: "",
             country: "",
           });
-          router.push("/success");
+          router.push("/account");
           break;
         case "processing":
           setFiatCheckoutLoading(true);
@@ -553,6 +561,16 @@ const useCheckout = () => {
       0
     ),
   ]);
+
+  useEffect(() => {
+    if (!cartItem || !cartItems?.indexOf(cartItem)) {
+      setCartItem(cartItems[0]);
+    }
+
+    if (cartItems?.length < 1) {
+      setCartItem(undefined);
+    }
+  }, [cartItems]);
 
   return {
     cartItem,

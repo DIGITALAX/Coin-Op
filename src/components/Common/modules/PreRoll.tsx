@@ -28,14 +28,16 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
           dispatch(
             setImageViewer({
               actionValue: open,
-              actionImage: preRoll.uri?.split("ipfs://")[1],
+              actionImage: preRoll?.uri?.image?.split("ipfs://")[1],
             })
           )
         }
       >
-        {preRoll.uri?.split("ipfs://")[1] && (
+        {preRoll.uri.image && (
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/${preRoll.uri?.split("ipfs://")[1]}`}
+            src={`${INFURA_GATEWAY}/ipfs/${
+              preRoll?.uri?.image?.split("ipfs://")[1]
+            }`}
             layout="fill"
             objectFit="cover"
             draggable={false}
@@ -59,7 +61,6 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
         preRolls={preRolls}
         preRoll={preRoll}
         left={left}
-        printType={preRoll?.printType}
         right={right}
       />
       <div className="relative flex flex-row gap-2 w-full h-fit items-center">
@@ -73,7 +74,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
         <div
           className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
           onClick={() => {
-            let { colors, sizes, bgColor, tags, ...newObj } = preRoll;
+            let { colors, bgColor, ...newObj } = preRoll;
             const existing = [...cartItems].findIndex(
               (item) =>
                 item.collectionId === newObj.collectionId &&

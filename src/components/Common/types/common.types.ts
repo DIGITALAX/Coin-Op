@@ -16,7 +16,7 @@ import {
   RefObject,
   WheelEvent,
 } from "react";
-import { AnyAction, Dispatch as DispatchRedux } from "redux";
+import { AnyAction, Dispatch, Dispatch as DispatchRedux } from "redux";
 import { Erc20, Profile } from "./lens.types";
 import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
 import { SynthData } from "../../../../redux/reducers/completedSynthsSlice";
@@ -26,7 +26,12 @@ export type PageContainerProps = {
   scrollToComposite: () => void;
   newLayersLoading: boolean;
   isDragging: boolean;
+  synthRef: Ref<HTMLDivElement>;
   materialBackground: string;
+  itemClicked: boolean;
+  controlType: number;
+  setControlType: (e: number) => void;
+  setItemClicked: (e: boolean) => void;
   setMaterialBackground: (e: string) => void;
   materialOpen: boolean;
   handleDownloadImage: (image: string) => void;
@@ -104,7 +109,12 @@ export enum PrintType {
 
 export interface PreRoll {
   collectionId: number;
-  uri: string;
+  uri: {
+    image: string;
+    prompt: string;
+    tags: string;
+    category: string;
+  };
   amount: number;
   colors: string[];
   sizes: string[];
@@ -113,20 +123,23 @@ export interface PreRoll {
   bgColor: string;
   chosenColor: string;
   chosenSize: string;
-  tags: string[];
-  name: string;
   fulfillerAddress: string;
 }
 
 export interface CartItem {
   collectionId: number;
-  uri: string;
+  uri: {
+    image: string;
+    prompt: string;
+    tags: string;
+    category: string;
+  };
+  sizes: string[];
   price: number;
   printType: string;
   chosenColor: string;
   chosenSize: string;
   amount: number;
-  name: string;
   fulfillerAddress: string;
 }
 
@@ -181,12 +194,14 @@ export type SizingChoiceProps = {
   preRoll: PreRoll;
   left?: boolean;
   right?: boolean;
-  printType: string;
 };
 
 export type SearchBoxProps = {
   promptSearch: PreRoll;
-  handlePromptChoose: (e: PreRoll) => void;
+  handlePromptChoose: (e: PreRoll) => Promise<void>;
+  handleSearchSimilar: (e: PreRoll) => Promise<void>;
+  dispatch: Dispatch<AnyAction>;
+  handleAddToCart: (e: PreRoll) => void;
 };
 
 export type RollSearchProps = {
@@ -194,8 +209,10 @@ export type RollSearchProps = {
   handleRollSearch: () => Promise<void>;
   prompt: string;
   setPrompt: (e: string) => void;
-  handlePromptChoose: (e: PreRoll) => void;
-  router: NextRouter;
+  handlePromptChoose: (e: PreRoll) => Promise<void>;
+  handleSearchSimilar: (e: PreRoll) => Promise<void>;
+  dispatch: Dispatch<AnyAction>;
+  handleAddToCart: (e: PreRoll) => void;
 };
 
 export type GeneralProps = {
@@ -395,5 +412,21 @@ export type ImageLargeProps = {
 
 export type MessagesProps = {
   message: string;
+  dispatch: DispatchRedux<AnyAction>;
+};
+
+export type SearchExpandProps = {
+  searchItem: PreRoll;
+  dispatch: DispatchRedux<AnyAction>;
+  cartItems: CartItem[];
+  preRolls: {
+    right: PreRoll[];
+    left: PreRoll[];
+  };
+  handleSearchSimilar: (e: PreRoll) => Promise<void>;
+  handlePromptChoose: (e: PreRoll) => Promise<void>;
+};
+
+export type ApiAddProps = {
   dispatch: DispatchRedux<AnyAction>;
 };

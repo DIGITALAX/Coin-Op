@@ -213,7 +213,6 @@ div:hover::-webkit-scrollbar {
   }
 }
 
-
 input[type="range"] {
   background-color: black;
   outline: none;
@@ -234,7 +233,7 @@ input[type="range"]::-webkit-slider-thumb {
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  background: #FFC800;
+  background: #ffc800;
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -5px;
@@ -252,12 +251,12 @@ input[type="range"]::-moz-range-thumb {
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  background: #FFC800;
+  background: #ffc800;
   cursor: pointer;
 }
 
 input[type="range"]::-moz-range-progress {
-  background: #FFC800;
+  background: #ffc800;
   border-radius: 3px;
   height: 5px;
 }
@@ -270,7 +269,7 @@ input[type="range"]::-ms-track {
 }
 
 input[type="range"]::-ms-fill-lower {
-  background: #FFC800;
+  background: #ffc800;
   border-radius: 3px;
   height: 5px;
 }
@@ -287,4 +286,9 @@ input[type="range"]::-ms-thumb {
   border-radius: 50%;
   background: #3694ff;
   cursor: pointer;
+}
+
+#cartAnim {
+  animation: shine 3s infinite;
+  background: linear-gradient(90deg, transparent, #409dfe, transparent);
 }

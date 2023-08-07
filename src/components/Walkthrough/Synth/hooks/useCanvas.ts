@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { throttle } from "lodash";
 import { ElementInterface, SvgPatternType } from "../types/synth.types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
@@ -58,6 +59,7 @@ const useCanvas = () => {
   const [font, setFont] = useState<string>("Manaspace");
   const [fontOpen, setFontOpen] = useState<boolean>(false);
   const [materialBackground, setMaterialBackground] = useState<string>("black");
+  const [itemClicked, setItemClicked] = useState<boolean>(false);
   const [materialOpen, setMaterialOpen] = useState<boolean>(false);
   const [tool, setTool] = useState<string>("default");
   const [showBottomOptions, setShowBottomOptions] = useState<boolean>(false);
@@ -136,10 +138,10 @@ const useCanvas = () => {
   };
 
   const handleWheel = useCallback(
-    (e: WheelEvent) => {
+    throttle((e: WheelEvent) => {
       e.preventDefault();
       wheelLogic(e, zoom, setZoom, canvas!, pan, setPan, canvasOpen ? 30 : 14);
-    },
+    }, 1000 / 60),
     [zoom, setZoom, canvas, pan, setPan, canvasOpen]
   );
 
@@ -382,6 +384,48 @@ const useCanvas = () => {
 
       setElements(String(layerToSynth.id), newElements, true);
     } else if (action === "resizing") {
+      const allElements = history.get(String(layerToSynth.id)) || [];
+      let newElements: (SvgPatternType | ElementInterface)[] = [];
+      allElements.forEach((element, index: number) => {
+        if (element.type === "image") {
+          const mouseXOnCanvas =
+            ((e.clientX - bounds.left - pan.xOffset * 0.5) * devicePixelRatio) /
+            zoom;
+          const mouseYOnCanvas =
+            ((e.clientY - bounds.top - pan.yOffset * 0.5) * devicePixelRatio) /
+            zoom;
+          const distanceFromCenter = Math.sqrt(
+            Math.pow(mouseXOnCanvas - (element.x1 + element.width / 2), 2) +
+              Math.pow(mouseYOnCanvas - (element.y1 + element.height / 2), 2)
+          );
+          const originalDistanceFromCenter =
+            Math.sqrt(
+              Math.pow(element.width, 2) + Math.pow(element.height, 2)
+            ) / 2;
+
+          const scaleFactor = Math.max(
+            0.04,
+            distanceFromCenter / originalDistanceFromCenter
+          );
+
+          const newWidth = element.width * scaleFactor;
+          const newHeight = element.height * scaleFactor;
+          const newX1 = element.x1 + element.width / 2 - newWidth / 2;
+          const newY1 = element.y1 + element.height / 2 - newHeight / 2;
+
+          newElements.push({
+            ...element,
+            x1: newX1,
+            y1: newY1,
+            width: newWidth,
+            height: newHeight,
+          });
+        } else {
+          newElements.push(element);
+        }
+      });
+
+      setElements(String(layerToSynth.id), newElements, true);
     }
   };
 
@@ -413,6 +457,8 @@ const useCanvas = () => {
     try {
       const imageObject = new Image();
       imageObject.src = postImage;
+      imageObject.width = imageObject.width * devicePixelRatio;
+      imageObject.height = imageObject.height * devicePixelRatio;
       imageObject.onload = () => {
         handleImageAdd(imageObject);
       };
@@ -420,6 +466,7 @@ const useCanvas = () => {
       console.error(err.message);
     }
   };
+
   const handleImageAdd = (imageObject: HTMLImageElement): void => {
     try {
       const oldElements = history.get(String(layerToSynth.id)) || [];
@@ -567,6 +614,7 @@ const useCanvas = () => {
     }
   }, [layerToSynth, synthLayerSelected, canvasSize]);
 
+
   useEffect(() => {
     if (ctx) {
       canvas.width = canvas.offsetWidth * devicePixelRatio;
@@ -586,11 +634,15 @@ const useCanvas = () => {
         );
       }
 
-      ctx.clearRect(0, 0, canvas?.width!, canvas?.height!);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.translate(pan.xOffset, pan.yOffset);
       ctx.scale(zoom, zoom);
+
+      ctx.clearRect(0, 0, canvas?.width!, canvas?.height!);
       ctx.beginPath();
+
+      ctx.imageSmoothingEnabled = false;
+      ctx.imageSmoothingQuality = "high";
 
       const currentIndex = index.get(String(layerToSynth.id)) || 0;
       const allElements = history.get(String(layerToSynth.id)) || [];
@@ -711,7 +763,7 @@ const useCanvas = () => {
       completedSynths.get(String(layerToSynth.id))!.synths.length > 0 &&
         addImageToCanvas();
     }
-  }, [completedSynths.get(String(layerToSynth.id))?.chosen]);
+  }, [completedSynths.get(String(layerToSynth.id))?.chosen, itemClicked]);
 
   return {
     canvasRef,
@@ -749,6 +801,8 @@ const useCanvas = () => {
     setMaterialBackground,
     setMaterialOpen,
     history,
+    itemClicked,
+    setItemClicked,
   };
 };
 

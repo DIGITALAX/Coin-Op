@@ -51,8 +51,6 @@ const Canvas: FunctionComponent<CanvasProps> = ({
           ? "cursor-grabbing"
           : tool === "text"
           ? "cursor-text"
-          : tool === "resize"
-          ? "cursor-nesw-resize"
           : tool === "move"
           ? "cursor-move"
           : "cursor-default"

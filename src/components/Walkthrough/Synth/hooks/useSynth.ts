@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { setCompletedSynths } from "../../../../../redux/reducers/completedSynthsSlice";
 import { setSynthLoading } from "../../../../../redux/reducers/synthLoadingSlice";
 import {
@@ -14,6 +14,7 @@ import { setSynthProgress } from "../../../../../redux/reducers/synthProgressSli
 import drawElement from "../../../../../lib/canvas/helpers/drawElement";
 import drawPatternElement from "../../../../../lib/canvas/helpers/drawPatternElement";
 import { getRegionOfInterest } from "../../../../../lib/canvas/helpers/getRegionOfInterest";
+import { setApiAdd } from "../../../../../redux/reducers/apiAddSlice";
 
 const useSynth = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const useSynth = () => {
   const synthConfig = useSelector(
     (state: RootState) => state.app.synthConfigReducer
   );
+  const apiKey = useSelector((state: RootState) => state.app.apiAddReducer);
   const elements = useSelector(
     (state: RootState) => state.app.setElementsReducer.value
   );
@@ -36,7 +38,7 @@ const useSynth = () => {
   const canvasSize = useSelector(
     (state: RootState) => state.app.synthAreaReducer.value
   );
-
+  const [controlType, setControlType] = useState<number>(0.7);
   const presets: string[] = [
     "none",
     "abstract",
@@ -53,6 +55,15 @@ const useSynth = () => {
   ];
 
   const handleSynth = async () => {
+    if (!apiKey.key) {
+      dispatch(
+        setApiAdd({
+          actionKey: undefined,
+          actionOpen: true,
+        })
+      );
+      return;
+    }
     if (synthConfig.type === "img2img" && !synthConfig.image) {
       return;
     }
@@ -60,15 +71,16 @@ const useSynth = () => {
     try {
       let input: InputTypeAutomatic;
       let patternImg: string | undefined = undefined;
+      let img: string | undefined = undefined;
       if (synthConfig.type === "img2img") {
         const reader = new FileReader();
-        const img: string = await new Promise((resolve) => {
+        img = await new Promise((resolve) => {
           reader.onload = () => resolve(reader.result as string);
           reader.readAsDataURL(synthConfig.image as any);
         });
 
         input = {
-          init_images: [img],
+          init_images: [img!],
           prompt: synthConfig.prompt,
           steps: 40,
           cfg_scale: 8,
@@ -81,24 +93,6 @@ const useSynth = () => {
           height: canvasSize.height,
           sampler_name: "DPM++ 2M Karras",
           sampler_index: "DPM++ 2M Karras",
-          controlnet_units: [
-            {
-              input_image: "",
-              mask: "",
-              module: "none",
-              model: "control_sd15_canny [fef5e48e]",
-              weight: 1.6,
-              resize_mode: "Scale to Fit (Inner Fit)",
-              lowvram: false,
-              processor_res: 512,
-              threshold_a: 64,
-              threshold_b: 64,
-              guidance: 1,
-              guidance_start: 0,
-              guidance_end: 1,
-              guessmode: true,
-            },
-          ],
         };
       } else {
         if (elements.length > 1) {
@@ -195,9 +189,15 @@ const useSynth = () => {
           height: canvasSize.height,
           sampler_name: "DPM++ 2M Karras",
           sampler_index: "DPM++ 2M Karras",
+        };
+      }
+
+      if (controlType > 0.4 && elements.length > 1 && patternImg) {
+        input = {
+          ...input,
           controlnet_units: [
             {
-              input_image: "",
+              input_image: synthConfig.type === "img2img" ? img! : patternImg!,
               mask: "",
               module: "none",
               model: "control_sd15_canny [fef5e48e]",
@@ -280,19 +280,19 @@ const useSynth = () => {
     }
   };
   const handleDownloadImage = (imageSrc: string) => {
-    const imgElement = new Image(); 
-    imgElement.src = imageSrc; 
-  
+    const imgElement = new Image();
+    imgElement.src = imageSrc;
+
     imgElement.onload = () => {
       const originalWidth = imgElement.naturalWidth;
       const originalHeight = imgElement.naturalHeight;
-  
+
       let newWidth = originalWidth;
       let newHeight = originalHeight;
-  
+
       const minWidth = 768;
       const minHeight = 768;
-  
+
       if (originalWidth < minWidth || originalHeight < minHeight) {
         const aspectRatio = originalWidth / originalHeight;
         if (originalWidth < minWidth) {
@@ -304,11 +304,11 @@ const useSynth = () => {
           newWidth = newHeight * aspectRatio;
         }
       }
-  
+
       const newCanvas = document.createElement("canvas");
       newCanvas.width = newWidth;
       newCanvas.height = newHeight;
-  
+
       const newCtx = newCanvas.getContext("2d");
       if (newCtx) {
         newCtx.drawImage(imgElement, 0, 0, newWidth, newHeight);
@@ -317,9 +317,8 @@ const useSynth = () => {
         downloadLink.download = "coin-op-synth";
         downloadLink.click();
       }
-    }
+    };
   };
-  
 
   const checkSynthProgress = async (): Promise<void> => {
     try {
@@ -358,6 +357,8 @@ const useSynth = () => {
     scrollToComposite,
     compositeRef,
     handleDownloadImage,
+    controlType,
+    setControlType,
   };
 };
 

@@ -12,7 +12,7 @@ const Composite: FunctionComponent<CompositeProps> = ({
   openConnectModal,
   models,
   signInLoading,
-  compositeRef
+  compositeRef,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">

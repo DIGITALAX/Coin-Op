@@ -13,11 +13,13 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
   synthLayerSelected,
   handleDownloadImage,
   synthLoading,
+  itemClicked,
+  setItemClicked,
 }): JSX.Element => {
   return (
     <div
-      className={`w-full flex justify-center items-center flex-row gap-3 ${
-        canvasExpand ? "relative h-14" : "relative h-10"
+      className={`w-full flex justify-center items-center flex-row gap-3 h-10 ${
+        canvasExpand ? "absolute z-1 p-2" : "relative"
       }`}
     >
       <div className="relative w-full h-full flex items-center justify-start">
@@ -64,6 +66,7 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
                         ?.synths || [],
                     chosen: image,
                   });
+                  setItemClicked(!itemClicked);
                   dispatch(setCompletedSynths(newCompletedSynths));
                 }}
               >

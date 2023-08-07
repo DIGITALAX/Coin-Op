@@ -27,6 +27,7 @@ export type CheckoutProps = {
   paymentType: string;
   setPaymentType: (e: string) => void;
   cartItems: CartItem[];
+  setCartItem: (e: CartItem) => void;
   cartItem: CartItem | undefined;
   handleCheckoutCrypto: () => Promise<void>;
   handleCheckoutFiat: () => Promise<void>;
@@ -66,11 +67,13 @@ export type CryptoProps = {
   cryptoCheckoutLoading: boolean;
   approved: boolean;
   handleApproveSpend: () => Promise<void>;
+  cartItems: CartItem[];
 };
 
 export type FiatProps = {
   handleCheckoutFiat: () => Promise<void>;
   fiatCheckoutLoading: boolean;
+  cartItems: CartItem[];
 };
 
 export type ItemsProps = {
@@ -79,6 +82,7 @@ export type ItemsProps = {
   paymentType: string;
   dispatch: Dispatch<AnyAction>;
   checkoutCurrency: string;
+  setCartItem: (e: CartItem) => void;
 };
 
 export type ShippingInfoProps = {

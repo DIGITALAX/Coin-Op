@@ -67,6 +67,11 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   setMaterialOpen,
   completedSynths,
   handleDownloadImage,
+  itemClicked,
+  setItemClicked,
+  controlType,
+  setControlType,
+  synthRef
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -80,10 +85,14 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           layersLoading={layersLoading}
         />
         <Synth
+          itemClicked={itemClicked}
+          setItemClicked={setItemClicked}
           materialBackground={materialBackground}
           setMaterialBackground={setMaterialBackground}
           materialOpen={materialOpen}
           setMaterialOpen={setMaterialOpen}
+          controlType={controlType}
+          setControlType={setControlType}
           font={font}
           setFont={setFont}
           fontOpen={fontOpen}
@@ -124,6 +133,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           handleReset={handleReset}
           completedSynths={completedSynths}
           handleDownloadImage={handleDownloadImage}
+          synthRef={synthRef}
         />
         <Composite
           dispatch={dispatch}

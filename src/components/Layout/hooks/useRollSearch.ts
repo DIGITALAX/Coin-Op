@@ -1,4 +1,4 @@
-import { PreRoll } from "@/components/Common/types/common.types";
+import { CartItem, PreRoll } from "@/components/Common/types/common.types";
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -7,26 +7,102 @@ import { setRollSearch } from "../../../../redux/reducers/rollSearchSlice";
 import { initializeAlgolia } from "../../../../lib/algolia/client";
 import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
 import { ScrollContext } from "@/pages/_app";
+import { setSynthConfig } from "../../../../redux/reducers/synthConfigSlice";
+import { INFURA_GATEWAY } from "../../../../lib/constants";
+import { setCart } from "../../../../redux/reducers/cartSlice";
 
 const useRollSearch = () => {
-  const scrollRef = useContext(ScrollContext);
+  const { scrollRef, synthRef } = useContext(ScrollContext);
   const dispatch = useDispatch();
-  const router = useRouter();
   const [prompt, setPrompt] = useState<string>("");
+  const [cartAnim, setCartAnim] = useState<boolean>(false);
   const algolia = useSelector(
     (state: RootState) => state.app.algoliaReducer.value
   );
+  const cartItems = useSelector(
+    (state: RootState) => state.app.cartReducer.value
+  );
 
   const handleRollSearch = async () => {
-    if (!algolia) return;
+    try {
+      if (!algolia) return;
 
-    const { hits } = await algolia.search(prompt);
+      const { hits } = await algolia.search(prompt);
 
-    dispatch(setRollSearch(hits.length > 0 ? hits : (undefined as any)));
+      dispatch(setRollSearch(hits.length > 0 ? hits : (undefined as any)));
+    } catch (err: any) {
+      console.error(err.message);
+    }
   };
 
-  const handlePromptChoose = (preRoll: PreRoll) => {
-    router.push(`/preroll/${preRoll.name}`);
+  const handlePromptChoose = async (preRoll: PreRoll) => {
+    const response = await fetch(
+      `${INFURA_GATEWAY}/ipfs/${preRoll.uri.image.split("ipfs://")[1]}`
+    );
+    const data = await response.blob();
+    const image = new File([data], "coinop", { type: "image/png" });
+
+    dispatch(
+      setSynthConfig({
+        actionType: "img2img",
+        actionPrompt: preRoll.uri.prompt,
+        actionImage: image,
+      })
+    );
+
+    if (!synthRef || !synthRef?.current) return;
+
+    synthRef?.current.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    setTimeout(() => {
+      synthRef.current!.scrollTop = synthRef.current!.scrollHeight;
+    }, 500);
+  };
+
+  const handleSearchSimilar = async (preRoll: PreRoll) => {
+    try {
+      if (!algolia) return;
+      const { hits } = await algolia.search(preRoll.uri.tags);
+
+      dispatch(setRollSearch(hits.length > 0 ? hits : (undefined as any)));
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const handleAddToCart = (preRoll: PreRoll) => {
+    let { colors, bgColor, ...newObj } = preRoll;
+    const existing = [...cartItems].findIndex(
+      (item) =>
+        item.collectionId === newObj.collectionId &&
+        item.chosenSize === newObj.chosenSize &&
+        item.chosenColor === newObj.chosenColor
+    );
+
+    let newCartItems: CartItem[] = [...cartItems];
+
+    if (existing !== -1) {
+      newCartItems = [
+        ...newCartItems.slice(0, existing),
+        {
+          ...newCartItems[existing],
+          amount: newCartItems[existing].amount + 1,
+        },
+        ...newCartItems.slice(existing + 1),
+      ];
+    } else {
+      newCartItems.push({
+        ...newObj,
+        amount: 1,
+        price:
+          preRoll?.printType === "Shirt" || preRoll?.printType === "Hoodie"
+            ? preRoll.price?.[0]
+            : preRoll.price?.[preRoll.sizes?.indexOf(preRoll.chosenSize)],
+      });
+    }
+
+    dispatch(setCart(newCartItems));
+    setCartAnim(true);
   };
 
   const scrollToCheckOut = () => {
@@ -46,12 +122,23 @@ const useRollSearch = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (cartAnim) {
+      setTimeout(() => {
+        setCartAnim(false);
+      }, 2000);
+    }
+  }, [cartAnim]);
+
   return {
     handleRollSearch,
     prompt,
     setPrompt,
     handlePromptChoose,
     scrollToCheckOut,
+    handleSearchSimilar,
+    handleAddToCart,
+    cartAnim,
   };
 };
 
