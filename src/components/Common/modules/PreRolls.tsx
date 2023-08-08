@@ -22,8 +22,8 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
   );
   const { preRollsLoading } = usePreRoll();
   return (
-    <div className="relative min-w-80 w-80 h-full flex overflow-y-scroll">
-      <div className="relative w-full h-fit flex flex-col justify-start items-center gap-10">
+    <div className="relative w-full md:min-w-80 md:w-80 h-fit md:h-full flex overflow-x-scroll md:overflow-y-scroll">
+      <div className="relative w-fit md:w-full h-fit flex flex-row md:flex-col justify-start items-center gap-10">
         {preRollsLoading
           ? Array.from({ length: 40 }).map((_, index: number) => {
               return (

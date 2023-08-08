@@ -30,13 +30,13 @@ const Header: FunctionComponent = (): JSX.Element => {
   const dispatch = useDispatch();
   return (
     <div className="relative w-full flex flex-col gap-20 px-3 pt-2 pb-20">
-      <div className="flex flex-row w-full h-fit text-white font-mega flex items-center justify-center">
+      <div className="flex w-full h-fit text-white font-mega items-center justify-center md:justify-between md:flex-nowrap flex-wrap md:gap-0 gap-3">
         <div className="relative flex justify-start w-fit h-fit items-center whitespace-nowrap break-words">
           insert api key here
         </div>
         <div className="relative flex w-full h-fit items-center justify-center">
           <div
-            className="relative w-fit px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 -left-10 cursor-pointer active:scale-95"
+            className="relative w-fit px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 cursor-pointer active:scale-95"
             onClick={
               router.asPath.includes("account")
                 ? async () => {
@@ -66,7 +66,7 @@ const Header: FunctionComponent = (): JSX.Element => {
         </div>
         <Link
           href={"/account"}
-          className="relative flex justify-end w-fit h-fit items-center ml-auto whitespace-nowrap break-words cursor-pointer"
+          className="relative flex w-fit h-fit items-center md:ml-auto break-words cursor-pointer"
         >
           account
         </Link>

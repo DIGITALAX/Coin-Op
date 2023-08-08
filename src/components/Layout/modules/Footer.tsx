@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const Footer: FunctionComponent = (): JSX.Element => {
   return (
-    <div className="relative w-full h-fit flex items-center justify-start px-4 pb-3 mt-auto pt-8">
+    <div className="relative w-full h-fit inline-flex flex-wrap items-center justify-start px-4 pb-3 mt-auto pt-8 md:gap-0 gap-5">
       <div className="w-full h-full flex flex-row gap-3 justify-center items-center">
         <a
           rel="noreferrer"
@@ -55,7 +55,7 @@ const Footer: FunctionComponent = (): JSX.Element => {
           <BsTwitter size={20} color={"white"} />
         </a>
       </div>
-      <div className="flex flex-col items-start justify-start absolute text-xs font-mana text-white text-left">
+      <div className="flex flex-col items-start justify-start relative md:absolute text-xs font-mana text-white text-left">
         <div className="relative flex w-fit h-fit text-left justify-center items-start">
           Fulfilled Locally in NYC at
         </div>

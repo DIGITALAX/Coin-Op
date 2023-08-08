@@ -117,8 +117,6 @@ const useCheckout = () => {
         args: [address as `0x${string}`, COIN_OP_MARKET],
       });
 
-      console.log(data);
-
       if (
         Number(data as BigNumber) /
           ((ACCEPTED_TOKENS.find(
@@ -292,7 +290,6 @@ const useCheckout = () => {
         ],
         account: address,
       });
-      console.log({ request });
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),

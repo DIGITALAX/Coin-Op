@@ -102,7 +102,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <ScrollContext.Provider value={{ scrollRef, synthRef }}>
             <div className="relative overflow-x-hidden w-full h-fit flex flex-col selection:bg-oscurazul selection:text-white gap-5">
               <Header />
-              <div className="relative overflow-hidden w-full h-[60rem] flex flex-row px-6 gap-10">
+              <div className="relative overflow-hidden w-full h-fit md:h-[60rem] flex flex-col md:flex-row px-6 gap-10">
                 <PreRolls left={true} />
                 <Component {...pageProps} />
                 <PreRolls right={true} />
