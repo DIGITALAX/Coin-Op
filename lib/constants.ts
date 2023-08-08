@@ -40,6 +40,12 @@ export const COIN_OP_ORACLE: `0x${string}` =
   "0x31bbf0CD528aCb595E9F2dEdeb2f0771AeFD6368";
 export const COIN_OP_FULFILLMENT: `0x${string}` =
   "0xF80D3044B28807f52EFB38e37b681eFF9D2867b9";
+export const PKP_ADDRESS: `0x${string}` =
+  "0xe7693a737aaa5ba118e2de6f45c7bd85969f06a4";
+export const IPFS_CID_PKP: string =
+  "Qmb3gEiDq3NJ4piRBpRU1UbBjL35qXEhutCytcXo1LkzU6";
+export const PKP_PUBLIC_KEY: `0x${string}` =
+  "0x0418b7925e807f087f13c6e829abdae75ab72d1da5dc28213d8c409d65a02a874d5a235fedcc5392bdc75f7001f201953c68fa3ff848475c786dfee3da6aaabb11";
 
 export const allFonts: string[] = [
   "Manaspace",
@@ -51,4 +57,4 @@ export const allFonts: string[] = [
   "Satoshi Black",
 ];
 
-export const negative_prompt: string = ""
+export const negative_prompt: string = "";

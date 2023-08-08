@@ -2,13 +2,19 @@ import { CartItem } from "@/components/Common/types/common.types";
 import { useEffect, useState } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useDispatch, useSelector } from "react-redux";
+import { serialize } from "@ethersproject/transactions";
 import { setMessagesModal } from "../../../../../redux/reducers/messagesModalSlice";
+import { joinSignature } from "@ethersproject/bytes";
+import { SiweMessage } from "siwe";
 import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import { useAccount } from "wagmi";
 import {
   ACCEPTED_TOKENS,
   COIN_OP_MARKET,
   COIN_OP_ORACLE,
+  IPFS_CID_PKP,
+  PKP_ADDRESS,
+  PKP_PUBLIC_KEY,
 } from "../../../../../lib/constants";
 import { BigNumber, ethers } from "ethers";
 import CoinOpMarketABI from "../../../../../abis/CoinOpMarket.json";
@@ -18,6 +24,8 @@ import { useRouter } from "next/router";
 import { setLitClient } from "../../../../../redux/reducers/litClientSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygonMumbai, polygon } from "viem/chains";
+import { getOrders } from "../../../../../graphql/subgraph/queries/getOrders";
+import { Fragment } from "ethers/lib/utils";
 
 const useCheckout = () => {
   const router = useRouter();
@@ -191,6 +199,8 @@ const useCheckout = () => {
         },
       });
 
+      await createPKPOrder();
+
       if (error.type === "card_error" || error.type === "validation_error") {
         dispatch(
           setMessagesModal({
@@ -355,7 +365,7 @@ const useCheckout = () => {
               parameters: [":userAddress"],
               returnValueTest: {
                 comparator: "=",
-                value: item.fulfillerAddress,
+                value: item.fulfillerAddress.toLowerCase(),
               },
             };
           }
@@ -375,7 +385,7 @@ const useCheckout = () => {
               parameters: [":userAddress"],
               returnValueTest: {
                 comparator: "=",
-                value: address as string,
+                value: address?.toLowerCase() as string,
               },
             },
           ],
@@ -423,9 +433,10 @@ const useCheckout = () => {
             chosenTokenAddress: ACCEPTED_TOKENS.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],
+            sinPKP: true,
           },
         ],
-        account: address,
+        account: address?.toLowerCase() as `0x${string}`,
       });
       const clientWallet = createWalletClient({
         chain: polygon,
@@ -444,11 +455,260 @@ const useCheckout = () => {
         state: "",
         country: "",
       });
-      router.push("/account");
+      const orders = await getOrders(address as string);
+      dispatch(orders?.data?.orderCreateds);
+      await router.push("/account");
     } catch (err: any) {
       console.error(err.message);
     }
     setCryptoCheckoutLoading(false);
+  };
+
+  const retrieveOrders = async () => {
+    try {
+      const orders = await getOrders(address as string);
+      dispatch(orders?.data?.orderCreateds);
+      await router.push("/account");
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const generateAuthSignature = async () => {
+    try {
+      const signer = ethers.Wallet.createRandom();
+      const siweMessage = new SiweMessage({
+        domain: "localhost",
+        address: await signer.getAddress(),
+        statement: "This is an Auth Sig for LitListenerSDK",
+        uri: "https://localhost/login",
+        version: "1",
+        chainId: 137,
+      });
+      const signedMessage = siweMessage.prepareMessage();
+      const sig = await signer.signMessage(signedMessage);
+      return {
+        sig,
+        derivedVia: "web3.eth.personal.sign",
+        signedMessage,
+        address,
+      };
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const createTxData = async (
+    fulfillerDetails: string[],
+    provider: ethers.providers.JsonRpcProvider
+  ) => {
+    try {
+      const contractInterface = new ethers.utils.Interface(
+        CoinOpMarketABI as any
+      );
+
+      const gasPrice = await provider.getGasPrice();
+      const maxFeePerGas = gasPrice.mul(2);
+      const maxPriorityFeePerGas = gasPrice.div(2);
+      return {
+        to: COIN_OP_MARKET,
+        nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
+        chainId: 137,
+        gasLimit: ethers.BigNumber.from("5000000"),
+        maxFeePerGas: maxFeePerGas,
+        maxPriorityFeePerGas: maxPriorityFeePerGas,
+        from: "{{publicKey}}",
+        data: contractInterface.encodeFunctionData("buyTokens", [
+          {
+            preRollIds: cartItems?.reduce((accumulator: number[], item) => {
+              accumulator.push(item.collectionId);
+              return accumulator;
+            }, []),
+            preRollAmounts: cartItems?.reduce((accumulator: number[], item) => {
+              accumulator.push(item.amount);
+              return accumulator;
+            }, []),
+            customIds: [],
+            customAmounts: [],
+            indexes: cartItems.map((item) =>
+              ["shirt", "hoodie"].includes(item.printType.toLowerCase())
+                ? 0
+                : item.sizes.indexOf(item.chosenSize)
+            ),
+            customURIs: [],
+            fulfillmentDetails: JSON.stringify(fulfillerDetails),
+            chosenTokenAddress: ACCEPTED_TOKENS.find(
+              ([_, token]) => token === checkoutCurrency
+            )?.[2],
+            sinPKP: true,
+          },
+        ]),
+        value: ethers.BigNumber.from(0),
+        type: 2,
+      };
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const createPKPOrder = async () => {
+    setFiatCheckoutLoading(true);
+    try {
+      let client: LitJsSdk.LitNodeClient | undefined;
+      if (!litClient) {
+        client = await connectLit();
+      }
+
+      const authSig = await generateAuthSignature();
+
+      const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
+        JSON.stringify({
+          ...fulfillmentDetails,
+          sizes: cartItems?.reduce((accumulator: string[], item) => {
+            accumulator.push(String(item.chosenSize));
+            return accumulator;
+          }, []),
+          colors: cartItems?.reduce((accumulator: string[], item) => {
+            accumulator.push(String(item.chosenColor));
+            return accumulator;
+          }, []),
+          collectionIds: cartItems?.reduce((accumulator: number[], item) => {
+            accumulator.push(Number(item.collectionId));
+            return accumulator;
+          }, []),
+          collectionAmounts: cartItems?.reduce(
+            (accumulator: number[], item) => {
+              accumulator.push(Number(item.amount));
+              return accumulator;
+            },
+            []
+          ),
+        })
+      );
+
+      let fulfillerGroups: { [key: string]: CartItem[] } = {};
+      for (let i = 0; i < cartItems.length; i++) {
+        if (fulfillerGroups[cartItems[i].fulfillerAddress]) {
+          fulfillerGroups[cartItems[i].fulfillerAddress].push(cartItems[i]);
+        } else {
+          fulfillerGroups[cartItems[i].fulfillerAddress] = [cartItems[i]];
+        }
+      }
+
+      let fulfillerDetails = [];
+
+      for (let fulfillerAddress in fulfillerGroups) {
+        let fulfillerEditions = fulfillerGroups[fulfillerAddress].map(
+          (item) => {
+            return {
+              contractAddress: "",
+              standardContractType: "",
+              chain: "polygon",
+              method: "",
+              parameters: [":userAddress"],
+              returnValueTest: {
+                comparator: "=",
+                value: item.fulfillerAddress.toLowerCase(),
+              },
+            };
+          }
+        );
+
+        const encryptedSymmetricKey = await (client
+          ? client
+          : litClient
+        ).saveEncryptionKey({
+          accessControlConditions: [
+            ...fulfillerEditions,
+            {
+              contractAddress: "",
+              standardContractType: "",
+              chain: "polygon",
+              method: "",
+              parameters: [":userAddress"],
+              returnValueTest: {
+                comparator: "=",
+                value: address?.toLowerCase(),
+              },
+            },
+          ],
+          symmetricKey,
+          authSig,
+          chain: "polygon",
+        });
+
+        const buffer = await encryptedString.arrayBuffer();
+        fulfillerDetails.push(
+          JSON.stringify({
+            fulfillerAddress,
+            encryptedString: JSON.stringify(Array.from(new Uint8Array(buffer))),
+            encryptedSymmetricKey: LitJsSdk.uint8arrayToString(
+              encryptedSymmetricKey,
+              "base16"
+            ),
+          })
+        );
+      }
+      const provider = new ethers.providers.JsonRpcProvider(
+        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_POLYGON_KEY}`,
+        137
+      );
+      const tx = createTxData(fulfillerDetails, provider);
+
+      const results = await (client ? client : litClient).executeJS({
+        ipfsId: IPFS_CID_PKP,
+        authSig: await generateAuthSignature(),
+        jsParams: {
+          pkpAddress: PKP_ADDRESS,
+          publicKey: PKP_PUBLIC_KEY,
+          tx,
+        },
+      });
+
+      const signature = results.response.signatures[0];
+      const sig: {
+        r: string;
+        s: string;
+        recid: number;
+        signature: string;
+        publicKey: string;
+        dataSigned: string;
+      } = signature as {
+        r: string;
+        s: string;
+        recid: number;
+        signature: string;
+        publicKey: string;
+        dataSigned: string;
+      };
+
+      const encodedSignature = joinSignature({
+        r: "0x" + sig.r,
+        s: "0x" + sig.s,
+        recoveryParam: sig.recid,
+      });
+      const serialized = serialize(tx as any, encodedSignature);
+      const transactionHash = await provider.sendTransaction(serialized);
+
+      await transactionHash.wait();
+
+      dispatch(setCart([]));
+      setFulfillmentDetails({
+        name: "",
+        contact: "",
+        address: "",
+        zip: "",
+        city: "",
+        state: "",
+        country: "",
+      });
+      const orders = await getOrders(address as string);
+      dispatch(orders?.data?.orderCreateds);
+      await router.push("/account");
+    } catch (err: any) {
+      console.error(err.message);
+    }
+    setFiatCheckoutLoading(false);
   };
 
   const connectLit = async (): Promise<LitJsSdk.LitNodeClient | undefined> => {
@@ -500,7 +760,7 @@ const useCheckout = () => {
             state: "",
             country: "",
           });
-          router.push("/account");
+          retrieveOrders();
           break;
         case "processing":
           setFiatCheckoutLoading(true);

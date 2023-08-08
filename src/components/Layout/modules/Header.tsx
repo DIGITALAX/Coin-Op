@@ -7,6 +7,7 @@ import { RootState } from "../../../../redux/store";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Header: FunctionComponent = (): JSX.Element => {
   const {
@@ -25,6 +26,7 @@ const Header: FunctionComponent = (): JSX.Element => {
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
+  const router = useRouter();
   const dispatch = useDispatch();
   return (
     <div className="relative w-full flex flex-col gap-20 px-3 pt-2 pb-20">
@@ -35,7 +37,14 @@ const Header: FunctionComponent = (): JSX.Element => {
         <div className="relative flex w-full h-fit items-center justify-center">
           <div
             className="relative w-fit px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 -left-10 cursor-pointer active:scale-95"
-            onClick={() => scrollToCheckOut()}
+            onClick={
+              router.asPath.includes("account")
+                ? async () => {
+                    await router.push("/");
+                    scrollToCheckOut();
+                  }
+                : () => scrollToCheckOut()
+            }
             id={cartAnim ? "cartAnim" : ""}
           >
             <div className="relative text-white font-mana text-xs items-center justify-center">
@@ -72,6 +81,7 @@ const Header: FunctionComponent = (): JSX.Element => {
           dispatch={dispatch}
           handlePromptChoose={handlePromptChoose}
           handleAddToCart={handleAddToCart}
+          router={router}
         />
         <Hook />
       </div>

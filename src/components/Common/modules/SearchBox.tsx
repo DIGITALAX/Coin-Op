@@ -13,6 +13,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
   dispatch,
   handlePromptChoose,
   handleAddToCart,
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-40 h-40 rounded-md border border-white/70 p-3">
@@ -42,8 +43,11 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
               <div
                 className="relative flex cursor-pointer active:scale-95 hover:opacity-50 items-center justify-center"
                 title="use prompt"
-                onClick={(e) => {
+                onClick={async (e) => {
                   e.stopPropagation();
+                  if (router.asPath.includes("account")) {
+                   await router.push("/");
+                  }
                   handlePromptChoose(promptSearch);
                 }}
               >

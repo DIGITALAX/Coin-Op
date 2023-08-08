@@ -21,6 +21,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
   preRolls,
   handleSearchSimilar,
   handlePromptChoose,
+  router,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -66,8 +67,11 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                       <div
                         className="relative flex cursor-pointer active:scale-95 hover:opacity-50 items-center justify-center"
                         title="use prompt"
-                        onClick={(e) => {
+                        onClick={async (e) => {
                           e.stopPropagation();
+                          if (router.asPath.includes("account")) {
+                            await router.push("/");
+                          }
                           handlePromptChoose(searchItem);
                           dispatch(setSearchExpand(undefined));
                         }}
@@ -124,7 +128,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                     <div
                       className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
                       onClick={() => {
-                        let { colors,  bgColor, ...newObj } = searchItem;
+                        let { colors, bgColor, ...newObj } = searchItem;
                         const existing = [...cartItems].findIndex(
                           (item) =>
                             item.collectionId === newObj.collectionId &&

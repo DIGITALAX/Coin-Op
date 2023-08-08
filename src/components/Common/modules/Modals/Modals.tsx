@@ -13,9 +13,11 @@ import Messages from "./Messages";
 import SearchExpand from "./SearchExpand";
 import useRollSearch from "@/components/Layout/hooks/useRollSearch";
 import ApiAdd from "./ApiAdd";
+import { useRouter } from "next/router";
 
 const Modals = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const imageLoading = useSelector(
     (state: RootState) => state.app.imageLoadingReducer.value
   );
@@ -220,6 +222,7 @@ const Modals = () => {
           preRolls={preRolls}
           handlePromptChoose={handlePromptChoose}
           handleSearchSimilar={handleSearchSimilar}
+          router={router}
         />
       )}
       {imageModal?.value && (
