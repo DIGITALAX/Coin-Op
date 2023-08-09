@@ -8,8 +8,11 @@ import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { HeaderProps } from "@/components/Common/types/common.types";
 
-const Header: FunctionComponent = (): JSX.Element => {
+const Header: FunctionComponent<HeaderProps> = ({
+  preRollRef,
+}): JSX.Element => {
   const {
     handleRollSearch,
     prompt,
@@ -83,7 +86,7 @@ const Header: FunctionComponent = (): JSX.Element => {
           handleAddToCart={handleAddToCart}
           router={router}
         />
-        <Hook />
+        <Hook preRollRef={preRollRef} />
       </div>
     </div>
   );

@@ -11,8 +11,7 @@ const ModelSelect: FunctionComponent<ModelsProps> = ({
         select model scene:
       </div>
       <div
-        className="relative h-full flex overflow-x-scroll"
-        style={{ width: "calc(100vw - 20rem - 20rem - 1rem)" }}
+        className="relative h-full flex overflow-x-scroll calc-3 preG:w-calc2 xl:w-calc"
         id="xScroll"
       >
         <div className="relative w-fit h-full flex gap-2">

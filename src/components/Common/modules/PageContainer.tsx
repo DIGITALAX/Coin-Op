@@ -71,7 +71,8 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   setItemClicked,
   controlType,
   setControlType,
-  synthRef
+  synthRef,
+  scrollToPreRoll
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -83,6 +84,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           dispatch={dispatch}
           synthLayer={synthLayer}
           layersLoading={layersLoading}
+          scrollToPreRoll={scrollToPreRoll}
         />
         <Synth
           itemClicked={itemClicked}

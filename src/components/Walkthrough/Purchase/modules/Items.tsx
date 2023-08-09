@@ -18,8 +18,8 @@ const Items: FunctionComponent<ItemsProps> = ({
   return (
     <div className="relative w-3/4 h-40 flex">
       <div className="relative border border-ligero rounded-md w-full h-full flex flex-col gap-3 p-2">
-        <div className="relative w-full h-full items-start justify-start flex overflow-y-scroll">
-          <div className="flex flex-col gap-2 items-start justify-start w-full h-fit">
+        <div className="relative w-full h-full items-start justify-start flex overflow-scroll">
+          <div className="flex flex-col gap-2 items-start justify-start w-fit preG:w-full h-fit">
             {cartItems?.length < 1 ? (
               <div className="relative w-full h-full font-mana text-white text-xs flex items-center justify-center text-center">
                 fill up your cart
@@ -53,7 +53,7 @@ const Items: FunctionComponent<ItemsProps> = ({
                     <div className="relative w-fit h-fit flex justify-start items-center uppercase">
                       {item.chosenSize}
                     </div>
-                    <div className="relative w-fit h-fit text-ama flex">
+                    <div className="relative w-fit h-fit text-ama flex whitespace-nowrap">
                       {paymentType === "crypto"
                         ? ACCEPTED_TOKENS.find(
                             (subArray) => subArray[1] === checkoutCurrency

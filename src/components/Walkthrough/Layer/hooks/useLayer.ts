@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import { getTemplatesByPrintType } from "../../../../../graphql/subgraph/queries/getTemplates";
@@ -6,9 +6,11 @@ import { setPrintTypeLayers } from "../../../../../redux/reducers/printTypeLayer
 import { setLayerToSynth } from "../../../../../redux/reducers/layerToSynthSlice";
 import { Layer } from "../types/layer.types";
 import { setSynthLayer } from "../../../../../redux/reducers/synthLayerSlice";
+import { ScrollContext } from "@/pages/_app";
 
 const useLayer = () => {
   const dispatch = useDispatch();
+  const { preRollRef } = useContext(ScrollContext);
   const template = useSelector(
     (state: RootState) => state.app.templateReducer.value
   );
@@ -64,12 +66,26 @@ const useLayer = () => {
     setLayersLoading(false);
   };
 
+  const scrollToPreRoll = () => {
+    if (!preRollRef || !preRollRef?.current) return;
+
+    preRollRef?.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    setTimeout(() => {
+      preRollRef.current!.scrollTop = preRollRef.current!.scrollHeight;
+    }, 500);
+  };
+
   useEffect(() => {
     getLayers();
   }, [template]);
 
   return {
     layersLoading,
+    scrollToPreRoll,
   };
 };
 

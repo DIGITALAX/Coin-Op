@@ -58,8 +58,17 @@ const Canvas: FunctionComponent<CanvasProps> = ({
       id="parent"
     >
       {newLayersLoading ? (
-        <div className="relative w-fit h-fit items-center justify-center flex animate-spin">
-          <AiOutlineLoading size={30} color="#FBDB86" />
+        <div
+          className="relative flex items-center justify-center"
+          style={{
+            width: "100%",
+            height: canvasExpand ? "100%" : "373px",
+            maxHeight: canvasExpand ? "100%" : "373px",
+          }}
+        >
+          <div className="relative w-fit h-fit items-center justify-center flex animate-spin">
+            <AiOutlineLoading size={30} color="#FBDB86" />
+          </div>
         </div>
       ) : (
         <>

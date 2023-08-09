@@ -22,13 +22,15 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
   );
   const { preRollsLoading } = usePreRoll();
   return (
-    <div className="relative w-full md:min-w-80 md:w-80 h-fit md:h-full flex overflow-x-scroll md:overflow-y-scroll">
-      <div className="relative w-fit md:w-full h-fit flex flex-row md:flex-col justify-start items-center gap-10">
+    <div
+      className="relative w-full xl:min-w-80 xl:w-80 h-fit xl:h-full flex overflow-x-scroll xl:overflow-y-scroll"
+    >
+      <div className="relative w-fit xl:w-full h-fit flex xl:flex-col flex-row justify-start items-center gap-10">
         {preRollsLoading
           ? Array.from({ length: 40 }).map((_, index: number) => {
               return (
                 <div
-                  className="relative w-full h-80 flex flex-col rounded-sm border border-white p-3"
+                  className="relative w-48 h-60 xl:h-80 flex flex-col rounded-sm border border-white p-3"
                   key={index}
                 >
                   <div

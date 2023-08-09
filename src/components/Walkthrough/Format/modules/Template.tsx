@@ -13,13 +13,17 @@ const Template: FunctionComponent<TemplateProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className={`relative w-full flex rounded-md bg-cross ${
+      className={`relative flex rounded-md bg-cross ${
+        locked ? "md:w-full w-20" : "md:w-full w-40"
+      } ${
         chosenTemplate === template
           ? "border-2 border-white opacity-60"
           : "border-ama border"
       } ${!locked && "cursor-pointer hover:opacity-80"}`}
       style={{ height }}
-      onClick={() => {!locked && dispatch(setTemplate(template!))}}
+      onClick={() => {
+        !locked && dispatch(setTemplate(template!));
+      }}
     >
       <div className="relative w-full h-full object-cover">
         <Image
@@ -44,13 +48,13 @@ const Template: FunctionComponent<TemplateProps> = ({
           </div>
         ) : (
           <div className="absolute flex w-full h-full items-center justify-center rounded-md">
-            <div className="relative flex w-3/5 h-fit bg-black p-2 rounded-md border border-ama text-white font-mana text-xs flex-col">
-              <div className="relative w-fit h-fit flex items-start justify-center text-left">
+            <div className="relative flex w-4/5 md:w-3/5 h-fit bg-black p-2 rounded-md border border-ama text-white font-mana text-xs flex-col break-all">
+              <div className="relative w-fit h-fit flex items-start justify-center text-left break-all">
                 {template?.type === "Hoodie" || template?.type === "Shirt"
                   ? "streatwear"
                   : "street art"}
               </div>
-              <div className="relative w-full h-fit flex items-center justify-end text-right">
+              <div className="relative w-full h-fit flex items-center justify-end text-right break-all">
                 <div className="relative w-fit h-fit flex">
                   {"> " + template?.type}
                 </div>

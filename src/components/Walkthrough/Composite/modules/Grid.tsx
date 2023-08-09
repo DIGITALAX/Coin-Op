@@ -26,11 +26,14 @@ const Grid: FunctionComponent<GridProps> = ({
   address,
   models,
   signInLoading,
-  compositeRef
+  compositeRef,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-100 flex flex-col gap-2" ref={compositeRef}>
-      <div className="absolute w-full h-full flex">
+    <div
+      className="relative w-full h-100 flex flex-col gap-2"
+      ref={compositeRef}
+    >
+      <div className="absolute w-full h-full hidden preG:flex">
         <Image
           alt="copy"
           layout="fill"
@@ -38,7 +41,7 @@ const Grid: FunctionComponent<GridProps> = ({
           draggable={false}
         />
       </div>
-      <div className="relative w-full flex h-3/4 px-7 pt-4">
+      <div className="relative w-full flex h-3/4 preG:px-7 pt-4 order-1">
         <div className="relative w-full h-full object-cover border border-azul rounded-md">
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmWX2sNq9YWbzFBzTqKNW9cZBcy4xNfCw1wfwxZJMH3mNf`}
@@ -49,7 +52,7 @@ const Grid: FunctionComponent<GridProps> = ({
           <ModelSelect models={models} />
         </div>
       </div>
-      <div className="absolute bottom-6 right-9 w-fit h-fit flex flex-row gap-3 text-white items-center justify-center text-center">
+      <div className="relative preG:absolute bottom-6 right-2 sm:right-9 w-full preG:pt-0 pt-10 preG:w-fit h-fit flex flex-col md:flex-row gap-3 text-white items-center justify-center text-center preG:order-2 order-3">
         <div className="relative w-9 h-3 items-center justify-center flex flex-row">
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmZ4XuwsWcHpCXq56LNmAuvVck7D7WLmXWLcLJmGm1rjC4`}
@@ -57,7 +60,7 @@ const Grid: FunctionComponent<GridProps> = ({
             draggable={false}
           />
         </div>
-        <div className="relative w-fit h-fit items-center justify-center text-center flex font-mega text-2xl uppercase">
+        <div className="relative w-fit h-fit items-center justify-center text-center flex font-mega text-xs md:text-sm lg:text-xl xl:text-base synth:text-2xl uppercase">
           share with friends
         </div>
         <div className="relative w-fit h-fit items-center justify-center flex flex-row gap-2 font-herm text-lg">
@@ -137,7 +140,7 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="absolute text-white font-mana text-3xl uppercase bottom-4"
+        className="relative w-full preG:w-fit flex justify-center preG:absolute text-white font-mana text-sm sm:text-xl 900:text-3xl uppercase preG:bottom-4 preG:order-3 order-2 preG:pt-0 pt-3"
         draggable={false}
       >
         edit for composite

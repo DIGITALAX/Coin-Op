@@ -60,8 +60,8 @@ const Grid: FunctionComponent<GridProps> = ({
   setControlType,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-100 flex flex-col gap-2">
-      <div className="absolute w-full h-full flex">
+    <div className="relative w-full h-160 preG:h-150 md:h-130 xl:h-auto synth:h-100 flex flex-col gap-2">
+      <div className="absolute w-full h-full hidden preG:flex">
         <Image
           alt="copy"
           layout="fill"
@@ -69,17 +69,17 @@ const Grid: FunctionComponent<GridProps> = ({
           draggable={false}
         />
       </div>
-      <div className={`relative w-full flex h-5/6 px-7 pt-4`}>
+      <div className={`relative w-full flex h-5/6 px-2 sm:px-7 pt-4 order-1`}>
         <div
-          className={`w-full flex h-full gap-8 items-center justify-center transition-all duration-300 ease-in-out ${
+          className={`w-full flex h-full gap-4 synth:gap-8 items-center justify-center transition-all duration-300 ease-in-out ${
             canvasExpand
               ? "flex-col z-30 bg-opacity-90 backdrop-blur-sm bg-black inset-0 fixed p-2"
-              : "flex-row relative"
+              : "flex-col synth:flex-row relative"
           }`}
         >
           <div
             className={`relative flex gap-3 w-full ${
-              canvasExpand ? "flex-row h-52" : "flex-col h-full"
+              canvasExpand ? "flex-row h-52" : "flex-col md:flex-row synth:flex-col synth:h-auto h-fit md:h-72 xl:h-60"
             }`}
           >
             <div className="relative w-full h-full flex items-center justify-center rounded-md border border-ama">
@@ -93,7 +93,7 @@ const Grid: FunctionComponent<GridProps> = ({
                 canvasExpand={canvasExpand}
               />
             </div>
-            <div className="relative w-100 h-52 flex items-center justify-center rounded-md border border-ama">
+            <div className="relative w-full md:w-60 h-52 md:h-full synth:h-52 flex items-center justify-center rounded-md border border-ama grow">
               <Presets
                 presets={presets}
                 dispatch={dispatch}
@@ -101,7 +101,7 @@ const Grid: FunctionComponent<GridProps> = ({
               />
             </div>
           </div>
-          <div className={`relative w-full h-full flex flex-col gap-3`}>
+          <div className={`relative w-full h-110 synth:h-full flex flex-col gap-3`}>
             {(completedSynths.get(String(synthLayerSelected.id))?.synths || [])
               ?.length > 0 && (
               <CompleteImages
@@ -155,9 +155,9 @@ const Grid: FunctionComponent<GridProps> = ({
               layerToSynth={synthLayerSelected}
             />
             <div
-              className={`w-full flex justify-center items-center flex-row gap-3 ${
+              className={`w-full flex justify-center items-center gap-3 ${
                 canvasExpand
-                  ? `absolute p-2 h-14 ${
+                  ? `absolute flex-row p-2 h-14 ${
                       (
                         completedSynths.get(String(synthLayerSelected.id))
                           ?.synths || []
@@ -165,10 +165,10 @@ const Grid: FunctionComponent<GridProps> = ({
                         ? "top-10"
                         : "top-2"
                     }`
-                  : "relative h-10"
+                  : "relative h-24 preG:h-10 flex-col preG:flex-row"
               }`}
             >
-              <div className="relative w-full h-full flex items-center justify-start">
+              <div className="relative w-full h-full flex flex-row items-center justify-start">
                 <div className="relative w-fit h-full items-center justify-start flex flex-row gap-3">
                   {(synthLayer?.childTokenURIs &&
                   synthLayer?.childTokenURIs?.length < 4
@@ -306,15 +306,15 @@ const Grid: FunctionComponent<GridProps> = ({
           </div>
         </div>
       </div>
-      <div className="absolute bottom-6 right-9 w-fit h-fit flex flex-row gap-3 text-white items-center justify-center text-center">
-        <div className="relative w-9 h-3 items-center justify-center flex flex-row">
+      <div className="relative preG:absolute preG:bottom-6 preG:right-2 lg:right-9 w-full preG:w-fit h-fit flex flex-row gap-3 text-white items-center justify-center text-center preG:pt-0 pt-4 preG:order-2 order-3">
+        <div className="relative w-9 h-3 items-center justify-center hidden preG:flex flex-row">
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmZ4XuwsWcHpCXq56LNmAuvVck7D7WLmXWLcLJmGm1rjC4`}
             layout="fill"
             draggable={false}
           />
         </div>
-        <div className="relative w-fit h-fit items-center justify-center text-center flex font-mega text-xl uppercase flex-row gap-1">
+        <div className="relative w-fit h-fit items-center justify-center text-center flex font-mega text-sm lg:text-xl xl:text-sm synth:text-xl uppercase flex-col md:flex-row gap-1">
           <div
             className="relative w-fit h-fit px-1.5 py-1 border border-eme rounded-md cursor-pointer flex items-center justify-center active:scale-95"
             onClick={() => scrollToComposite()}
@@ -344,7 +344,7 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="absolute text-white font-mana text-3xl uppercase bottom-4"
+        className="relative justify-center flex preG:absolute text-white font-mana text-sm sm:text-xl 900:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-3 preG:order-3 order-2"
         draggable={false}
       >
         presets & synth

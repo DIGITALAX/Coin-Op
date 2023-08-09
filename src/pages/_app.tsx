@@ -42,15 +42,18 @@ const config = createConfig({
 export const ScrollContext = createContext<{
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   synthRef: MutableRefObject<HTMLDivElement | null>;
+  preRollRef: MutableRefObject<HTMLDivElement | null>;
 }>({
   scrollRef: null!,
   synthRef: null!,
+  preRollRef: null!,
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const synthRef = useRef<HTMLDivElement>(null);
+  const preRollRef = useRef<HTMLDivElement>(null);
   const [routerChangeLoading, setRouterChangeLoading] =
     useState<boolean>(false);
   useEffect(() => {
@@ -99,10 +102,10 @@ export default function App({ Component, pageProps }: AppProps) {
     <Provider store={store}>
       <WagmiConfig config={config}>
         <RainbowKitProvider chains={chains}>
-          <ScrollContext.Provider value={{ scrollRef, synthRef }}>
+          <ScrollContext.Provider value={{ scrollRef, synthRef, preRollRef }}>
             <div className="relative overflow-x-hidden w-full h-fit flex flex-col selection:bg-oscurazul selection:text-white gap-5">
-              <Header />
-              <div className="relative overflow-hidden w-full h-fit md:h-[60rem] flex flex-col md:flex-row px-6 gap-10">
+              <Header preRollRef={preRollRef} />
+              <div className="relative overflow-hidden w-full h-fit xl:h-[60rem] flex flex-col xl:flex-row px-2 preG:px-6 gap-10">
                 <PreRolls left={true} />
                 <Component {...pageProps} />
                 <PreRolls right={true} />

@@ -26,6 +26,7 @@ export type PageContainerProps = {
   scrollToComposite: () => void;
   newLayersLoading: boolean;
   isDragging: boolean;
+  scrollToPreRoll: () => void;
   synthRef: Ref<HTMLDivElement>;
   materialBackground: string;
   itemClicked: boolean;
@@ -425,3 +426,12 @@ export type SearchExpandProps = {
 export type ApiAddProps = {
   dispatch: DispatchRedux<AnyAction>;
 };
+
+export type HookProps = {
+  preRollRef: Ref<HTMLDivElement>
+}
+
+
+export type HeaderProps = {
+  preRollRef: Ref<HTMLDivElement>
+}

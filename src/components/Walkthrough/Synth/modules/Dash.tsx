@@ -20,7 +20,7 @@ const Dash: FunctionComponent<DashProps> = ({
   );
 
   return (
-    <div className="relative w-full h-full flex flex-row gap-5 items-start justify-center px-2 py-2.5">
+    <div className="relative w-full h-full flex flex-col preG:flex-row gap-5 items-start justify-center px-2 py-2.5">
       <div className="relative flex flex-col w-full h-full gap-4 items-start justify-start">
         <div className="relative w-fit h-fit text-white text-sm font-mana">
           modify suggested prompt:
@@ -29,7 +29,7 @@ const Dash: FunctionComponent<DashProps> = ({
           style={{ resize: "none" }}
           placeholder={synthConfig?.prompt}
           value={synthConfig?.prompt}
-          className="relative bg-black/10 text-gris font-mana text-sm w-full h-full p-2 border border-smo rounded-md"
+          className="relative bg-black/10 text-gris font-mana text-sm w-full h-60 preG:h-full p-2 border border-smo rounded-md"
           onChange={(e: FormEvent) => {
             !synthLoading &&
               dispatch(

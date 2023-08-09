@@ -2,7 +2,6 @@ import { CartItem, PreRoll } from "@/components/Common/types/common.types";
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { useRouter } from "next/router";
 import { setRollSearch } from "../../../../redux/reducers/rollSearchSlice";
 import { initializeAlgolia } from "../../../../lib/algolia/client";
 import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
@@ -12,7 +11,7 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 
 const useRollSearch = () => {
-  const { scrollRef, synthRef } = useContext(ScrollContext);
+  const { scrollRef, synthRef, } = useContext(ScrollContext);
   const dispatch = useDispatch();
   const [prompt, setPrompt] = useState<string>("");
   const [cartAnim, setCartAnim] = useState<boolean>(false);

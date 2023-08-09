@@ -35,8 +35,11 @@ const Grid: FunctionComponent<GridProps> = ({
     oracleValue,
   } = useCheckout();
   return (
-    <div className="relative w-full h-100 flex flex-col gap-2" ref={scrollRef}>
-      <div className="absolute w-full h-full flex">
+    <div
+      className="relative w-full h-120 synth:h-100 flex flex-col gap-2"
+      ref={scrollRef}
+    >
+      <div className="absolute w-full h-full hidden preG:flex">
         <Image
           alt="copy"
           layout="fill"
@@ -44,7 +47,7 @@ const Grid: FunctionComponent<GridProps> = ({
           draggable={false}
         />
       </div>
-      <div className="relative w-full flex flex-row h-5/6 pr-7 pt-4 items-center justify-start gap-5">
+      <div className="relative w-full flex flex-col synth:flex-row h-5/6 synth:pr-7 pt-4 items-center justify-start gap-5">
         <Checkout
           address={address}
           openConnectModal={openConnectModal}
@@ -67,7 +70,7 @@ const Grid: FunctionComponent<GridProps> = ({
           oracleValue={oracleValue}
           setCartItem={setCartItem}
         />
-        <div className="relative w-96 h-80 justify-end flex items-center">
+        <div className="relative w-3/4 preG:w-96 h-96 xl:h-80 justify-end flex items-center">
           <div
             className="relative w-full h-full rounded-md border border-ama cursor-pointer hover:opacity-80 bg-cross"
             onClick={() =>
@@ -96,8 +99,8 @@ const Grid: FunctionComponent<GridProps> = ({
           </div>
         </div>
       </div>
-      <div className="absolute bottom-6 right-12 w-fit h-fit flex flex-row gap-3 text-white items-center justify-center text-center">
-        <div className="relative flex flex-row w-full h-full gap-3 items-center justify-center">
+      <div className="relative preG:absolute preG:bottom-6 preG:right-2 md:right-12 w-full preG:w-fit h-fit flex flex-col preG:flex-row gap-3 text-white items-center justify-center text-center">
+        <div className="relative flex flex-col preG:flex-row w-full h-full gap-3 items-center justify-center">
           <div className="relative w-full h-fit flex items-center justify-center gap-2">
             {(cartItems?.length <= 4
               ? cartItems
@@ -111,7 +114,7 @@ const Grid: FunctionComponent<GridProps> = ({
               return (
                 <div
                   key={index}
-                  className="relative w-20 h-10 rounded-md border border-ama cursor-pointer bg-cross hover:opacity-80"
+                  className="relative w-10 synth:w-20 h-10 rounded-md border border-ama cursor-pointer bg-cross hover:opacity-80"
                   onClick={() => setCartItem(item)}
                 >
                   <Image
@@ -162,7 +165,7 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="absolute text-white flex font-mana text-3xl uppercase bottom-4"
+        className="relative flex justify-center w-full preG:w-fit preG:absolute text-white flex font-mana text-sm sm:text-xl 900:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-4"
         draggable={false}
       >
         make it yours

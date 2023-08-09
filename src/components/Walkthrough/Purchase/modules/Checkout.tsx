@@ -30,7 +30,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   setCartItem,
 }): JSX.Element => {
   return (
-    <div className="relative w-3/4 h-full flex overflow-y-scroll">
+    <div className="relative w-full synth:w-3/4 h-full flex overflow-y-scroll">
       <div className="relative w-full h-fit flex flex-col gap-4 items-center justify-center">
         <div className="relative w-1/2 justify-center flex flex-row font-mana text-white text-sm uppercase">
           <div

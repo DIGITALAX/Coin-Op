@@ -31,9 +31,17 @@ module.exports = {
       },
       height: {
         100: "36rem",
+        110: "38rem",
+        120: "50rem",
+        130: "55rem",
+        150: "70rem",
+        160: "95rem"
       },
       width: {
         100: "30rem",
+        calc: "calc(100vw - 20rem - 20rem - 1rem)",
+        calc2: "calc(100vw - 10rem)",
+        calc3: "calc(100vw)"
       },
       fontSize: {
         xxs: "0.5rem",
@@ -48,6 +56,8 @@ module.exports = {
       },
       screens: {
         preG: "480px",
+        synth: "1450px",
+        900: "900px"
       },
     },
   },

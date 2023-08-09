@@ -13,7 +13,7 @@ import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
 import useCanvas from "@/components/Walkthrough/Synth/hooks/useCanvas";
 
 export default function Home(): JSX.Element {
-  const { scrollRef, synthRef } = useContext(ScrollContext);
+  const { scrollRef, synthRef, preRollRef } = useContext(ScrollContext);
   const dispatch = useDispatch();
   const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
@@ -66,7 +66,7 @@ export default function Home(): JSX.Element {
     setItemClicked,
   } = useCanvas();
 
-  const { layersLoading } = useLayer();
+  const { layersLoading, scrollToPreRoll } = useLayer();
 
   const profile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
@@ -116,6 +116,7 @@ export default function Home(): JSX.Element {
       setControlType={setControlType}
       template={template}
       tool={tool}
+      scrollToPreRoll={scrollToPreRoll}
       dispatch={dispatch}
       isDragging={isDragging}
       synthLayer={synthLayer}
