@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import Head from "next/head";
 import AllOrders from "@/components/Account/modals/AllOrders";
 import useOrders from "@/components/Account/hooks/useOrders";
@@ -15,15 +15,19 @@ const Account: NextPage = (): JSX.Element => {
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
+  const connected = useSelector(
+    (state: RootState) => state.app.walletConnectedReducer.value
+  );
+  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const dispatch = useDispatch();
   const { openConnectModal } = useConnectModal();
+  const { openChainModal } = useChainModal();
   const {
     ordersLoading,
     handleDecryptFulfillment,
     decryptLoading,
     orderOpen,
     setOrderOpen,
-    connected,
     updateFulfillmentInformation,
     updateLoading,
     updatedInformation,
@@ -35,7 +39,6 @@ const Account: NextPage = (): JSX.Element => {
   useEffect(() => {
     if (preRollAnim) {
       setTimeout(() => {
-        console.log("here");
         dispatch(setPreRollAnim(false));
       }, 3000);
     }
@@ -62,6 +65,8 @@ const Account: NextPage = (): JSX.Element => {
         setUpdatedInformation={setUpdatedInformation}
         decryptMessageLoading={decryptMessageLoading}
         handleDecryptMessage={handleDecryptMessage}
+        chain={chain}
+        openChainModal={openChainModal}
       />
     </div>
   );

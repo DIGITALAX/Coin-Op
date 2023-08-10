@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import { CartItem, PreRollProps } from "../types/common.types";
 import Image from "next/legacy/image";
-import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../lib/constants";
+import { INFURA_GATEWAY } from "../../../../lib/constants";
 import PrintTag from "./PrintTag";
 import ColorChoice from "./ColorChoice";
 import { setCart } from "../../../../redux/reducers/cartSlice";

@@ -9,9 +9,12 @@ import { ScrollContext } from "@/pages/_app";
 import { setSynthConfig } from "../../../../redux/reducers/synthConfigSlice";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { setCart } from "../../../../redux/reducers/cartSlice";
+import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
+import { useAccount } from "wagmi";
 
 const useRollSearch = () => {
-  const { scrollRef, synthRef, } = useContext(ScrollContext);
+  const { scrollRef, synthRef } = useContext(ScrollContext);
+  const { isConnected, address } = useAccount();
   const dispatch = useDispatch();
   const [prompt, setPrompt] = useState<string>("");
   const [cartAnim, setCartAnim] = useState<boolean>(false);
@@ -128,6 +131,10 @@ const useRollSearch = () => {
       }, 2000);
     }
   }, [cartAnim]);
+
+  useEffect(() => {
+    dispatch(setWalletConnected(isConnected));
+  }, [address, isConnected]);
 
   return {
     handleRollSearch,

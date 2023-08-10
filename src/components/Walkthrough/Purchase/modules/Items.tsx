@@ -1,7 +1,11 @@
 import { FunctionComponent } from "react";
 import { ItemsProps } from "../types/synth.types";
-import { CartItem, PreRoll } from "@/components/Common/types/common.types";
-import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../../lib/constants";
+import { CartItem } from "@/components/Common/types/common.types";
+import {
+  ACCEPTED_TOKENS,
+  ACCEPTED_TOKENS_MUMBAI,
+  INFURA_GATEWAY,
+} from "../../../../../lib/constants";
 import Image from "next/legacy/image";
 import { ImCross } from "react-icons/im";
 import { setCart } from "../../../../../redux/reducers/cartSlice";
@@ -55,7 +59,7 @@ const Items: FunctionComponent<ItemsProps> = ({
                     </div>
                     <div className="relative w-fit h-fit text-ama flex whitespace-nowrap">
                       {paymentType === "crypto"
-                        ? ACCEPTED_TOKENS.find(
+                        ? ACCEPTED_TOKENS_MUMBAI.find(
                             (subArray) => subArray[1] === checkoutCurrency
                           )?.[1]
                         : "$"}{" "}

@@ -12,10 +12,14 @@ export type CompositeProps = {
   address: `0x${string}` | undefined;
   models: string[];
   signInLoading: boolean;
-  compositeRef: LegacyRef<HTMLDivElement> | undefined
+  compositeRef: LegacyRef<HTMLDivElement> | undefined;
+  openChainModal: (() => void) | undefined;
+  chain: number | undefined;
+  apiKey: string | undefined;
 };
 
 export type GridProps = {
+  apiKey: string | undefined;
   dispatch: Dispatch<AnyAction>;
   shareSet: boolean;
   setShareSet: (e: boolean) => void;
@@ -25,7 +29,9 @@ export type GridProps = {
   address: `0x${string}` | undefined;
   models: string[];
   signInLoading: boolean;
-  compositeRef: LegacyRef<HTMLDivElement> | undefined
+  compositeRef: LegacyRef<HTMLDivElement> | undefined;
+  openChainModal: (() => void) | undefined;
+  chain: number | undefined;
 };
 
 export type ModelProps = {

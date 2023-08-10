@@ -26,6 +26,9 @@ export type PageContainerProps = {
   scrollToComposite: () => void;
   newLayersLoading: boolean;
   isDragging: boolean;
+  apiKey: string | undefined;
+  openChainModal: (() => void) | undefined;
+  chain: number | undefined;
   scrollToPreRoll: () => void;
   synthRef: Ref<HTMLDivElement>;
   materialBackground: string;

@@ -15,6 +15,7 @@ import { IoLogoReddit, IoLogoTumblr } from "react-icons/io";
 import { setLensPostBox } from "../../../../../redux/reducers/lensPostBoxSlice";
 import ModelSelect from "./ModelSelect";
 import { AiOutlineLoading } from "react-icons/ai";
+import { setApiAdd } from "../../../../../redux/reducers/apiAddSlice";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -27,6 +28,9 @@ const Grid: FunctionComponent<GridProps> = ({
   models,
   signInLoading,
   compositeRef,
+  openChainModal,
+  chain,
+  apiKey,
 }): JSX.Element => {
   return (
     <div
@@ -69,8 +73,18 @@ const Grid: FunctionComponent<GridProps> = ({
               signInLoading && "animate-spin"
             }`}
             onClick={
-              !address
+              !apiKey
+                ? () =>
+                    dispatch(
+                      setApiAdd({
+                        actionKey: undefined,
+                        actionOpen: true,
+                      })
+                    )
+                : !address
                 ? openConnectModal
+                : chain !== 137
+                ? openChainModal
                 : () =>
                     address && !profile
                       ? handleLensSignIn()
@@ -93,35 +107,80 @@ const Grid: FunctionComponent<GridProps> = ({
                 url={`${INFURA_GATEWAY}/ipfs`}
                 title={`Coin Op Manufactory`}
                 media={`${INFURA_GATEWAY}/ipfs`}
-                onClick={() => setShareSet(false)}
+                onClick={() => {
+                  !apiKey &&
+                    dispatch(
+                      setApiAdd({
+                        actionKey: undefined,
+                        actionOpen: true,
+                      })
+                    );
+                  setShareSet(false);
+                }}
               >
                 <FaPinterestP size={15} color={"#FBDB86"} />
               </PinterestShareButton>
               <TwitterShareButton
                 url={`${INFURA_GATEWAY}/ipfs`}
                 title={`Coin Op Manufactory`}
-                onClick={() => setShareSet(false)}
+                onClick={() => {
+                  !apiKey &&
+                    dispatch(
+                      setApiAdd({
+                        actionKey: undefined,
+                        actionOpen: true,
+                      })
+                    );
+                  setShareSet(false);
+                }}
               >
                 <BiLogoTwitter size={15} color={"#FBDB86"} />
               </TwitterShareButton>
               <RedditShareButton
                 url={`${INFURA_GATEWAY}/ipfs`}
                 title={`Coin Op Manufactory`}
-                onClick={() => setShareSet(false)}
+                onClick={() => {
+                  !apiKey &&
+                    dispatch(
+                      setApiAdd({
+                        actionKey: undefined,
+                        actionOpen: true,
+                      })
+                    );
+                  setShareSet(false);
+                }}
               >
                 <IoLogoReddit size={15} color={"#FBDB86"} />
               </RedditShareButton>
               <TelegramShareButton
                 url={`${INFURA_GATEWAY}/ipfs`}
                 title={`Coin Op Manufactory`}
-                onClick={() => setShareSet(false)}
+                onClick={() => {
+                  !apiKey &&
+                    dispatch(
+                      setApiAdd({
+                        actionKey: undefined,
+                        actionOpen: true,
+                      })
+                    );
+                  setShareSet(false);
+                }}
               >
                 <FaTelegramPlane size={15} color={"#FBDB86"} />
               </TelegramShareButton>
               <TumblrShareButton
                 url={`${INFURA_GATEWAY}/ipfs`}
                 title={`Coin Op Manufactory`}
-                onClick={() => setShareSet(false)}
+                onClick={() => {
+                  !apiKey &&
+                    dispatch(
+                      setApiAdd({
+                        actionKey: undefined,
+                        actionOpen: true,
+                      })
+                    );
+                  setShareSet(false);
+                }}
               >
                 <IoLogoTumblr size={15} color={"#FBDB86"} />
               </TumblrShareButton>
@@ -129,7 +188,16 @@ const Grid: FunctionComponent<GridProps> = ({
           )}
           <div
             className="relative w-4 h-4 flex items-center justify-center cursor-pointer active:scale-95"
-            onClick={() => setShareSet(!shareSet)}
+            onClick={() => {
+              !apiKey &&
+                dispatch(
+                  setApiAdd({
+                    actionKey: undefined,
+                    actionOpen: true,
+                  })
+                );
+              apiKey && setShareSet(!shareSet);
+            }}
           >
             <Image
               src={`${INFURA_GATEWAY}/ipfs/QmVCSuJ99xXwXFZtNm8b77GJCvVWJCSAUxZtFppuSE6i7s`}

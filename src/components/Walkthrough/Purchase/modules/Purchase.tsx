@@ -16,6 +16,8 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   signInLoading,
   address,
   openConnectModal,
+  chain,
+  openChainModal
 }): JSX.Element => {
   const { options, clientSecret } = useStripe();
   return (
@@ -29,6 +31,8 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
             address={address}
             openConnectModal={openConnectModal}
             signInLoading={signInLoading}
+            chain={chain}
+            openChainModal={openChainModal}
           />
         </Elements>
       )}

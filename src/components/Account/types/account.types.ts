@@ -77,6 +77,8 @@ export type AllOrdersProps = {
   updateLoading: boolean[];
   decryptMessageLoading: boolean[];
   handleDecryptMessage: (order: Order) => Promise<void>;
+  chain: number | undefined
+  openChainModal: (() => void) | undefined;
 };
 
 export type OrderProps = {

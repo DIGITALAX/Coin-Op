@@ -1,6 +1,10 @@
 import { FunctionComponent } from "react";
 import { InformationType, OrderProps } from "../types/account.types";
-import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../lib/constants";
+import {
+  ACCEPTED_TOKENS,
+  ACCEPTED_TOKENS_MUMBAI,
+  INFURA_GATEWAY,
+} from "../../../../lib/constants";
 import Link from "next/link";
 import { convertDate } from "../../../../lib/subgraph/helpers/convertDate";
 import { AiOutlineLoading } from "react-icons/ai";
@@ -23,7 +27,7 @@ const Order: FunctionComponent<OrderProps> = ({
   return (
     <div className={`relative w-full border border-white bg-smo/10 p-2 h-fit`}>
       <div
-        className="relative w-full h-16 inline-flex flex-wrap justify-between items-center text-white font-herm text-sm cursor-pointer"
+        className="relative w-full h-28 sm:h-16 sm:gap-0 gap-3 inline-flex flex-wrap justify-between items-center text-white font-herm text-sm cursor-pointer"
         onClick={() =>
           setOrderOpen(orderOpen.map((open, i) => (index === i ? !open : open)))
         }
@@ -43,14 +47,17 @@ const Order: FunctionComponent<OrderProps> = ({
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
             {order?.sinPKP
               ? `${
-                  ACCEPTED_TOKENS.find(
-                    (subArray) => subArray[1] === order.chosenAddress
+                  ACCEPTED_TOKENS_MUMBAI.find(
+                    (subArray) =>
+                      subArray[2].toLowerCase() ===
+                      order.chosenAddress.toLowerCase()
                   )?.[1] || ""
                 } `
               : "$"}{" "}
             {Number(order.totalPrice) /
-              ((ACCEPTED_TOKENS.find(
-                ([_, token]) => token === order.chosenAddress.toLowerCase()
+              ((ACCEPTED_TOKENS_MUMBAI.find(
+                ([_, token]) =>
+                  token.toLowerCase() === order.chosenAddress.toLowerCase()
               )?.[2] as `0x${string}`) ===
               "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
                 ? 10 ** 6
@@ -88,7 +95,7 @@ const Order: FunctionComponent<OrderProps> = ({
             id="xScroll"
           >
             <div className="relative w-full h-fit flex flex-col gap-8">
-              <div className="relative w-full h-fit inline-flex justify-between flex-wrap items-center text-xs">
+              <div className="relative w-full h-fit inline-flex justify-between flex-wrap items-center text-xs sm:gap-0 gap-3">
                 <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                   <div className="relative w-fit h-fit flex items-center justify-center">
                     TX Hash
@@ -123,7 +130,7 @@ const Order: FunctionComponent<OrderProps> = ({
                 <div className="relative w-fit h-fit flex items-center justify-center font-satB text-base break-all">
                   Messages
                 </div>
-                {order?.decryptedMessage?.length > 0 ? (
+                {order?.decryptedMessage ? (
                   <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all text-sm text-white">
                     {order?.decryptedMessage?.length > 0 ? (
                       <div className="relative w-full h-fit flex flex-col gap-1.5 items-start">
@@ -163,16 +170,16 @@ const Order: FunctionComponent<OrderProps> = ({
                       !decryptMessageLoading[index] &&
                       "cursor-pointer hover:opacity-70"
                     }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      !decryptMessageLoading[index] &&
+                        handleDecryptMessage(order);
+                    }}
                   >
                     <div
                       className={`relative flex w-fit h-fit items-center justify-center text-center text-xxs  ${
                         decryptMessageLoading[index] && "animate-spin"
                       }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        !decryptMessageLoading[index] &&
-                          handleDecryptMessage(order);
-                      }}
                     >
                       {decryptMessageLoading[index] ? (
                         <AiOutlineLoading size={12} color="black" />
@@ -188,15 +195,11 @@ const Order: FunctionComponent<OrderProps> = ({
                   <div className="relative w-full h-fit justify-start flex items-center text-base font-monu">
                     Fulfillment Information
                   </div>
-                  <div
-                    className={`relative w-40 h-8 justify-center flex items-center flex-col text-base text-black font-monu border border-black bg-sol ${
-                      !decryptLoading[index] &&
-                      "cursor-pointer hover:opacity-70"
-                    }`}
-                  >
+                  {!order.fulfillmentInformation.decryptedFulfillment?.name && (
                     <div
-                      className={`relative flex w-fit h-fit items-center justify-center text-center text-xxs  ${
-                        decryptLoading[index] && "animate-spin"
+                      className={`relative w-40 h-8 justify-center flex items-center flex-col text-base text-black font-monu border border-black bg-sol ${
+                        !decryptLoading[index] &&
+                        "cursor-pointer hover:opacity-70"
                       }`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -204,20 +207,27 @@ const Order: FunctionComponent<OrderProps> = ({
                           handleDecryptFulfillment(order);
                       }}
                     >
-                      {decryptLoading[index] ? (
-                        <AiOutlineLoading size={12} color="black" />
-                      ) : (
-                        "Decrypt Fulfillment"
-                      )}
+                      <div
+                        className={`relative flex w-fit h-fit items-center justify-center text-center text-xxs  ${
+                          decryptLoading[index] && "animate-spin"
+                        }`}
+                      >
+                        {decryptLoading[index] ? (
+                          <AiOutlineLoading size={12} color="black" />
+                        ) : (
+                          "Decrypt Fulfillment"
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
                 <div className="relative w-full h-fit inline-flex justify-between flex-wrap items-center text-xs break-all gap-2">
                   <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
                       Name
                     </div>
-                    {order.fulfillmentInformation.decryptedFulfillment?.name ? (
+                    {!order.fulfillmentInformation.decryptedFulfillment
+                      ?.name ? (
                       <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                         {"@#$!(*A5Le3t"}
                       </div>
@@ -236,7 +246,11 @@ const Order: FunctionComponent<OrderProps> = ({
                           order.fulfillmentInformation.decryptedFulfillment
                             ?.name
                         }
-                        value={updatedInformation[index]?.name}
+                        value={
+                          updatedInformation[index]?.name ||
+                          order.fulfillmentInformation.decryptedFulfillment
+                            ?.name
+                        }
                       />
                     )}
                   </div>
@@ -244,7 +258,7 @@ const Order: FunctionComponent<OrderProps> = ({
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
                       Contact
                     </div>
-                    {order.fulfillmentInformation.decryptedFulfillment
+                    {!order.fulfillmentInformation.decryptedFulfillment
                       ?.contact ? (
                       <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                         {"@#$!(*A5Le3t"}
@@ -264,7 +278,11 @@ const Order: FunctionComponent<OrderProps> = ({
                           order.fulfillmentInformation.decryptedFulfillment
                             ?.contact
                         }
-                        value={updatedInformation[index]?.contact}
+                        value={
+                          updatedInformation[index]?.contact ||
+                          order.fulfillmentInformation.decryptedFulfillment
+                            ?.contact
+                        }
                       />
                     )}
                   </div>
@@ -273,7 +291,7 @@ const Order: FunctionComponent<OrderProps> = ({
                       Address
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {order.fulfillmentInformation.decryptedFulfillment
+                      {!order.fulfillmentInformation.decryptedFulfillment
                         ?.address ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
@@ -293,7 +311,11 @@ const Order: FunctionComponent<OrderProps> = ({
                             order.fulfillmentInformation.decryptedFulfillment
                               ?.address
                           }
-                          value={updatedInformation[index]?.address}
+                          value={
+                            updatedInformation[index]?.address ||
+                            order.fulfillmentInformation.decryptedFulfillment
+                              ?.address
+                          }
                         />
                       )}
                     </div>
@@ -303,7 +325,7 @@ const Order: FunctionComponent<OrderProps> = ({
                       City
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {order.fulfillmentInformation.decryptedFulfillment
+                      {!order.fulfillmentInformation.decryptedFulfillment
                         ?.city ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
@@ -323,7 +345,11 @@ const Order: FunctionComponent<OrderProps> = ({
                             order.fulfillmentInformation.decryptedFulfillment
                               ?.city
                           }
-                          value={updatedInformation[index]?.city}
+                          value={
+                            updatedInformation[index]?.city ||
+                            order.fulfillmentInformation.decryptedFulfillment
+                              ?.city
+                          }
                         />
                       )}
                     </div>
@@ -333,7 +359,7 @@ const Order: FunctionComponent<OrderProps> = ({
                       State
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {order.fulfillmentInformation.decryptedFulfillment
+                      {!order.fulfillmentInformation.decryptedFulfillment
                         ?.state ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
@@ -353,7 +379,11 @@ const Order: FunctionComponent<OrderProps> = ({
                             order.fulfillmentInformation.decryptedFulfillment
                               ?.state
                           }
-                          value={updatedInformation[index]?.state}
+                          value={
+                            updatedInformation[index]?.state ||
+                            order.fulfillmentInformation.decryptedFulfillment
+                              ?.state
+                          }
                         />
                       )}
                     </div>
@@ -363,7 +393,7 @@ const Order: FunctionComponent<OrderProps> = ({
                       Zip
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {order.fulfillmentInformation.decryptedFulfillment
+                      {!order.fulfillmentInformation.decryptedFulfillment
                         ?.zip ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
@@ -383,7 +413,11 @@ const Order: FunctionComponent<OrderProps> = ({
                             order.fulfillmentInformation.decryptedFulfillment
                               ?.zip
                           }
-                          value={updatedInformation[index]?.zip}
+                          value={
+                            updatedInformation[index]?.zip ||
+                            order.fulfillmentInformation.decryptedFulfillment
+                              ?.zip
+                          }
                         />
                       )}
                     </div>
@@ -393,7 +427,7 @@ const Order: FunctionComponent<OrderProps> = ({
                       Country
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {order.fulfillmentInformation.decryptedFulfillment
+                      {!order.fulfillmentInformation.decryptedFulfillment
                         ?.country ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
@@ -413,29 +447,31 @@ const Order: FunctionComponent<OrderProps> = ({
                             order.fulfillmentInformation.decryptedFulfillment
                               ?.country
                           }
-                          value={updatedInformation[index]?.country}
+                          value={
+                            updatedInformation[index]?.country ||
+                            order.fulfillmentInformation.decryptedFulfillment
+                              ?.country
+                          }
                         />
                       )}
                     </div>
                   </div>
                 </div>
-                {!order.fulfillmentInformation.decryptedFulfillment
-                  ?.country && (
+                {order.fulfillmentInformation.decryptedFulfillment?.country && (
                   <div
                     className={`relative w-24 h-8 justify-center flex items-center flex-col text-base text-black font-monu border border-black bg-sol ${
-                      !decryptLoading[index] &&
-                      "cursor-pointer hover:opacity-70"
+                      !updateLoading[index] && "cursor-pointer hover:opacity-70"
                     }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      !updateLoading[index] &&
+                        updateFulfillmentInformation(index);
+                    }}
                   >
                     <div
                       className={`relative flex w-fit h-fit items-center justify-center text-center text-xxs  ${
                         updateLoading[index] && "animate-spin"
                       }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        !updateLoading[index] &&
-                          updateFulfillmentInformation(index);
-                      }}
                     >
                       {updateLoading[index] ? (
                         <AiOutlineLoading size={12} color="black" />

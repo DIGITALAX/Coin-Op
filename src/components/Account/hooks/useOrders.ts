@@ -12,15 +12,16 @@ import {
   decryptString,
 } from "@lit-protocol/lit-node-client";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { polygon } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { COIN_OP_FULFILLMENT, COIN_OP_MARKET } from "../../../../lib/constants";
 import { InformationType, Order } from "../types/account.types";
 import { encryptItems } from "../../../../lib/subgraph/helpers/encryptItems";
+import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 
 const useOrders = () => {
   const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
+    chain: polygonMumbai,
+    transport: http("https://rpc-mumbai.maticvigil.com/"),
   });
   const { address } = useAccount();
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ const useOrders = () => {
   const litClient = useSelector(
     (state: RootState) => state.app.litClientReducer.value
   );
-  const [connected, setConnected] = useState<boolean>(false);
   const [ordersLoading, setOrdersLoading] = useState<boolean>(false);
   const [decryptLoading, setDecryptLoading] = useState<boolean[]>([]);
   const [decryptMessageLoading, setDecryptMessageLoading] = useState<boolean[]>(
@@ -53,14 +53,11 @@ const useOrders = () => {
       let allOrders = [];
       for (let i = 0; i < res?.data?.orderCreateds?.length; i++) {
         const parsedInfo = JSON.parse(
-          res?.data?.orderCreateds[i].fulfillmentInformation.replaceAll(
-            "'",
-            '"'
-          )
+          JSON.parse(
+            res?.data?.orderCreateds[i].fulfillmentInformation
+          )[0].replaceAll("'", '"')
         );
-
         let collectionDetails = [];
-
         for (
           let j = 0;
           j < res?.data?.orderCreateds[i].collectionIds?.length;
@@ -70,10 +67,10 @@ const useOrders = () => {
             res?.data?.orderCreateds[i].collectionIds[j]
           );
           const uri = await fetchIpfsJson(
-            coll?.data?.collectionCreateds[j]?.uri?.split("ipfs://")[1]
+            coll?.data?.collectionCreateds[0]?.uri?.split("ipfs://")[1]
           );
           collectionDetails.push({
-            ...res?.data?.orderCreateds[i].collectionIds[j],
+            ...coll?.data?.collectionCreateds[0],
             uri,
           });
         }
@@ -83,9 +80,9 @@ const useOrders = () => {
           encryptedSymmetricKey: string;
         }[] = [];
 
-        for (let j = 0; j < res?.data?.orderCreateds[i].message.length; j++) {
+        for (let k = 0; k < res?.data?.orderCreateds[i].message.length; k++) {
           const parsedInfoMessage = JSON.parse(
-            res?.data?.orderCreateds[i].message[j].replaceAll("'", '"')
+            res?.data?.orderCreateds[i].message[k].replaceAll("'", '"')
           );
           messages.push({
             encryptedString: JSON.parse(parsedInfoMessage.encryptedString),
@@ -115,7 +112,7 @@ const useOrders = () => {
   const getFulfillerAddress = async (): Promise<string | undefined> => {
     try {
       const data = await publicClient.readContract({
-        address: COIN_OP_FULFILLMENT,
+        address: COIN_OP_FULFILLMENT.toLowerCase() as `0x${string}`,
         abi: [
           {
             inputs: [
@@ -148,12 +145,17 @@ const useOrders = () => {
   };
 
   const handleDecryptMessage = async (order: Order): Promise<void> => {
-    if (!order?.message || !address) {
+    if (!address) {
       return;
     }
     setDecryptMessageLoading((prev) =>
       prev.map((val, idx) =>
-        idx === allOrders.findIndex((o) => o.message === order.message)
+        idx ===
+        allOrders.findIndex(
+          (o) =>
+            o.fulfillmentInformation.encryptedSymmetricKey ===
+            order.fulfillmentInformation.encryptedSymmetricKey
+        )
           ? true
           : val
       )
@@ -162,14 +164,14 @@ const useOrders = () => {
       const client = new LitNodeClient({ debug: false });
       await client.connect();
       const authSig = await checkAndSignAuthMessage({
-        chain: "polygon",
+        chain: "mumbai",
       });
       const fulfillerAddress = await getFulfillerAddress();
       let fulfillerEditions = order.subOrderIds.map((_) => {
         return {
           contractAddress: "",
           standardContractType: "",
-          chain: "polygon",
+          chain: "mumbai",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
@@ -191,7 +193,7 @@ const useOrders = () => {
               {
                 contractAddress: "",
                 standardContractType: "",
-                chain: "polygon",
+                chain: "mumbai",
                 method: "",
                 parameters: [":userAddress"],
                 returnValueTest: {
@@ -202,7 +204,7 @@ const useOrders = () => {
             ],
             toDecrypt: order?.message[i].encryptedSymmetricKey!,
             authSig,
-            chain: "polygon",
+            chain: "mumbai",
           });
           const uintString = new Uint8Array(order?.message[i].encryptedString!)
             .buffer;
@@ -231,7 +233,12 @@ const useOrders = () => {
     }
     setDecryptMessageLoading((prev) =>
       prev.map((val, idx) =>
-        idx === allOrders.findIndex((o) => o.message === order.message)
+        idx ===
+        allOrders.findIndex(
+          (o) =>
+            o.fulfillmentInformation.encryptedSymmetricKey ===
+            order.fulfillmentInformation.encryptedSymmetricKey
+        )
           ? false
           : val
       )
@@ -262,22 +269,29 @@ const useOrders = () => {
       const client = new LitNodeClient({ debug: false });
       await client.connect();
       const authSig = await checkAndSignAuthMessage({
-        chain: "polygon",
+        chain: "mumbai",
       });
       const fulfillerAddress = await getFulfillerAddress();
-      let fulfillerEditions = order.subOrderIds.map((_) => {
-        return {
+      let fulfillerEditions: any[] = [];
+
+      order.subOrderIds.forEach((item) => {
+        fulfillerEditions.push({
           contractAddress: "",
           standardContractType: "",
-          chain: "polygon",
+          chain: "mumbai",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
             comparator: "=",
             value: fulfillerAddress?.toLowerCase(),
           },
-        };
+        });
+
+        fulfillerEditions.push({
+          operator: "or",
+        });
       });
+
       if (fulfillerAddress) {
         const symmetricKey = await client.getEncryptionKey({
           accessControlConditions: [
@@ -285,7 +299,7 @@ const useOrders = () => {
             {
               contractAddress: "",
               standardContractType: "",
-              chain: "polygon",
+              chain: "mumbai",
               method: "",
               parameters: [":userAddress"],
               returnValueTest: {
@@ -296,7 +310,7 @@ const useOrders = () => {
           ],
           toDecrypt: order?.fulfillmentInformation?.encryptedSymmetricKey!,
           authSig,
-          chain: "polygon",
+          chain: "mumbai",
         });
         const uintString = new Uint8Array(
           order?.fulfillmentInformation?.encryptedString!
@@ -321,7 +335,10 @@ const useOrders = () => {
           }
           return currentOrder;
         });
-
+        setUpdatedInformation(((prev: any) =>
+          prev.map((val: InformationType, idx: number) =>
+            idx === allOrders.indexOf(order) ? JSON.parse(decryptedString) : val
+          )) as any);
         dispatch(setAllOrders(updatedOrders));
       }
     } catch (err: any) {
@@ -393,14 +410,14 @@ const useOrders = () => {
       );
 
       const { request } = await publicClient.simulateContract({
-        address: COIN_OP_MARKET,
+        address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
         abi: CoinOpMarketABI,
         functionName: "setOrderDetails",
         args: [allOrders[index].orderId, JSON.stringify(fulfillerDetails)],
         account: address?.toLowerCase() as `0x${string}`,
       });
       const clientWallet = createWalletClient({
-        chain: polygon,
+        chain: polygonMumbai,
         transport: custom((window as any).ethereum),
       });
       const res = await clientWallet.writeContract(request);
@@ -408,26 +425,50 @@ const useOrders = () => {
     } catch (err: any) {
       console.error(err.message);
     }
-    setUpdateLoading((prev) =>
-      prev.map((val, idx) => (idx === index ? false : val))
-    );
+    setTimeout(async () => {
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage:
+            "Order details updated! It may take a little while for the changes to fully process on-chain, check back in a few minutes.",
+        })
+      );
+      await getAllOrders();
+      setUpdateLoading((prev) =>
+        prev.map((val, idx) => (idx === index ? false : val))
+      );
+    }, 5000);
   };
 
   useEffect(() => {
-    if ((allOrders.length < 1 || !allOrders) && address) {
+    if (address) {
       getAllOrders();
-    } else if (!address) {
+    } else {
       dispatch(setAllOrders([]));
     }
   }, [address]);
 
   useEffect(() => {
-    setConnected(address ? true : false);
-  }, [address]);
-
-  useEffect(() => {
     setDecryptLoading(Array.from({ length: allOrders.length }, () => false));
+    setDecryptMessageLoading(
+      Array.from({ length: allOrders.length }, () => false)
+    );
+    setUpdateLoading(Array.from({ length: allOrders.length }, () => false));
     setOrderOpen(Array.from({ length: allOrders.length }, () => false));
+    setUpdatedInformation(
+      Array.from({ length: allOrders.length }, () => ({
+        address: "",
+        city: "",
+        contact: "",
+        name: "",
+        state: "",
+        zip: "",
+        country: "",
+        sizes: [],
+        collectionIds: [],
+        collectionAmounts: [],
+      }))
+    );
   }, [allOrders.length]);
 
   return {
@@ -436,7 +477,6 @@ const useOrders = () => {
     decryptLoading,
     orderOpen,
     setOrderOpen,
-    connected,
     updateFulfillmentInformation,
     updateLoading,
     updatedInformation,

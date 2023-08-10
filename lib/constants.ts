@@ -34,6 +34,29 @@ export const ACCEPTED_TOKENS: string[][] = [
   ],
 ];
 
+export const ACCEPTED_TOKENS_MUMBAI: string[][] = [
+  [
+    "QmYYUQ8nGDnyuk8jQSung1WmTksvLEQBXjnCctdRrKtsNk",
+    "WMATIC",
+    "0x3cf7283c025d82390e86d2feb96eda32a393036b",
+  ],
+  [
+    "QmZRhUgjK6bJM8fC7uV145yf66q2e7vGeT7CLosw1SdMdN",
+    "WETH",
+    "0x566d63f1cc7f45bfc9b2bdc785ffcc6f858f0997",
+  ],
+  [
+    "QmSbpsDRwxSCPBWPkwWvcb49jViSxzmNHjYy3AcGF3qM2x",
+    "USDT",
+    "0x07b722856369f6b923e1f276abca58dd3d15243d",
+  ],
+  [
+    "QmS6f8vrNZok9j4pJttUuWpNrjsf4vP9RD5mRL36z6UdaL",
+    "MONA",
+    "0xf87b6343c172720ac9cc7d1c9465d63454a8ef30",
+  ],
+];
+
 export const COIN_OP_MARKET: `0x${string}` =
   "0x2fd1d85fE88e17F7380BeEeC88FAE0434bdf16f1";
 export const COIN_OP_ORACLE: `0x${string}` =

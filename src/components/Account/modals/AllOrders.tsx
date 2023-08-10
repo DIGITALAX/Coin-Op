@@ -19,6 +19,8 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
   setUpdatedInformation,
   decryptMessageLoading,
   handleDecryptMessage,
+  chain,
+  openChainModal,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col items-center gap-16 overflow-y-scroll justify-start overflow-x-hidden">
@@ -29,7 +31,7 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
         {!connected ? (
           <div
             className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
-            onClick={openConnectModal}
+            onClick={chain !== 137 ? openChainModal : openConnectModal}
           >
             Connect to View Your Orders.
           </div>

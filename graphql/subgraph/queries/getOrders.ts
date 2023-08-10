@@ -4,19 +4,22 @@ import { graphClient, graphClientTestnet } from "../../../lib/subgraph/client";
 const ORDERS = `
   query($buyerAddress: String) {
     orderCreateds(where: {buyer: $buyerAddress},orderBy: blockTimestamp, orderDirection: desc) {
-        orderIds
-        prices
-        totalPrice
-        transactionHash
-        fulfillmentInformation
-        buyer
-        blockTimestamp
-        isFulfilled
-        orderStatus
-        orderStatusTimestamps
-        blockNumber
-        chosenAddress
-        collectionIds
+      transactionHash
+      totalPrice
+      subOrderStatuses
+      subOrderIsFulfilled
+      subOrderIds
+      sinPKP
+      prices
+      orderId
+      message
+      fulfillmentInformation
+      fulfillerIds
+      collectionIds
+      chosenAddress
+      buyer
+      blockTimestamp
+      blockNumber
     }
   }
 `;

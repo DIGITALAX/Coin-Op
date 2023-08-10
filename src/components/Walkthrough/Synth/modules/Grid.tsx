@@ -159,7 +159,7 @@ const Grid: FunctionComponent<GridProps> = ({
                 canvasExpand
                   ? `absolute flex-row p-2 h-14 ${
                       (
-                        completedSynths.get(String(synthLayerSelected.id))
+                        completedSynths.get(String(synthLayerSelected?.id))
                           ?.synths || []
                       )?.length > 0
                         ? "top-10"
@@ -177,19 +177,19 @@ const Grid: FunctionComponent<GridProps> = ({
                         .fill(null)
                         .map(
                           (_, index) =>
-                            synthLayer?.childTokenURIs[
-                              (synthLayer?.childTokenURIs.indexOf(
-                                synthLayerSelected.layer!
+                            synthLayer?.childTokenURIs?.[
+                             ( (synthLayer?.childTokenURIs?.indexOf(
+                                synthLayerSelected?.layer!
                               ) +
                                 index) %
-                                synthLayer?.childTokenURIs.length
+                                synthLayer?.childTokenURIs?.length) 
                             ]
                         )
                   )?.map((uri: string | undefined, index: number) => {
                     return (
                       <div
                         className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border hover:opacity-70 rounded-lg ${
-                          synthLayerSelected.layer === uri
+                          synthLayerSelected?.layer === uri
                             ? "border-white"
                             : "border-ama"
                         } ${!synthLoading && "cursor-pointer"}`}
@@ -249,7 +249,7 @@ const Grid: FunctionComponent<GridProps> = ({
                           id:
                             synthLayer?.childId! +
                             ((synthLayer?.childTokenURIs?.indexOf(
-                              synthLayerSelected.layer!
+                              synthLayerSelected?.layer!
                             )! -
                               1 +
                               synthLayer?.childTokenURIs?.length!) %
@@ -257,7 +257,7 @@ const Grid: FunctionComponent<GridProps> = ({
                           layer:
                             synthLayer?.childTokenURIs?.[
                               (synthLayer?.childTokenURIs?.indexOf(
-                                synthLayerSelected.layer!
+                                synthLayerSelected?.layer!
                               ) -
                                 1 +
                                 synthLayer?.childTokenURIs?.length) %

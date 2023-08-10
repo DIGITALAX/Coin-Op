@@ -9,6 +9,11 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { HeaderProps } from "@/components/Common/types/common.types";
+import {
+  useAccountModal,
+  useChainModal,
+  useConnectModal,
+} from "@rainbow-me/rainbowkit";
 
 const Header: FunctionComponent<HeaderProps> = ({
   preRollRef,
@@ -23,12 +28,19 @@ const Header: FunctionComponent<HeaderProps> = ({
     handleAddToCart,
     cartAnim,
   } = useRollSearch();
+  const { openConnectModal } = useConnectModal();
+  const { openAccountModal } = useAccountModal();
+  const { openChainModal } = useChainModal();
   const rollSearch = useSelector(
     (state: RootState) => state.app.rollSearchReducer.value
   );
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
+  const connected = useSelector(
+    (state: RootState) => state.app.walletConnectedReducer.value
+  );
+  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const router = useRouter();
   const dispatch = useDispatch();
   return (
@@ -71,6 +83,20 @@ const Header: FunctionComponent<HeaderProps> = ({
           </div>
         </div>
         <div className="relative w-fit h-fit flex flex-row gap-3 items-center justify-center md:ml-auto">
+          <div
+            className="relative w-20 h-7 px-1 text-white flex items-center justify-center border border-white cursor-pointer"
+            onClick={
+              chain !== 137
+                ? openChainModal
+                : connected
+                ? openAccountModal
+                : openConnectModal
+            }
+          >
+            <div className="relative text-xxs font-mana">
+              {chain !== 137 ? "Switch" : connected ? "Connected" : "Connect"}
+            </div>
+          </div>
           <Link
             href={"/account"}
             className="relative flex w-8 h-6 items-center break-words cursor-pointer"
@@ -78,6 +104,7 @@ const Header: FunctionComponent<HeaderProps> = ({
             <Image
               layout="fill"
               src={`${INFURA_GATEWAY}/ipfs/QmT18k71KZATGmJ8em4hUBRCAQVKmrBAb7QeLWTt5G9LdV`}
+              draggable={false}
             />
           </Link>
           <Link
@@ -87,6 +114,7 @@ const Header: FunctionComponent<HeaderProps> = ({
             <Image
               layout="fill"
               src={`${INFURA_GATEWAY}/ipfs/QmZt7axg3QPFTg6DFwTxHkEMvTi6dPhwQQLcHAiiuGJiAa`}
+              draggable={false}
             />
           </Link>
         </div>

@@ -30,7 +30,7 @@ export const encryptItems = async (
       client = await connectLit(dispatch);
     }
     const authSig = await LitJsSdk.checkAndSignAuthMessage({
-      chain: "polygon",
+      chain: "mumbai",
     });
     const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
       JSON.stringify({
@@ -42,18 +42,24 @@ export const encryptItems = async (
     let fulfillerDetails = [];
 
     for (let fulfillerAddress in fulfillerGroups) {
-      let fulfillerEditions = fulfillerGroups[fulfillerAddress].map((item) => {
-        return {
+      let fulfillerEditions: any[] = [];
+
+      fulfillerGroups[fulfillerAddress].forEach((item) => {
+        fulfillerEditions.push({
           contractAddress: "",
           standardContractType: "",
-          chain: "polygon",
+          chain: "mumbai",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
             comparator: "=",
             value: item.fulfillerAddress.toLowerCase(),
           },
-        };
+        });
+
+        fulfillerEditions.push({
+          operator: "or",
+        });
       });
 
       const encryptedSymmetricKey = await client!?.saveEncryptionKey({
@@ -62,7 +68,7 @@ export const encryptItems = async (
           {
             contractAddress: "",
             standardContractType: "",
-            chain: "polygon",
+            chain: "mumbai",
             method: "",
             parameters: [":userAddress"],
             returnValueTest: {
@@ -73,7 +79,7 @@ export const encryptItems = async (
         ],
         symmetricKey,
         authSig,
-        chain: "polygon",
+        chain: "mumbai",
       });
 
       const buffer = await encryptedString.arrayBuffer();

@@ -13,10 +13,14 @@ const Composite: FunctionComponent<CompositeProps> = ({
   models,
   signInLoading,
   compositeRef,
+  chain,
+  openChainModal,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
       <Grid
+        chain={chain}
+        openChainModal={openChainModal}
         dispatch={dispatch}
         shareSet={shareSet}
         setShareSet={setShareSet}

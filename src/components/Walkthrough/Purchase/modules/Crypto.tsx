@@ -11,6 +11,8 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   approved,
   handleApproveSpend,
   cartItems,
+  openChainModal,
+  chain,
 }): JSX.Element => {
   return (
     <div
@@ -22,6 +24,8 @@ const Crypto: FunctionComponent<CryptoProps> = ({
       onClick={
         !signInLoading && !address && !cryptoCheckoutLoading
           ? openConnectModal
+          // : chain !== 137
+          // ? openChainModal
           : approved
           ? () =>
               !signInLoading &&

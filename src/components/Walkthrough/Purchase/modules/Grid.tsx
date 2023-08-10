@@ -14,6 +14,8 @@ const Grid: FunctionComponent<GridProps> = ({
   signInLoading,
   address,
   openConnectModal,
+  chain,
+  openChainModal,
 }): JSX.Element => {
   const {
     cartItem,
@@ -69,6 +71,8 @@ const Grid: FunctionComponent<GridProps> = ({
           handleApproveSpend={handleApproveSpend}
           oracleValue={oracleValue}
           setCartItem={setCartItem}
+          chain={chain}
+          openChainModal={openChainModal}
         />
         <div className="relative w-3/4 preG:w-96 h-96 xl:h-80 justify-end flex items-center">
           <div

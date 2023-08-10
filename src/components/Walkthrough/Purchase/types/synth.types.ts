@@ -9,6 +9,8 @@ export type PurchaseProps = {
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
+  openChainModal: (() => void) | undefined;
+  chain: number | undefined;
 };
 
 export type GridProps = {
@@ -18,6 +20,8 @@ export type GridProps = {
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
+  openChainModal: (() => void) | undefined;
+  chain: number | undefined;
 };
 
 export type CheckoutProps = {
@@ -57,6 +61,8 @@ export type CheckoutProps = {
   approved: boolean;
   handleApproveSpend: () => Promise<void>;
   oracleValue: number;
+  openChainModal: (() => void) | undefined;
+  chain: number | undefined;
 };
 
 export type CryptoProps = {
@@ -68,6 +74,8 @@ export type CryptoProps = {
   approved: boolean;
   handleApproveSpend: () => Promise<void>;
   cartItems: CartItem[];
+  openChainModal: (() => void) | undefined;
+  chain: number | undefined;
 };
 
 export type FiatProps = {

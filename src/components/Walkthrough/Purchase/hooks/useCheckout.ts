@@ -10,6 +10,7 @@ import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import { useAccount } from "wagmi";
 import {
   ACCEPTED_TOKENS,
+  ACCEPTED_TOKENS_MUMBAI,
   COIN_OP_MARKET,
   COIN_OP_ORACLE,
   IPFS_CID_PKP,
@@ -24,16 +25,19 @@ import { useRouter } from "next/router";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygonMumbai, polygon } from "viem/chains";
 import { getOrders } from "../../../../../graphql/subgraph/queries/getOrders";
-import { connectLit } from "../../../../../lib/subgraph/helpers/connectLit";
 import { encryptItems } from "../../../../../lib/subgraph/helpers/encryptItems";
+import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
+import { getPreRollId } from "../../../../../graphql/subgraph/queries/getPreRolls";
+import { fetchIpfsJson } from "../../../../../lib/algolia/helpers/fetchIpfsJson";
+import { setAllOrders } from "../../../../../redux/reducers/allOrdersSlice";
 
 const useCheckout = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
+    chain: polygonMumbai,
+    transport: http("https://rpc-mumbai.maticvigil.com/"),
   });
 
   const stripe = useStripe();
@@ -84,9 +88,9 @@ const useCheckout = () => {
   const getAddressApproved = async () => {
     try {
       const data = await publicClient.readContract({
-        address: ACCEPTED_TOKENS.find(
+        address: ACCEPTED_TOKENS_MUMBAI.find(
           ([_, token]) => token === checkoutCurrency
-        )?.[2] as `0x${string}`,
+        )?.[2].toLowerCase() as `0x${string}`,
         abi: [
           {
             inputs: [
@@ -119,7 +123,7 @@ const useCheckout = () => {
 
       if (
         Number(data as BigNumber) /
-          ((ACCEPTED_TOKENS.find(
+          ((ACCEPTED_TOKENS_MUMBAI.find(
             ([_, token]) => token === checkoutCurrency
           )?.[2] as `0x${string}`) ===
           "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
@@ -147,7 +151,7 @@ const useCheckout = () => {
       );
 
       const data = await publicClient.readContract({
-        address: COIN_OP_ORACLE,
+        address: COIN_OP_ORACLE.toLowerCase() as `0x${string}`,
         abi: [
           {
             inputs: [
@@ -171,7 +175,9 @@ const useCheckout = () => {
         ],
         functionName: "getRateByAddress",
         args: [
-          ACCEPTED_TOKENS.find(([_, token]) => token === checkoutCurrency)?.[2],
+          ACCEPTED_TOKENS_MUMBAI.find(
+            ([_, token]) => token === checkoutCurrency
+          )?.[2].toLowerCase(),
         ],
       });
 
@@ -224,9 +230,9 @@ const useCheckout = () => {
     setCryptoCheckoutLoading(true);
     try {
       const { request } = await publicClient.simulateContract({
-        address: ACCEPTED_TOKENS.find(
+        address: ACCEPTED_TOKENS_MUMBAI.find(
           ([_, token]) => token === checkoutCurrency
-        )?.[2]! as `0x${string}`,
+        )?.[2]!.toLowerCase() as `0x${string}`,
         abi: (checkoutCurrency === "MONA"
           ? [
               {
@@ -291,7 +297,7 @@ const useCheckout = () => {
         account: address,
       });
       const clientWallet = createWalletClient({
-        chain: polygon,
+        chain: polygonMumbai,
         transport: custom((window as any).ethereum),
       });
       const res = await clientWallet.writeContract(request);
@@ -300,6 +306,13 @@ const useCheckout = () => {
         setApproved(true);
       }
     } catch (err: any) {
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage:
+            "Something went wrong with your token approval. Try Again?",
+        })
+      );
       console.error(err.message);
     }
     setCryptoCheckoutLoading(false);
@@ -307,6 +320,25 @@ const useCheckout = () => {
 
   const handleCheckoutCrypto = async () => {
     if (!address) return;
+
+    if (
+      fulfillmentDetails.address.trim() === "" ||
+      fulfillmentDetails.city.trim() === "" ||
+      fulfillmentDetails.contact.trim() === "" ||
+      fulfillmentDetails.country.trim() === "" ||
+      fulfillmentDetails.name.trim() === "" ||
+      fulfillmentDetails.state.trim() === "" ||
+      fulfillmentDetails.zip.trim() === ""
+    ) {
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Fill out your Contact & Shipment details first.",
+        })
+      );
+      return;
+    }
+
     setCryptoCheckoutLoading(true);
     try {
       let fulfillerGroups: { [key: string]: CartItem[] } = {};
@@ -349,7 +381,7 @@ const useCheckout = () => {
       );
 
       const { request } = await publicClient.simulateContract({
-        address: COIN_OP_MARKET,
+        address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
         abi: CoinOpMarketABI,
         functionName: "buyTokens",
         args: [
@@ -371,7 +403,7 @@ const useCheckout = () => {
             ),
             customURIs: [],
             fulfillmentDetails: JSON.stringify(fulfillerDetails),
-            chosenTokenAddress: ACCEPTED_TOKENS.find(
+            chosenTokenAddress: ACCEPTED_TOKENS_MUMBAI.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],
             sinPKP: true,
@@ -380,7 +412,7 @@ const useCheckout = () => {
         account: address?.toLowerCase() as `0x${string}`,
       });
       const clientWallet = createWalletClient({
-        chain: polygon,
+        chain: polygonMumbai,
         transport: custom((window as any).ethereum),
       });
       const res = await clientWallet.writeContract(request);
@@ -396,10 +428,14 @@ const useCheckout = () => {
         state: "",
         country: "",
       });
-      const orders = await getOrders(address as string);
-      dispatch(orders?.data?.orderCreateds);
       await router.push("/account");
     } catch (err: any) {
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Something went wrong on Checkout. Try Again?",
+        })
+      );
       console.error(err.message);
     }
     setCryptoCheckoutLoading(false);
@@ -478,7 +514,7 @@ const useCheckout = () => {
             ),
             customURIs: [],
             fulfillmentDetails: JSON.stringify(fulfillerDetails),
-            chosenTokenAddress: ACCEPTED_TOKENS.find(
+            chosenTokenAddress: ACCEPTED_TOKENS_MUMBAI.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],
             sinPKP: false,
@@ -495,16 +531,20 @@ const useCheckout = () => {
   const createPKPOrder = async () => {
     setFiatCheckoutLoading(true);
     try {
-      let client: LitJsSdk.LitNodeClient | undefined;
-      if (!litClient) {
-        client = await connectLit(dispatch);
+      let fulfillerGroups: { [key: string]: CartItem[] } = {};
+
+      for (let i = 0; i < cartItems.length; i++) {
+        if (fulfillerGroups[cartItems[i].fulfillerAddress]) {
+          fulfillerGroups[cartItems[i].fulfillerAddress].push(cartItems[i]);
+        } else {
+          fulfillerGroups[cartItems[i].fulfillerAddress] = [cartItems[i]];
+        }
       }
 
-      const authSig = await generateAuthSignature();
-
-      const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
-        JSON.stringify({
-          ...fulfillmentDetails,
+      const fulfillerDetails = await encryptItems(
+        litClient,
+        dispatch,
+        {
           sizes: cartItems?.reduce((accumulator: string[], item) => {
             accumulator.push(String(item.chosenSize));
             return accumulator;
@@ -524,79 +564,19 @@ const useCheckout = () => {
             },
             []
           ),
-        })
+        },
+        fulfillerGroups,
+        fulfillmentDetails,
+        address!
       );
 
-      let fulfillerGroups: { [key: string]: CartItem[] } = {};
-      for (let i = 0; i < cartItems.length; i++) {
-        if (fulfillerGroups[cartItems[i].fulfillerAddress]) {
-          fulfillerGroups[cartItems[i].fulfillerAddress].push(cartItems[i]);
-        } else {
-          fulfillerGroups[cartItems[i].fulfillerAddress] = [cartItems[i]];
-        }
-      }
-
-      let fulfillerDetails = [];
-
-      for (let fulfillerAddress in fulfillerGroups) {
-        let fulfillerEditions = fulfillerGroups[fulfillerAddress].map(
-          (item) => {
-            return {
-              contractAddress: "",
-              standardContractType: "",
-              chain: "polygon",
-              method: "",
-              parameters: [":userAddress"],
-              returnValueTest: {
-                comparator: "=",
-                value: item.fulfillerAddress.toLowerCase(),
-              },
-            };
-          }
-        );
-
-        const encryptedSymmetricKey = await (client
-          ? client
-          : litClient
-        ).saveEncryptionKey({
-          accessControlConditions: [
-            ...fulfillerEditions,
-            {
-              contractAddress: "",
-              standardContractType: "",
-              chain: "polygon",
-              method: "",
-              parameters: [":userAddress"],
-              returnValueTest: {
-                comparator: "=",
-                value: address?.toLowerCase(),
-              },
-            },
-          ],
-          symmetricKey,
-          authSig,
-          chain: "polygon",
-        });
-
-        const buffer = await encryptedString.arrayBuffer();
-        fulfillerDetails.push(
-          JSON.stringify({
-            fulfillerAddress,
-            encryptedString: JSON.stringify(Array.from(new Uint8Array(buffer))),
-            encryptedSymmetricKey: LitJsSdk.uint8arrayToString(
-              encryptedSymmetricKey,
-              "base16"
-            ),
-          })
-        );
-      }
       const provider = new ethers.providers.JsonRpcProvider(
         `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_POLYGON_KEY}`,
         137
       );
-      const tx = createTxData(fulfillerDetails, provider);
+      const tx = createTxData(fulfillerDetails!, provider);
 
-      const results = await (client ? client : litClient).executeJS({
+      const results = await litClient.executeJS({
         ipfsId: IPFS_CID_PKP,
         authSig: await generateAuthSignature(),
         jsParams: {
@@ -711,7 +691,7 @@ const useCheckout = () => {
           dispatch(
             setMessagesModal({
               actionOpen: true,
-              actionMessage: "Something went wrong.",
+              actionMessage: "Something went wrong. Try again?",
             })
           );
           break;

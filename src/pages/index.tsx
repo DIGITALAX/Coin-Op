@@ -7,7 +7,7 @@ import { ScrollContext } from "./_app";
 import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
 import useSynth from "@/components/Walkthrough/Synth/hooks/useSynth";
 import { useAccount } from "wagmi";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import useSignIn from "@/components/Common/hooks/useSignIn";
 import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
 import useCanvas from "@/components/Walkthrough/Synth/hooks/useCanvas";
@@ -17,6 +17,7 @@ export default function Home(): JSX.Element {
   const dispatch = useDispatch();
   const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const { openChainModal } = useChainModal();
   const { handleLensSignIn, signInLoading } = useSignIn();
   const { setShareSet, shareSet, models } = useComposite();
   const {
@@ -71,6 +72,7 @@ export default function Home(): JSX.Element {
   const profile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
   );
+  const apiKey = useSelector((state: RootState) => state.app.apiAddReducer);
   const canvasExpand = useSelector(
     (state: RootState) => state.app.expandCanvasReducer.value
   );
@@ -101,6 +103,7 @@ export default function Home(): JSX.Element {
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
+  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
 
   useEffect(() => {
     if (preRollAnim) {
@@ -176,6 +179,9 @@ export default function Home(): JSX.Element {
       itemClicked={itemClicked}
       setItemClicked={setItemClicked}
       synthRef={synthRef}
+      chain={chain}
+      openChainModal={openChainModal}
+      apiKey={apiKey.key}
     />
   );
 }

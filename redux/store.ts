@@ -32,6 +32,8 @@ import setElementsReducer from "./reducers/setElementsSlice";
 import searchExpandReducer from "./reducers/searchExpandSlice";
 import apiAddReducer from "./reducers/apiAddSlice";
 import allOrdersReducer from "./reducers/allOrdersSlice";
+import walletConnectedReducer from "./reducers/walletConnectedSlice";
+import chainReducer from "./reducers/chainSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -65,7 +67,9 @@ const reducer = combineReducers({
   setElementsReducer,
   searchExpandReducer,
   apiAddReducer,
-  allOrdersReducer
+  allOrdersReducer,
+  walletConnectedReducer,
+  chainReducer
 });
 
 export const store = configureStore({

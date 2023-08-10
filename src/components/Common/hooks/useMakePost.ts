@@ -36,13 +36,13 @@ import handleIndexCheck from "../../../../lib/lens/helpers/handleIndexCheck";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import { setCollectOpen } from "../../../../redux/reducers/collectOpenSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { polygon } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { useAccount } from "wagmi";
 
 const useMakePost = () => {
   const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
+    chain: polygonMumbai,
+    transport:  http("https://rpc-mumbai.maticvigil.com/"),
   });
   const [postLoading, setPostLoading] = useState<boolean>(false);
   const [postDescription, setPostDescription] = useState<string>("");
@@ -285,7 +285,7 @@ const useMakePost = () => {
         const typedData: any = result.data.createPostTypedData.typedData;
 
         const clientWallet = createWalletClient({
-          chain: polygon,
+          chain: polygonMumbai,
           transport: custom((window as any).ethereum),
         });
 
@@ -306,7 +306,7 @@ const useMakePost = () => {
           const { v, r, s } = splitSignature(signature);
 
           const { request } = await publicClient.simulateContract({
-            address: LENS_HUB_PROXY_ADDRESS_MATIC,
+            address: LENS_HUB_PROXY_ADDRESS_MATIC.toLowerCase() as `0x${string}`,
             abi: LensHubProxy,
             functionName: "postWithSig",
             args: [

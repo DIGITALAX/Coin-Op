@@ -4,7 +4,7 @@ import Fiat from "./Fiat";
 import Crypto from "./Crypto";
 import Items from "./Items";
 import ShippingInfo from "./ShippingInfo";
-import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../../lib/constants";
+import { ACCEPTED_TOKENS, ACCEPTED_TOKENS_MUMBAI, INFURA_GATEWAY } from "../../../../../lib/constants";
 import Image from "next/legacy/image";
 
 const Checkout: FunctionComponent<CheckoutProps> = ({
@@ -28,6 +28,8 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   handleApproveSpend,
   oracleValue,
   setCartItem,
+  chain,
+  openChainModal
 }): JSX.Element => {
   return (
     <div className="relative w-full synth:w-3/4 h-full flex overflow-y-scroll">
@@ -63,7 +65,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           <div className="relative w-fit h-fit">
             {paymentType === "crypto"
               ? `${
-                  ACCEPTED_TOKENS.find(
+                ACCEPTED_TOKENS_MUMBAI.find(
                     (subArray) => subArray[1] === checkoutCurrency
                   )?.[1]
                 } `
@@ -82,7 +84,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
         />
         {paymentType === "crypto" && (
           <div className="relative w-3/4 justify-start items-center flex flex-row gap-1">
-            {ACCEPTED_TOKENS?.map((item: string[], index: number) => {
+            {ACCEPTED_TOKENS_MUMBAI?.map((item: string[], index: number) => {
               return (
                 <div
                   className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
@@ -113,6 +115,8 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
             approved={approved}
             handleApproveSpend={handleApproveSpend}
             cartItems={cartItems}
+            openChainModal={openChainModal}
+            chain={chain}
           />
         ) : (
           <Fiat

@@ -16,12 +16,11 @@ import {
 } from "../../../../lib/lens/utils";
 import authenticate from "../../../../graphql/lens/mutations/authenticate";
 import { setNoHandle } from "../../../../redux/reducers/noHandleSlice";
+import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
 
 const useSignIn = () => {
   const dispatch = useDispatch();
-  const router = useRouter();
   const { address, isConnected } = useAccount();
-  const [connected, setConnected] = useState<boolean>(false);
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
 
   const { signMessageAsync } = useSignMessage();
@@ -69,7 +68,7 @@ const useSignIn = () => {
 
   useEffect(() => {
     const handleAuthentication = async () => {
-      setConnected(isConnected);
+      dispatch(setWalletConnected(isConnected));
       const newAddress = getAddress();
 
       if (
@@ -103,7 +102,6 @@ const useSignIn = () => {
   return {
     handleLensSignIn,
     handleRefreshProfile,
-    connected,
     signInLoading,
   };
 };

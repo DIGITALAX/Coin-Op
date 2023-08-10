@@ -45,18 +45,18 @@ const useLayer = () => {
       dispatch(setPrintTypeLayers(newLayers));
       dispatch(
         setSynthLayer({
-          parentURI: newLayers[0].parentURI,
-          childTokenURIs: newLayers[0].childTokenURIs?.[0],
-          parentPrice: newLayers[0].price,
-          childPrice: newLayers[0].childPrices?.[0],
-          parentId: newLayers[0].parentTokenId,
-          childId: newLayers[0].childTokenIds?.[0],
-          childPosterURI: newLayers[0].childPosterURIs?.[0],
+          parentURI: newLayers[0]?.parentURI,
+          childTokenURIs: newLayers[0]?.childTokenURIs?.[0],
+          parentPrice: newLayers[0]?.price,
+          childPrice: newLayers[0]?.childPrices?.[0],
+          parentId: newLayers[0]?.parentTokenId,
+          childId: newLayers[0]?.childTokenIds?.[0],
+          childPosterURI: newLayers[0]?.childPosterURIs?.[0],
         })
       );
       dispatch(
         setLayerToSynth({
-          id: newLayers[0].childTokenIds?.[0] + 0,
+          id: newLayers[0]?.childTokenIds?.[0] + 0,
           layer: newLayers[0]?.childTokenURIs?.[0]?.[0],
         })
       );

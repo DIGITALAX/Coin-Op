@@ -72,7 +72,10 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   controlType,
   setControlType,
   synthRef,
-  scrollToPreRoll
+  scrollToPreRoll,
+  chain,
+  openChainModal,
+  apiKey,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -138,6 +141,8 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           synthRef={synthRef}
         />
         <Composite
+          openChainModal={openChainModal}
+          chain={chain}
           dispatch={dispatch}
           setShareSet={setShareSet}
           shareSet={shareSet}
@@ -148,6 +153,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           models={models}
           signInLoading={signInLoading}
           compositeRef={compositeRef}
+          apiKey={apiKey}
         />
         <Purchase
           dispatch={dispatch}
@@ -156,6 +162,8 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           signInLoading={signInLoading}
           address={address}
           openConnectModal={openConnectModal}
+          chain={chain}
+          openChainModal={openChainModal}
         />
       </div>
     </div>

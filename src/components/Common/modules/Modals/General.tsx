@@ -12,7 +12,7 @@ const General: FunctionComponent<GeneralProps> = ({
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
-      <div className="relative w-full lg:w-[30vw] h-fit col-start-1 place-self-center bg-black rounded-lg">
+      <div className="relative w-full sm:w-[50vw] lg:w-[30vw] h-fit col-start-1 place-self-center bg-black rounded-lg">
         <div className="relative w-full row-start-2 h-fit rounded-xl grid grid-flow-col auto-cols-auto">
           <div className="relative w-full h-full col-start-1 rounded-xl place-self-center">
             <div className="relative w-full h-full grid grid-flow-row auto-rows-auto gap-4 pb-8">
@@ -43,20 +43,24 @@ const General: FunctionComponent<GeneralProps> = ({
                     draggable={false}
                   />
                 </div>
-                <div
-                  className={`relative w-24 h-fit px-2 py-1.5 bg-azul border border-smo rounded-md cursor-pointer font-mana text-white hover:bg-smo/10 justify-center flex items-center`}
-                  onClick={() => {
-                    dispatch(setCompletedSynths(new Map()));
-                    dispatch(
-                      setModalOpen({
-                        actionOpen: false,
-                        actionMessage: "",
-                      })
-                    );
-                  }}
-                >
-                  clear
-                </div>
+                {message.includes(
+                  "Are you sure you want to clear all synths for this composite and restart?"
+                ) && (
+                  <div
+                    className={`relative w-24 h-fit px-2 py-1.5 bg-azul border border-smo rounded-md cursor-pointer font-mana text-white hover:bg-smo/10 justify-center flex items-center`}
+                    onClick={() => {
+                      dispatch(setCompletedSynths(new Map()));
+                      dispatch(
+                        setModalOpen({
+                          actionOpen: false,
+                          actionMessage: "",
+                        })
+                      );
+                    }}
+                  >
+                    clear
+                  </div>
+                )}
               </div>
             </div>
           </div>

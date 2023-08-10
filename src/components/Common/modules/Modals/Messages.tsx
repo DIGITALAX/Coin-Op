@@ -11,7 +11,7 @@ const Messages: FunctionComponent<MessagesProps> = ({
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
-      <div className="relative w-full lg:w-[30vw] h-fit col-start-1 place-self-center bg-black rounded-lg">
+      <div className="relative w-full sm:w-[50vw] lg:w-[30vw] h-fit col-start-1 place-self-center bg-black rounded-lg">
         <div className="relative w-full row-start-2 h-fit rounded-xl grid grid-flow-col auto-cols-auto">
           <div className="relative w-full h-full col-start-1 rounded-xl place-self-center">
             <div className="relative w-full h-full grid grid-flow-row auto-rows-auto gap-4 pb-8">
