@@ -15,6 +15,7 @@ const Composite: FunctionComponent<CompositeProps> = ({
   compositeRef,
   chain,
   openChainModal,
+  apiKey
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
@@ -31,6 +32,7 @@ const Composite: FunctionComponent<CompositeProps> = ({
         models={models}
         signInLoading={signInLoading}
         compositeRef={compositeRef}
+        apiKey={apiKey}
       />
     </div>
   );
