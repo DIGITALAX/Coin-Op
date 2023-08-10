@@ -5,6 +5,7 @@ const ORDERS = `
   query($buyerAddress: String) {
     orderCreateds(where: {buyer: $buyerAddress},orderBy: blockTimestamp, orderDirection: desc) {
         orderIds
+        prices
         totalPrice
         transactionHash
         fulfillmentInformation
@@ -43,3 +44,4 @@ export const getOrders = async (buyerAddress: string): Promise<any> => {
     return result;
   }
 };
+

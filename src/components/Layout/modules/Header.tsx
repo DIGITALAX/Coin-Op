@@ -34,9 +34,12 @@ const Header: FunctionComponent<HeaderProps> = ({
   return (
     <div className="relative w-full flex flex-col gap-20 px-3 pt-2 pb-20">
       <div className="flex w-full h-fit text-white font-mega items-center justify-center md:justify-between md:flex-nowrap flex-wrap md:gap-0 gap-3">
-        <div className="relative flex justify-start w-fit h-fit items-center whitespace-nowrap break-words">
-          insert api key here
-        </div>
+        <Link
+          className="relative flex justify-start w-fit h-fit items-center whitespace-nowrap break-words cursor-pointer"
+          href={"/"}
+        >
+          coin op
+        </Link>
         <div className="relative flex w-full h-fit items-center justify-center">
           <div
             className="relative w-fit px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 cursor-pointer active:scale-95"
@@ -67,12 +70,26 @@ const Header: FunctionComponent<HeaderProps> = ({
             </div>
           </div>
         </div>
-        <Link
-          href={"/account"}
-          className="relative flex w-fit h-fit items-center md:ml-auto break-words cursor-pointer"
-        >
-          account
-        </Link>
+        <div className="relative w-fit h-fit flex flex-row gap-3 items-center justify-center md:ml-auto">
+          <Link
+            href={"/account"}
+            className="relative flex w-8 h-6 items-center break-words cursor-pointer"
+          >
+            <Image
+              layout="fill"
+              src={`${INFURA_GATEWAY}/ipfs/QmT18k71KZATGmJ8em4hUBRCAQVKmrBAb7QeLWTt5G9LdV`}
+            />
+          </Link>
+          <Link
+            href={"/quests"}
+            className="relative flex  w-8 h-6 items-center break-words cursor-pointer"
+          >
+            <Image
+              layout="fill"
+              src={`${INFURA_GATEWAY}/ipfs/QmZt7axg3QPFTg6DFwTxHkEMvTi6dPhwQQLcHAiiuGJiAa`}
+            />
+          </Link>
+        </div>
       </div>
       <div className="relative flex flex-col items-center justify-center w-full h-fit gap-28">
         <RollSearch

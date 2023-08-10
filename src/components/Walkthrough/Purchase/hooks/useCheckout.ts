@@ -21,11 +21,11 @@ import CoinOpMarketABI from "../../../../../abis/CoinOpMarket.json";
 import { RootState } from "../../../../../redux/store";
 import { setCart } from "../../../../../redux/reducers/cartSlice";
 import { useRouter } from "next/router";
-import { setLitClient } from "../../../../../redux/reducers/litClientSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygonMumbai, polygon } from "viem/chains";
 import { getOrders } from "../../../../../graphql/subgraph/queries/getOrders";
-import { Fragment } from "ethers/lib/utils";
+import { connectLit } from "../../../../../lib/subgraph/helpers/connectLit";
+import { encryptItems } from "../../../../../lib/subgraph/helpers/encryptItems";
 
 const useCheckout = () => {
   const router = useRouter();
@@ -306,18 +306,23 @@ const useCheckout = () => {
   };
 
   const handleCheckoutCrypto = async () => {
+    if (!address) return;
     setCryptoCheckoutLoading(true);
     try {
-      let client: LitJsSdk.LitNodeClient | undefined;
-      if (!litClient) {
-        client = await connectLit();
+      let fulfillerGroups: { [key: string]: CartItem[] } = {};
+
+      for (let i = 0; i < cartItems.length; i++) {
+        if (fulfillerGroups[cartItems[i].fulfillerAddress]) {
+          fulfillerGroups[cartItems[i].fulfillerAddress].push(cartItems[i]);
+        } else {
+          fulfillerGroups[cartItems[i].fulfillerAddress] = [cartItems[i]];
+        }
       }
-      const authSig = await LitJsSdk.checkAndSignAuthMessage({
-        chain: "polygon",
-      });
-      const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
-        JSON.stringify({
-          ...fulfillmentDetails,
+
+      const fulfillerDetails = await encryptItems(
+        litClient,
+        dispatch,
+        {
           sizes: cartItems?.reduce((accumulator: string[], item) => {
             accumulator.push(String(item.chosenSize));
             return accumulator;
@@ -337,72 +342,11 @@ const useCheckout = () => {
             },
             []
           ),
-        })
+        },
+        fulfillerGroups,
+        fulfillmentDetails,
+        address!
       );
-
-      let fulfillerGroups: { [key: string]: CartItem[] } = {};
-      for (let i = 0; i < cartItems.length; i++) {
-        if (fulfillerGroups[cartItems[i].fulfillerAddress]) {
-          fulfillerGroups[cartItems[i].fulfillerAddress].push(cartItems[i]);
-        } else {
-          fulfillerGroups[cartItems[i].fulfillerAddress] = [cartItems[i]];
-        }
-      }
-
-      let fulfillerDetails = [];
-
-      for (let fulfillerAddress in fulfillerGroups) {
-        let fulfillerEditions = fulfillerGroups[fulfillerAddress].map(
-          (item) => {
-            return {
-              contractAddress: "",
-              standardContractType: "",
-              chain: "polygon",
-              method: "",
-              parameters: [":userAddress"],
-              returnValueTest: {
-                comparator: "=",
-                value: item.fulfillerAddress.toLowerCase(),
-              },
-            };
-          }
-        );
-
-        const encryptedSymmetricKey = await (client
-          ? client
-          : litClient
-        ).saveEncryptionKey({
-          accessControlConditions: [
-            ...fulfillerEditions,
-            {
-              contractAddress: "",
-              standardContractType: "",
-              chain: "polygon",
-              method: "",
-              parameters: [":userAddress"],
-              returnValueTest: {
-                comparator: "=",
-                value: address?.toLowerCase() as string,
-              },
-            },
-          ],
-          symmetricKey,
-          authSig,
-          chain: "polygon",
-        });
-
-        const buffer = await encryptedString.arrayBuffer();
-        fulfillerDetails.push(
-          JSON.stringify({
-            fulfillerAddress,
-            encryptedString: JSON.stringify(Array.from(new Uint8Array(buffer))),
-            encryptedSymmetricKey: LitJsSdk.uint8arrayToString(
-              encryptedSymmetricKey,
-              "base16"
-            ),
-          })
-        );
-      }
 
       const { request } = await publicClient.simulateContract({
         address: COIN_OP_MARKET,
@@ -537,7 +481,7 @@ const useCheckout = () => {
             chosenTokenAddress: ACCEPTED_TOKENS.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],
-            sinPKP: true,
+            sinPKP: false,
           },
         ]),
         value: ethers.BigNumber.from(0),
@@ -553,7 +497,7 @@ const useCheckout = () => {
     try {
       let client: LitJsSdk.LitNodeClient | undefined;
       if (!litClient) {
-        client = await connectLit();
+        client = await connectLit(dispatch);
       }
 
       const authSig = await generateAuthSignature();
@@ -706,22 +650,6 @@ const useCheckout = () => {
       console.error(err.message);
     }
     setFiatCheckoutLoading(false);
-  };
-
-  const connectLit = async (): Promise<LitJsSdk.LitNodeClient | undefined> => {
-    try {
-      const client = new LitJsSdk.LitNodeClient({
-        debug: true,
-        alertWhenUnauthorized: true,
-        chain: 137,
-        provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-      });
-      await client.connect();
-      dispatch(setLitClient(client));
-      return client;
-    } catch (err: any) {
-      console.error(err.message);
-    }
   };
 
   useEffect(() => {

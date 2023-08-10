@@ -35,7 +35,7 @@ export const ACCEPTED_TOKENS: string[][] = [
 ];
 
 export const COIN_OP_MARKET: `0x${string}` =
-  "0xcbe751a5982FAbAd2e9a53A99cC5842b006dbb69";
+  "0x2fd1d85fE88e17F7380BeEeC88FAE0434bdf16f1";
 export const COIN_OP_ORACLE: `0x${string}` =
   "0x31bbf0CD528aCb595E9F2dEdeb2f0771AeFD6368";
 export const COIN_OP_FULFILLMENT: `0x${string}` =

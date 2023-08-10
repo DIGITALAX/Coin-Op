@@ -1,24 +1,45 @@
 import { NextPage } from "next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import useSignIn from "@/components/Common/hooks/useSignIn";
 import Head from "next/head";
 import AllOrders from "@/components/Account/modals/AllOrders";
 import useOrders from "@/components/Account/hooks/useOrders";
+import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
+import { useEffect } from "react";
 
 const Account: NextPage = (): JSX.Element => {
-  const profile = useSelector(
-    (state: RootState) => state.app.profileReducer.profile
-  );
   const allOrders = useSelector(
     (state: RootState) => state.app.allOrdersReducer.value
   );
-  const { address } = useAccount();
+  const preRollAnim = useSelector(
+    (state: RootState) => state.app.preRollAnimReducer.value
+  );
+  const dispatch = useDispatch();
   const { openConnectModal } = useConnectModal();
-  const { handleLensSignIn, signInLoading } = useSignIn();
-  const { ordersLoading } = useOrders();
+  const {
+    ordersLoading,
+    handleDecryptFulfillment,
+    decryptLoading,
+    orderOpen,
+    setOrderOpen,
+    connected,
+    updateFulfillmentInformation,
+    updateLoading,
+    updatedInformation,
+    setUpdatedInformation,
+    decryptMessageLoading,
+    handleDecryptMessage,
+  } = useOrders();
+
+  useEffect(() => {
+    if (preRollAnim) {
+      setTimeout(() => {
+        console.log("here");
+        dispatch(setPreRollAnim(false));
+      }, 3000);
+    }
+  }, [preRollAnim]);
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>
@@ -26,12 +47,21 @@ const Account: NextPage = (): JSX.Element => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <AllOrders
-        signInLoading={signInLoading}
-        handleLensSignIn={handleLensSignIn}
         openConnectModal={openConnectModal}
-        address={address}
-        profile={profile}
+        connected={connected}
         ordersLoading={ordersLoading}
+        allOrders={allOrders}
+        handleDecryptFulfillment={handleDecryptFulfillment}
+        decryptLoading={decryptLoading}
+        orderOpen={orderOpen}
+        setOrderOpen={setOrderOpen}
+        dispatch={dispatch}
+        updateFulfillmentInformation={updateFulfillmentInformation}
+        updatedInformation={updatedInformation}
+        updateLoading={updateLoading}
+        setUpdatedInformation={setUpdatedInformation}
+        decryptMessageLoading={decryptMessageLoading}
+        handleDecryptMessage={handleDecryptMessage}
       />
     </div>
   );

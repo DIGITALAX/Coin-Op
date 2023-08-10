@@ -79,7 +79,7 @@ const Grid: FunctionComponent<GridProps> = ({
         >
           <div
             className={`relative flex gap-3 w-full ${
-              canvasExpand ? "flex-row h-52" : "flex-col md:flex-row synth:flex-col synth:h-auto h-fit md:h-72 xl:h-60"
+              canvasExpand ? "flex-row h-52" : "flex-col md:flex-row synth:flex-col synth:h-full h-fit md:h-72 xl:h-72"
             }`}
           >
             <div className="relative w-full h-full flex items-center justify-center rounded-md border border-ama">
@@ -93,7 +93,7 @@ const Grid: FunctionComponent<GridProps> = ({
                 canvasExpand={canvasExpand}
               />
             </div>
-            <div className="relative w-full md:w-60 h-52 md:h-full synth:h-52 flex items-center justify-center rounded-md border border-ama grow">
+            <div className="relative w-full md:w-60 xl:w-full h-52 md:h-full synth:h-52 flex items-center justify-center rounded-md border border-ama grow">
               <Presets
                 presets={presets}
                 dispatch={dispatch}
@@ -307,7 +307,7 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div className="relative preG:absolute preG:bottom-6 preG:right-2 lg:right-9 w-full preG:w-fit h-fit flex flex-row gap-3 text-white items-center justify-center text-center preG:pt-0 pt-4 preG:order-2 order-3">
-        <div className="relative w-9 h-3 items-center justify-center hidden preG:flex flex-row">
+        <div className="relative w-9 h-3 items-center justify-center hidden preG:flex synth:hidden 2xl:flex flex-row">
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmZ4XuwsWcHpCXq56LNmAuvVck7D7WLmXWLcLJmGm1rjC4`}
             layout="fill"

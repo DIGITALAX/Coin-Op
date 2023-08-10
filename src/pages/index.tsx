@@ -13,7 +13,7 @@ import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
 import useCanvas from "@/components/Walkthrough/Synth/hooks/useCanvas";
 
 export default function Home(): JSX.Element {
-  const { scrollRef, synthRef, preRollRef } = useContext(ScrollContext);
+  const { scrollRef, synthRef } = useContext(ScrollContext);
   const dispatch = useDispatch();
   const { address } = useAccount();
   const { openConnectModal } = useConnectModal();

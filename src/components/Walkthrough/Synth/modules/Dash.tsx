@@ -29,7 +29,7 @@ const Dash: FunctionComponent<DashProps> = ({
           style={{ resize: "none" }}
           placeholder={synthConfig?.prompt}
           value={synthConfig?.prompt}
-          className="relative bg-black/10 text-gris font-mana text-sm w-full h-60 preG:h-full p-2 border border-smo rounded-md"
+          className="relative bg-black/10 text-gris font-mana text-sm w-full h-60 preG:h-full  p-2 border border-smo rounded-md"
           onChange={(e: FormEvent) => {
             !synthLoading &&
               dispatch(
