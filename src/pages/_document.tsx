@@ -5,7 +5,12 @@ export default function Document() {
     <Html lang="en">
       <meta name="og:url" content="https://coin.manufactory.xyz/" />
       <meta name="og:title" content="Coin Op" />
-      <meta name="og:description" content="" />
+      <meta
+        name="og:description"
+        content="We know it's a lot to keep up with. How can you know if this is
+            the blend of instant convenience and purchasing power you've
+            been waiting for?"
+      />
       <meta name="og:image" content="https://coin.manufactory.xyz/card.png/" />
       <meta name="twitter:card" content="summary" />
       <meta name="og:url" content="https://coin.manufactory.xyz/" />
@@ -32,7 +37,7 @@ export default function Document() {
         crossOrigin="anonymous"
         type="font/ttf"
       />
-       <link
+      <link
         rel="preload"
         href="/fonts/Vcr.ttf"
         as="font"

@@ -105,9 +105,9 @@ export type PageContainerProps = {
 };
 
 export enum PrintType {
-  Print = "print",
+  Poster = "poster",
   Hoodie = "hoodie",
-  Stickers = "stickers",
+  Sticker = "sticker",
   Shirt = "shirt",
 }
 

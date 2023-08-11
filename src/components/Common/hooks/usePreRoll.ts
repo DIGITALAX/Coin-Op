@@ -27,8 +27,8 @@ const usePreRoll = () => {
             ...obj,
             uri: await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]),
             tags: [
-              ...(obj.printType === "Stickers" ? ["stickers"] : []),
-              ...(obj.printType === "Posters" ? ["posters"] : []),
+              ...(obj.printType === "Sticker" ? ["sticker"] : []),
+              ...(obj.printType === "Poster" ? ["poster"] : []),
               ...(obj.printType === "Hoodie"
                 ? ["hoodie", "hoodies", "apparel"]
                 : ["shirt", "shirts", "apparel"]),
@@ -40,20 +40,20 @@ const usePreRoll = () => {
               "tagging",
             ],
             chosenSize:
-              obj.printType === "Stickers"
+              obj.printType === "Sticker"
                 ? '2"x2"'
                 : obj.printType === "Poster"
                 ? '11"x17"'
                 : "M",
             chosenColor: "#ffffff",
             colors:
-              obj.printType === "Stickers"
+              obj.printType === "Sticker"
                 ? ["#ffffff", "#000000"]
                 : obj.printType === "Poster"
                 ? ["#ffffff", "#000000"]
                 : ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
             sizes:
-              obj.printType === "Stickers"
+              obj.printType === "Sticker"
                 ? ['2"x2"', '4"x4"', '6"x6"']
                 : obj.printType === "Poster"
                 ? ['11"x17"', '18"x24"', '24"x36"']
@@ -105,7 +105,7 @@ const usePreRoll = () => {
     if (preRolls.left?.length < 1 && preRolls.right?.length < 1) {
       getPreRolls();
     }
-  }, [preRolls]);
+  }, []);
 
   return {
     preRollsLoading,

@@ -33,10 +33,12 @@ const Set: FunctionComponent<SetProps> = ({
             childPosterURI,
           })
         );
-        dispatch(setLayerToSynth({
-          id: childId + 0,
-          layer: childTokenURIs?.[0]!
-        }));
+        dispatch(
+          setLayerToSynth({
+            id: childId + 0,
+            layer: childTokenURIs?.[0]!,
+          })
+        );
       }}
     >
       <div className="absolute w-full h-full">
@@ -57,15 +59,19 @@ const Set: FunctionComponent<SetProps> = ({
               draggable={false}
             />
           </div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Image
-              layout="fill"
-              objectFit="contain"
-              src={`${INFURA_GATEWAY}/ipfs/${
-                childPosterURI?.split("ipfs://")[1]
-              }`}
-              draggable={false}
-            />
+          <div className="absolute inset-0 flex items-start justify-center h-full w-full">
+            <div className="relative items-start justify-center flex w-full h-full">
+              <Image
+                layout="fill"
+                objectFit="contain"
+                src={`${INFURA_GATEWAY}/ipfs/${
+                  childPosterURI?.split("ipfs://")[1]
+                }`}
+                draggable={false}
+                className="flex items-start"
+                objectPosition={"top"}
+              />
+            </div>
           </div>
         </div>
         <div className="relative w-full h-fit flex flex-row font-mana text-white text-xxs px-1.5 gap-1.5 justify-between">

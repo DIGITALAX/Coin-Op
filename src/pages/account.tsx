@@ -49,7 +49,12 @@ const Account: NextPage = (): JSX.Element => {
         <title>Coin Op | Account</title>
         <meta name="og:url" content="https://coin.manufactory.xyz/" />
         <meta name="og:title" content="Coin Op | Account" />
-        <meta name="og:description" content="" />
+        <meta
+          name="og:description"
+          content="We know it's a lot to keep up with. How can you know if this is
+            the blend of instant convenience and purchasing power you've
+            been waiting for?"
+        />
         <meta
           name="og:image"
           content="https://coin.manufactory.xyz/card.png/"
