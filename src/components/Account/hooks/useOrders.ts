@@ -20,8 +20,8 @@ import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 
 const useOrders = () => {
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
-    transport: http("https://rpc-mumbai.maticvigil.com/"),
+    chain: polygon,
+    transport: http(),
   });
   const { address } = useAccount();
   const dispatch = useDispatch();
@@ -164,14 +164,14 @@ const useOrders = () => {
       const client = new LitNodeClient({ debug: false });
       await client.connect();
       const authSig = await checkAndSignAuthMessage({
-        chain: "mumbai",
+        chain: "polygon",
       });
       const fulfillerAddress = await getFulfillerAddress();
       let fulfillerEditions = order.subOrderIds.map((_) => {
         return {
           contractAddress: "",
           standardContractType: "",
-          chain: "mumbai",
+          chain: "polygon",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
@@ -193,7 +193,7 @@ const useOrders = () => {
               {
                 contractAddress: "",
                 standardContractType: "",
-                chain: "mumbai",
+                chain: "polygon",
                 method: "",
                 parameters: [":userAddress"],
                 returnValueTest: {
@@ -204,7 +204,7 @@ const useOrders = () => {
             ],
             toDecrypt: order?.message[i].encryptedSymmetricKey!,
             authSig,
-            chain: "mumbai",
+            chain: "polygon",
           });
           const uintString = new Uint8Array(order?.message[i].encryptedString!)
             .buffer;
@@ -269,7 +269,7 @@ const useOrders = () => {
       const client = new LitNodeClient({ debug: false });
       await client.connect();
       const authSig = await checkAndSignAuthMessage({
-        chain: "mumbai",
+        chain: "polygon",
       });
       const fulfillerAddress = await getFulfillerAddress();
       let fulfillerEditions: any[] = [];
@@ -278,7 +278,7 @@ const useOrders = () => {
         fulfillerEditions.push({
           contractAddress: "",
           standardContractType: "",
-          chain: "mumbai",
+          chain: "polygon",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
@@ -299,7 +299,7 @@ const useOrders = () => {
             {
               contractAddress: "",
               standardContractType: "",
-              chain: "mumbai",
+              chain: "polygon",
               method: "",
               parameters: [":userAddress"],
               returnValueTest: {
@@ -310,7 +310,7 @@ const useOrders = () => {
           ],
           toDecrypt: order?.fulfillmentInformation?.encryptedSymmetricKey!,
           authSig,
-          chain: "mumbai",
+          chain: "polygon",
         });
         const uintString = new Uint8Array(
           order?.fulfillmentInformation?.encryptedString!
@@ -417,7 +417,7 @@ const useOrders = () => {
         account: address?.toLowerCase() as `0x${string}`,
       });
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
       const res = await clientWallet.writeContract(request);

@@ -41,8 +41,8 @@ import { useAccount } from "wagmi";
 
 const useMakePost = () => {
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
-    transport:  http("https://rpc-mumbai.maticvigil.com/"),
+    chain: polygon,
+    transport:  http(),
   });
   const [postLoading, setPostLoading] = useState<boolean>(false);
   const [postDescription, setPostDescription] = useState<string>("");
@@ -285,7 +285,7 @@ const useMakePost = () => {
         const typedData: any = result.data.createPostTypedData.typedData;
 
         const clientWallet = createWalletClient({
-          chain: polygonMumbai,
+          chain: polygon,
           transport: custom((window as any).ethereum),
         });
 

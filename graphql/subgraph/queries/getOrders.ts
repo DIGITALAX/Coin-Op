@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { graphClient, graphClientTestnet } from "../../../lib/subgraph/client";
+import { graphClient } from "../../../lib/subgraph/client";
 
 const ORDERS = `
   query($buyerAddress: String) {
@@ -25,7 +25,7 @@ const ORDERS = `
 `;
 
 export const getOrders = async (buyerAddress: string): Promise<any> => {
-  const queryPromise = graphClientTestnet.query({
+  const queryPromise = graphClient.query({
     query: gql(ORDERS),
     variables: {
       buyerAddress,

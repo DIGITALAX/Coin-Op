@@ -32,8 +32,8 @@ const useCheckout = () => {
   const dispatch = useDispatch();
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
-    transport: http("https://rpc-mumbai.maticvigil.com/"),
+    chain: polygon,
+    transport: http(),
   });
 
   const stripe = useStripe();
@@ -88,7 +88,7 @@ const useCheckout = () => {
     if (!address) return;
     try {
       const data = await publicClient.readContract({
-        address: ACCEPTED_TOKENS_MUMBAI.find(
+        address: ACCEPTED_TOKENS.find(
           ([_, token]) => token === checkoutCurrency
         )?.[2].toLowerCase() as `0x${string}`,
         abi: [
@@ -123,7 +123,7 @@ const useCheckout = () => {
 
       if (
         Number(data as BigNumber) /
-          ((ACCEPTED_TOKENS_MUMBAI.find(
+          ((ACCEPTED_TOKENS.find(
             ([_, token]) => token === checkoutCurrency
           )?.[2] as `0x${string}`) ===
           "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
@@ -175,7 +175,7 @@ const useCheckout = () => {
         ],
         functionName: "getRateByAddress",
         args: [
-          ACCEPTED_TOKENS_MUMBAI.find(
+          ACCEPTED_TOKENS.find(
             ([_, token]) => token === checkoutCurrency
           )?.[2].toLowerCase(),
         ],
@@ -247,7 +247,7 @@ const useCheckout = () => {
     setCryptoCheckoutLoading(true);
     try {
       const { request } = await publicClient.simulateContract({
-        address: ACCEPTED_TOKENS_MUMBAI.find(
+        address: ACCEPTED_TOKENS.find(
           ([_, token]) => token === checkoutCurrency
         )?.[2]!.toLowerCase() as `0x${string}`,
         abi: (checkoutCurrency === "MONA"
@@ -314,7 +314,7 @@ const useCheckout = () => {
         account: address,
       });
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
       const res = await clientWallet.writeContract(request);
@@ -421,7 +421,7 @@ const useCheckout = () => {
             customURIs: [],
             fulfillmentDetails: JSON.stringify(fulfillerDetails),
             pkpTokenId: "",
-            chosenTokenAddress: ACCEPTED_TOKENS_MUMBAI.find(
+            chosenTokenAddress: ACCEPTED_TOKENS.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],
             sinPKP: true,
@@ -430,7 +430,7 @@ const useCheckout = () => {
         account: address?.toLowerCase() as `0x${string}`,
       });
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
       const res = await clientWallet.writeContract(request);
@@ -533,7 +533,7 @@ const useCheckout = () => {
             customURIs: [],
             fulfillmentDetails: JSON.stringify(fulfillerDetails),
             pkpTokenId: currentPKP?.tokenId,
-            chosenTokenAddress: ACCEPTED_TOKENS_MUMBAI.find(
+            chosenTokenAddress: ACCEPTED_TOKENS.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],
             sinPKP: false,

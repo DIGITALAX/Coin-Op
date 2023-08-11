@@ -47,7 +47,7 @@ const Order: FunctionComponent<OrderProps> = ({
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
             {order?.sinPKP
               ? `${
-                  ACCEPTED_TOKENS_MUMBAI.find(
+                  ACCEPTED_TOKENS.find(
                     (subArray) =>
                       subArray[2].toLowerCase() ===
                       order.chosenAddress.toLowerCase()
@@ -55,7 +55,7 @@ const Order: FunctionComponent<OrderProps> = ({
                 } `
               : "$"}{" "}
             {Number(order.totalPrice) /
-              ((ACCEPTED_TOKENS_MUMBAI.find(
+              ((ACCEPTED_TOKENS.find(
                 ([_, token]) =>
                   token.toLowerCase() === order.chosenAddress.toLowerCase()
               )?.[2] as `0x${string}`) ===

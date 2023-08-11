@@ -58,11 +58,11 @@ export const ACCEPTED_TOKENS_MUMBAI: string[][] = [
 ];
 
 export const COIN_OP_MARKET: `0x${string}` =
-  "0xccD822d422dC60b71514c6990DDe0aD539FE5316";
+  "0x9534De18158b48bbCAec67Cb142B0F1B5Df9900a";
 export const COIN_OP_ORACLE: `0x${string}` =
-  "0x31bbf0CD528aCb595E9F2dEdeb2f0771AeFD6368";
+  "0x7e066A206a982F7Aa0d6d0D4c5bC74E4bD048dF3";
 export const COIN_OP_FULFILLMENT: `0x${string}` =
-  "0xF80D3044B28807f52EFB38e37b681eFF9D2867b9";
+  "0x84E7493b1DB31bf643FD0C8A129B3b8acfD9413b";
 export const PKP_ADDRESS: `0x${string}` =
   "0xe7693a737aaa5ba118e2de6f45c7bd85969f06a4";
 export const IPFS_CID_PKP: string =

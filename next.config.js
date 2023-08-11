@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 
 const allowedOrigins = [
-  "https://api-mumbai.lens.dev",
   "https://api.lens.dev",
   "https://chromadin.infura-ipfs.io",
   "https://tenor.googleapis.com",

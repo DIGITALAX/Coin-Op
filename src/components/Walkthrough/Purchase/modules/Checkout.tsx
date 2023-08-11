@@ -71,7 +71,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           <div className="relative w-fit h-fit">
             {paymentType === "crypto"
               ? `${
-                  ACCEPTED_TOKENS_MUMBAI.find(
+                  ACCEPTED_TOKENS.find(
                     (subArray) => subArray[1] === checkoutCurrency
                   )?.[1]
                 } `
@@ -90,7 +90,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
         />
         {paymentType === "crypto" && (
           <div className="relative w-3/4 justify-start items-center flex flex-row gap-1">
-            {ACCEPTED_TOKENS_MUMBAI?.map((item: string[], index: number) => {
+            {ACCEPTED_TOKENS?.map((item: string[], index: number) => {
               return (
                 <div
                   className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${

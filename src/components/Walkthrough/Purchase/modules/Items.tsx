@@ -59,7 +59,7 @@ const Items: FunctionComponent<ItemsProps> = ({
                     </div>
                     <div className="relative w-fit h-fit text-ama flex whitespace-nowrap">
                       {paymentType === "crypto"
-                        ? ACCEPTED_TOKENS_MUMBAI.find(
+                        ? ACCEPTED_TOKENS.find(
                             (subArray) => subArray[1] === checkoutCurrency
                           )?.[1]
                         : "$"}{" "}

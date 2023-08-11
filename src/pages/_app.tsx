@@ -18,10 +18,10 @@ import Modals from "@/components/Common/modules/Modals/Modals";
 import PreRolls from "@/components/Common/modules/PreRolls";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [polygon, polygonMumbai],
+  [polygon],
   [
     alchemyProvider({
-      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI as string,
+      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,
     }),
   ]
 );
