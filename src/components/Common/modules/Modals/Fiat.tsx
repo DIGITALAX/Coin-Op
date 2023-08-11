@@ -23,7 +23,7 @@ const Fiat: FunctionComponent<FiatProps> = ({ dispatch }): JSX.Element => {
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
                 <div className="relative w-3/4 h-fit justify-center items-center text-white font-mana text-sm text-center">
-                  New to Web3? You're next Quest to overcome barriers into web3
+                  New to Web3? You&apos;re next Quest to overcome barriers into web3
                   and AI launching in...
                 </div>
                 <div className="relative w-3/4 h-fit justify-center items-center text-white font-mana text-sm text-center">

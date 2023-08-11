@@ -148,7 +148,9 @@ const Quests: NextPage = (): JSX.Element => {
             />
             <div className="absolute w-fit sm:w-48 h-fit sm:h-28 rounded-md border border-mist justify-between right-3 top-2 bg-black/80 flex flex-col p-2 break-words items-center break-all">
               <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-ama text-xs flex-row gap-1">
-                <p className="flex items-center justify-center">{`Don't have`}</p>
+                <p className="flex items-center justify-center">
+                  Don&apos;t have
+                </p>
                 <p className="text-eme flex items-center justify-center">
                   {" "}
                   API Keys{" "}
