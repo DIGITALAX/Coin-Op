@@ -47,7 +47,90 @@ const Account: NextPage = (): JSX.Element => {
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>
         <title>Coin Op | Account</title>
-        <link rel="icon" href="/favicon.ico" />
+        <meta name="og:url" content="https://coin.manufactory.xyz/" />
+        <meta name="og:title" content="Coin Op | Account" />
+        <meta name="og:description" content="" />
+        <meta
+          name="og:image"
+          content="https://coin.manufactory.xyz/card.png/"
+        />
+        <meta name="twitter:card" content="summary" />
+        <meta name="og:url" content="https://coin.manufactory.xyz/" />
+        <meta
+          name="og:image"
+          content="https://coin.manufactory.xyz/card.png/"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@digitalax_" />
+        <meta name="twitter:creator" content="@digitalax_" />
+        <meta
+          name="twitter:image"
+          content="https://coin.manufactory.xyz/card.png/"
+        />
+        <meta name="twitter:url" content="https://coin.manufactory.xyz/" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="canonical" href="https://coin.manufactory.xyz/" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/MegamaxJones.ttf"
+          as="font"
+          crossOrigin="anonymous"
+          type="font/ttf"
+        />
+        <link
+          rel="preload"
+          href="/fonts/Vcr.ttf"
+          as="font"
+          crossOrigin="anonymous"
+          type="font/ttf"
+        />
+        <link
+          rel="preload"
+          href="/fonts/MonumentExtendedR.otf"
+          as="font"
+          crossOrigin="anonymous"
+          type="font/otf"
+        />
+        <link
+          rel="preload"
+          href="/fonts/AquaticoRegular.otf"
+          as="font"
+          crossOrigin="anonymous"
+          type="font/otf"
+        />
+        <link
+          rel="preload"
+          href="/fonts/SatoshiRegular.otf"
+          as="font"
+          crossOrigin="anonymous"
+          type="font/otf"
+        />
+        <link
+          rel="preload"
+          href="/fonts/SatoshiBlack.otf"
+          as="font"
+          crossOrigin="anonymous"
+          type="font/otf"
+        />
+        <link
+          rel="preload"
+          href="/fonts/HermanoAltoStamp.ttf"
+          as="font"
+          crossOrigin="anonymous"
+          type="font/ttf"
+        />
+        <link
+          rel="preload"
+          href="/fonts/Manaspace.ttf"
+          as="font"
+          crossOrigin="anonymous"
+          type="font/ttf"
+        />
       </Head>
       <AllOrders
         openConnectModal={openConnectModal}

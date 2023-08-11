@@ -15,6 +15,7 @@ module.exports = {
         satB: "Satoshi Black",
         herm: "Hermano Alto Stamp",
         mana: "Manaspace",
+        vcr: "Vcr",
       },
       colors: {
         oscurazul: "#030D6B",
@@ -28,6 +29,7 @@ module.exports = {
         smo: "#32C5FF",
         gris: "#6D7278",
         ligero: "#E5F0D4",
+        mist: "#81A8F8",
       },
       height: {
         100: "36rem",
@@ -35,13 +37,13 @@ module.exports = {
         120: "50rem",
         130: "55rem",
         150: "70rem",
-        160: "95rem"
+        160: "95rem",
       },
       width: {
         100: "30rem",
         calc: "calc(100vw - 20rem - 20rem - 1rem)",
         calc2: "calc(100vw - 10rem)",
-        calc3: "calc(100vw)"
+        calc3: "calc(100vw)",
       },
       fontSize: {
         xxs: "0.5rem",
@@ -57,7 +59,8 @@ module.exports = {
       screens: {
         preG: "480px",
         synth: "1450px",
-        900: "900px"
+        before: "1050px",
+        900: "900px",
       },
     },
   },

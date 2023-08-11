@@ -58,7 +58,7 @@ export const ACCEPTED_TOKENS_MUMBAI: string[][] = [
 ];
 
 export const COIN_OP_MARKET: `0x${string}` =
-  "0x2fd1d85fE88e17F7380BeEeC88FAE0434bdf16f1";
+  "0xccD822d422dC60b71514c6990DDe0aD539FE5316";
 export const COIN_OP_ORACLE: `0x${string}` =
   "0x31bbf0CD528aCb595E9F2dEdeb2f0771AeFD6368";
 export const COIN_OP_FULFILLMENT: `0x${string}` =

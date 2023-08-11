@@ -100,6 +100,7 @@ const Header: FunctionComponent<HeaderProps> = ({
           <Link
             href={"/account"}
             className="relative flex w-8 h-6 items-center break-words cursor-pointer"
+            draggable={false}
           >
             <Image
               layout="fill"
@@ -110,6 +111,7 @@ const Header: FunctionComponent<HeaderProps> = ({
           <Link
             href={"/quests"}
             className="relative flex  w-8 h-6 items-center break-words cursor-pointer"
+            draggable={false}
           >
             <Image
               layout="fill"

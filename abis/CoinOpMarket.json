@@ -260,28 +260,15 @@
         "internalType": "bool",
         "name": "sinPKP",
         "type": "bool"
-      }
-    ],
-    "name": "OrderCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "_orderId",
-        "type": "uint256"
       },
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "_fulfillerAddress",
-        "type": "address"
+        "internalType": "string",
+        "name": "pkpTokenId",
+        "type": "string"
       }
     ],
-    "name": "OrderIsFulfilled",
+    "name": "OrderCreated",
     "type": "event"
   },
   {
@@ -388,6 +375,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_fulfillerAddress",
+        "type": "address"
+      }
+    ],
+    "name": "SubOrderIsFulfilled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "uint256[]",
         "name": "preRollIds",
@@ -439,7 +445,7 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "_orderId",
+        "name": "orderId",
         "type": "uint256"
       },
       {
@@ -464,7 +470,7 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "_orderId",
+        "name": "orderId",
         "type": "uint256"
       },
       {
@@ -489,32 +495,7 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "_orderId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "newOrderStatus",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "buyer",
-        "type": "address"
-      }
-    ],
-    "name": "UpdateOrderStatus",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "_subOrderId",
+        "name": "subOrderId",
         "type": "uint256"
       },
       {
@@ -570,6 +551,11 @@
           {
             "internalType": "string",
             "name": "fulfillmentDetails",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "pkpTokenId",
             "type": "string"
           },
           {
@@ -818,6 +804,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_tokenIdPKP",
+        "type": "string"
+      }
+    ],
+    "name": "getOrdersToPKP",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getPKPAddress",
     "outputs": [
@@ -1004,12 +1009,12 @@
         "type": "uint256"
       }
     ],
-    "name": "getSubOrderTokenId",
+    "name": "getSubOrderTokenIds",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint256[]",
         "name": "",
-        "type": "uint256"
+        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",

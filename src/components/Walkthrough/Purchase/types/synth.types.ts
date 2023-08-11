@@ -76,6 +76,7 @@ export type CryptoProps = {
   cartItems: CartItem[];
   openChainModal: (() => void) | undefined;
   chain: number | undefined;
+  dispatch: Dispatch<AnyAction>;
 };
 
 export type FiatProps = {

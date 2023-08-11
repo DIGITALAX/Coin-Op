@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import "@lit-protocol/lit-auth-client";
-import { ProviderType, AuthMethodType } from "@lit-protocol/constants";
+import { ProviderType } from "@lit-protocol/constants";
 import { isSignInRedirect } from "@lit-protocol/lit-auth-client";
 import { REDIRECT_URI } from "../../../../lib/constants";
 import { useRouter } from "next/router";

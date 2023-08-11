@@ -50,7 +50,7 @@ const useCheckout = () => {
   const [approved, setApproved] = useState<boolean>(false);
   const [cartItem, setCartItem] = useState<CartItem | undefined>();
   const [startIndex, setStartIndex] = useState<number>(0);
-  const [paymentType, setPaymentType] = useState<string>("fiat");
+  const [paymentType, setPaymentType] = useState<string>("crypto");
   const [oracleValue, setOracleValue] = useState<number>(1);
   const [cryptoCheckoutLoading, setCryptoCheckoutLoading] =
     useState<boolean>(false);

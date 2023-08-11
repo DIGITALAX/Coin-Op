@@ -444,3 +444,7 @@ export type LoginProps = {
   loginWithDiscord: () => Promise<void>;
   loginLoading: boolean;
 };
+
+export type FiatProps = {
+  dispatch: DispatchRedux<AnyAction>;
+};

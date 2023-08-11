@@ -32,6 +32,13 @@ export default function Document() {
         crossOrigin="anonymous"
         type="font/ttf"
       />
+       <link
+        rel="preload"
+        href="/fonts/Vcr.ttf"
+        as="font"
+        crossOrigin="anonymous"
+        type="font/ttf"
+      />
       <link
         rel="preload"
         href="/fonts/MonumentExtendedR.otf"
@@ -86,6 +93,11 @@ export default function Document() {
               @font-face {
                 font-family: "Monument Regular";
                 src: url("./fonts/MonumentExtendedR.otf");
+              }
+
+              @font-face {
+                font-family: "Vcr";
+                src: url("./fonts/Vcr.ttf");
               }
 
               @font-face {

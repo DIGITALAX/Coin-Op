@@ -1,6 +1,7 @@
 import { FunctionComponent } from "react";
 import { CryptoProps } from "../types/synth.types";
 import { AiOutlineLoading } from "react-icons/ai";
+import { setLogin } from "../../../../../redux/reducers/loginSlice";
 
 const Crypto: FunctionComponent<CryptoProps> = ({
   openConnectModal,
@@ -13,6 +14,7 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   cartItems,
   openChainModal,
   chain,
+  dispatch
 }): JSX.Element => {
   return (
     <div
@@ -23,7 +25,7 @@ const Crypto: FunctionComponent<CryptoProps> = ({
       }`}
       onClick={
         !signInLoading && !address && !cryptoCheckoutLoading
-          ? openConnectModal
+          ? () => dispatch(setLogin(true))
           // : chain !== 137
           // ? openChainModal
           : approved

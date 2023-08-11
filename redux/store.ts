@@ -36,6 +36,7 @@ import walletConnectedReducer from "./reducers/walletConnectedSlice";
 import chainReducer from "./reducers/chainSlice";
 import loginReducer from "./reducers/loginSlice";
 import currentPKPReducer from "./reducers/currentPKPSlice";
+import fiatReducer from "./reducers/fiatSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -73,7 +74,8 @@ const reducer = combineReducers({
   walletConnectedReducer,
   chainReducer,
   loginReducer,
-  currentPKPReducer
+  currentPKPReducer,
+  fiatReducer,
 });
 
 export const store = configureStore({

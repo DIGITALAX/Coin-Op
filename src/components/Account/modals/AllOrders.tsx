@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import { AllOrdersProps, Order as OrderType } from "../types/account.types";
 import Order from "./Order";
 import { setPreRollAnim } from "../../../../redux/reducers/preRollAnimSlice";
+import { setLogin } from "../../../../redux/reducers/loginSlice";
 
 const AllOrders: FunctionComponent<AllOrdersProps> = ({
   allOrders,
@@ -31,7 +32,7 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
         {!connected ? (
           <div
             className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
-            onClick={chain !== 137 ? openChainModal : openConnectModal}
+            onClick={() => dispatch(setLogin(true))}
           >
             Connect to View Your Orders.
           </div>

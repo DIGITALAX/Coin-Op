@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import { FiatProps } from "../types/synth.types";
 import { AiOutlineLoading } from "react-icons/ai";
 import { PaymentElement } from "@stripe/react-stripe-js";
+import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 
 const Fiat: FunctionComponent<FiatProps> = ({
   handleCheckoutFiat,
