@@ -431,10 +431,16 @@ export type ApiAddProps = {
 };
 
 export type HookProps = {
-  preRollRef: Ref<HTMLDivElement>
-}
-
+  preRollRef: Ref<HTMLDivElement>;
+};
 
 export type HeaderProps = {
-  preRollRef: Ref<HTMLDivElement>
-}
+  preRollRef: Ref<HTMLDivElement>;
+};
+
+export type LoginProps = {
+  dispatch: DispatchRedux<AnyAction>;
+  openConnectModal: (() => void) | undefined;
+  loginWithDiscord: () => Promise<void>;
+  loginLoading: boolean;
+};

@@ -14,6 +14,9 @@ import SearchExpand from "./SearchExpand";
 import useRollSearch from "@/components/Layout/hooks/useRollSearch";
 import ApiAdd from "./ApiAdd";
 import { useRouter } from "next/router";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import Login from "./Login";
+import useLogin from "@/components/Layout/hooks/useLogin";
 
 const Modals = () => {
   const dispatch = useDispatch();
@@ -30,6 +33,7 @@ const Modals = () => {
   const searchExpand = useSelector(
     (state: RootState) => state.app.searchExpandReducer
   );
+  const login = useSelector((state: RootState) => state.app.loginReducer);
   const lensPost = useSelector(
     (state: RootState) => state.app.lensPostBoxReducer
   );
@@ -77,7 +81,7 @@ const Modals = () => {
     handleRemoveImage,
     mappedFeaturedFiles,
   } = useImageUpload();
-
+  const { loginWithDiscord, loginLoading } = useLogin();
   const {
     postDescription,
     postLoading,
@@ -134,6 +138,7 @@ const Modals = () => {
     setValue,
   } = useCollectOptions();
   const { handlePromptChoose, handleSearchSimilar } = useRollSearch();
+  const { openConnectModal } = useConnectModal();
   return (
     <>
       {noHandle.value && <NoHandle dispatch={dispatch} />}
@@ -227,6 +232,14 @@ const Modals = () => {
       )}
       {imageModal?.value && (
         <ImageLarge mainImage={imageModal.image} dispatch={dispatch} />
+      )}
+      {login?.open && (
+        <Login
+          loginLoading={loginLoading}
+          openConnectModal={openConnectModal}
+          dispatch={dispatch}
+          loginWithDiscord={loginWithDiscord}
+        />
       )}
     </>
   );

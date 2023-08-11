@@ -48,14 +48,26 @@
             "name": "parentFGO",
             "type": "address"
           },
-          { "internalType": "address", "name": "pkpAddress", "type": "address" }
+          {
+            "internalType": "address",
+            "name": "pkpAddress",
+            "type": "address"
+          }
         ],
         "internalType": "struct MarketParamsLibrary.ContractAddresses",
         "name": "_addresses",
         "type": "tuple"
       },
-      { "internalType": "string", "name": "_symbol", "type": "string" },
-      { "internalType": "string", "name": "_name", "type": "string" }
+      {
+        "internalType": "string",
+        "name": "_symbol",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -565,7 +577,11 @@
             "name": "chosenTokenAddress",
             "type": "address"
           },
-          { "internalType": "bool", "name": "sinPKP", "type": "bool" }
+          {
+            "internalType": "bool",
+            "name": "sinPKP",
+            "type": "bool"
+          }
         ],
         "internalType": "struct MarketParamsLibrary.MarketParams",
         "name": "params",
@@ -580,97 +596,191 @@
   {
     "inputs": [],
     "name": "getAccessControlContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getChildFGOContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getCoinOpFulfillmentContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getCoinOpPayment",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_collectionId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_collectionId",
+        "type": "uint256"
+      }
     ],
     "name": "getCollectionPreRollSoldCount",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getCompositeNFTContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getOracleContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_orderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      }
     ],
     "name": "getOrderBuyer",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_orderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      }
     ],
     "name": "getOrderChosenAddress",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_orderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      }
     ],
     "name": "getOrderDetails",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_orderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      }
     ],
     "name": "getOrderMessage",
-    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_orderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      }
     ],
     "name": "getOrderSubOrders",
     "outputs": [
-      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -678,133 +788,267 @@
   {
     "inputs": [],
     "name": "getOrderSupply",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_orderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      }
     ],
     "name": "getOrderTimestamp",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getPKPAddress",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getParentFGOContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getPreRollCollectionContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getPreRollNFTContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      }
     ],
     "name": "getSubOrderAmount",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      }
     ],
     "name": "getSubOrderFulfillerId",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      }
     ],
     "name": "getSubOrderIsFulfilled",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      }
     ],
     "name": "getSubOrderOrderId",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      }
     ],
     "name": "getSubOrderPrice",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      }
     ],
     "name": "getSubOrderStatus",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getSubOrderSupply",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      }
     ],
     "name": "getSubOrderTokenId",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      }
     ],
     "name": "getSubOrderTokenType",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_collectionId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_collectionId",
+        "type": "uint256"
+      }
     ],
     "name": "getTokensSoldCollectionPreRoll",
     "outputs": [
-      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -812,14 +1056,28 @@
   {
     "inputs": [],
     "name": "name",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_orderId", "type": "uint256" },
-      { "internalType": "string", "name": "_newDetails", "type": "string" }
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_newDetails",
+        "type": "string"
+      }
     ],
     "name": "setOrderDetails",
     "outputs": [],
@@ -828,8 +1086,16 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_orderId", "type": "uint256" },
-      { "internalType": "string", "name": "_newMessage", "type": "string" }
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_newMessage",
+        "type": "string"
+      }
     ],
     "name": "setOrderMessage",
     "outputs": [],
@@ -838,8 +1104,16 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" },
-      { "internalType": "string", "name": "_status", "type": "string" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_status",
+        "type": "string"
+      }
     ],
     "name": "setSubOrderStatus",
     "outputs": [],
@@ -848,7 +1122,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_subOrderId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_subOrderId",
+        "type": "uint256"
+      }
     ],
     "name": "setSubOrderisFulfilled",
     "outputs": [],
@@ -858,7 +1136,13 @@
   {
     "inputs": [],
     "name": "symbol",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -942,7 +1226,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_newPKPAddress", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_newPKPAddress",
+        "type": "address"
+      }
     ],
     "name": "updatePKPAddress",
     "outputs": [],

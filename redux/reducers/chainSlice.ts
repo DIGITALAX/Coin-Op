@@ -14,7 +14,7 @@ export const chainSlice = createSlice({
   reducers: {
     setChain: (
       state: Chain,
-      action: PayloadAction<number>
+      action: PayloadAction<number | undefined>
     ) => {
       state.value = action.payload;
     },

@@ -6,7 +6,6 @@ import { serialize } from "@ethersproject/transactions";
 import { setMessagesModal } from "../../../../../redux/reducers/messagesModalSlice";
 import { joinSignature } from "@ethersproject/bytes";
 import { SiweMessage } from "siwe";
-import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import { useAccount } from "wagmi";
 import {
   ACCEPTED_TOKENS,
@@ -27,9 +26,6 @@ import { polygonMumbai, polygon } from "viem/chains";
 import { getOrders } from "../../../../../graphql/subgraph/queries/getOrders";
 import { encryptItems } from "../../../../../lib/subgraph/helpers/encryptItems";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
-import { getPreRollId } from "../../../../../graphql/subgraph/queries/getPreRolls";
-import { fetchIpfsJson } from "../../../../../lib/algolia/helpers/fetchIpfsJson";
-import { setAllOrders } from "../../../../../redux/reducers/allOrdersSlice";
 
 const useCheckout = () => {
   const router = useRouter();
@@ -47,6 +43,9 @@ const useCheckout = () => {
   );
   const litClient = useSelector(
     (state: RootState) => state.app.litClientReducer.value
+  );
+  const currentPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
   );
   const [approved, setApproved] = useState<boolean>(false);
   const [cartItem, setCartItem] = useState<CartItem | undefined>();
@@ -86,6 +85,7 @@ const useCheckout = () => {
   });
 
   const getAddressApproved = async () => {
+    if (!address) return;
     try {
       const data = await publicClient.readContract({
         address: ACCEPTED_TOKENS_MUMBAI.find(
@@ -190,12 +190,29 @@ const useCheckout = () => {
   };
 
   const handleCheckoutFiat = async () => {
+    if (!stripe || !elements || !currentPKP) {
+      return;
+    }
+
+    if (
+      fulfillmentDetails.address.trim() === "" ||
+      fulfillmentDetails.city.trim() === "" ||
+      fulfillmentDetails.contact.trim() === "" ||
+      fulfillmentDetails.country.trim() === "" ||
+      fulfillmentDetails.name.trim() === "" ||
+      fulfillmentDetails.state.trim() === "" ||
+      fulfillmentDetails.zip.trim() === ""
+    ) {
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Fill out your Contact & Shipment details first.",
+        })
+      );
+      return;
+    }
     setFiatCheckoutLoading(true);
     try {
-      if (!stripe || !elements) {
-        return;
-      }
-
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -403,6 +420,7 @@ const useCheckout = () => {
             ),
             customURIs: [],
             fulfillmentDetails: JSON.stringify(fulfillerDetails),
+            pkpTokenId: "",
             chosenTokenAddress: ACCEPTED_TOKENS_MUMBAI.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],
@@ -514,6 +532,7 @@ const useCheckout = () => {
             ),
             customURIs: [],
             fulfillmentDetails: JSON.stringify(fulfillerDetails),
+            pkpTokenId: currentPKP?.tokenId,
             chosenTokenAddress: ACCEPTED_TOKENS_MUMBAI.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],
@@ -567,7 +586,7 @@ const useCheckout = () => {
         },
         fulfillerGroups,
         fulfillmentDetails,
-        address!
+        ethers.utils.computeAddress(currentPKP?.publicKey!) as `0x${string}`
       );
 
       const provider = new ethers.providers.JsonRpcProvider(

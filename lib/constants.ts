@@ -81,3 +81,5 @@ export const allFonts: string[] = [
 ];
 
 export const negative_prompt: string = "";
+
+export const REDIRECT_URI: string = "https://coinop.themanufactory.xyz/";

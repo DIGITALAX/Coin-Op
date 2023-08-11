@@ -14,6 +14,7 @@ import {
   useChainModal,
   useConnectModal,
 } from "@rainbow-me/rainbowkit";
+import { setLogin } from "../../../../redux/reducers/loginSlice";
 
 const Header: FunctionComponent<HeaderProps> = ({
   preRollRef,
@@ -28,7 +29,6 @@ const Header: FunctionComponent<HeaderProps> = ({
     handleAddToCart,
     cartAnim,
   } = useRollSearch();
-  const { openConnectModal } = useConnectModal();
   const { openAccountModal } = useAccountModal();
   const { openChainModal } = useChainModal();
   const rollSearch = useSelector(
@@ -86,15 +86,15 @@ const Header: FunctionComponent<HeaderProps> = ({
           <div
             className="relative w-20 h-7 px-1 text-white flex items-center justify-center border border-white cursor-pointer"
             onClick={
-              chain !== 137
+              !connected
+                ? () => dispatch(setLogin(true))
+                : connected && chain !== 137
                 ? openChainModal
-                : connected
-                ? openAccountModal
-                : openConnectModal
+                : openAccountModal
             }
           >
             <div className="relative text-xxs font-mana">
-              {chain !== 137 ? "Switch" : connected ? "Connected" : "Connect"}
+              {!connected ? "Connect" : chain !== 137 ? "Switch" : "Connected"}
             </div>
           </div>
           <Link

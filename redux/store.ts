@@ -34,6 +34,8 @@ import apiAddReducer from "./reducers/apiAddSlice";
 import allOrdersReducer from "./reducers/allOrdersSlice";
 import walletConnectedReducer from "./reducers/walletConnectedSlice";
 import chainReducer from "./reducers/chainSlice";
+import loginReducer from "./reducers/loginSlice";
+import currentPKPReducer from "./reducers/currentPKPSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -69,7 +71,9 @@ const reducer = combineReducers({
   apiAddReducer,
   allOrdersReducer,
   walletConnectedReducer,
-  chainReducer
+  chainReducer,
+  loginReducer,
+  currentPKPReducer
 });
 
 export const store = configureStore({

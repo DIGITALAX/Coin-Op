@@ -10,17 +10,20 @@ import { setSynthConfig } from "../../../../redux/reducers/synthConfigSlice";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
+import { setChain } from "../../../../redux/reducers/chainSlice";
 
 const useRollSearch = () => {
   const { scrollRef, synthRef } = useContext(ScrollContext);
   const { isConnected, address } = useAccount();
+  const { chain: chainNetwork } = useNetwork();
   const dispatch = useDispatch();
   const [prompt, setPrompt] = useState<string>("");
   const [cartAnim, setCartAnim] = useState<boolean>(false);
   const algolia = useSelector(
     (state: RootState) => state.app.algoliaReducer.value
   );
+  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
@@ -134,7 +137,8 @@ const useRollSearch = () => {
 
   useEffect(() => {
     dispatch(setWalletConnected(isConnected));
-  }, [address, isConnected]);
+    dispatch(setChain(chainNetwork?.id));
+  }, [address, isConnected, chainNetwork]);
 
   return {
     handleRollSearch,
