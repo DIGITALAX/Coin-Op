@@ -2,29 +2,40 @@ import { FunctionComponent } from "react";
 import { FiatProps } from "../types/synth.types";
 import { AiOutlineLoading } from "react-icons/ai";
 import { PaymentElement } from "@stripe/react-stripe-js";
-import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
+import { setLogin } from "../../../../../redux/reducers/loginSlice";
 
 const Fiat: FunctionComponent<FiatProps> = ({
   handleCheckoutFiat,
   fiatCheckoutLoading,
   cartItems,
+  encryptFulfillerInformation,
+  encryptedInformation,
+  connectedPKP,
+  dispatch,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 h-fit flex flex-col gap-5 pt-4">
-      <div className="relative w-full h-fit flex">
-        <PaymentElement
-          id="payment-element"
-          className="relative w-full h-fit flex flex-col"
-        />
-      </div>
+      {encryptedInformation && (
+        <div className="relative w-full h-fit flex">
+          <PaymentElement
+            id="payment-element"
+            className="relative w-full h-fit flex flex-col"
+          />
+        </div>
+      )}
       <div
         className={`relative w-full h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex ${
-          !fiatCheckoutLoading && cartItems?.length > 0
-            ? "cursor-pointer active:scale-95"
-            : "opacity-70"
+          !fiatCheckoutLoading ? "cursor-pointer active:scale-95" : "opacity-70"
         }`}
-        onClick={() =>
-          !fiatCheckoutLoading && cartItems?.length > 0 && handleCheckoutFiat()
+        onClick={
+          !fiatCheckoutLoading && !connectedPKP
+            ? () => dispatch(setLogin(true))
+            : !fiatCheckoutLoading && !encryptedInformation
+            ? () => encryptFulfillerInformation()
+            : () =>
+                !fiatCheckoutLoading &&
+                cartItems?.length > 0 &&
+                handleCheckoutFiat()
         }
       >
         <div
@@ -34,6 +45,10 @@ const Fiat: FunctionComponent<FiatProps> = ({
         >
           {fiatCheckoutLoading ? (
             <AiOutlineLoading size={15} color={"white"} />
+          ) : !connectedPKP ? (
+            "CONNECT"
+          ) : !encryptedInformation ? (
+            "SET ORDER INFO"
           ) : (
             "CHECKOUT"
           )}

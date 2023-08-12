@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { graphClient } from "../../../lib/subgraph/client";
+import { graphClient, graphClientTestnet } from "../../../lib/subgraph/client";
 
 const TEMPLATES_PRINTTYPE = `
   query($printType: String) {
@@ -19,7 +19,7 @@ const TEMPLATES_PRINTTYPE = `
 export const getTemplatesByPrintType = async (
   printType: string
 ): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = graphClientTestnet.query({
     query: gql(TEMPLATES_PRINTTYPE),
     variables: {
       printType,

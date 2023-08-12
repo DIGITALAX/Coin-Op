@@ -23,6 +23,9 @@ const Order: FunctionComponent<OrderProps> = ({
   setUpdatedInformation,
   decryptMessageLoading,
   handleDecryptMessage,
+  chain,
+  openChainModal,
+  connected,
 }): JSX.Element => {
   return (
     <div className={`relative w-full border border-white bg-smo/10 p-2 h-fit`}>
@@ -47,7 +50,7 @@ const Order: FunctionComponent<OrderProps> = ({
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
             {order?.sinPKP
               ? `${
-                  ACCEPTED_TOKENS.find(
+                  ACCEPTED_TOKENS_MUMBAI.find(
                     (subArray) =>
                       subArray[2].toLowerCase() ===
                       order.chosenAddress.toLowerCase()
@@ -55,7 +58,7 @@ const Order: FunctionComponent<OrderProps> = ({
                 } `
               : "$"}{" "}
             {Number(order.totalPrice) /
-              ((ACCEPTED_TOKENS.find(
+              ((ACCEPTED_TOKENS_MUMBAI.find(
                 ([_, token]) =>
                   token.toLowerCase() === order.chosenAddress.toLowerCase()
               )?.[2] as `0x${string}`) ===
@@ -170,11 +173,15 @@ const Order: FunctionComponent<OrderProps> = ({
                       !decryptMessageLoading[index] &&
                       "cursor-pointer hover:opacity-70"
                     }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      !decryptMessageLoading[index] &&
-                        handleDecryptMessage(order);
-                    }}
+                    onClick={
+                      connected && chain !== 137
+                        ? openChainModal
+                        : (e) => {
+                            e.stopPropagation();
+                            !decryptMessageLoading[index] &&
+                              handleDecryptMessage(order);
+                          }
+                    }
                   >
                     <div
                       className={`relative flex w-fit h-fit items-center justify-center text-center text-xxs  ${
@@ -201,11 +208,16 @@ const Order: FunctionComponent<OrderProps> = ({
                         !decryptLoading[index] &&
                         "cursor-pointer hover:opacity-70"
                       }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        !decryptLoading[index] &&
-                          handleDecryptFulfillment(order);
-                      }}
+                      onClick={
+                        
+                        connected && chain !== 137
+                          ? openChainModal
+                          : (e) => {
+                              e.stopPropagation();
+                              !decryptLoading[index] &&
+                                handleDecryptFulfillment(order);
+                            }
+                      }
                     >
                       <div
                         className={`relative flex w-fit h-fit items-center justify-center text-center text-xxs  ${
@@ -462,11 +474,15 @@ const Order: FunctionComponent<OrderProps> = ({
                     className={`relative w-24 h-8 justify-center flex items-center flex-col text-base text-black font-monu border border-black bg-sol ${
                       !updateLoading[index] && "cursor-pointer hover:opacity-70"
                     }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      !updateLoading[index] &&
-                        updateFulfillmentInformation(index);
-                    }}
+                    onClick={
+                      connected && chain !== 137
+                        ? openChainModal
+                        : (e) => {
+                            e.stopPropagation();
+                            !updateLoading[index] &&
+                              updateFulfillmentInformation(index);
+                          }
+                    }
                   >
                     <div
                       className={`relative flex w-fit h-fit items-center justify-center text-center text-xxs  ${

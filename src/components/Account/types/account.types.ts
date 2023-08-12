@@ -5,6 +5,7 @@ export interface Order {
   subOrderIds: string[];
   fulfillerIds: string[];
   prices: string[];
+  pkpTokenId: string;
   totalPrice: string;
   transactionHash: string;
   fulfillmentInformation: {
@@ -62,7 +63,6 @@ export interface Order {
 }
 
 export type AllOrdersProps = {
-  openConnectModal: (() => void) | undefined;
   connected: boolean;
   ordersLoading: boolean;
   allOrders: Order[];
@@ -77,12 +77,24 @@ export type AllOrdersProps = {
   updateLoading: boolean[];
   decryptMessageLoading: boolean[];
   handleDecryptMessage: (order: Order) => Promise<void>;
-  chain: number | undefined
+  chain: number | undefined;
   openChainModal: (() => void) | undefined;
+  connectedPKP:
+    | {
+        ethAddress: string;
+        publicKey: string;
+        tokenId: {
+          hex: string;
+          type: string;
+        };
+      }
+    | undefined;
 };
 
 export type OrderProps = {
   order: Order;
+  chain: number | undefined;
+  openChainModal: (() => void) | undefined;
   orderOpen: boolean[];
   setOrderOpen: (e: boolean[]) => void;
   index: number;
@@ -94,6 +106,7 @@ export type OrderProps = {
   updateLoading: boolean[];
   decryptMessageLoading: boolean[];
   handleDecryptMessage: (order: Order) => Promise<void>;
+  connected: boolean;
 };
 
 export type InformationType = {

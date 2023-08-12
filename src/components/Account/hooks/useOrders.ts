@@ -1,27 +1,40 @@
 import { useEffect, useState } from "react";
-import { getOrders } from "../../../../graphql/subgraph/queries/getOrders";
+import {
+  getOrders,
+  getOrdersPKP,
+} from "../../../../graphql/subgraph/queries/getOrders";
 import { useAccount } from "wagmi";
+import { serialize } from "@ethersproject/transactions";
+import { joinSignature } from "@ethersproject/bytes";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { getPreRollId } from "../../../../graphql/subgraph/queries/getPreRolls";
 import CoinOpMarketABI from "../../../../abis/CoinOpMarket.json";
 import { setAllOrders } from "../../../../redux/reducers/allOrdersSlice";
 import { fetchIpfsJson } from "../../../../lib/algolia/helpers/fetchIpfsJson";
+import { ethers } from "ethers";
 import {
   checkAndSignAuthMessage,
   decryptString,
 } from "@lit-protocol/lit-node-client";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon, polygonMumbai } from "viem/chains";
-import { COIN_OP_FULFILLMENT, COIN_OP_MARKET } from "../../../../lib/constants";
+import {
+  COIN_OP_FULFILLMENT,
+  COIN_OP_MARKET,
+  IPFS_CID_PKP,
+  PKP_ADDRESS,
+  PKP_PUBLIC_KEY,
+} from "../../../../lib/constants";
 import { InformationType, Order } from "../types/account.types";
 import { encryptItems } from "../../../../lib/subgraph/helpers/encryptItems";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
+import { generateAuthSignature } from "../../../../lib/subgraph/helpers/generateAuthSignature";
 
 const useOrders = () => {
   const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
+    chain: polygonMumbai,
+    transport: http("https://rpc-mumbai.maticvigil.com/"),
   });
   const { address } = useAccount();
   const dispatch = useDispatch();
@@ -30,6 +43,9 @@ const useOrders = () => {
   );
   const litClient = useSelector(
     (state: RootState) => state.app.litClientReducer.value
+  );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
   );
   const [ordersLoading, setOrdersLoading] = useState<boolean>(false);
   const [decryptLoading, setDecryptLoading] = useState<boolean[]>([]);
@@ -45,7 +61,13 @@ const useOrders = () => {
   const getAllOrders = async () => {
     setOrdersLoading(true);
     try {
-      const res = await getOrders(address as string);
+      let res;
+      if (connectedPKP?.pkpWallet) {
+        res = await getOrdersPKP(BigInt(connectedPKP?.tokenId.hex!).toString());
+      } else {
+        res = await getOrders(address as string);
+      }
+
       if (!res || res?.data?.orderCreateds?.length < 1) {
         setOrdersLoading(false);
         return;
@@ -145,7 +167,7 @@ const useOrders = () => {
   };
 
   const handleDecryptMessage = async (order: Order): Promise<void> => {
-    if (!address) {
+    if (!address && !connectedPKP?.pkpWallet) {
       return;
     }
     setDecryptMessageLoading((prev) =>
@@ -161,17 +183,22 @@ const useOrders = () => {
       )
     );
     try {
-      const client = new LitNodeClient({ debug: false });
+      const client = new LitNodeClient({ litNetwork: "serrano", debug: false });
       await client.connect();
-      const authSig = await checkAndSignAuthMessage({
-        chain: "polygon",
-      });
+      let authSig;
+      if (connectedPKP?.pkpWallet) {
+        authSig = await generateAuthSignature(connectedPKP);
+      } else {
+        authSig = await checkAndSignAuthMessage({
+          chain: "mumbai",
+        });
+      }
       const fulfillerAddress = await getFulfillerAddress();
       let fulfillerEditions = order.subOrderIds.map((_) => {
         return {
           contractAddress: "",
           standardContractType: "",
-          chain: "polygon",
+          chain: "mumbai",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
@@ -193,18 +220,20 @@ const useOrders = () => {
               {
                 contractAddress: "",
                 standardContractType: "",
-                chain: "polygon",
+                chain: "mumbai",
                 method: "",
                 parameters: [":userAddress"],
                 returnValueTest: {
                   comparator: "=",
-                  value: address.toLowerCase() as string,
+                  value: address
+                    ? address.toLowerCase()
+                    : connectedPKP?.ethAddress.toLowerCase(),
                 },
               },
             ],
             toDecrypt: order?.message[i].encryptedSymmetricKey!,
             authSig,
-            chain: "polygon",
+            chain: "mumbai",
           });
           const uintString = new Uint8Array(order?.message[i].encryptedString!)
             .buffer;
@@ -249,7 +278,7 @@ const useOrders = () => {
     if (
       !order?.fulfillmentInformation?.encryptedSymmetricKey ||
       !order?.fulfillmentInformation?.encryptedString ||
-      !address
+      (!address && !connectedPKP?.pkpWallet)
     ) {
       return;
     }
@@ -266,11 +295,17 @@ const useOrders = () => {
       )
     );
     try {
-      const client = new LitNodeClient({ debug: false });
+      const client = new LitNodeClient({ litNetwork: "serrano", debug: false });
       await client.connect();
-      const authSig = await checkAndSignAuthMessage({
-        chain: "polygon",
-      });
+      let authSig;
+      if (connectedPKP?.pkpWallet) {
+        authSig = await generateAuthSignature(connectedPKP);
+      } else {
+        authSig = await checkAndSignAuthMessage({
+          chain: "mumbai",
+        });
+      }
+
       const fulfillerAddress = await getFulfillerAddress();
       let fulfillerEditions: any[] = [];
 
@@ -278,7 +313,7 @@ const useOrders = () => {
         fulfillerEditions.push({
           contractAddress: "",
           standardContractType: "",
-          chain: "polygon",
+          chain: "mumbai",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
@@ -299,18 +334,20 @@ const useOrders = () => {
             {
               contractAddress: "",
               standardContractType: "",
-              chain: "polygon",
+              chain: "mumbai",
               method: "",
               parameters: [":userAddress"],
               returnValueTest: {
                 comparator: "=",
-                value: address.toLowerCase() as string,
+                value: address
+                  ? address.toLowerCase()
+                  : connectedPKP?.ethAddress.toLowerCase(),
               },
             },
           ],
           toDecrypt: order?.fulfillmentInformation?.encryptedSymmetricKey!,
           authSig,
-          chain: "polygon",
+          chain: "mumbai",
         });
         const uintString = new Uint8Array(
           order?.fulfillmentInformation?.encryptedString!
@@ -358,6 +395,119 @@ const useOrders = () => {
     );
   };
 
+  const cryptoUpdateOrderInfo = async (
+    fulfillerDetails: string[],
+    index: number
+  ) => {
+    try {
+      const { request } = await publicClient.simulateContract({
+        address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
+        abi: CoinOpMarketABI,
+        functionName: "setOrderDetails",
+        args: [allOrders[index].orderId, JSON.stringify(fulfillerDetails)],
+        account: address?.toLowerCase() as `0x${string}`,
+      });
+      const clientWallet = createWalletClient({
+        chain: polygonMumbai,
+        transport: custom((window as any).ethereum),
+      });
+      const res = await clientWallet.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash: res });
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const createTxData = async (
+    fulfillerDetails: string[],
+    provider: ethers.providers.JsonRpcProvider,
+    index: number
+  ) => {
+    try {
+      const contractInterface = new ethers.utils.Interface(
+        CoinOpMarketABI as any
+      );
+
+      const latestBlock = await provider.getBlock("latest");
+      const baseFeePerGas = latestBlock.baseFeePerGas;
+      const maxFeePerGas = baseFeePerGas?.add(
+        ethers.utils.parseUnits("10", "gwei")
+      );
+      const maxPriorityFeePerGas = ethers.utils.parseUnits("3", "gwei");
+      return {
+        to: COIN_OP_MARKET,
+        nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
+        chainId: 80001,
+        gasLimit: ethers.BigNumber.from("8000000"),
+        maxFeePerGas: maxFeePerGas,
+        maxPriorityFeePerGas: maxPriorityFeePerGas,
+        from: "{{publicKey}}",
+        data: contractInterface.encodeFunctionData("setOrderDetails", [
+          allOrders[index].orderId,
+          JSON.stringify(fulfillerDetails),
+        ]),
+        value: ethers.BigNumber.from(0),
+        type: 2,
+      };
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const fiatUpdateOrderInfo = async (
+    index: number,
+    fulfillerDetails: string[],
+    client: any,
+    authSig: any
+  ) => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`,
+        80001
+      );
+      const tx = await createTxData(fulfillerDetails, provider, index);
+
+      const results = await client.executeJs({
+        ipfsId: IPFS_CID_PKP,
+        authSig,
+        jsParams: {
+          publicKey: PKP_PUBLIC_KEY,
+          tx,
+          sigName: "coinOpUpdateOrderInfo",
+        },
+      });
+
+      const signature = results.signatures["coinOpUpdateOrderInfo"];
+      const sig: {
+        r: string;
+        s: string;
+        recid: number;
+        signature: string;
+        publicKey: string;
+        dataSigned: string;
+      } = signature as {
+        r: string;
+        s: string;
+        recid: number;
+        signature: string;
+        publicKey: string;
+        dataSigned: string;
+      };
+
+      const encodedSignature = joinSignature({
+        r: "0x" + sig.r,
+        s: "0x" + sig.s,
+        recoveryParam: sig.recid,
+      });
+      const serialized = serialize(tx as any, encodedSignature);
+      const transactionHash = await provider.sendTransaction(serialized);
+
+      await transactionHash.wait();
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
   const updateFulfillmentInformation = async (index: number) => {
     setUpdateLoading((prev) =>
       prev.map((val, idx) => (idx === index ? true : val))
@@ -381,7 +531,12 @@ const useOrders = () => {
         }
       }
 
-      const fulfillerDetails = await encryptItems(
+      let authSig = undefined;
+      if (connectedPKP?.pkpWallet) {
+        authSig = await generateAuthSignature(connectedPKP);
+      }
+
+      const returned = await encryptItems(
         litClient,
         dispatch,
         {
@@ -406,22 +561,22 @@ const useOrders = () => {
         },
         fulfillerGroups,
         updatedInformation[index],
-        address!
+        connectedPKP?.pkpWallet
+          ? (connectedPKP?.ethAddress as `0x${string}`)
+          : (address! as `0x${string}`),
+        authSig
       );
 
-      const { request } = await publicClient.simulateContract({
-        address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
-        abi: CoinOpMarketABI,
-        functionName: "setOrderDetails",
-        args: [allOrders[index].orderId, JSON.stringify(fulfillerDetails)],
-        account: address?.toLowerCase() as `0x${string}`,
-      });
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-      const res = await clientWallet.writeContract(request);
-      await publicClient.waitForTransactionReceipt({ hash: res });
+      if (connectedPKP?.pkpWallet) {
+        await fiatUpdateOrderInfo(
+          index,
+          returned?.fulfillerDetails!,
+          returned?.client,
+          authSig
+        );
+      } else {
+        await cryptoUpdateOrderInfo(returned?.fulfillerDetails!, index);
+      }
     } catch (err: any) {
       console.error(err.message);
     }
@@ -441,12 +596,12 @@ const useOrders = () => {
   };
 
   useEffect(() => {
-    if (address) {
+    if (address || connectedPKP?.pkpWallet) {
       getAllOrders();
     } else {
       dispatch(setAllOrders([]));
     }
-  }, [address]);
+  }, [address, connectedPKP?.pkpWallet]);
 
   useEffect(() => {
     setDecryptLoading(Array.from({ length: allOrders.length }, () => false));

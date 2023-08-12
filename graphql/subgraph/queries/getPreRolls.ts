@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { graphClient } from "../../../lib/subgraph/client";
+import { graphClient, graphClientTestnet } from "../../../lib/subgraph/client";
 
 const ALL_PREROLLS = `
   query {
@@ -32,7 +32,7 @@ const PREROLL_ID = `
 `;
 
 export const getAllPreRolls = async (): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = graphClientTestnet.query({
     query: gql(ALL_PREROLLS),
     fetchPolicy: "no-cache",
     errorPolicy: "all",
@@ -53,7 +53,7 @@ export const getAllPreRolls = async (): Promise<any> => {
 };
 
 export const getPreRollId = async (collectionId: string): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = graphClientTestnet.query({
     query: gql(PREROLL_ID),
     variables: {
       collectionId,

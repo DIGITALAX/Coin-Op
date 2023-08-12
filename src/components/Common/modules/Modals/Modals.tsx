@@ -17,7 +17,6 @@ import { useRouter } from "next/router";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Login from "./Login";
 import useLogin from "@/components/Layout/hooks/useLogin";
-import Fiat from "./Fiat";
 
 const Modals = () => {
   const dispatch = useDispatch();
@@ -31,10 +30,12 @@ const Modals = () => {
   const messageModal = useSelector(
     (state: RootState) => state.app.messagesModalReducer
   );
+  const currentPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
+  );
   const searchExpand = useSelector(
     (state: RootState) => state.app.searchExpandReducer
   );
-  const fiat = useSelector((state: RootState) => state.app.fiatReducer);
   const login = useSelector((state: RootState) => state.app.loginReducer);
   const lensPost = useSelector(
     (state: RootState) => state.app.lensPostBoxReducer
@@ -220,7 +221,6 @@ const Modals = () => {
           distanceFromBottom={distanceFromBottom}
         />
       )}
-      {fiat.value && <Fiat dispatch={dispatch} />}
       {apiAdd?.open && <ApiAdd dispatch={dispatch} />}
       {searchExpand?.value && (
         <SearchExpand
@@ -242,6 +242,7 @@ const Modals = () => {
           openConnectModal={openConnectModal}
           dispatch={dispatch}
           loginWithDiscord={loginWithDiscord}
+          currentPKP={currentPKP}
         />
       )}
     </>

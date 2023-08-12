@@ -443,6 +443,16 @@ export type LoginProps = {
   openConnectModal: (() => void) | undefined;
   loginWithDiscord: () => Promise<void>;
   loginLoading: boolean;
+  currentPKP:
+    | {
+        ethAddress: string;
+        publicKey: string;
+        tokenId: {
+          hex: string;
+          type: string;
+        };
+      }
+    | undefined;
 };
 
 export type FiatProps = {

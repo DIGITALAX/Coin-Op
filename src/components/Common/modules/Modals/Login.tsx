@@ -3,12 +3,14 @@ import { LoginProps } from "../../types/common.types";
 import { ImCross } from "react-icons/im";
 import { setLogin } from "../../../../../redux/reducers/loginSlice";
 import { AiOutlineLoading } from "react-icons/ai";
+import { setCurrentPKP } from "../../../../../redux/reducers/currentPKPSlice";
 
 const Login: FunctionComponent<LoginProps> = ({
   dispatch,
   openConnectModal,
   loginWithDiscord,
   loginLoading,
+  currentPKP,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -25,8 +27,8 @@ const Login: FunctionComponent<LoginProps> = ({
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
                 <div
-                  className="relative  w-60 h-10 justify-center items-center text-white font-mana text-sm text-center cursor-pointer active:scale-95 border border-white  px-3 py-2 flex bg-sol/50"
-                  onClick={() => dispatch(setLogin(false))}
+                  className={`relative w-48 sm:w-60 h-10 justify-center items-center text-white font-vcr text-sm text-center border border-white  px-3 py-2 flex bg-sol/50 cursor-pointer active:scale-95`}
+                  onClick={() =>  dispatch(setLogin(false))}
                   onClickCapture={openConnectModal}
                 >
                   <div className="relative w-fit h-fit flex items-center justify-center">
@@ -34,8 +36,14 @@ const Login: FunctionComponent<LoginProps> = ({
                   </div>
                 </div>
                 <div
-                  className="relative w-60 h-10 justify-center items-center text-white font-mana text-sm text-center border border-white px-3 py-2 flex bg-sol/50 opacity-30"
-                  // onClick={() => loginWithDiscord()}
+                  className={`relative w-48 sm:w-60 h-10 justify-center items-center text-white font-vcr text-sm text-center border border-white px-3 py-2 flex  cursor-pointer active:scale-95 ${
+                    !currentPKP ? "bg-sol/50" : "bg-smo/50"
+                  }`}
+                  onClick={() =>
+                    !currentPKP
+                      ? loginWithDiscord()
+                      : dispatch(setCurrentPKP(undefined))
+                  }
                 >
                   <div
                     className={`relative w-fit h-fit flex items-center justify-center ${
@@ -44,8 +52,10 @@ const Login: FunctionComponent<LoginProps> = ({
                   >
                     {loginLoading ? (
                       <AiOutlineLoading size={15} color="white" />
-                    ) : (
+                    ) : !currentPKP ? (
                       "Connect Google Auth"
+                    ) : (
+                      "Logout Google Auth"
                     )}
                   </div>
                 </div>

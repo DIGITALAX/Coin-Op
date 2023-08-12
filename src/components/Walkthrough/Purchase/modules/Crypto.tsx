@@ -4,7 +4,6 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { setLogin } from "../../../../../redux/reducers/loginSlice";
 
 const Crypto: FunctionComponent<CryptoProps> = ({
-  openConnectModal,
   address,
   signInLoading,
   handleCheckoutCrypto,
@@ -12,33 +11,31 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   approved,
   handleApproveSpend,
   cartItems,
-  openChainModal,
-  chain,
-  dispatch
+  dispatch,
 }): JSX.Element => {
   return (
     <div
       className={`relative w-3/4 h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex  ${
-        !signInLoading && !cryptoCheckoutLoading && cartItems?.length > 0
+        !signInLoading && !cryptoCheckoutLoading
           ? "cursor-pointer active:scale-95"
           : "opacity-70"
       }`}
       onClick={
         !signInLoading && !address && !cryptoCheckoutLoading
           ? () => dispatch(setLogin(true))
-          // : chain !== 137
+          : // : chain !== 137
           // ? openChainModal
-          : approved
+          approved
           ? () =>
               !signInLoading &&
               !cryptoCheckoutLoading &&
               cartItems?.length > 0 &&
-              handleCheckoutCrypto()
+              handleCheckoutCrypto!()
           : () =>
               !signInLoading &&
               !cryptoCheckoutLoading &&
               cartItems?.length > 0 &&
-              handleApproveSpend()
+              handleApproveSpend!()
       }
     >
       <div

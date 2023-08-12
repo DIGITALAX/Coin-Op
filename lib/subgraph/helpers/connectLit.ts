@@ -7,10 +7,9 @@ export const connectLit = async (
 ): Promise<LitJsSdk.LitNodeClient | undefined> => {
   try {
     const client = new LitJsSdk.LitNodeClient({
-      debug: true,
+      debug: false,
       alertWhenUnauthorized: true,
-      chain: 137,
-      provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+      litNetwork: "serrano",
     });
     await client.connect();
     dispatch(setLitClient(client));

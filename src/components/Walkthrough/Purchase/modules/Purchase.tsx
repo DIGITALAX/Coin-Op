@@ -1,9 +1,12 @@
 import { FunctionComponent } from "react";
 import Grid from "./Grid";
 import { PurchaseProps } from "../types/synth.types";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import useStripe from "../hooks/useStripe";
+import { Elements } from "@stripe/react-stripe-js";
+import { RootState } from "../../../../../redux/store";
+import { useSelector } from "react-redux";
+import { loadStripe } from "@stripe/stripe-js";
+import PlainGrid from "./PlainGrid";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
@@ -16,14 +19,18 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   signInLoading,
   address,
   openConnectModal,
-  chain,
-  openChainModal
 }): JSX.Element => {
-  const { options, clientSecret } = useStripe();
+  const { options } = useStripe();
+  const clientSecret = useSelector(
+    (state: RootState) => state.app.clientSecretReducer.value
+  );
+  const fulfillmentDetails = useSelector(
+    (state: RootState) => state.app.fulfillmentDetailsReducer.value
+  );
   return (
     <div className="relative w-full h-fit flex flex-col">
-      {clientSecret && (
-        <Elements stripe={stripePromise} options={options}>
+      {clientSecret && cartItems?.length > 0 ? (
+        <Elements key={clientSecret} stripe={stripePromise} options={options}>
           <Grid
             dispatch={dispatch}
             scrollRef={scrollRef}
@@ -31,10 +38,19 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
             address={address}
             openConnectModal={openConnectModal}
             signInLoading={signInLoading}
-            chain={chain}
-            openChainModal={openChainModal}
+            fulfillmentDetails={fulfillmentDetails}
           />
         </Elements>
+      ) : (
+        <PlainGrid
+          dispatch={dispatch}
+          scrollRef={scrollRef}
+          cartItems={cartItems}
+          address={address}
+          openConnectModal={openConnectModal}
+          signInLoading={signInLoading}
+          fulfillmentDetails={fulfillmentDetails}
+        />
       )}
     </div>
   );

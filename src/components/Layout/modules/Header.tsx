@@ -9,12 +9,10 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { HeaderProps } from "@/components/Common/types/common.types";
-import {
-  useAccountModal,
-  useChainModal,
-  useConnectModal,
-} from "@rainbow-me/rainbowkit";
+import { useAccountModal, useChainModal } from "@rainbow-me/rainbowkit";
 import { setLogin } from "../../../../redux/reducers/loginSlice";
+import useLogin from "../hooks/useLogin";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const Header: FunctionComponent<HeaderProps> = ({
   preRollRef,
@@ -29,6 +27,7 @@ const Header: FunctionComponent<HeaderProps> = ({
     handleAddToCart,
     cartAnim,
   } = useRollSearch();
+  const { loginLoading } = useLogin();
   const { openAccountModal } = useAccountModal();
   const { openChainModal } = useChainModal();
   const rollSearch = useSelector(
@@ -39,6 +38,9 @@ const Header: FunctionComponent<HeaderProps> = ({
   );
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
+  );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
   );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const router = useRouter();
@@ -86,15 +88,29 @@ const Header: FunctionComponent<HeaderProps> = ({
           <div
             className="relative w-20 h-7 px-1 text-white flex items-center justify-center border border-white cursor-pointer"
             onClick={
-              !connected
+              !connected && !connectedPKP
                 ? () => dispatch(setLogin(true))
                 : connected && chain !== 137
                 ? openChainModal
-                : openAccountModal
+                : connected
+                ? openAccountModal
+                : () => dispatch(setLogin(true))
             }
           >
-            <div className="relative text-xxs font-mana">
-              {!connected ? "Connect" : chain !== 137 ? "Switch" : "Connected"}
+            <div
+              className={`relative text-xxs font-mana ${
+                loginLoading && "animate-spin"
+              }`}
+            >
+              {loginLoading ? (
+                <AiOutlineLoading size={10} color="white" />
+              ) : !connected && !connectedPKP ? (
+                "Connect"
+              ) : connected && chain !== 137 ? (
+                "Switch"
+              ) : (
+                "Connected"
+              )}
             </div>
           </div>
           <Link

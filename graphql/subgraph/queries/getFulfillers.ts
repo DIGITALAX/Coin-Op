@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { graphClient } from "../../../lib/subgraph/client";
+import { graphClient, graphClientTestnet } from "../../../lib/subgraph/client";
 
 const ALL_FULFILLERS = `
   query {
@@ -12,7 +12,7 @@ const ALL_FULFILLERS = `
 `;
 
 export const getFulfillers = async (): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = graphClientTestnet.query({
     query: gql(ALL_FULFILLERS),
     fetchPolicy: "no-cache",
     errorPolicy: "all",

@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
+import { useChainModal } from "@rainbow-me/rainbowkit";
 import Head from "next/head";
 import AllOrders from "@/components/Account/modals/AllOrders";
 import useOrders from "@/components/Account/hooks/useOrders";
@@ -18,9 +18,11 @@ const Account: NextPage = (): JSX.Element => {
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
+  );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const dispatch = useDispatch();
-  const { openConnectModal } = useConnectModal();
   const { openChainModal } = useChainModal();
   const {
     ordersLoading,
@@ -138,7 +140,6 @@ const Account: NextPage = (): JSX.Element => {
         />
       </Head>
       <AllOrders
-        openConnectModal={openConnectModal}
         connected={connected}
         ordersLoading={ordersLoading}
         allOrders={allOrders}
@@ -153,8 +154,9 @@ const Account: NextPage = (): JSX.Element => {
         setUpdatedInformation={setUpdatedInformation}
         decryptMessageLoading={decryptMessageLoading}
         handleDecryptMessage={handleDecryptMessage}
-        chain={chain}
+        connectedPKP={connectedPKP}
         openChainModal={openChainModal}
+        chain={chain}
       />
     </div>
   );

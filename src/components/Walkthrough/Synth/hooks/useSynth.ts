@@ -257,7 +257,7 @@ const useSynth = () => {
       if (responseJSON === null || !responseJSON) {
         dispatch(
           setModalOpen({
-            actionOpen: false,
+            actionOpen: true,
             actionMessage:
               "Something went wrong generating your synth, try again?",
           })

@@ -6,7 +6,6 @@ import { setLogin } from "../../../../redux/reducers/loginSlice";
 
 const AllOrders: FunctionComponent<AllOrdersProps> = ({
   allOrders,
-  openConnectModal,
   connected,
   ordersLoading,
   orderOpen,
@@ -20,6 +19,7 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
   setUpdatedInformation,
   decryptMessageLoading,
   handleDecryptMessage,
+  connectedPKP,
   chain,
   openChainModal,
 }): JSX.Element => {
@@ -29,7 +29,7 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
         <div className="font-monu text-2xl text-left w-fit h-fit flex justify-start items-center">
           All Orders.
         </div>
-        {!connected ? (
+        {!connected && !connectedPKP ? (
           <div
             className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
             onClick={() => dispatch(setLogin(true))}
@@ -51,7 +51,11 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
             className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
             onClick={() => dispatch(setPreRollAnim(true))}
           >
-            No Orders Yet. Shop PreRolls?
+            No Orders Yet. Shop PreRolls? <br />
+            <br />
+            If you've bought some items but they're not showing in your account
+            yet, no stress, these on-chain order updates aren&apos;t always
+            instant - check back soon.
           </div>
         ) : (
           allOrders?.map((order: OrderType, index: number) => {
@@ -70,6 +74,9 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
                 setUpdatedInformation={setUpdatedInformation}
                 decryptMessageLoading={decryptMessageLoading}
                 handleDecryptMessage={handleDecryptMessage}
+                openChainModal={openChainModal}
+                chain={chain}
+                connected={connected}
               />
             );
           })

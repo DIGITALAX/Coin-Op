@@ -9,8 +9,6 @@ export type PurchaseProps = {
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
-  openChainModal: (() => void) | undefined;
-  chain: number | undefined;
 };
 
 export type GridProps = {
@@ -20,8 +18,33 @@ export type GridProps = {
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
-  openChainModal: (() => void) | undefined;
-  chain: number | undefined;
+  fulfillmentDetails: {
+    name: string;
+    contact: string;
+    address: string;
+    zip: string;
+    city: string;
+    state: string;
+    country: string;
+  };
+};
+
+export type PlainGridProps = {
+  dispatch: Dispatch<AnyAction>;
+  scrollRef: MutableRefObject<HTMLDivElement | null>;
+  cartItems: CartItem[];
+  signInLoading: boolean;
+  openConnectModal: (() => void) | undefined;
+  address: `0x${string}` | undefined;
+  fulfillmentDetails: {
+    name: string;
+    contact: string;
+    address: string;
+    zip: string;
+    city: string;
+    state: string;
+    country: string;
+  };
 };
 
 export type CheckoutProps = {
@@ -29,7 +52,6 @@ export type CheckoutProps = {
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
   paymentType: string;
-  setPaymentType: (e: string) => void;
   cartItems: CartItem[];
   setCartItem: (e: CartItem) => void;
   cartItem: CartItem | undefined;
@@ -49,33 +71,23 @@ export type CheckoutProps = {
     state: string;
     country: string;
   };
-  setFulfillmentDetails: (e: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  }) => void;
   approved: boolean;
   handleApproveSpend: () => Promise<void>;
   oracleValue: number;
-  openChainModal: (() => void) | undefined;
-  chain: number | undefined;
+  encryptFulfillerInformation: () => Promise<void>;
+  encryptedInformation: string[] | undefined;
+  connectedPKP: any;
 };
 
 export type CryptoProps = {
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
-  handleCheckoutCrypto: () => Promise<void>;
-  cryptoCheckoutLoading: boolean;
-  approved: boolean;
-  handleApproveSpend: () => Promise<void>;
+  handleCheckoutCrypto?: () => Promise<void>;
+  cryptoCheckoutLoading?: boolean;
+  approved?: boolean;
+  handleApproveSpend?: () => Promise<void>;
   cartItems: CartItem[];
-  openChainModal: (() => void) | undefined;
-  chain: number | undefined;
   dispatch: Dispatch<AnyAction>;
 };
 
@@ -83,6 +95,10 @@ export type FiatProps = {
   handleCheckoutFiat: () => Promise<void>;
   fiatCheckoutLoading: boolean;
   cartItems: CartItem[];
+  encryptFulfillerInformation: () => Promise<void>;
+  encryptedInformation: string[] | undefined;
+  connectedPKP: any;
+  dispatch: Dispatch<AnyAction>;
 };
 
 export type ItemsProps = {
@@ -104,13 +120,5 @@ export type ShippingInfoProps = {
     state: string;
     country: string;
   };
-  setFulfillmentDetails: (e: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  }) => void;
+  dispatch: Dispatch<AnyAction>;
 };

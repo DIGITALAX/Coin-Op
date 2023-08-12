@@ -3,8 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface CurrentPKPState {
   value:
     | {
+        ethAddress: string;
         publicKey: string;
-        tokenId: string;
+        tokenId: {
+          hex: string;
+          type: string;
+        };
+        sessionSig: any;
+        pkpWallet: any;
       }
     | undefined;
 }
@@ -21,8 +27,14 @@ export const currentPKPSlice = createSlice({
       state: CurrentPKPState,
       action: PayloadAction<
         | {
+            ethAddress: string;
             publicKey: string;
-            tokenId: string;
+            tokenId: {
+              hex: string;
+              type: string;
+            };
+            sessionSig: any;
+            pkpWallet: any;
           }
         | undefined
       >

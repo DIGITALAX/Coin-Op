@@ -22,16 +22,23 @@ export const encryptItems = async (
     state: string;
     country: string;
   },
-  address: `0x${string}`
-): Promise<string[] | undefined> => {
+  address: `0x${string}`,
+  authSigFiat?: any
+): Promise<{ client: any; fulfillerDetails: string[] } | undefined> => {
   try {
     let client = litClient;
     if (!client) {
       client = await connectLit(dispatch);
     }
-    const authSig = await LitJsSdk.checkAndSignAuthMessage({
-      chain: "polygon",
-    });
+    let authSig;
+    if (!authSigFiat) {
+      authSig = await LitJsSdk.checkAndSignAuthMessage({
+        chain: "mumbai",
+      });
+    } else {
+      authSig = authSigFiat;
+    }
+
     const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
       JSON.stringify({
         ...fulfillmentDetails,
@@ -48,7 +55,7 @@ export const encryptItems = async (
         fulfillerEditions.push({
           contractAddress: "",
           standardContractType: "",
-          chain: "polygon",
+          chain: "mumbai",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
@@ -68,7 +75,7 @@ export const encryptItems = async (
           {
             contractAddress: "",
             standardContractType: "",
-            chain: "polygon",
+            chain: "mumbai",
             method: "",
             parameters: [":userAddress"],
             returnValueTest: {
@@ -79,7 +86,7 @@ export const encryptItems = async (
         ],
         symmetricKey,
         authSig,
-        chain: "polygon",
+        chain: "mumbai",
       });
 
       const buffer = await encryptedString.arrayBuffer();
@@ -95,7 +102,7 @@ export const encryptItems = async (
       );
     }
 
-    return fulfillerDetails;
+    return { fulfillerDetails, client };
   } catch (err: any) {
     console.error(err.message);
   }

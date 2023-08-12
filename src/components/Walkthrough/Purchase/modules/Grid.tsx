@@ -6,6 +6,8 @@ import { CartItem } from "@/components/Common/types/common.types";
 import { setImageViewer } from "../../../../../redux/reducers/imageViewerSlice";
 import Checkout from "./Checkout";
 import useCheckout from "../hooks/useCheckout";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -14,13 +16,10 @@ const Grid: FunctionComponent<GridProps> = ({
   signInLoading,
   address,
   openConnectModal,
-  chain,
-  openChainModal,
+  fulfillmentDetails
 }): JSX.Element => {
   const {
     cartItem,
-    paymentType,
-    setPaymentType,
     handleCheckoutFiat,
     handleCheckoutCrypto,
     cryptoCheckoutLoading,
@@ -30,12 +29,20 @@ const Grid: FunctionComponent<GridProps> = ({
     setCartItem,
     startIndex,
     setStartIndex,
-    fulfillmentDetails,
-    setFulfillmentDetails,
     approved,
     handleApproveSpend,
     oracleValue,
+    encryptFulfillerInformation,
   } = useCheckout();
+  const paymentType = useSelector(
+    (state: RootState) => state.app.paymentTypeReducer.value
+  );
+  const encryptedInformation = useSelector(
+    (state: RootState) => state.app.encryptedInformationReducer.information
+  );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value?.pkpWallet
+  );
   return (
     <div
       className="relative w-full h-120 synth:h-100 flex flex-col gap-2"
@@ -55,7 +62,6 @@ const Grid: FunctionComponent<GridProps> = ({
           openConnectModal={openConnectModal}
           signInLoading={signInLoading}
           paymentType={paymentType}
-          setPaymentType={setPaymentType}
           cartItems={cartItems}
           cartItem={cartItem}
           handleCheckoutCrypto={handleCheckoutCrypto}
@@ -66,13 +72,13 @@ const Grid: FunctionComponent<GridProps> = ({
           checkoutCurrency={checkoutCurrency}
           setCheckoutCurrency={setCheckoutCurrency}
           fulfillmentDetails={fulfillmentDetails}
-          setFulfillmentDetails={setFulfillmentDetails}
           approved={approved}
           handleApproveSpend={handleApproveSpend}
           oracleValue={oracleValue}
           setCartItem={setCartItem}
-          chain={chain}
-          openChainModal={openChainModal}
+          encryptFulfillerInformation={encryptFulfillerInformation}
+          encryptedInformation={encryptedInformation}
+          connectedPKP={connectedPKP}
         />
         <div className="relative w-3/4 preG:w-96 h-96 xl:h-80 justify-end flex items-center">
           <div

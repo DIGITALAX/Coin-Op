@@ -162,8 +162,6 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           signInLoading={signInLoading}
           address={address}
           openConnectModal={openConnectModal}
-          chain={chain}
-          openChainModal={openChainModal}
         />
       </div>
     </div>

@@ -10,14 +10,13 @@ import {
   INFURA_GATEWAY,
 } from "../../../../../lib/constants";
 import Image from "next/legacy/image";
-import { setFiat } from "../../../../../redux/reducers/fiatSlice";
+import { setPaymentType } from "../../../../../redux/reducers/paymentTypeSlice";
 
 const Checkout: FunctionComponent<CheckoutProps> = ({
   openConnectModal,
   address,
   signInLoading,
   paymentType,
-  setPaymentType,
   cartItems,
   cartItem,
   handleCheckoutCrypto,
@@ -28,24 +27,23 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   setCheckoutCurrency,
   checkoutCurrency,
   fulfillmentDetails,
-  setFulfillmentDetails,
   approved,
   handleApproveSpend,
   oracleValue,
   setCartItem,
-  chain,
-  openChainModal,
+  encryptFulfillerInformation,
+  encryptedInformation,
+  connectedPKP,
 }): JSX.Element => {
   return (
     <div className="relative w-full synth:w-3/4 h-full flex overflow-y-scroll">
       <div className="relative w-full h-fit flex flex-col gap-4 items-center justify-center">
         <div className="relative w-1/2 justify-center flex flex-row font-mana text-white text-sm uppercase">
           <div
-            className={`relative bg-azul flex items-center justify-center bg-azul rounded-sm border border-y-white border-r-white px-2 py-1 w-24 h-fit hover:opacity-70 cursor-pointer opacity-50 ${
+            className={`relative bg-azul flex items-center justify-center bg-azul rounded-sm border border-y-white border-r-white px-2 py-1 w-24 h-fit hover:opacity-70 cursor-pointer ${
               paymentType === "fiat" ? "bg-oscurazul" : "bg-azul"
             }`}
-            // onClick={() => setPaymentType("fiat")}
-            onClick={() => dispatch(setFiat(true))}
+            onClick={() => dispatch(setPaymentType("fiat"))}
           >
             fiat
           </div>
@@ -53,7 +51,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
             className={`relative rounded-sm px-2 py-1 bg-azul flex items-center justify-center border border-white w-24 h-fit hover:opacity-70 cursor-pointer ${
               paymentType === "crypto" ? "bg-oscurazul" : "bg-azul"
             }`}
-            onClick={() => setPaymentType("crypto")}
+            onClick={() => dispatch(setPaymentType("crypto"))}
           >
             crypto
           </div>
@@ -71,7 +69,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           <div className="relative w-fit h-fit">
             {paymentType === "crypto"
               ? `${
-                  ACCEPTED_TOKENS.find(
+                  ACCEPTED_TOKENS_MUMBAI.find(
                     (subArray) => subArray[1] === checkoutCurrency
                   )?.[1]
                 } `
@@ -86,11 +84,11 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
         </div>
         <ShippingInfo
           fulfillmentDetails={fulfillmentDetails}
-          setFulfillmentDetails={setFulfillmentDetails}
+          dispatch={dispatch}
         />
         {paymentType === "crypto" && (
           <div className="relative w-3/4 justify-start items-center flex flex-row gap-1">
-            {ACCEPTED_TOKENS?.map((item: string[], index: number) => {
+            {ACCEPTED_TOKENS_MUMBAI?.map((item: string[], index: number) => {
               return (
                 <div
                   className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
@@ -111,28 +109,29 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
             })}
           </div>
         )}
-        {/* {paymentType === "crypto" ? ( */}
-        <Crypto
-          address={address}
-          openConnectModal={openConnectModal}
-          signInLoading={signInLoading}
-          handleCheckoutCrypto={handleCheckoutCrypto}
-          cryptoCheckoutLoading={cryptoCheckoutLoading}
-          approved={approved}
-          handleApproveSpend={handleApproveSpend}
-          cartItems={cartItems}
-          openChainModal={openChainModal}
-          chain={chain}
-          dispatch={dispatch}
-        />
-        {/* ) 
-         : (
-         <Fiat
-           handleCheckoutFiat={handleCheckoutFiat}
+        {paymentType === "crypto" ? (
+          <Crypto
+            address={address}
+            openConnectModal={openConnectModal}
+            signInLoading={signInLoading}
+            handleCheckoutCrypto={handleCheckoutCrypto}
+            cryptoCheckoutLoading={cryptoCheckoutLoading}
+            approved={approved}
+            handleApproveSpend={handleApproveSpend}
+            cartItems={cartItems}
+            dispatch={dispatch}
+          />
+        ) : (
+          <Fiat
+            handleCheckoutFiat={handleCheckoutFiat}
             fiatCheckoutLoading={fiatCheckoutLoading}
             cartItems={cartItems}
-         />
-         )} */}
+            encryptFulfillerInformation={encryptFulfillerInformation}
+            encryptedInformation={encryptedInformation}
+            dispatch={dispatch}
+            connectedPKP={connectedPKP}
+          />
+        )}
       </div>
     </div>
   );
