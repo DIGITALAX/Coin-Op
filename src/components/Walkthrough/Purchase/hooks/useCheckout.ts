@@ -29,6 +29,10 @@ import { generateAuthSignature } from "../../../../../lib/subgraph/helpers/gener
 import { setEncryptedInfo } from "../../../../../redux/reducers/encryptedInformationSlice";
 import { setLitClient } from "../../../../../redux/reducers/litClientSlice";
 import { setFulfillmentDetails } from "../../../../../redux/reducers/fulfillmentDetailsSlice";
+import {
+  removeCartItemsLocalStorage,
+  removeFulfillmentDetailsLocalStorage,
+} from "../../../../../lib/subgraph/helpers/localStorage";
 
 const useCheckout = () => {
   const dispatch = useDispatch();
@@ -302,6 +306,8 @@ const useCheckout = () => {
 
       await createPKPOrder();
       dispatch(setCart([]));
+      removeCartItemsLocalStorage();
+      removeFulfillmentDetailsLocalStorage();
       dispatch(
         setFulfillmentDetails({
           name: "",
@@ -540,6 +546,8 @@ const useCheckout = () => {
       await publicClient.waitForTransactionReceipt({ hash: res });
 
       dispatch(setCart([]));
+      removeCartItemsLocalStorage();
+      removeFulfillmentDetailsLocalStorage();
       dispatch(
         setFulfillmentDetails({
           name: "",
@@ -613,7 +621,7 @@ const useCheckout = () => {
             customURIs: [],
             fulfillmentDetails: JSON.stringify(fulfillerDetails),
             pkpTokenId: BigInt(currentPKP?.tokenId.hex!).toString(),
-            chosenTokenAddress: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+            chosenTokenAddress: "0x07b722856369f6b923e1f276abca58dd3d15243d",
             sinPKP: false,
           },
         ]),

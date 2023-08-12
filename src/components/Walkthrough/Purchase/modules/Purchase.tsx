@@ -32,7 +32,6 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value?.pkpWallet
   );
-
   return (
     <div className="relative w-full h-fit flex flex-col">
       {clientSecret && cartItems?.length > 0 ? (

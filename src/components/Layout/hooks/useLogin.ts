@@ -10,10 +10,19 @@ import { ethers } from "ethers";
 import { createPublicClient, http } from "viem";
 import { Chain } from "viem/chains";
 import * as LitJsSdk_authHelpers from "@lit-protocol/auth-helpers";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "../../../../redux/reducers/loginSlice";
 import PKPAbi from "./../../../../abis/PKP.json";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
+import {
+  getCartItemsLocalStorage,
+  getFulfillmentDetailsLocalStorage,
+  setCartItemsLocalStorage,
+  setFulfillmentDetailsLocalStorage,
+} from "../../../../lib/subgraph/helpers/localStorage";
+import { RootState } from "../../../../redux/store";
+import { setCart } from "../../../../redux/reducers/cartSlice";
+import { setFulfillmentDetails } from "../../../../redux/reducers/fulfillmentDetailsSlice";
 
 export const chronicle: Chain = {
   id: 175177,
@@ -57,13 +66,21 @@ const useLogin = () => {
     debug: false,
   });
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
+  const fulfillmentDetails = useSelector(
+    (state: RootState) => state.app.fulfillmentDetailsReducer.value
+  );
+  const cartItems = useSelector(
+    (state: RootState) => state.app.cartReducer.value
+  );
 
-  const loginWithDiscord = async () => {
-    setLoginLoading(true);
+  const loginWithWeb2Auth = async () => {
     try {
       const provider = litAuthClient.initProvider(ProviderType.Google, {
         redirectUri: REDIRECT_URI,
       });
+
+      setFulfillmentDetailsLocalStorage(JSON.stringify(fulfillmentDetails));
+      setCartItemsLocalStorage(JSON.stringify(cartItems));
 
       await provider.signIn();
     } catch (err: any) {
@@ -80,13 +97,25 @@ const useLogin = () => {
           actionHighlight: undefined,
         })
       );
-      setLoginLoading(false);
     }
   };
 
   const handleRedirect = useCallback(async () => {
     if (loginLoading) return;
     setLoginLoading(true);
+    dispatch(
+      setLogin({
+        actionOpen: true,
+        actionHighlight: undefined,
+      })
+    );
+
+    const cartItemsLocal = getCartItemsLocalStorage();
+    const fulfillmentLocal = getFulfillmentDetailsLocalStorage();
+
+    cartItemsLocal && dispatch(setCart(cartItemsLocal));
+    fulfillmentLocal && dispatch(setFulfillmentDetails(fulfillmentLocal));
+
     try {
       const provider = litAuthClient.initProvider(ProviderType.Google, {
         redirectUri: REDIRECT_URI,
@@ -175,24 +204,6 @@ const useLogin = () => {
     currentPKP: any,
     provider: any
   ) => {
-    const authNeededCallback = async (authCallbackParams: any) => {
-      const chainId = 80001;
-      let response = await litNodeClient.signSessionKey({
-        authMethods: [
-          {
-            authMethodType: 7,
-            accessToken: authMethod.accessToken,
-          },
-        ],
-        pkpPublicKey: currentPKP.publicKey,
-        expiration: authCallbackParams.expiration,
-        resources: authCallbackParams.resources,
-        chainId,
-      });
-
-      return response.authSig;
-    };
-
     try {
       await litNodeClient.connect();
 
@@ -217,7 +228,6 @@ const useLogin = () => {
         },
         litNodeClient,
       });
-
       return sessionSigs;
     } catch (e: any) {
       console.error(e.message);
@@ -231,7 +241,7 @@ const useLogin = () => {
   }, [handleRedirect]);
 
   return {
-    loginWithDiscord,
+    loginWithWeb2Auth,
     loginLoading,
   };
 };

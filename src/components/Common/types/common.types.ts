@@ -441,7 +441,7 @@ export type HeaderProps = {
 export type LoginProps = {
   dispatch: DispatchRedux<AnyAction>;
   openConnectModal: (() => void) | undefined;
-  loginWithDiscord: () => Promise<void>;
+  loginWithWeb2Auth: () => Promise<void>;
   loginLoading: boolean;
   currentPKP:
     | {

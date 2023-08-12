@@ -8,7 +8,7 @@ import { setCurrentPKP } from "../../../../../redux/reducers/currentPKPSlice";
 const Login: FunctionComponent<LoginProps> = ({
   dispatch,
   openConnectModal,
-  loginWithDiscord,
+  loginWithWeb2Auth,
   loginLoading,
   currentPKP,
   highlight,
@@ -59,7 +59,7 @@ const Login: FunctionComponent<LoginProps> = ({
                     }`}
                     onClick={() =>
                       !currentPKP
-                        ? loginWithDiscord()
+                        ? loginWithWeb2Auth()
                         : dispatch(setCurrentPKP(undefined))
                     }
                   >

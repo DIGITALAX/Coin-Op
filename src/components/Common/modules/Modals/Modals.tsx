@@ -84,7 +84,7 @@ const Modals = () => {
     handleRemoveImage,
     mappedFeaturedFiles,
   } = useImageUpload();
-  const { loginWithDiscord, loginLoading } = useLogin();
+  const { loginWithWeb2Auth, loginLoading } = useLogin();
   const {
     postDescription,
     postLoading,
@@ -241,7 +241,7 @@ const Modals = () => {
           loginLoading={loginLoading}
           openConnectModal={openConnectModal}
           dispatch={dispatch}
-          loginWithDiscord={loginWithDiscord}
+          loginWithWeb2Auth={loginWithWeb2Auth}
           currentPKP={currentPKP}
           highlight={login.highlight}
         />

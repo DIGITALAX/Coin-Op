@@ -18,7 +18,8 @@ const PlainGrid: FunctionComponent<GridProps> = ({
   fulfillmentDetails,
   connectedPKP,
   chain,
-  openChainModal
+  openChainModal,
+  fulfillmentDetailsLocalStorage
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2" ref={scrollRef}>
@@ -61,7 +62,11 @@ const PlainGrid: FunctionComponent<GridProps> = ({
               <div className="relative w-fit h-fit">{"$ 0"}</div>
             </div>
             <ShippingInfo
-              fulfillmentDetails={fulfillmentDetails}
+              fulfillmentDetails={
+                fulfillmentDetailsLocalStorage
+                  ? fulfillmentDetailsLocalStorage
+                  : fulfillmentDetails
+              }
               dispatch={dispatch}
             />
             {
