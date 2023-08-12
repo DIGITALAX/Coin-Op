@@ -34,6 +34,8 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   encryptFulfillerInformation,
   encryptedInformation,
   connectedPKP,
+  chain,
+  openChainModal,
 }): JSX.Element => {
   return (
     <div className="relative w-full synth:w-3/4 h-full flex overflow-y-scroll">
@@ -120,6 +122,9 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
             handleApproveSpend={handleApproveSpend}
             cartItems={cartItems}
             dispatch={dispatch}
+            chain={chain}
+            openChainModal={openChainModal}
+            connectedPKP={connectedPKP}
           />
         ) : (
           <Fiat

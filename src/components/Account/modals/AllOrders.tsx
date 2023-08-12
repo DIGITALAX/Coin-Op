@@ -32,7 +32,14 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
         {!connected && !connectedPKP ? (
           <div
             className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
-            onClick={() => dispatch(setLogin(true))}
+            onClick={() =>
+              dispatch(
+                setLogin({
+                  actionOpen: true,
+                  actionHighlight: undefined,
+                })
+              )
+            }
           >
             Connect to View Your Orders.
           </div>

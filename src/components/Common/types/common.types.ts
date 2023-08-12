@@ -453,6 +453,7 @@ export type LoginProps = {
         };
       }
     | undefined;
+  highlight: string | undefined;
 };
 
 export type FiatProps = {

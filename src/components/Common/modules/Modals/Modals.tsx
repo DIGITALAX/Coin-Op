@@ -243,6 +243,7 @@ const Modals = () => {
           dispatch={dispatch}
           loginWithDiscord={loginWithDiscord}
           currentPKP={currentPKP}
+          highlight={login.highlight}
         />
       )}
     </>

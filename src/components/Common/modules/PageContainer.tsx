@@ -156,6 +156,8 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           apiKey={apiKey}
         />
         <Purchase
+          chain={chain}
+          openChainModal={openChainModal}
           dispatch={dispatch}
           scrollRef={scrollRef}
           cartItems={cartItems}

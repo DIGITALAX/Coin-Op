@@ -9,6 +9,8 @@ export type PurchaseProps = {
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
+  chain: number | undefined;
+  openChainModal: (() => void) | undefined;
 };
 
 export type GridProps = {
@@ -27,29 +29,16 @@ export type GridProps = {
     state: string;
     country: string;
   };
-};
-
-export type PlainGridProps = {
-  dispatch: Dispatch<AnyAction>;
-  scrollRef: MutableRefObject<HTMLDivElement | null>;
-  cartItems: CartItem[];
-  signInLoading: boolean;
-  openConnectModal: (() => void) | undefined;
-  address: `0x${string}` | undefined;
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  connectedPKP: any;
+  chain: number | undefined;
+  openChainModal: (() => void) | undefined;
 };
 
 export type CheckoutProps = {
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
+  chain: number | undefined;
+  openChainModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
   paymentType: string;
   cartItems: CartItem[];
@@ -89,6 +78,9 @@ export type CryptoProps = {
   handleApproveSpend?: () => Promise<void>;
   cartItems: CartItem[];
   dispatch: Dispatch<AnyAction>;
+  connectedPKP: any;
+  chain: number | undefined;
+  openChainModal: (() => void) | undefined;
 };
 
 export type FiatProps = {

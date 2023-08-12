@@ -89,12 +89,24 @@ const Header: FunctionComponent<HeaderProps> = ({
             className="relative w-20 h-7 px-1 text-white flex items-center justify-center border border-white cursor-pointer"
             onClick={
               !connected && !connectedPKP
-                ? () => dispatch(setLogin(true))
+                ? () =>
+                    dispatch(
+                      setLogin({
+                        actionOpen: true,
+                        actionHighlight: undefined,
+                      })
+                    )
                 : connected && chain !== 137
                 ? openChainModal
                 : connected
                 ? openAccountModal
-                : () => dispatch(setLogin(true))
+                : () =>
+                    dispatch(
+                      setLogin({
+                        actionOpen: true,
+                        actionHighlight: undefined,
+                      })
+                    )
             }
           >
             <div

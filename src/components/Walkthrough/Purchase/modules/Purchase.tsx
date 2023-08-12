@@ -19,6 +19,8 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   signInLoading,
   address,
   openConnectModal,
+  chain,
+  openChainModal,
 }): JSX.Element => {
   const { options } = useStripe();
   const clientSecret = useSelector(
@@ -27,6 +29,10 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   const fulfillmentDetails = useSelector(
     (state: RootState) => state.app.fulfillmentDetailsReducer.value
   );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value?.pkpWallet
+  );
+
   return (
     <div className="relative w-full h-fit flex flex-col">
       {clientSecret && cartItems?.length > 0 ? (
@@ -39,6 +45,9 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
             openConnectModal={openConnectModal}
             signInLoading={signInLoading}
             fulfillmentDetails={fulfillmentDetails}
+            connectedPKP={connectedPKP}
+            chain={chain}
+            openChainModal={openChainModal}
           />
         </Elements>
       ) : (
@@ -50,6 +59,9 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
           openConnectModal={openConnectModal}
           signInLoading={signInLoading}
           fulfillmentDetails={fulfillmentDetails}
+          connectedPKP={connectedPKP}
+          chain={chain}
+          openChainModal={openChainModal}
         />
       )}
     </div>

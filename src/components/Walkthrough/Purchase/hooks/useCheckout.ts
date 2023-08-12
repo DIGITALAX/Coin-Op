@@ -263,7 +263,12 @@ const useCheckout = () => {
 
   const handleCheckoutFiat = async () => {
     if (!stripe || !elements || !currentPKP) {
-      dispatch(setLogin(true));
+      dispatch(
+        setLogin({
+          actionOpen: true,
+          actionHighlight: "fiat",
+        })
+      );
       return;
     }
 
@@ -427,7 +432,12 @@ const useCheckout = () => {
 
   const handleCheckoutCrypto = async () => {
     if (!address) {
-      dispatch(setLogin(true));
+      dispatch(
+        setLogin({
+          actionOpen: true,
+          actionHighlight: "crypto",
+        })
+      );
       return;
     }
 

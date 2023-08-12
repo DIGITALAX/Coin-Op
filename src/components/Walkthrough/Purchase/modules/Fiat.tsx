@@ -29,7 +29,13 @@ const Fiat: FunctionComponent<FiatProps> = ({
         }`}
         onClick={
           !fiatCheckoutLoading && !connectedPKP
-            ? () => dispatch(setLogin(true))
+            ? () =>
+                dispatch(
+                  setLogin({
+                    actionOpen: true,
+                    actionHighlight: "fiat",
+                  })
+                )
             : !fiatCheckoutLoading && !encryptedInformation
             ? () => encryptFulfillerInformation()
             : () =>

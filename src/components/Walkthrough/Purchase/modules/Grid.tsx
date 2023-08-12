@@ -16,7 +16,10 @@ const Grid: FunctionComponent<GridProps> = ({
   signInLoading,
   address,
   openConnectModal,
-  fulfillmentDetails
+  fulfillmentDetails,
+  connectedPKP,
+  chain,
+  openChainModal,
 }): JSX.Element => {
   const {
     cartItem,
@@ -39,9 +42,6 @@ const Grid: FunctionComponent<GridProps> = ({
   );
   const encryptedInformation = useSelector(
     (state: RootState) => state.app.encryptedInformationReducer.information
-  );
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value?.pkpWallet
   );
   return (
     <div
@@ -79,6 +79,8 @@ const Grid: FunctionComponent<GridProps> = ({
           encryptFulfillerInformation={encryptFulfillerInformation}
           encryptedInformation={encryptedInformation}
           connectedPKP={connectedPKP}
+          chain={chain}
+          openChainModal={openChainModal}
         />
         <div className="relative w-3/4 preG:w-96 h-96 xl:h-80 justify-end flex items-center">
           <div

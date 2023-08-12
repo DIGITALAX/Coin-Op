@@ -16,6 +16,9 @@ const PlainGrid: FunctionComponent<GridProps> = ({
   address,
   openConnectModal,
   fulfillmentDetails,
+  connectedPKP,
+  chain,
+  openChainModal
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2" ref={scrollRef}>
@@ -93,6 +96,9 @@ const PlainGrid: FunctionComponent<GridProps> = ({
               //   handleApproveSpend={handleApproveSpend}
               cartItems={cartItems}
               dispatch={dispatch}
+              connectedPKP={connectedPKP}
+              chain={chain}
+              openChainModal={openChainModal}
             />
           </div>
         </div>

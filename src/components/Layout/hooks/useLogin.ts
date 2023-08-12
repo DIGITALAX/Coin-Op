@@ -74,7 +74,12 @@ const useLogin = () => {
           actionMessage: "Something went wrong, try again?",
         })
       );
-      dispatch(setLogin(false));
+      dispatch(
+        setLogin({
+          actionOpen: false,
+          actionHighlight: undefined,
+        })
+      );
       setLoginLoading(false);
     }
   };
@@ -94,7 +99,12 @@ const useLogin = () => {
         pkpPubKey: currentPKP.publicKey,
         rpc: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`,
       });
-      dispatch(setLogin(false));
+      dispatch(
+        setLogin({
+          actionOpen: false,
+          actionHighlight: undefined,
+        })
+      );
       setLoginLoading(false);
       dispatch(
         setCurrentPKP({
@@ -105,7 +115,12 @@ const useLogin = () => {
       );
     } catch (err: any) {
       setLoginLoading(false);
-      dispatch(setLogin(false));
+      dispatch(
+        setLogin({
+          actionOpen: false,
+          actionHighlight: undefined,
+        })
+      );
       console.error(err.message);
     }
   }, [router]);

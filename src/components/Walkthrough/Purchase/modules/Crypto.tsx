@@ -12,6 +12,9 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   handleApproveSpend,
   cartItems,
   dispatch,
+  connectedPKP,
+  chain,
+  openChainModal,
 }): JSX.Element => {
   return (
     <div
@@ -19,13 +22,29 @@ const Crypto: FunctionComponent<CryptoProps> = ({
         !signInLoading && !cryptoCheckoutLoading
           ? "cursor-pointer active:scale-95"
           : "opacity-70"
-      }`}
+      } `}
       onClick={
-        !signInLoading && !address && !cryptoCheckoutLoading
-          ? () => dispatch(setLogin(true))
-          : // : chain !== 137
-          // ? openChainModal
-          approved
+        !signInLoading &&
+        !cryptoCheckoutLoading &&
+        ((cartItems.length > 0 && !address) ||
+          (cartItems.length < 1 && !connectedPKP))
+          ? () =>
+              dispatch(
+                setLogin({
+                  actionOpen: true,
+                  actionHighlight:
+                    cartItems.length < 1 && !address && !connectedPKP
+                      ? undefined
+                      : cartItems.length > 0 && !address
+                      ? "crypto"
+                      : "fiat",
+                })
+              )
+          : cartItems.length < 1 && connectedPKP
+          ? () => {}
+          : chain !== 137
+          ? openChainModal
+          : approved
           ? () =>
               !signInLoading &&
               !cryptoCheckoutLoading &&
@@ -45,7 +64,9 @@ const Crypto: FunctionComponent<CryptoProps> = ({
       >
         {signInLoading || cryptoCheckoutLoading ? (
           <AiOutlineLoading size={15} color={"white"} />
-        ) : !address ? (
+        ) : cartItems.length < 1 && connectedPKP ? (
+          "ADD TO CART"
+        ) : !address || (!connectedPKP && cartItems.length < 1) ? (
           "CONNECT"
         ) : !approved ? (
           "APPROVE SPEND"
