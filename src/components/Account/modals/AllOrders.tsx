@@ -53,9 +53,9 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
           >
             No Orders Yet. Shop PreRolls? <br />
             <br />
-            If you've bought some items but they're not showing in your account
-            yet, no stress, these on-chain order updates aren&apos;t always
-            instant - check back soon.
+            If you&apos;ve bought some items but they&apos;re not showing in
+            your account yet, no stress, these on-chain order updates
+            aren&apos;t always instant - check back soon.
           </div>
         ) : (
           allOrders?.map((order: OrderType, index: number) => {
