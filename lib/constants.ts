@@ -64,11 +64,13 @@ export const COIN_OP_ORACLE: `0x${string}` =
 export const COIN_OP_FULFILLMENT: `0x${string}` =
   "0xF80D3044B28807f52EFB38e37b681eFF9D2867b9";
 export const PKP_ADDRESS: `0x${string}` =
-  "0xe7693a737aaa5ba118e2de6f45c7bd85969f06a4";
+  "0xb1d06c81fd47dd1abb1172feb369306a2746f220";
 export const IPFS_CID_PKP: string =
-  "Qmb3gEiDq3NJ4piRBpRU1UbBjL35qXEhutCytcXo1LkzU6";
+  "QmQv8pjUnz3wkTzQJtbv6gpBzdHDQHyqAAUryAmvioUh3L";
+export const PKP_TOKEN_ID: string =
+  "82219119439491908067162140632966258754043386597747120916337702503268800114842";
 export const PKP_PUBLIC_KEY: `0x${string}` =
-  "0x0418b7925e807f087f13c6e829abdae75ab72d1da5dc28213d8c409d65a02a874d5a235fedcc5392bdc75f7001f201953c68fa3ff848475c786dfee3da6aaabb11";
+  "0x041fc46ca07e11644b4e3b6cd8f1977066526a76a8320e17a96483f7ccb1ba3cc71e0014b2f0475171167a01a4200f04b90407a49d8749e53e853d784bf2d4cde2";
 
 export const allFonts: string[] = [
   "Manaspace",
