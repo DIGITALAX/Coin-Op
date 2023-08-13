@@ -66,7 +66,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
       <div className="relative flex flex-row gap-2 w-full h-fit items-center">
         <div className="relative text-xl text-white font-aqua flex justify-start items-start w-fit h-fit">
           $
-          {(preRoll?.printType === "Shirt" || preRoll?.printType === "Hoodie"
+          {(preRoll?.printType === "shirt" || preRoll?.printType === "hoodie"
             ? preRoll.price?.[0]
             : preRoll.price?.[preRoll.sizes.indexOf(preRoll.chosenSize)]) /
             10 ** 18}
@@ -98,8 +98,8 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                 ...newObj,
                 amount: 1,
                 price:
-                  preRoll?.printType === "Shirt" ||
-                  preRoll?.printType === "Hoodie"
+                  preRoll?.printType === "shirt" ||
+                  preRoll?.printType === "hoodie"
                     ? preRoll.price?.[0]
                     : preRoll.price?.[
                         preRoll.sizes?.indexOf(preRoll.chosenSize)

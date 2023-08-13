@@ -59,8 +59,8 @@ const Set: FunctionComponent<SetProps> = ({
               draggable={false}
             />
           </div>
-          <div className="absolute inset-0 flex items-start justify-center h-full w-full">
-            <div className="relative items-start justify-center flex w-full h-full">
+          <div className="absolute inset-0 flex items-center justify-center h-full w-full">
+            <div className="relative items-center justify-center flex w-full h-full">
               <Image
                 layout="fill"
                 objectFit="contain"
@@ -68,8 +68,7 @@ const Set: FunctionComponent<SetProps> = ({
                   childPosterURI?.split("ipfs://")[1]
                 }`}
                 draggable={false}
-                className="flex items-start"
-                objectPosition={"top"}
+                className="flex items-center"
               />
             </div>
           </div>

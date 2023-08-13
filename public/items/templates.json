@@ -1,42 +1,42 @@
 [
   {
     "name": "LevelOneHoodie",
-    "type": "Hoodie",
+    "type": "hoodie",
     "image": "QmVhSyXB67nUj1yH7GmojxvkoAdsrAumJkXs5rECnN7Cfj"
   },
   {
     "name": "LevelOneShirt",
-    "type": "Shirt",
+    "type": "shirt",
     "image": "QmRXrv2icSyRi5P7VEx9yWh66VQB9UiiYPSt2NDkuGAcB9"
   },
   {
     "name": "LevelOnePoster",
-    "type": "Poster",
+    "type": "poster",
     "image": "QmXSKZvk6iHtqRN9e3GEZPKRiDTUD72RY7w84ya2t3mRdZ"
   },
   {
     "name": "LevelOneSticker",
-    "type": "Sticker",
+    "type": "sticker",
     "image": "QmV3Au8Vz2HZ4cfP5Jp5WsD47umg67rN11Y47a5mdL7dnm"
   },
   {
     "name": "LockedSticker",
-    "type": "Sticker",
+    "type": "sticker",
     "image": "Qmf9YuBTjdSbr9gRuieLbd3T3LgCi1iBEvoJ1kazPqt9Zu"
   },
   {
     "name": "LockedShirt",
-    "type": "Shirt",
+    "type": "shirt",
     "image": "QmQ4MZv5Si4GBpotREfegxyR7Ym4h3xCvo6eu4AUzEh77Z"
   },
   {
     "name": "LockedShirt",
-    "type": "Shirt",
+    "type": "shirt",
     "image": "QmScnZDEzfSmnDVbwDXGmv7EHq4uVkhUcmDXSLA287bQEC"
   },
   {
     "name": "LockedShirt",
-    "type": "Shirt",
+    "type": "shirt",
     "image": "QmaMokaGD416aNQgGHhRirRsk9udvv5gtpV3P62Bie7DMB"
   }
 ]

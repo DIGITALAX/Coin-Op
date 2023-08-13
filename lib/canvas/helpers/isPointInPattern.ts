@@ -30,10 +30,15 @@ export const isPointInPattern = (
       const centerX = (minX + maxX) / 2;
       const centerY = (minY + maxY) / 2;
 
-      ctx?.translate(centerX, centerY);
-      ctx?.scale(10, 10);
-      ctx?.translate(-centerX, -centerY);
+      const canvasCenterX = ctx?.canvas.width! / 2;
+      const canvasCenterY = ctx?.canvas.height! / 2;
 
+      const dx = canvasCenterX - centerX;
+      const dy = canvasCenterY - centerY;
+      ctx?.translate(dx, dy);
+
+      ctx?.translate(centerX, centerY);
+      ctx?.translate(-centerX, -centerY);
       ctx.moveTo(path[0]?.x, path[0]?.y);
       for (let i = 1; i < path.length; i++) {
         ctx.lineTo(path[i]?.x, path[i]?.y);
@@ -60,16 +65,25 @@ export const isPointInPattern = (
         maxYCircle = Math.max(maxYCircle, path[i]?.y);
       }
 
+     
       const centerXCircle = (minXCircle + maxXCircle) / 2;
       const centerYCircle = (minYCircle + maxYCircle) / 2;
+
+      const canvasCenterX = ctx?.canvas.width! / 2;
+      const canvasCenterY = ctx?.canvas.height! / 2;
+
+      const dx = canvasCenterX - centerXCircle;
+      const dy = canvasCenterY - centerYCircle;
 
       const radius =
         Math.max(maxXCircle - minXCircle, maxYCircle - minYCircle) / 2;
 
       ctx?.beginPath();
       ctx?.save();
+      ctx?.translate(dx, dy);
+
       ctx?.translate(centerXCircle, centerYCircle);
-      ctx?.scale(3, 3);
+      ctx?.scale(0.5, 0.5);
       ctx?.translate(-centerXCircle, -centerYCircle);
       ctx?.arc(centerXCircle, centerYCircle, radius, 0, 2 * Math.PI, false);
 

@@ -117,8 +117,8 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                     </div>
                     <div className="relative text-xl text-white font-aqua flex justify-end items-end w-fit h-fit">
                       $
-                      {(searchItem?.printType === "Shirt" ||
-                      searchItem?.printType === "Hoodie"
+                      {(searchItem?.printType === "shirt" ||
+                      searchItem?.printType === "hoodie"
                         ? searchItem.price?.[0]
                         : searchItem.price?.[
                             searchItem.sizes.indexOf(searchItem.chosenSize)
@@ -152,8 +152,8 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                             ...newObj,
                             amount: 1,
                             price:
-                              searchItem?.printType === "Shirt" ||
-                              searchItem?.printType === "Hoodie"
+                              searchItem?.printType === "shirt" ||
+                              searchItem?.printType === "hoodie"
                                 ? searchItem.price?.[0]
                                 : searchItem.price?.[
                                     searchItem.sizes?.indexOf(

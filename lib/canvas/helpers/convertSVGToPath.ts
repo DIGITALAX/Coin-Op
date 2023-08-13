@@ -48,6 +48,7 @@ const convertSvgToPath = async (image: string, scale: number) => {
       for (let j = 0; j < points!.length; j += 2) {
         const x = parseFloat(points![j]);
         const y = parseFloat(points![j + 1]);
+
         if (j === 0) {
           pathString += `M ${x},${y} `;
         } else {
@@ -68,8 +69,9 @@ const convertSvgToPath = async (image: string, scale: number) => {
       }
     }
   }
-  let subpathsData: Array<Array<{x: number, y: number}>> = [];
-  let currentSubpath: Array<{x: number, y: number}> = [];
+  let subpathsData: Array<Array<{ x: number; y: number }>> = [];
+  let currentSubpath: Array<{ x: number; y: number }> = [];
+
   const commands = pathData.flatMap(
     (path) => path.match(/[a-df-z][^a-df-z]*/gi) as RegExpMatchArray
   );
@@ -111,7 +113,7 @@ const convertSvgToPath = async (image: string, scale: number) => {
         y: Number(y) / scale,
       });
       lastSubpath = false;
-      currentSubpath.push({x: Number(x) / scale, y: Number(y) / scale});
+      currentSubpath.push({ x: Number(x) / scale, y: Number(y) / scale });
     } else if (type === "Z") {
       x = lastSubpathStartX;
       y = lastSubpathStartY;
@@ -120,7 +122,7 @@ const convertSvgToPath = async (image: string, scale: number) => {
         y: Number(y) / scale,
       });
       lastSubpath = true;
-      currentSubpath.push({x: Number(x) / scale, y: Number(y) / scale});
+      currentSubpath.push({ x: Number(x) / scale, y: Number(y) / scale });
       subpathsData.push(currentSubpath);
       currentSubpath = [];
     } else {
@@ -265,7 +267,7 @@ const convertSvgToPath = async (image: string, scale: number) => {
           lastSubpath = true;
           break;
       }
-      currentSubpath.push({x: Number(x) / scale, y: Number(y) / scale});
+      currentSubpath.push({ x: Number(x) / scale, y: Number(y) / scale });
     }
   }
 

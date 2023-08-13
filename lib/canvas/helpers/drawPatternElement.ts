@@ -6,7 +6,7 @@ const drawPatternElement = (
   materialBackground: string
 ) => {
   ctx?.setLineDash([0, 0]);
-  (ctx as CanvasRenderingContext2D).lineWidth = 0.3;
+  (ctx as CanvasRenderingContext2D).lineWidth = 1;
   (ctx as CanvasRenderingContext2D).strokeStyle = "#FFC800";
   (ctx as CanvasRenderingContext2D).fillStyle = materialBackground;
   (ctx as CanvasRenderingContext2D).imageSmoothingEnabled = false;
@@ -28,13 +28,21 @@ const drawPatternElement = (
         const centerXCircle = (minXCircle + maxXCircle) / 2;
         const centerYCircle = (minYCircle + maxYCircle) / 2;
 
+        const canvasCenterX = ctx?.canvas.width! / 2;
+        const canvasCenterY = ctx?.canvas.height! / 2;
+
+        const dx = canvasCenterX - centerXCircle;
+        const dy = canvasCenterY - centerYCircle;
+
         const radius =
           Math.max(maxXCircle - minXCircle, maxYCircle - minYCircle) / 2;
 
         ctx?.beginPath();
         ctx?.save();
+        ctx?.translate(dx, dy);
+
         ctx?.translate(centerXCircle, centerYCircle);
-        ctx?.scale(3, 3);
+        ctx?.scale(0.5, 0.5);
         ctx?.translate(-centerXCircle, -centerYCircle);
         ctx?.arc(centerXCircle, centerYCircle, radius, 0, 2 * Math.PI, false);
 
@@ -63,12 +71,17 @@ const drawPatternElement = (
           minY = Math.min(minY, subpath[i]?.y);
           maxY = Math.max(maxY, subpath[i]?.y);
         }
-
         const centerX = (minX + maxX) / 2;
         const centerY = (minY + maxY) / 2;
 
+        const canvasCenterX = ctx?.canvas.width! / 2;
+        const canvasCenterY = ctx?.canvas.height! / 2;
+
+        const dx = canvasCenterX - centerX;
+        const dy = canvasCenterY - centerY;
+        ctx?.translate(dx, dy);
+
         ctx?.translate(centerX, centerY);
-        ctx?.scale(10, 10);
         ctx?.translate(-centerX, -centerY);
 
         ctx?.moveTo(subpath[0]?.x, subpath[0]?.y);

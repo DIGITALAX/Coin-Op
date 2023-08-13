@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import { InformationType, OrderProps } from "../types/account.types";
 import {
   ACCEPTED_TOKENS,
-  ACCEPTED_TOKENS_MUMBAI,
+  // ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
 import Link from "next/link";
@@ -50,7 +50,7 @@ const Order: FunctionComponent<OrderProps> = ({
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
             {order?.sinPKP
               ? `${
-                  ACCEPTED_TOKENS_MUMBAI.find(
+                  ACCEPTED_TOKENS.find(
                     (subArray) =>
                       subArray[2].toLowerCase() ===
                       order.chosenAddress.toLowerCase()
@@ -58,7 +58,7 @@ const Order: FunctionComponent<OrderProps> = ({
                 } `
               : "$"}{" "}
             {Number(order.totalPrice) /
-              ((ACCEPTED_TOKENS_MUMBAI.find(
+              ((ACCEPTED_TOKENS.find(
                 ([_, token]) =>
                   token.toLowerCase() === order.chosenAddress.toLowerCase()
               )?.[2] as `0x${string}`) ===

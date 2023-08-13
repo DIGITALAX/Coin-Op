@@ -16,12 +16,12 @@ export const generateAuthSignature = async (
 ) => {
   try {
     const siweMessage = new SiweMessage({
-      domain: "localhost",
+      domain: "coinop.themanufactory.xyz",
       address: currentPKP?.pkpWallet.address,
       statement: "This is an Auth Sig for Coin Op",
-      uri: "https://localhost:3000",
+      uri: "https://coinop.themanufactory.xyz",
       version: "1",
-      chainId: 80001,
+      chainId: 137,
     });
     const signedMessage = siweMessage.prepareMessage();
     const sig = await currentPKP?.pkpWallet.signMessage(signedMessage);

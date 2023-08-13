@@ -100,7 +100,7 @@ const useRollSearch = () => {
         ...newObj,
         amount: 1,
         price:
-          preRoll?.printType === "Shirt" || preRoll?.printType === "Hoodie"
+          preRoll?.printType === "shirt" || preRoll?.printType === "hoodie"
             ? preRoll.price?.[0]
             : preRoll.price?.[preRoll.sizes?.indexOf(preRoll.chosenSize)],
       });

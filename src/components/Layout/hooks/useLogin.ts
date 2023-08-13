@@ -126,7 +126,7 @@ const useLogin = () => {
       const pkpWallet = new PKPEthersWallet({
         controllerSessionSigs: sessionSigs,
         pkpPubKey: currentPKP.publicKey,
-        rpc: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`,
+        rpc: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
       });
       dispatch(
         setLogin({
@@ -218,7 +218,7 @@ const useLogin = () => {
           accessToken: authMethod.accessToken,
         },
         sessionSigsParams: {
-          chain: "mumbai",
+          chain: "polygon",
           resourceAbilityRequests: [
             {
               resource: litResource,

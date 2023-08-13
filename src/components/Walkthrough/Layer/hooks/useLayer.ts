@@ -47,7 +47,7 @@ const useLayer = () => {
         setSynthLayer({
           parentURI: newLayers[0]?.parentURI,
           childTokenURIs: newLayers[0]?.childTokenURIs?.[0],
-          parentPrice: newLayers[0]?.price,
+          parentPrice: newLayers[0]?.prices?.[0],
           childPrice: newLayers[0]?.childPrices?.[0],
           parentId: newLayers[0]?.parentTokenId,
           childId: newLayers[0]?.childTokenIds?.[0],

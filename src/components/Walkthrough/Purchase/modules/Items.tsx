@@ -3,7 +3,7 @@ import { ItemsProps } from "../types/synth.types";
 import { CartItem } from "@/components/Common/types/common.types";
 import {
   ACCEPTED_TOKENS,
-  ACCEPTED_TOKENS_MUMBAI,
+  // ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../../lib/constants";
 import Image from "next/legacy/image";
@@ -59,7 +59,7 @@ const Items: FunctionComponent<ItemsProps> = ({
                     </div>
                     <div className="relative w-fit h-fit text-ama flex whitespace-nowrap">
                       {paymentType === "crypto"
-                        ? ACCEPTED_TOKENS_MUMBAI.find(
+                        ? ACCEPTED_TOKENS.find(
                             (subArray) => subArray[1] === checkoutCurrency
                           )?.[1]
                         : "$"}{" "}

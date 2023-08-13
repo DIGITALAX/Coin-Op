@@ -34,6 +34,17 @@ const Login: FunctionComponent<LoginProps> = ({
                 />
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
+                {!highlight && (
+                  <div
+                    className={`relative w-full h-fit justify-center items-center text-white font-vcr text-xs text-center text-center break-words flex `}
+                  >
+                    <div className="relative w-fit h-fit flex items-center justify-center">
+                      login via web3 if your savy or web2 for full account
+                      abstraction. either way no data or details are recorded or
+                      saved, anons wear streetwear too.
+                    </div>
+                  </div>
+                )}
                 {(!highlight || highlight === "crypto") && (
                   <div
                     className={`relative w-48 sm:w-60 h-10 justify-center items-center text-white font-vcr text-sm text-center border border-white  px-3 py-2 flex bg-sol/50 cursor-pointer active:scale-95`}

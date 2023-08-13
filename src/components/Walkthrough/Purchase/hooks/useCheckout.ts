@@ -8,7 +8,7 @@ import { joinSignature } from "@ethersproject/bytes";
 import { useAccount } from "wagmi";
 import {
   ACCEPTED_TOKENS,
-  ACCEPTED_TOKENS_MUMBAI,
+  // ACCEPTED_TOKENS_MUMBAI,
   COIN_OP_MARKET,
   COIN_OP_ORACLE,
   IPFS_CID_PKP,
@@ -21,7 +21,7 @@ import { RootState } from "../../../../../redux/store";
 import { setCart } from "../../../../../redux/reducers/cartSlice";
 import { useRouter } from "next/router";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { polygonMumbai, polygon } from "viem/chains";
+import { polygon } from "viem/chains";
 import { encryptItems } from "../../../../../lib/subgraph/helpers/encryptItems";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 import { setLogin } from "../../../../../redux/reducers/loginSlice";
@@ -38,8 +38,8 @@ const useCheckout = () => {
   const dispatch = useDispatch();
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
-    transport: http("https://rpc-mumbai.maticvigil.com/"),
+    chain: polygon,
+    transport: http(),
   });
   const fulfillmentDetails = useSelector(
     (state: RootState) => state.app.fulfillmentDetailsReducer.value
@@ -84,7 +84,7 @@ const useCheckout = () => {
     if (!address) return;
     try {
       const data = await publicClient.readContract({
-        address: ACCEPTED_TOKENS_MUMBAI.find(
+        address: ACCEPTED_TOKENS.find(
           ([_, token]) => token === checkoutCurrency
         )?.[2].toLowerCase() as `0x${string}`,
         abi: [
@@ -119,7 +119,7 @@ const useCheckout = () => {
 
       if (
         Number(data as BigNumber) /
-          ((ACCEPTED_TOKENS_MUMBAI.find(
+          ((ACCEPTED_TOKENS.find(
             ([_, token]) => token === checkoutCurrency
           )?.[2] as `0x${string}`) ===
           "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
@@ -171,7 +171,7 @@ const useCheckout = () => {
         ],
         functionName: "getRateByAddress",
         args: [
-          ACCEPTED_TOKENS_MUMBAI.find(
+          ACCEPTED_TOKENS.find(
             ([_, token]) => token === checkoutCurrency
           )?.[2].toLowerCase(),
         ],
@@ -348,7 +348,7 @@ const useCheckout = () => {
     setCryptoCheckoutLoading(true);
     try {
       const { request } = await publicClient.simulateContract({
-        address: ACCEPTED_TOKENS_MUMBAI.find(
+        address: ACCEPTED_TOKENS.find(
           ([_, token]) => token === checkoutCurrency
         )?.[2]!.toLowerCase() as `0x${string}`,
         abi: (checkoutCurrency === "MONA"
@@ -415,7 +415,7 @@ const useCheckout = () => {
         account: address,
       });
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
       const res = await clientWallet.writeContract(request);
@@ -520,17 +520,17 @@ const useCheckout = () => {
               accumulator.push(item.amount);
               return accumulator;
             }, []),
-            customIds: [],
-            customAmounts: [],
-            indexes: cartItems.map((item) =>
+            preRollIndexes: cartItems.map((item) =>
               ["shirt", "hoodie"].includes(item.printType.toLowerCase())
                 ? 0
                 : item.sizes.indexOf(item.chosenSize)
             ),
-            customURIs: [],
+            customIds: [],
+            customAmounts: [],
+            customIndexes: [],
             fulfillmentDetails: JSON.stringify(returned?.fulfillerDetails),
             pkpTokenId: "",
-            chosenTokenAddress: ACCEPTED_TOKENS_MUMBAI.find(
+            chosenTokenAddress: ACCEPTED_TOKENS.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],
             sinPKP: true,
@@ -539,7 +539,7 @@ const useCheckout = () => {
         account: address?.toLowerCase() as `0x${string}`,
       });
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
       const res = await clientWallet.writeContract(request);
@@ -596,7 +596,7 @@ const useCheckout = () => {
       return {
         to: COIN_OP_MARKET,
         nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
-        chainId: 80001,
+        chainId: 137,
         gasLimit: ethers.BigNumber.from("8000000"),
         maxFeePerGas: maxFeePerGas,
         maxPriorityFeePerGas: maxPriorityFeePerGas,
@@ -611,17 +611,18 @@ const useCheckout = () => {
               accumulator.push(item.amount);
               return accumulator;
             }, []),
-            customIds: [],
-            customAmounts: [],
-            indexes: cartItems.map((item) =>
+            preRollIndexes: cartItems.map((item) =>
               ["shirt", "hoodie"].includes(item.printType.toLowerCase())
                 ? 0
                 : item.sizes.indexOf(item.chosenSize)
             ),
+            customIds: [],
+            customAmounts: [],
+            customIndexes: [],
             customURIs: [],
             fulfillmentDetails: JSON.stringify(fulfillerDetails),
             pkpTokenId: BigInt(currentPKP?.tokenId.hex!).toString(),
-            chosenTokenAddress: "0x07b722856369f6b923e1f276abca58dd3d15243d",
+            chosenTokenAddress: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
             sinPKP: false,
           },
         ]),
@@ -637,8 +638,8 @@ const useCheckout = () => {
     setFiatCheckoutLoading(true);
     try {
       const provider = new ethers.providers.JsonRpcProvider(
-        `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`,
-        80001
+        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        137
       );
       const tx = await createTxData(encrypted.information!, provider);
 

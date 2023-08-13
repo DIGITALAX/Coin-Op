@@ -6,7 +6,7 @@ export interface Layer {
   childPosterURIs: string[];
   childTokenIds: number[];
   parentTokenId: number;
-  price: string;
+  prices: string[];
   childPrices: string[];
   printType: string;
 }

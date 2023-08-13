@@ -28,7 +28,7 @@ export const getRegionOfInterest = (
 
   const centerX = (minX + maxX) / 2;
   const centerY = (minY + maxY) / 2;
-  const scaleFactor = element.type === "circle" ? 3 : 10;
+  const scaleFactor = element.type === "circle" ? 0.5 : 1;
 
   return {
     x: centerX - ((maxX - minX) * scaleFactor) / 2,

@@ -27,9 +27,9 @@ const usePreRoll = () => {
             ...obj,
             uri: await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]),
             tags: [
-              ...(obj.printType === "Sticker" ? ["sticker"] : []),
-              ...(obj.printType === "Poster" ? ["poster"] : []),
-              ...(obj.printType === "Hoodie"
+              ...(obj.printType === "sticker" ? ["sticker"] : []),
+              ...(obj.printType === "poster" ? ["poster"] : []),
+              ...(obj.printType === "hoodie"
                 ? ["hoodie", "hoodies", "apparel"]
                 : ["shirt", "shirts", "apparel"]),
               "smile",
@@ -59,11 +59,11 @@ const usePreRoll = () => {
                 ? ['11"x17"', '18"x24"', '24"x36"']
                 : ["XS", "S", "M", "L", "XL"],
             bgColor:
-              obj.printType === "Hoodie"
+              obj.printType === "hoodie"
                 ? "#32C5FF"
-                : obj.printType === "Shirt"
+                : obj.printType === "shirt"
                 ? "#6236FF"
-                : obj.printType === "Poster"
+                : obj.printType === "poster"
                 ? "#FFC800"
                 : "#B620E0",
           };

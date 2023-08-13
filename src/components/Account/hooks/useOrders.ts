@@ -18,7 +18,7 @@ import {
   decryptString,
 } from "@lit-protocol/lit-node-client";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { polygon, polygonMumbai } from "viem/chains";
+import { polygon } from "viem/chains";
 import {
   COIN_OP_FULFILLMENT,
   COIN_OP_MARKET,
@@ -33,8 +33,8 @@ import { generateAuthSignature } from "../../../../lib/subgraph/helpers/generate
 
 const useOrders = () => {
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
-    transport: http("https://rpc-mumbai.maticvigil.com/"),
+    chain: polygon,
+    transport: http(),
   });
   const { address } = useAccount();
   const dispatch = useDispatch();
@@ -190,7 +190,7 @@ const useOrders = () => {
         authSig = await generateAuthSignature(connectedPKP);
       } else {
         authSig = await checkAndSignAuthMessage({
-          chain: "mumbai",
+          chain: "polygon",
         });
       }
       const fulfillerAddress = await getFulfillerAddress();
@@ -198,7 +198,7 @@ const useOrders = () => {
         return {
           contractAddress: "",
           standardContractType: "",
-          chain: "mumbai",
+          chain: "polygon",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
@@ -220,7 +220,7 @@ const useOrders = () => {
               {
                 contractAddress: "",
                 standardContractType: "",
-                chain: "mumbai",
+                chain: "polygon",
                 method: "",
                 parameters: [":userAddress"],
                 returnValueTest: {
@@ -233,7 +233,7 @@ const useOrders = () => {
             ],
             toDecrypt: order?.message[i].encryptedSymmetricKey!,
             authSig,
-            chain: "mumbai",
+            chain: "polygon",
           });
           const uintString = new Uint8Array(order?.message[i].encryptedString!)
             .buffer;
@@ -302,7 +302,7 @@ const useOrders = () => {
         authSig = await generateAuthSignature(connectedPKP);
       } else {
         authSig = await checkAndSignAuthMessage({
-          chain: "mumbai",
+          chain: "polygon",
         });
       }
 
@@ -313,7 +313,7 @@ const useOrders = () => {
         fulfillerEditions.push({
           contractAddress: "",
           standardContractType: "",
-          chain: "mumbai",
+          chain: "polygon",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
@@ -334,7 +334,7 @@ const useOrders = () => {
             {
               contractAddress: "",
               standardContractType: "",
-              chain: "mumbai",
+              chain: "polygon",
               method: "",
               parameters: [":userAddress"],
               returnValueTest: {
@@ -347,7 +347,7 @@ const useOrders = () => {
           ],
           toDecrypt: order?.fulfillmentInformation?.encryptedSymmetricKey!,
           authSig,
-          chain: "mumbai",
+          chain: "polygon",
         });
         const uintString = new Uint8Array(
           order?.fulfillmentInformation?.encryptedString!
@@ -408,7 +408,7 @@ const useOrders = () => {
         account: address?.toLowerCase() as `0x${string}`,
       });
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
       const res = await clientWallet.writeContract(request);
@@ -437,7 +437,7 @@ const useOrders = () => {
       return {
         to: COIN_OP_MARKET,
         nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
-        chainId: 80001,
+        chainId: 137,
         gasLimit: ethers.BigNumber.from("8000000"),
         maxFeePerGas: maxFeePerGas,
         maxPriorityFeePerGas: maxPriorityFeePerGas,
@@ -462,8 +462,8 @@ const useOrders = () => {
   ) => {
     try {
       const provider = new ethers.providers.JsonRpcProvider(
-        `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`,
-        80001
+        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        137
       );
       const tx = await createTxData(fulfillerDetails, provider, index);
 

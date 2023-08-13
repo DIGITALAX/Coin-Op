@@ -29,21 +29,22 @@ const addRashToCanvas = async (
     const bboxHeight = bbox.yMax - bbox.yMin;
     const scaleFactorX = canvas.width / bboxWidth;
     const scaleFactorY = canvas.height / bboxHeight;
+    const scaleFactor = Math.min(scaleFactorX, scaleFactorY);
 
     const newElement = {
       id: 0,
       points: subpaths.map((subpath) =>
         subpath.map((point) => ({
-          x: ((point.x - bbox.xMin) * scaleFactorX) / devicePixelRatio,
-          y: ((point.y - bbox.yMin) * scaleFactorY) / devicePixelRatio,
+          x: ((point.x - bbox.xMin) * scaleFactor) / devicePixelRatio,
+          y: ((point.y - bbox.yMin) * scaleFactor) / devicePixelRatio,
         }))
       ),
       type: circle ? "circle" : "pattern",
       posX: 0,
       posY: 0,
       stroke: "#ffc800",
-      scaleFactorX,
-      scaleFactorY,
+      scaleFactorX: scaleFactor,
+      scaleFactorY: scaleFactor,
       bounds: {
         left: bounds.left,
         top: bounds.top,
@@ -93,27 +94,39 @@ const addRashToCanvas = async (
           if (index === 0) {
             return newElement;
           } else {
-            const scaleFactorWidth = canvasSize!.width / canvasSize!.oldWidth;
-            const scaleFactorHeight =
-              canvasSize!.height / canvasSize!.oldHeight;
+            const isScalingDown = canvasSize!.width < canvasSize!.oldWidth;
+            let scaleFactorWidth, scaleFactorHeight;
+
+            // Always compute the direct scaling factors
+            scaleFactorWidth = canvasSize!.width / canvasSize!.oldWidth;
+            scaleFactorHeight = canvasSize!.height / canvasSize!.oldHeight;
+
             const scaleFactor = Math.sqrt(scaleFactorWidth * scaleFactorHeight);
+            const scaleFactorSize = isScalingDown
+              ? Math.max(scaleFactorWidth, scaleFactorHeight)
+              : Math.min(scaleFactorWidth, scaleFactorHeight);
+
+            const offsetX =
+              (canvasSize!.width - canvasSize!.oldWidth * scaleFactorSize) / 2;
+            const offsetY =
+              (canvasSize!.height - canvasSize!.oldHeight * scaleFactorSize) /
+              2;
+
             if (element.type === "image") {
               return {
                 ...element,
-                x1: (element.x1 * canvasSize!.width) / canvasSize!.oldWidth,
-                y1: (element.y1 * canvasSize!.height) / canvasSize!.oldHeight,
-                width:
-                  (element.width * canvasSize!.width) / canvasSize!.oldWidth,
-                height:
-                  (element.height * canvasSize!.height) / canvasSize!.oldHeight,
+                x1: element.x1 * scaleFactorSize + offsetX,
+                y1: element.y1 * scaleFactorSize + offsetY,
+                width: element.width * scaleFactorSize + offsetX,
+                height: element.height * scaleFactorSize + offsetY,
               };
             } else if (element.type === "text") {
               return {
                 ...element,
-                x1: (element.x1 * canvasSize!.width) / canvasSize!.oldWidth,
-                x2: (element.x2 * canvasSize!.width) / canvasSize!.oldWidth,
-                y1: (element.y1 * canvasSize!.height) / canvasSize!.oldHeight,
-                y2: (element.y2 * canvasSize!.height) / canvasSize!.oldHeight,
+                x1: element.x1 * scaleFactorSize + offsetX,
+                x2: element.x2 * scaleFactorSize + offsetX,
+                y1: element.y1 * scaleFactorSize + offsetY,
+                y2: element.y2 * scaleFactorSize + offsetY,
                 strokeWidth: element.strokeWidth * scaleFactor,
               };
             } else {
@@ -123,8 +136,8 @@ const addRashToCanvas = async (
                 points: element.points?.map(
                   (point: { x: number; y: number }) => {
                     return {
-                      x: (point.x * canvasSize!.width) / canvasSize!.oldWidth,
-                      y: (point.y * canvasSize!.height) / canvasSize!.oldHeight,
+                      x: point.x * scaleFactorSize + offsetX,
+                      y: point.y * scaleFactorSize + offsetY,
                     };
                   }
                 ),

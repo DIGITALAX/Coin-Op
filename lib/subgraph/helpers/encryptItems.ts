@@ -33,7 +33,7 @@ export const encryptItems = async (
     let authSig;
     if (!authSigFiat) {
       authSig = await LitJsSdk.checkAndSignAuthMessage({
-        chain: "mumbai",
+        chain: "polygon",
       });
     } else {
       authSig = authSigFiat;
@@ -55,7 +55,7 @@ export const encryptItems = async (
         fulfillerEditions.push({
           contractAddress: "",
           standardContractType: "",
-          chain: "mumbai",
+          chain: "polygon",
           method: "",
           parameters: [":userAddress"],
           returnValueTest: {
@@ -75,7 +75,7 @@ export const encryptItems = async (
           {
             contractAddress: "",
             standardContractType: "",
-            chain: "mumbai",
+            chain: "polygon",
             method: "",
             parameters: [":userAddress"],
             returnValueTest: {
@@ -86,7 +86,7 @@ export const encryptItems = async (
         ],
         symmetricKey,
         authSig,
-        chain: "mumbai",
+        chain: "polygon",
       });
 
       const buffer = await encryptedString.arrayBuffer();

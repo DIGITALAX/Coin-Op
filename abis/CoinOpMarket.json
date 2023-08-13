@@ -377,13 +377,13 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "_subOrderId",
+        "name": "subOrderId",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "address",
-        "name": "_fulfillerAddress",
+        "name": "fulfillerAddress",
         "type": "address"
       }
     ],
@@ -530,6 +530,11 @@
           },
           {
             "internalType": "uint256[]",
+            "name": "preRollIndexes",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256[]",
             "name": "customIds",
             "type": "uint256[]"
           },
@@ -540,7 +545,7 @@
           },
           {
             "internalType": "uint256[]",
-            "name": "indexes",
+            "name": "customIndexes",
             "type": "uint256[]"
           },
           {
@@ -728,6 +733,25 @@
         "internalType": "string",
         "name": "",
         "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getOrderIdtoPKPAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

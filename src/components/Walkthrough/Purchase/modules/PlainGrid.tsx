@@ -1,7 +1,8 @@
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import {
-  ACCEPTED_TOKENS_MUMBAI,
+  // ACCEPTED_TOKENS_MUMBAI,
+  ACCEPTED_TOKENS,
   INFURA_GATEWAY,
 } from "../../../../../lib/constants";
 import { GridProps } from "../types/synth.types";
@@ -19,7 +20,6 @@ const PlainGrid: FunctionComponent<GridProps> = ({
   connectedPKP,
   chain,
   openChainModal,
-  fulfillmentDetailsLocalStorage
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2" ref={scrollRef}>
@@ -62,33 +62,27 @@ const PlainGrid: FunctionComponent<GridProps> = ({
               <div className="relative w-fit h-fit">{"$ 0"}</div>
             </div>
             <ShippingInfo
-              fulfillmentDetails={
-                fulfillmentDetailsLocalStorage
-                  ? fulfillmentDetailsLocalStorage
-                  : fulfillmentDetails
-              }
+              fulfillmentDetails={fulfillmentDetails}
               dispatch={dispatch}
             />
             {
               <div className="relative w-3/4 justify-start items-center flex flex-row gap-1">
-                {ACCEPTED_TOKENS_MUMBAI?.map(
-                  (item: string[], index: number) => {
-                    return (
-                      <div
-                        className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95`}
-                        key={index}
-                      >
-                        <Image
-                          src={`${INFURA_GATEWAY}/ipfs/${item[0]}`}
-                          className="flex"
-                          draggable={false}
-                          width={30}
-                          height={35}
-                        />
-                      </div>
-                    );
-                  }
-                )}
+                {ACCEPTED_TOKENS?.map((item: string[], index: number) => {
+                  return (
+                    <div
+                      className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95`}
+                      key={index}
+                    >
+                      <Image
+                        src={`${INFURA_GATEWAY}/ipfs/${item[0]}`}
+                        className="flex"
+                        draggable={false}
+                        width={30}
+                        height={35}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             }
             <Crypto
