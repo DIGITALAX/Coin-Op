@@ -114,11 +114,12 @@ export enum PrintType {
 export interface PreRoll {
   collectionId: number;
   uri: {
-    image: string;
+    images: string[];
     prompt: string;
     tags: string;
     category: string;
   };
+  currentIndex: number;
   amount: number;
   colors: string[];
   sizes: string[];

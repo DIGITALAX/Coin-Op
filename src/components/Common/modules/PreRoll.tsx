@@ -7,6 +7,7 @@ import ColorChoice from "./ColorChoice";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setImageViewer } from "../../../../redux/reducers/imageViewerSlice";
 import SizingChoice from "./SizingChoice";
+import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
 
 const PreRoll: FunctionComponent<PreRollProps> = ({
   preRoll,
@@ -17,34 +18,134 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
   right,
   preRollAnim,
 }): JSX.Element => {
+  console.log(preRoll.currentIndex);
   return (
     <div
       className="relative w-48 xl:w-full h-fit flex flex-col rounded-sm border border-white p-3 gap-5"
       id={preRollAnim ? "anim" : ""}
     >
-      <div
-        className="relative w-full h-60 xl:h-80 flex flex-col object-cover bg-cross bg-cover bg-center cursor-pointer"
-        onClick={() =>
-          dispatch(
-            setImageViewer({
-              actionValue: open,
-              actionImage: preRoll?.uri?.image?.split("ipfs://")[1],
-            })
-          )
-        }
-      >
-        {preRoll.uri.image && (
+      <div className="relative w-full h-60 xl:h-80 flex flex-col object-cover bg-cross bg-cover bg-center cursor-pointer">
+        {preRoll.uri.images.length > 0 && (
           <Image
             src={`${INFURA_GATEWAY}/ipfs/${
-              preRoll?.uri?.image?.split("ipfs://")[1]
+              preRoll?.uri?.images?.[preRoll?.currentIndex]?.split("ipfs://")[1]
             }`}
             layout="fill"
             objectFit="cover"
             draggable={false}
             alt="preRoll"
             priority
+            onClick={() =>
+              dispatch(
+                setImageViewer({
+                  actionValue: open,
+                  actionImage:
+                    preRoll?.uri?.images?.[preRoll?.currentIndex]?.split(
+                      "ipfs://"
+                    )[1],
+                })
+              )
+            }
           />
         )}
+        <div
+          className={`absolute top-2 right-2 w-fit h-full flex flex-row gap-1.5`}
+        >
+          <div
+            className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
+            onClick={(e) => {
+              e.stopPropagation();
+              const updated = {
+                left: left
+                  ? preRolls.left.map((obj) =>
+                      obj.uri.images?.[0] === preRoll.uri.images?.[0]
+                        ? {
+                            ...obj,
+                            currentIndex:
+                              preRoll.currentIndex > 0
+                                ? preRoll.currentIndex - 1
+                                : 0,
+                          }
+                        : obj
+                    )
+                  : preRolls.left,
+                right: right
+                  ? preRolls.right.map((obj) =>
+                      obj.uri.images?.[0] === preRoll.uri.images?.[0]
+                        ? {
+                            ...obj,
+                            currentIndex:
+                              preRoll.currentIndex > 0
+                                ? preRoll.currentIndex - 1
+                                : preRoll.uri.images.length - 1,
+                          }
+                        : obj
+                    )
+                  : preRolls.right,
+              };
+
+              dispatch(
+                setPreRoll({
+                  actionLeft: updated.left,
+                  actionRight: updated.right,
+                })
+              );
+            }}
+          >
+            <Image
+              src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
+              layout="fill"
+              draggable={false}
+            />
+          </div>
+          <div
+            className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
+            onClick={(e) => {
+              e.stopPropagation();
+              const updated = {
+                left: left
+                  ? preRolls.left.map((obj) =>
+                      obj.uri.images?.[0] === preRoll.uri.images?.[0]
+                        ? {
+                            ...obj,
+                            currentIndex:
+                              preRoll.currentIndex < preRoll.uri.images.length - 1
+                                ? preRoll.currentIndex + 1
+                                : 0,
+                          }
+                        : obj
+                    )
+                  : preRolls.left,
+                right: right
+                  ? preRolls.right.map((obj) =>
+                      obj.uri.images?.[0] === preRoll.uri.images?.[0]
+                        ? {
+                            ...obj,
+                            currentIndex:
+                              preRoll.currentIndex < preRoll.uri.images.length - 1
+                                ? preRoll.currentIndex + 1
+                                : 0,
+                          }
+                        : obj
+                    )
+                  : preRolls.right,
+              };
+
+              dispatch(
+                setPreRoll({
+                  actionLeft: updated.left,
+                  actionRight: updated.right,
+                })
+              );
+            }}
+          >
+            <Image
+              src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
+              layout="fill"
+              draggable={false}
+            />
+          </div>
+        </div>
       </div>
       <div className="relative flex flex-row gap-2 w-full h-fit justify-between">
         <PrintTag backgroundColor={preRoll.bgColor} type={preRoll.printType} />
@@ -97,6 +198,10 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
               newCartItems.push({
                 ...newObj,
                 amount: 1,
+                uri: {
+                  ...preRoll?.uri,
+                  image: preRoll?.uri?.images?.[0],
+                },
                 price:
                   preRoll?.printType === "shirt" ||
                   preRoll?.printType === "hoodie"

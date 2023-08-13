@@ -56,7 +56,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         </Link>
         <div className="relative flex w-full h-fit items-center justify-center">
           <div
-            className="relative w-fit px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 cursor-pointer active:scale-95"
+            className="relative w-fit md:left-10 px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 cursor-pointer active:scale-95"
             onClick={
               router.asPath.includes("account")
                 ? async () => {

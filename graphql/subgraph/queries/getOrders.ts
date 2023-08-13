@@ -50,7 +50,7 @@ const ORDERS_PKP = `
 `;
 
 export const getOrders = async (buyerAddress: string): Promise<any> => {
-  const queryPromise = graphClientTestnet.query({
+  const queryPromise = graphClient.query({
     query: gql(ORDERS),
     variables: {
       buyerAddress,
@@ -74,7 +74,7 @@ export const getOrders = async (buyerAddress: string): Promise<any> => {
 };
 
 export const getOrdersPKP = async (pkpTokenId: string): Promise<any> => {
-  const queryPromise = graphClientTestnet.query({
+  const queryPromise = graphClient.query({
     query: gql(ORDERS_PKP),
     variables: {
       pkpTokenId,

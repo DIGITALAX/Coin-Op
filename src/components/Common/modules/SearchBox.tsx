@@ -20,7 +20,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
       <div className="relative w-full h-full object-cover">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${
-            promptSearch?.uri?.image?.split("ipfs://")[1]
+            promptSearch?.uri?.images[0]?.split("ipfs://")[1]
           }`}
           layout="fill"
           objectFit="cover"
@@ -46,7 +46,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
                 onClick={async (e) => {
                   e.stopPropagation();
                   if (router.asPath.includes("account")) {
-                   await router.push("/");
+                    await router.push("/");
                   }
                   handlePromptChoose(promptSearch);
                 }}

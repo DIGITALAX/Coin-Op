@@ -12,7 +12,7 @@ const ALL_FULFILLERS = `
 `;
 
 export const getFulfillers = async (): Promise<any> => {
-  const queryPromise = graphClientTestnet.query({
+  const queryPromise = graphClient.query({
     query: gql(ALL_FULFILLERS),
     fetchPolicy: "no-cache",
     errorPolicy: "all",

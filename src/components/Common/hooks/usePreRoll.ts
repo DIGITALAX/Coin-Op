@@ -26,19 +26,6 @@ const usePreRoll = () => {
           const modifiedObj = {
             ...obj,
             uri: await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]),
-            tags: [
-              ...(obj.printType === "sticker" ? ["sticker"] : []),
-              ...(obj.printType === "poster" ? ["poster"] : []),
-              ...(obj.printType === "hoodie"
-                ? ["hoodie", "hoodies", "apparel"]
-                : ["shirt", "shirts", "apparel"]),
-              "smile",
-              "oil",
-              "painting",
-              "streetwear",
-              "graffiti",
-              "tagging",
-            ],
             chosenSize:
               obj.printType === "Sticker"
                 ? '2"x2"'
@@ -66,6 +53,7 @@ const usePreRoll = () => {
                 : obj.printType === "poster"
                 ? "#FFC800"
                 : "#B620E0",
+            currentIndex: 0,
           };
 
           return modifiedObj;

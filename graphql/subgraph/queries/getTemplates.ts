@@ -10,7 +10,7 @@ const TEMPLATES_PRINTTYPE = `
       parentURI
       childPosterURIs
       printType
-      price
+      prices
       childPrices
     }
   }
@@ -19,7 +19,7 @@ const TEMPLATES_PRINTTYPE = `
 export const getTemplatesByPrintType = async (
   printType: string
 ): Promise<any> => {
-  const queryPromise = graphClientTestnet.query({
+  const queryPromise = graphClient.query({
     query: gql(TEMPLATES_PRINTTYPE),
     variables: {
       printType,

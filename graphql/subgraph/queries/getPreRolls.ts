@@ -32,7 +32,7 @@ const PREROLL_ID = `
 `;
 
 export const getAllPreRolls = async (): Promise<any> => {
-  const queryPromise = graphClientTestnet.query({
+  const queryPromise = graphClient.query({
     query: gql(ALL_PREROLLS),
     fetchPolicy: "no-cache",
     errorPolicy: "all",
@@ -53,7 +53,7 @@ export const getAllPreRolls = async (): Promise<any> => {
 };
 
 export const getPreRollId = async (collectionId: string): Promise<any> => {
-  const queryPromise = graphClientTestnet.query({
+  const queryPromise = graphClient.query({
     query: gql(PREROLL_ID),
     variables: {
       collectionId,
