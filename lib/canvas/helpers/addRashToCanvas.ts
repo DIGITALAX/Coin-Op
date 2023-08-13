@@ -96,48 +96,70 @@ const addRashToCanvas = async (
           } else {
             const isScalingDown = canvasSize!.width < canvasSize!.oldWidth;
             let scaleFactorWidth, scaleFactorHeight;
-
-            // Always compute the direct scaling factors
             scaleFactorWidth = canvasSize!.width / canvasSize!.oldWidth;
             scaleFactorHeight = canvasSize!.height / canvasSize!.oldHeight;
 
             const scaleFactor = Math.sqrt(scaleFactorWidth * scaleFactorHeight);
-            const scaleFactorSize = isScalingDown
-              ? Math.max(scaleFactorWidth, scaleFactorHeight)
-              : Math.min(scaleFactorWidth, scaleFactorHeight);
-
-            const offsetX =
-              (canvasSize!.width - canvasSize!.oldWidth * scaleFactorSize) / 2;
-            const offsetY =
-              (canvasSize!.height - canvasSize!.oldHeight * scaleFactorSize) /
-              2;
-
             if (element.type === "image") {
               return {
                 ...element,
-                x1: element.x1 * scaleFactorSize + offsetX,
-                y1: element.y1 * scaleFactorSize + offsetY,
-                width: element.width * scaleFactorSize + offsetX,
-                height: element.height * scaleFactorSize + offsetY,
+                // x1: element.x1 * scaleFactorSize + offsetX,
+                // y1: element.y1 * scaleFactorSize + offsetY,
+                // width: element.width * scaleFactorSize + offsetX,
+                // height: element.height * scaleFactorSize + offsetY,
               };
             } else if (element.type === "text") {
+              const scaleFactorSizeText = isScalingDown
+                ? Math.max(scaleFactorWidth, scaleFactorHeight)
+                : Math.min(scaleFactorWidth, scaleFactorHeight);
+
+              const widthBefore = element.x2 - element.x1;
+              const heightBefore = element.y2 - element.y1;
+
+              const widthAfter = widthBefore * scaleFactorSizeText;
+              const heightAfter = heightBefore * scaleFactorSizeText;
+              const offsetXText =
+                (canvasSize!.width -
+                  canvasSize!.oldWidth * scaleFactorSizeText) /
+                2;
+              const offsetYText =
+                (canvasSize!.height -
+                  canvasSize!.oldHeight * scaleFactorSizeText) /
+                2;
+
+              const x1New = element.x1 * scaleFactorSizeText + offsetXText;
+              const y1New = element.y1 * scaleFactorSizeText + offsetYText;
+
               return {
                 ...element,
-                x1: element.x1 * scaleFactorSize + offsetX,
-                x2: element.x2 * scaleFactorSize + offsetX,
-                y1: element.y1 * scaleFactorSize + offsetY,
-                y2: element.y2 * scaleFactorSize + offsetY,
+                x1: x1New,
+                y1: y1New,
+                x2: x1New + widthAfter,
+                y2: y1New + heightAfter,
                 strokeWidth: element.strokeWidth * scaleFactor,
               };
             } else {
+              const scaleFactorSizePolygon = isScalingDown
+                ? Math.min(scaleFactorWidth, scaleFactorHeight)
+                : Math.max(scaleFactorWidth, scaleFactorHeight);
+
+              const offsetXPolygon =
+                (canvasSize!.width -
+                  canvasSize!.oldWidth * scaleFactorSizePolygon) /
+                2;
+              const offsetYPolygon =
+                (canvasSize!.height -
+                  canvasSize!.oldHeight * scaleFactorSizePolygon) /
+                2;
+
               return {
                 ...element,
                 strokeWidth: element.strokeWidth * scaleFactor,
                 points: element.points?.map(
                   (point: { x: number; y: number }) => {
                     return {
-                      x: point.x * scaleFactorSize + offsetX,
-                      y: point.y * scaleFactorSize + offsetY,
+                      x: point.x * scaleFactorSizePolygon + offsetXPolygon,
+                      y: point.y * scaleFactorSizePolygon + offsetYPolygon,
                     };
                   }
                 ),
