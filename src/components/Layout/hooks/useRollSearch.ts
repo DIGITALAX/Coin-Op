@@ -42,7 +42,7 @@ const useRollSearch = () => {
 
   const handlePromptChoose = async (preRoll: PreRoll) => {
     const response = await fetch(
-      `${INFURA_GATEWAY}/ipfs/${preRoll.uri.image.split("ipfs://")[1]}`
+      `${INFURA_GATEWAY}/ipfs/${preRoll.uri?.images?.[0].split("ipfs://")[1]}`
     );
     const data = await response.blob();
     const image = new File([data], "coinop", { type: "image/png" });
@@ -99,6 +99,10 @@ const useRollSearch = () => {
       newCartItems.push({
         ...newObj,
         amount: 1,
+        uri: {
+          ...preRoll.uri,
+          image: preRoll?.uri?.images?.[0],
+        },
         price:
           preRoll?.printType === "shirt" || preRoll?.printType === "hoodie"
             ? preRoll.price?.[0]

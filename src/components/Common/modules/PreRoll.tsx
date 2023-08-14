@@ -18,7 +18,6 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
   right,
   preRollAnim,
 }): JSX.Element => {
-  console.log(preRoll.currentIndex);
   return (
     <div
       className="relative w-48 xl:w-full h-fit flex flex-col rounded-sm border border-white p-3 gap-5"
@@ -109,7 +108,8 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                         ? {
                             ...obj,
                             currentIndex:
-                              preRoll.currentIndex < preRoll.uri.images.length - 1
+                              preRoll.currentIndex <
+                              preRoll.uri.images.length - 1
                                 ? preRoll.currentIndex + 1
                                 : 0,
                           }
@@ -122,7 +122,8 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                         ? {
                             ...obj,
                             currentIndex:
-                              preRoll.currentIndex < preRoll.uri.images.length - 1
+                              preRoll.currentIndex <
+                              preRoll.uri.images.length - 1
                                 ? preRoll.currentIndex + 1
                                 : 0,
                           }

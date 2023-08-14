@@ -13,6 +13,7 @@ const Login: FunctionComponent<LoginProps> = ({
   currentPKP,
   highlight,
 }): JSX.Element => {
+  console.log({currentPKP})
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
       <div className="relative w-full sm:w-[50vw] lg:w-[30vw] h-fit col-start-1 place-self-center bg-black rounded-lg border border-white">
