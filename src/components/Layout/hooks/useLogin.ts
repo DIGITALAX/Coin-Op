@@ -3,23 +3,16 @@ import "@lit-protocol/lit-auth-client";
 import { ProviderType } from "@lit-protocol/constants";
 import { isSignInRedirect } from "@lit-protocol/lit-auth-client";
 import {
-  COIN_OP_MARKET,
   COIN_OP_PKPS,
-  IPFS_CID_PKP,
-  PKP_ADDRESS,
-  PKP_PUBLIC_KEY,
   REDIRECT_URL,
   REDIRECT_URL_TEST,
 } from "../../../../lib/constants";
-import { joinSignature } from "@ethersproject/bytes";
-import { serialize } from "@ethersproject/transactions";
 import { useRouter } from "next/router";
 import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
 import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
 import { ethers } from "ethers";
 import { createPublicClient, http } from "viem";
 import { Chain } from "viem/chains";
-import * as LitJsSdk_authHelpers from "@lit-protocol/auth-helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "../../../../redux/reducers/loginSlice";
 import PKPAbi from "./../../../../abis/PKP.json";
@@ -29,17 +22,18 @@ import {
   getFulfillmentDetailsLocalStorage,
   setCartItemsLocalStorage,
   setFulfillmentDetailsLocalStorage,
-} from "../../../../lib/subgraph/helpers/localStorage";
+  setLitLoginLocalStorage,
+} from "../../../../lib/subgraph/utils";
 import { RootState } from "../../../../redux/store";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setFulfillmentDetails } from "../../../../redux/reducers/fulfillmentDetailsSlice";
 import { getPKPs } from "../../../../graphql/subgraph/queries/getOrders";
 import { generateAuthSignature } from "../../../../lib/subgraph/helpers/generateAuthSignature";
-import { connectLit } from "../../../../lib/subgraph/helpers/connectLit";
 import CoinOpPKPsABI from "../../../../abis/CoinOpPKPs.json";
 import { litExecute } from "../../../../lib/subgraph/helpers/litExecute";
 import { createTxData } from "../../../../lib/subgraph/helpers/createTxData";
 import { encryptToken } from "../../../../lib/subgraph/helpers/encryptTokenId";
+import { getSessionSig } from "../../../../lib/subgraph/helpers/getSessionSig";
 
 export const chronicle: Chain = {
   id: 175177,
@@ -171,22 +165,8 @@ const useLogin = () => {
         redirectUri: `${REDIRECT_URL_TEST}${router.asPath}`,
       });
       const authMethod = await provider.authenticate();
-      const currentPKP = await handlePKPs(provider, authMethod);
-      const sessionSigs = await getSessionSig(authMethod, currentPKP, provider);
-      const pkpWallet = new PKPEthersWallet({
-        controllerSessionSigs: sessionSigs,
-        pkpPubKey: currentPKP.publicKey,
-        rpc: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-      });
-      const authSig = await generateAuthSignature(pkpWallet);
-      await storeAuthOnChain(authSig, currentPKP);
-      const encryptedToken = await encryptToken(
-        litClient,
-        dispatch,
-        currentPKP.ethAddress,
-        authSig,
-        BigInt(currentPKP.tokenId.hex).toString()
-      );
+      const values = await handlePKPs(provider, authMethod);
+
       dispatch(
         setLogin({
           actionOpen: false,
@@ -194,13 +174,23 @@ const useLogin = () => {
         })
       );
       setLoginLoading(false);
+      console.log({ authSig: values?.authSig });
+      setLitLoginLocalStorage(
+        JSON.stringify({
+          ...values?.currentPKP,
+          sessionSig: values?.sessionSigs,
+          pkpWallet: values?.pkpWallet,
+          authSig: values?.authSig,
+          encryptedToken: values?.encryptedToken,
+        })
+      );
       dispatch(
         setCurrentPKP({
-          ...currentPKP,
-          sessionSig: sessionSigs,
-          pkpWallet,
-          authSig,
-          encryptedToken,
+          ...values?.currentPKP,
+          sessionSig: values?.sessionSigs,
+          pkpWallet: values?.pkpWallet,
+          authSig: values?.authSig,
+          encryptedToken: values?.encryptedToken,
         })
       );
     } catch (err: any) {
@@ -216,11 +206,53 @@ const useLogin = () => {
   }, [router]);
 
   const handlePKPs = async (provider: any, authMethod: any) => {
-    let res = await fetchPkp(provider, authMethod);
-    if (res == undefined) {
-      res = await mintPkp(provider, authMethod);
+    try {
+      let res = await fetchPkp(provider, authMethod);
+      if (res == undefined) {
+        res = await mintPkp(provider, authMethod);
+      }
+      const sessionSigs = await getSessionSig(
+        authMethod,
+        res,
+        provider,
+        litNodeClient
+      );
+      const pkpWallet = new PKPEthersWallet({
+        controllerSessionSigs: sessionSigs,
+        pkpPubKey: res.publicKey,
+        rpc: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+      });
+      const authSig = await generateAuthSignature(pkpWallet);
+
+      const doesExist = await publicClient.readContract({
+        address: COIN_OP_PKPS,
+        abi: CoinOpPKPsABI,
+        functionName: "userExists",
+        args: [BigInt(res?.tokenId.hex!).toString()],
+      });
+
+      if (!doesExist) {
+        await storeAuthOnChain(authSig, res);
+      }
+
+      const encryptedToken = await encryptToken(
+        litClient,
+        dispatch,
+        res.ethAddress,
+        authSig,
+        BigInt(res.tokenId.hex).toString()
+      );
+
+      return {
+        currentPKP: res,
+        encryptedToken,
+        authSig,
+        pkpWallet,
+        sessionSigs,
+      };
+    } catch (err: any) {
+      console.error(err.message);
     }
-    return res;
   };
 
   const mintPkp = async (provider: any, authMethod: any) => {
@@ -274,41 +306,6 @@ const useLogin = () => {
       }
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const getSessionSig = async (
-    authMethod: any,
-    currentPKP: any,
-    provider: any
-  ) => {
-    try {
-      await litNodeClient.connect();
-
-      const litResource = new LitJsSdk_authHelpers.LitPKPResource(
-        currentPKP.tokenId.hex
-      );
-
-      const sessionSigs = await provider.getSessionSigs({
-        pkpPublicKey: currentPKP.publicKey,
-        authMethod: {
-          authMethodType: 6,
-          accessToken: authMethod.accessToken,
-        },
-        sessionSigsParams: {
-          chain: "polygon",
-          resourceAbilityRequests: [
-            {
-              resource: litResource,
-              ability: LitJsSdk_authHelpers.LitAbility.PKPSigning,
-            },
-          ],
-        },
-        litNodeClient,
-      });
-      return sessionSigs;
-    } catch (e: any) {
-      console.error(e.message);
     }
   };
 

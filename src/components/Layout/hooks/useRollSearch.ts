@@ -12,6 +12,8 @@ import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
 import { useAccount, useNetwork } from "wagmi";
 import { setChain } from "../../../../redux/reducers/chainSlice";
+import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
+import { getLitLoginLocalStorage } from "../../../../lib/subgraph/utils";
 
 const useRollSearch = () => {
   const { scrollRef, synthRef } = useContext(ScrollContext);
@@ -23,7 +25,6 @@ const useRollSearch = () => {
   const algolia = useSelector(
     (state: RootState) => state.app.algoliaReducer.value
   );
-  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
@@ -124,6 +125,34 @@ const useRollSearch = () => {
     }, 500);
   };
 
+  const checkIfLoggedIn = async () => {
+    try {
+      const data = getLitLoginLocalStorage();
+      if (data) {
+        const matchTimeExp = data?.authSig?.signedMessage.match(
+          /Expiration Time: ([\d\-T:.]+)Z/
+        )?.[1];
+        if (matchTimeExp && matchTimeExp) {
+          const expirationTime = new Date(matchTimeExp);
+          const thirtyMinsAgo = new Date(new Date().getTime() - 30 * 60 * 1000);
+
+          if (expirationTime <= thirtyMinsAgo) {
+            dispatch(
+              setCurrentPKP({
+                ...data?.currentPKP,
+                tokenId: data?.tokenId,
+                sessionSig: data?.sessionSig,
+                pkpWallet: data?.pkpWallet,
+                authSig: data?.authSig,
+                encryptedToken: data?.encryptedToken,
+              })
+            );
+          }
+        }
+      }
+    } catch (err: any) {}
+  };
+
   useEffect(() => {
     if (!algolia) {
       const index = initializeAlgolia();
@@ -143,6 +172,10 @@ const useRollSearch = () => {
     dispatch(setWalletConnected(isConnected));
     dispatch(setChain(chainNetwork?.id));
   }, [address, isConnected, chainNetwork]);
+
+  useEffect(() => {
+    checkIfLoggedIn();
+  }, []);
 
   return {
     handleRollSearch,

@@ -4,6 +4,7 @@ import { ImCross } from "react-icons/im";
 import { setLogin } from "../../../../../redux/reducers/loginSlice";
 import { AiOutlineLoading } from "react-icons/ai";
 import { setCurrentPKP } from "../../../../../redux/reducers/currentPKPSlice";
+import { removeLitLoginLocalStorage } from "../../../../../lib/subgraph/utils";
 
 const Login: FunctionComponent<LoginProps> = ({
   dispatch,
@@ -39,7 +40,9 @@ const Login: FunctionComponent<LoginProps> = ({
                 />
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
-                <div className="relative text-xl font-vcr text-white text-center flex items-center justify-center">Connect</div>
+                <div className="relative text-xl font-vcr text-white text-center flex items-center justify-center">
+                  Connect
+                </div>
                 {!highlight && (
                   <div
                     className={`relative w-full h-fit justify-center items-center text-white font-vcr text-xs text-center text-center break-words flex `}
@@ -74,10 +77,13 @@ const Login: FunctionComponent<LoginProps> = ({
                     className={`relative w-48 sm:w-60 h-10 justify-center items-center text-white font-vcr text-sm text-center border border-white px-3 py-2 flex  cursor-pointer active:scale-95 ${
                       !currentPKP ? "bg-sol/50" : "bg-smo/50"
                     }`}
-                    onClick={() =>
+                    onClick={
                       !currentPKP
-                        ? loginWithWeb2Auth()
-                        : dispatch(setCurrentPKP(undefined))
+                        ? () => loginWithWeb2Auth()
+                        : () => {
+                            dispatch(setCurrentPKP(undefined));
+                            removeLitLoginLocalStorage();
+                          }
                     }
                   >
                     <div

@@ -2,18 +2,13 @@ import { CartItem } from "@/components/Common/types/common.types";
 import { useEffect, useState } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useDispatch, useSelector } from "react-redux";
-import { serialize } from "@ethersproject/transactions";
 import { setMessagesModal } from "../../../../../redux/reducers/messagesModalSlice";
-import { joinSignature } from "@ethersproject/bytes";
 import { useAccount } from "wagmi";
 import {
   ACCEPTED_TOKENS,
   // ACCEPTED_TOKENS_MUMBAI,
   COIN_OP_MARKET,
   COIN_OP_ORACLE,
-  IPFS_CID_PKP,
-  PKP_ADDRESS,
-  PKP_PUBLIC_KEY,
 } from "../../../../../lib/constants";
 import { BigNumber, ethers } from "ethers";
 import CoinOpMarketABI from "../../../../../abis/CoinOpMarket.json";
@@ -30,7 +25,7 @@ import { setFulfillmentDetails } from "../../../../../redux/reducers/fulfillment
 import {
   removeCartItemsLocalStorage,
   removeFulfillmentDetailsLocalStorage,
-} from "../../../../../lib/subgraph/helpers/localStorage";
+} from "../../../../../lib/subgraph/utils";
 import { createTxData } from "../../../../../lib/subgraph/helpers/createTxData";
 import { litExecute } from "../../../../../lib/subgraph/helpers/litExecute";
 

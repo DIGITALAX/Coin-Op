@@ -49,6 +49,8 @@ const Account: NextPage = (): JSX.Element => {
       }, 3000);
     }
   }, [preRollAnim]);
+
+  console.log({connectedPKP})
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>
