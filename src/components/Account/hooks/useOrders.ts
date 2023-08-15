@@ -4,8 +4,6 @@ import {
   getOrdersPKP,
 } from "../../../../graphql/subgraph/queries/getOrders";
 import { useAccount } from "wagmi";
-import { serialize } from "@ethersproject/transactions";
-import { joinSignature } from "@ethersproject/bytes";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { getPreRollId } from "../../../../graphql/subgraph/queries/getPreRolls";
@@ -19,16 +17,14 @@ import {
 } from "@lit-protocol/lit-node-client";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
-import {
-  COIN_OP_FULFILLMENT,
-  COIN_OP_MARKET,
-  IPFS_CID_PKP,
-  PKP_ADDRESS,
-  PKP_PUBLIC_KEY,
-} from "../../../../lib/constants";
+import { COIN_OP_FULFILLMENT, COIN_OP_MARKET } from "../../../../lib/constants";
 import { InformationType, Order } from "../types/account.types";
 import { encryptItems } from "../../../../lib/subgraph/helpers/encryptItems";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
+import { litExecute } from "../../../../lib/subgraph/helpers/litExecute";
+import { createTxData } from "../../../../lib/subgraph/helpers/createTxData";
+import { setAllSubscriptions } from "../../../../redux/reducers/allSubscriptionsSlice";
+import { getSubscriptionsPKP } from "../../../../graphql/subgraph/queries/getSubscription";
 
 const useOrders = () => {
   const publicClient = createPublicClient({
@@ -46,6 +42,8 @@ const useOrders = () => {
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
   );
+  const [subscriptionsLoading, setSubscriptionsLoading] =
+    useState<boolean>(false);
   const [ordersLoading, setOrdersLoading] = useState<boolean>(false);
   const [decryptLoading, setDecryptLoading] = useState<boolean[]>([]);
   const [decryptMessageLoading, setDecryptMessageLoading] = useState<boolean[]>(
@@ -56,6 +54,22 @@ const useOrders = () => {
   const [updatedInformation, setUpdatedInformation] = useState<
     InformationType[]
   >([]);
+
+  const getAllSubscriptions = async () => {
+    setSubscriptionsLoading(true);
+    try {
+      const res = await getSubscriptionsPKP(
+        BigInt(connectedPKP?.tokenId.hex!).toString()
+      );
+
+      dispatch(
+        setAllSubscriptions(res?.data?.subscriberAddeds?.[0] || undefined)
+      );
+    } catch (err: any) {
+      console.error(err.message);
+    }
+    setSubscriptionsLoading(false);
+  };
 
   const getAllOrders = async () => {
     setOrdersLoading(true);
@@ -417,42 +431,6 @@ const useOrders = () => {
     }
   };
 
-  const createTxData = async (
-    fulfillerDetails: string[],
-    provider: ethers.providers.JsonRpcProvider,
-    index: number
-  ) => {
-    try {
-      const contractInterface = new ethers.utils.Interface(
-        CoinOpMarketABI as any
-      );
-
-      const latestBlock = await provider.getBlock("latest");
-      const baseFeePerGas = latestBlock.baseFeePerGas;
-      const maxFeePerGas = baseFeePerGas?.add(
-        ethers.utils.parseUnits("10", "gwei")
-      );
-      const maxPriorityFeePerGas = ethers.utils.parseUnits("3", "gwei");
-      return {
-        to: COIN_OP_MARKET,
-        nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
-        chainId: 137,
-        gasLimit: ethers.BigNumber.from("8000000"),
-        maxFeePerGas: maxFeePerGas,
-        maxPriorityFeePerGas: maxPriorityFeePerGas,
-        from: "{{publicKey}}",
-        data: contractInterface.encodeFunctionData("setOrderDetails", [
-          allOrders[index].orderId,
-          JSON.stringify(fulfillerDetails),
-        ]),
-        value: ethers.BigNumber.from(0),
-        type: 2,
-      };
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
   const fiatUpdateOrderInfo = async (
     index: number,
     fulfillerDetails: string[],
@@ -464,44 +442,23 @@ const useOrders = () => {
         `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
         137
       );
-      const tx = await createTxData(fulfillerDetails, provider, index);
 
-      const results = await client.executeJs({
-        ipfsId: IPFS_CID_PKP,
-        authSig,
-        jsParams: {
-          publicKey: PKP_PUBLIC_KEY,
-          tx,
-          sigName: "coinOpUpdateOrderInfo",
-        },
-      });
+      const tx = await createTxData(
+        provider,
+        CoinOpMarketABI,
+        COIN_OP_MARKET,
+        "setOrderDetails",
+        [allOrders[index].orderId, JSON.stringify(fulfillerDetails)]
+      );
 
-      const signature = results.signatures["coinOpUpdateOrderInfo"];
-      const sig: {
-        r: string;
-        s: string;
-        recid: number;
-        signature: string;
-        publicKey: string;
-        dataSigned: string;
-      } = signature as {
-        r: string;
-        s: string;
-        recid: number;
-        signature: string;
-        publicKey: string;
-        dataSigned: string;
-      };
-
-      const encodedSignature = joinSignature({
-        r: "0x" + sig.r,
-        s: "0x" + sig.s,
-        recoveryParam: sig.recid,
-      });
-      const serialized = serialize(tx as any, encodedSignature);
-      const transactionHash = await provider.sendTransaction(serialized);
-
-      await transactionHash.wait();
+      await litExecute(
+        provider,
+        dispatch,
+        client,
+        tx,
+        "coinOpUpdateOrderInfo",
+        authSig
+      );
     } catch (err: any) {
       console.error(err.message);
     }
@@ -600,6 +557,12 @@ const useOrders = () => {
     } else {
       dispatch(setAllOrders([]));
     }
+
+    if (connectedPKP?.pkpWallet) {
+      getAllSubscriptions();
+    } else {
+      dispatch(setAllSubscriptions(undefined));
+    }
   }, [address, connectedPKP?.pkpWallet]);
 
   useEffect(() => {
@@ -637,6 +600,7 @@ const useOrders = () => {
     setUpdatedInformation,
     handleDecryptMessage,
     decryptMessageLoading,
+    subscriptionsLoading,
   };
 };
 

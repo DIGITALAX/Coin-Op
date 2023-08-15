@@ -60,13 +60,15 @@ export const ACCEPTED_TOKENS_MUMBAI: string[][] = [
 ];
 
 export const COIN_OP_MARKET: `0x${string}` =
-  "0x0E8fD2e1927F2354a7a1d636525A2Be0c7CA8694";
+  "0x006923e8E51CB3e3f7e9744F694F999dB88887Ee";
 export const COIN_OP_ORACLE: `0x${string}` =
   "0x7e066A206a982F7Aa0d6d0D4c5bC74E4bD048dF3";
 export const COIN_OP_FULFILLMENT: `0x${string}` =
   "0x84E7493b1DB31bf643FD0C8A129B3b8acfD9413b";
-export const COIN_OP_PKPS: `0x${string}` = "0x";
-export const COIN_OP_SUBSCRIPTION: `0x${string}` = "0x";
+export const COIN_OP_PKPS: `0x${string}` =
+  "0x1c6cE9018c8F3BDa3C527817CB324b8a85Af11A3";
+export const COIN_OP_SUBSCRIPTION: `0x${string}` =
+  "0xF8371634aE217D9c24Fb5AB47D2641ea3FA343d8";
 export const PKP_ADDRESS: `0x${string}` =
   "0xb1d06c81fd47dd1abb1172feb369306a2746f220";
 export const IPFS_CID_PKP: string =

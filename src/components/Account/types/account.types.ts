@@ -67,6 +67,7 @@ export type AllOrdersProps = {
   ordersLoading: boolean;
   allOrders: Order[];
   orderOpen: boolean[];
+  allSubscriptions: Subscription | undefined;
   setOrderOpen: (e: boolean[]) => void;
   handleDecryptFulfillment: (order: Order) => Promise<void>;
   decryptLoading: boolean[];
@@ -89,6 +90,7 @@ export type AllOrdersProps = {
         };
       }
     | undefined;
+  subscriptionsLoading: boolean;
 };
 
 export type OrderProps = {
@@ -120,4 +122,18 @@ export type InformationType = {
   sizes: string[];
   collectionIds: string[];
   collectionAmounts: string[];
+};
+
+export interface Subscription {
+  subscriberId: string;
+  subscribedTimestamp: string;
+  unSubscribedTimestamp: string;
+  resubscribedTimestamp: string;
+  isSubscribed: boolean;
+  tokenId: string;
+  transactionHash: string;
+}
+
+export type SubscribedProps = {
+  subscription: Subscription;
 };

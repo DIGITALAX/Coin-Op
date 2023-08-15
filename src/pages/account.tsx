@@ -15,6 +15,9 @@ const Account: NextPage = (): JSX.Element => {
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
+  const allSubscriptions = useSelector(
+    (state: RootState) => state.app.allSubscriptionsReducer.value
+  );
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
@@ -36,7 +39,9 @@ const Account: NextPage = (): JSX.Element => {
     setUpdatedInformation,
     decryptMessageLoading,
     handleDecryptMessage,
+    subscriptionsLoading,
   } = useOrders();
+
   useEffect(() => {
     if (preRollAnim) {
       setTimeout(() => {
@@ -139,6 +144,8 @@ const Account: NextPage = (): JSX.Element => {
         />
       </Head>
       <AllOrders
+        allSubscriptions={allSubscriptions}
+        subscriptionsLoading={subscriptionsLoading}
         connected={connected}
         ordersLoading={ordersLoading}
         allOrders={allOrders}

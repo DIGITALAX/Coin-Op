@@ -3,11 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import { setClientSecret } from "../../../../../redux/reducers/clientSecretSlice";
 import { APPEARANCE } from "../../../../../lib/constants";
+import { chunkString } from "../../../../../lib/subgraph/helpers/chunkString";
 
 const useStripe = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
+  );
+  const currentPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
   );
   const encryptedInformationReducer = useSelector(
     (state: RootState) => state.app.encryptedInformationReducer
@@ -18,16 +22,6 @@ const useStripe = () => {
   const options = {
     clientSecret,
     appearance: APPEARANCE,
-  };
-
-  const chunkString = (str: string, length: number) => {
-    const chunks = [];
-    let index = 0;
-    while (index < str.length) {
-      chunks.push(str.substring(index, index + length));
-      index += length;
-    }
-    return chunks;
   };
 
   const createPayment = async (): Promise<void> => {
@@ -52,12 +46,22 @@ const useStripe = () => {
         });
       }
 
+      let tokenIdChunks: { [key: string]: string } = {};
+      if (currentPKP?.encryptedToken) {
+        const chunks = chunkString(currentPKP?.encryptedToken, 490);
+
+        chunks.forEach((chunk, index) => {
+          tokenIdChunks[`part_${index + 1}`] = chunk;
+        });
+      }
+
       const response = await fetch("/api/payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: 1 * 100,
+          amount: amount * 100,
           encryptedInformation: metadataChunks,
+          encryptedTokenId: tokenIdChunks,
         }),
       });
       const data = await response.json();

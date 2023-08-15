@@ -31,6 +31,8 @@ import {
   removeCartItemsLocalStorage,
   removeFulfillmentDetailsLocalStorage,
 } from "../../../../../lib/subgraph/helpers/localStorage";
+import { createTxData } from "../../../../../lib/subgraph/helpers/createTxData";
+import { litExecute } from "../../../../../lib/subgraph/helpers/litExecute";
 
 const useCheckout = () => {
   const dispatch = useDispatch();
@@ -555,30 +557,19 @@ const useCheckout = () => {
     setCryptoCheckoutLoading(false);
   };
 
-  const createTxData = async (
-    fulfillerDetails: string[],
-    provider: ethers.providers.JsonRpcProvider
-  ) => {
+  const createPKPOrder = async () => {
     try {
-      const contractInterface = new ethers.utils.Interface(
-        CoinOpMarketABI as any
+      const provider = new ethers.providers.JsonRpcProvider(
+        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        137
       );
 
-      const latestBlock = await provider.getBlock("latest");
-      const baseFeePerGas = latestBlock.baseFeePerGas;
-      const maxFeePerGas = baseFeePerGas?.add(
-        ethers.utils.parseUnits("10", "gwei")
-      );
-      const maxPriorityFeePerGas = ethers.utils.parseUnits("3", "gwei");
-      return {
-        to: COIN_OP_MARKET,
-        nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
-        chainId: 137,
-        gasLimit: ethers.BigNumber.from("8000000"),
-        maxFeePerGas: maxFeePerGas,
-        maxPriorityFeePerGas: maxPriorityFeePerGas,
-        from: "{{publicKey}}",
-        data: contractInterface.encodeFunctionData("buyTokens", [
+      const tx = await createTxData(
+        provider,
+        CoinOpMarketABI,
+        COIN_OP_MARKET,
+        "buyTokens",
+        [
           {
             preRollIds: cartItems?.reduce((accumulator: number[], item) => {
               accumulator.push(item.collectionId);
@@ -597,64 +588,22 @@ const useCheckout = () => {
             customAmounts: [],
             customIndexes: [],
             customURIs: [],
-            fulfillmentDetails: JSON.stringify(fulfillerDetails),
+            fulfillmentDetails: JSON.stringify(encrypted.information!),
             pkpTokenId: BigInt(currentPKP?.tokenId.hex!).toString(),
             chosenTokenAddress: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
             sinPKP: false,
           },
-        ]),
-        value: ethers.BigNumber.from(0),
-        type: 2,
-      };
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
-  const createPKPOrder = async () => {
-    try {
-      const provider = new ethers.providers.JsonRpcProvider(
-        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-        137
+        ]
       );
-      const tx = await createTxData(encrypted.information!, provider);
 
-      const results = await litClient.executeJs({
-        ipfsId: IPFS_CID_PKP,
-        authSig: currentPKP?.authSig,
-        jsParams: {
-          publicKey: PKP_PUBLIC_KEY,
-          tx,
-          sigName: "coinOpBuyTokens",
-        },
-      });
-
-      const signature = results.signatures["coinOpBuyTokens"];
-      const sig: {
-        r: string;
-        s: string;
-        recid: number;
-        signature: string;
-        publicKey: string;
-        dataSigned: string;
-      } = signature as {
-        r: string;
-        s: string;
-        recid: number;
-        signature: string;
-        publicKey: string;
-        dataSigned: string;
-      };
-
-      const encodedSignature = joinSignature({
-        r: "0x" + sig.r,
-        s: "0x" + sig.s,
-        recoveryParam: sig.recid,
-      });
-      const serialized = serialize(tx as any, encodedSignature);
-      const transactionHash = await provider.sendTransaction(serialized);
-
-      await transactionHash.wait();
+      await litExecute(
+        provider,
+        dispatch,
+        litClient,
+        tx,
+        "coinOpBuyTokens",
+        currentPKP?.authSig
+      );
     } catch (err: any) {
       setFiatCheckoutLoading(false);
       console.error(err.message);

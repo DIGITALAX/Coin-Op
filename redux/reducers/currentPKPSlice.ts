@@ -12,6 +12,7 @@ export interface CurrentPKPState {
         sessionSig: any;
         pkpWallet: any;
         authSig: any;
+        encryptedToken: string;
       }
     | undefined;
 }
@@ -37,6 +38,7 @@ export const currentPKPSlice = createSlice({
             sessionSig: any;
             pkpWallet: any;
             authSig: any;
+            encryptedToken: string;
           }
         | undefined
       >

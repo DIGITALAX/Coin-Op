@@ -61,6 +61,31 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "oldCoinOpPKPs",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newCoinOpPKPs",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "updater",
+        "type": "address"
+      }
+    ],
+    "name": "CoinOpPKPsUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "oldPKPAddress",
         "type": "address"
       },
@@ -127,12 +152,50 @@
         "type": "address"
       }
     ],
+    "name": "SubscriberReactivated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "subscriberId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "tokenId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "updater",
+        "type": "address"
+      }
+    ],
     "name": "SubscriberRemoved",
     "type": "event"
   },
   {
     "inputs": [],
     "name": "getAccessControlContract",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getCoinOpPKPsContract",
     "outputs": [
       {
         "internalType": "address",
@@ -279,6 +342,19 @@
         "type": "string"
       }
     ],
+    "name": "reactivateWithPKP",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_tokenId",
+        "type": "string"
+      }
+    ],
     "name": "subscribeWithPKP",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -319,6 +395,19 @@
       }
     ],
     "name": "updateAccessControl",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newCoinOpPKPsAddress",
+        "type": "address"
+      }
+    ],
+    "name": "updateCoinOpPKPs",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -1,0 +1,44 @@
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import { NextApiResponse } from "next";
+import nextConnect from "next-connect";
+
+const handler = nextConnect();
+
+handler.post(async (req: any, res: NextApiResponse<any>) => {
+  try {
+    let customer;
+
+    const customers = await stripe.customers.list({
+      "metadata[encryptedTokenId]": req.body.encryptedTokenId,
+    });
+
+    if (customers.data.length > 0) {
+      customer = customers.data[0];
+    } else {
+      return res.status(400).json({ success: false });
+    }
+
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customer.id,
+    });
+
+    if (subscriptions.data.some((sub: any) => sub.status === "active")) {
+      return res.status(400).json({
+        success: false,
+        message: "Customer already has an active subscription.",
+      });
+    }
+
+    const subscription = await stripe.subscriptions.create({
+      customer: customer.id,
+      items: [{ price: process.env.NEXT_PUBLIC_STRIPE_SUBSCRIPTION_KEY }],
+      expand: ["latest_invoice.payment_intent"],
+    });
+
+    return res.status(200).json({ success: true, subscription: subscription });
+  } catch (err: any) {
+    return res.status(500).json({ message: err.message });
+  }
+});
+
+export default handler;

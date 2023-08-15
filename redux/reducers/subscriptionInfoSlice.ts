@@ -1,15 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface SubscriptionInfoState {
-  value: { email: string; firstName: string; lastName: string };
+  email: string;
 }
 
 const initialSubscriptionInfoState: SubscriptionInfoState = {
-  value: {
-    email: "",
-    firstName: "",
-    lastName: "",
-  },
+  email: "",
 };
 
 export const subscriptionInfoSlice = createSlice({
@@ -18,13 +14,9 @@ export const subscriptionInfoSlice = createSlice({
   reducers: {
     setSubscriptionInfo: (
       state: SubscriptionInfoState,
-      action: PayloadAction<{
-        email: string;
-        firstName: string;
-        lastName: string;
-      }>
+      action: PayloadAction<string>
     ) => {
-      state.value = action.payload;
+      state.email = action.payload;
     },
   },
 });

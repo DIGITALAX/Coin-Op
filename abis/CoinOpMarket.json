@@ -14,6 +14,11 @@
             "type": "address"
           },
           {
+            "internalType": "contract CoinOpPKPs",
+            "name": "coinOpPKPs",
+            "type": "address"
+          },
+          {
             "internalType": "contract CoinOpPayment",
             "name": "coinOpPayment",
             "type": "address"
@@ -145,6 +150,31 @@
       }
     ],
     "name": "CoinOpFulfillmentUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "oldCoinOpPKPs",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newCoinOpPKPs",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "updater",
+        "type": "address"
+      }
+    ],
+    "name": "CoinOpPKPsUpdated",
     "type": "event"
   },
   {
@@ -613,6 +643,19 @@
   {
     "inputs": [],
     "name": "getCoinOpFulfillmentContract",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getCoinOpPKPsContract",
     "outputs": [
       {
         "internalType": "address",
@@ -1210,6 +1253,19 @@
       }
     ],
     "name": "updateCoinOpFulfillment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newCoinOpPKPs",
+        "type": "address"
+      }
+    ],
+    "name": "updateCoinOpPKPs",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

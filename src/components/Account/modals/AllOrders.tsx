@@ -3,6 +3,19 @@ import { AllOrdersProps, Order as OrderType } from "../types/account.types";
 import Order from "./Order";
 import { setPreRollAnim } from "../../../../redux/reducers/preRollAnimSlice";
 import { setLogin } from "../../../../redux/reducers/loginSlice";
+import Link from "next/link";
+import Subscribed from "./Subscribed";
+import { loadStripe } from "@stripe/stripe-js";
+import { APPEARANCE } from "../../../../lib/constants";
+import { Elements } from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+);
+const options = {
+  clientSecret: undefined,
+  appearance: APPEARANCE,
+};
 
 const AllOrders: FunctionComponent<AllOrdersProps> = ({
   allOrders,
@@ -22,6 +35,8 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
   connectedPKP,
   chain,
   openChainModal,
+  subscriptionsLoading,
+  allSubscriptions,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col items-center gap-16 overflow-y-scroll justify-start overflow-x-hidden">
@@ -44,7 +59,7 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
             Connect to View Your Orders.
           </div>
         ) : ordersLoading ? (
-          Array.from({ length: 10 }).map((_, index: number) => {
+          Array.from({ length: 3 }).map((_, index: number) => {
             return (
               <div
                 key={index}
@@ -87,6 +102,47 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
               />
             );
           })
+        )}
+      </div>
+      <div className="relative w-full h-full flex flex-col text-white gap-4">
+        <div className="font-monu text-2xl text-left w-fit h-fit flex justify-start items-center">
+          Subscriptions.
+        </div>
+        {!connectedPKP ? (
+          <div
+            className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
+            onClick={() =>
+              dispatch(
+                setLogin({
+                  actionOpen: true,
+                  actionHighlight: "fiat",
+                })
+              )
+            }
+          >
+            Connect to View Your Subscriptions.
+          </div>
+        ) : subscriptionsLoading ? (
+          Array.from({ length: 1 }).map((_, index: number) => {
+            return (
+              <div
+                key={index}
+                className="relative h-20 border border-white w-full"
+                id="staticLoad"
+              ></div>
+            );
+          })
+        ) : !subscriptionsLoading && !allSubscriptions ? (
+          <Link
+            className="relative w-full h-fit justify-center text-left items-center justify-center cursor-pointer text-white font-mana text-base"
+            href={"/subscription"}
+          >
+            Level up your web3 and AI game? Subscribe here.
+          </Link>
+        ) : (
+          <Elements stripe={stripePromise} options={options}>
+            <Subscribed subscription={allSubscriptions!} />
+          </Elements>
         )}
       </div>
       <div className="relative w-full h-fit flex flex-col text-white gap-4 mt-auto">

@@ -27,7 +27,8 @@ const Subscribe: FunctionComponent<SubscribeProps> = ({
   dispatch,
   connectedPKP,
 }): JSX.Element => {
-  const { subscriptionLoading, handleSubscription } = useSubscription();
+  const { subscriptionAddLoading, handleCreateSubscription } =
+    useSubscription();
   return (
     <div className="relative w-full h-fit flex flex-col gap-3 items-center justify-center">
       <CardElement
@@ -36,10 +37,12 @@ const Subscribe: FunctionComponent<SubscribeProps> = ({
       />
       <div
         className={`relative w-1/2 h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex ${
-          !subscriptionLoading ? "cursor-pointer active:scale-95" : "opacity-70"
+          !subscriptionAddLoading
+            ? "cursor-pointer active:scale-95"
+            : "opacity-70"
         }`}
         onClick={
-          !subscriptionLoading
+          !subscriptionAddLoading
             ? !connectedPKP
               ? () =>
                   dispatch(
@@ -48,16 +51,16 @@ const Subscribe: FunctionComponent<SubscribeProps> = ({
                       actionHighlight: "fiat",
                     })
                   )
-              : () => handleSubscription()
+              : () => handleCreateSubscription()
             : () => {}
         }
       >
         <div
           className={`relative w-fit h-fit flex justify-center items-center ${
-            subscriptionLoading && "animate-spin"
+            subscriptionAddLoading && "animate-spin"
           }`}
         >
-          {subscriptionLoading ? (
+          {subscriptionAddLoading ? (
             <AiOutlineLoading size={15} color={"white"} />
           ) : !connectedPKP ? (
             "CONNECT"

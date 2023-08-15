@@ -209,7 +209,6 @@ const Order: FunctionComponent<OrderProps> = ({
                         "cursor-pointer hover:opacity-70"
                       }`}
                       onClick={
-                        
                         connected && chain !== 137
                           ? openChainModal
                           : (e) => {

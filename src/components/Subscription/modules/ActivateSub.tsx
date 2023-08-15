@@ -15,18 +15,15 @@ const stripePromise = loadStripe(
 const ActivateSub: FunctionComponent<ActivateSub> = ({
   dispatch,
 }): JSX.Element => {
-  const clientSecretSub = useSelector(
-    (state: RootState) => state.app.clientSecretReducer.value
-  );
   const subscriptionInfo = useSelector(
-    (state: RootState) => state.app.subscriptionInfoReducer.value
+    (state: RootState) => state.app.subscriptionInfoReducer
   );
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
   );
 
   const options = {
-    clientSecret: clientSecretSub,
+    clientSecret: undefined,
     appearance: APPEARANCE,
   };
   return (
@@ -36,54 +33,13 @@ const ActivateSub: FunctionComponent<ActivateSub> = ({
           <div className="relative w-full h-fit flex flex-row items-center justify-center gap-3">
             <input
               className="relative bg-black border border-white w-full h-10 p-1 font-sat text-white"
-              onChange={(e) =>
-                dispatch(
-                  setSubscriptionInfo({
-                    ...subscriptionInfo,
-                    email: e.target.value,
-                  })
-                )
-              }
+              onChange={(e) => dispatch(setSubscriptionInfo(e.target.value))}
               placeholder={
                 subscriptionInfo?.email?.trim() !== ""
                   ? subscriptionInfo?.email
                   : "Email"
               }
               value={subscriptionInfo?.email}
-            />
-            <input
-              className="relative bg-black border border-white w-full h-10 p-1 font-sat text-white"
-              onChange={(e) =>
-                dispatch(
-                  setSubscriptionInfo({
-                    ...subscriptionInfo,
-                    firstName: e.target.value,
-                  })
-                )
-              }
-              placeholder={
-                subscriptionInfo?.firstName?.trim() !== ""
-                  ? subscriptionInfo?.firstName
-                  : "First Name"
-              }
-              value={subscriptionInfo?.firstName}
-            />
-            <input
-              className="relative bg-black border border-white w-full h-10 p-1 font-sat text-white"
-              onChange={(e) =>
-                dispatch(
-                  setSubscriptionInfo({
-                    ...subscriptionInfo,
-                    lastName: e.target.value,
-                  })
-                )
-              }
-              placeholder={
-                subscriptionInfo?.lastName?.trim() !== ""
-                  ? subscriptionInfo?.lastName
-                  : "Last Name"
-              }
-              value={subscriptionInfo?.lastName}
             />
           </div>
           <Subscribe

@@ -4,31 +4,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMessagesModal } from "../../../../redux/reducers/messagesModalSlice";
 import { RootState } from "../../../../redux/store";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
-import { joinSignature } from "@ethersproject/bytes";
-import { serialize } from "@ethersproject/transactions";
-import CoinOpPKPABI from "../../../../abis/CoinOpMarket.json";
 import { setSubscriptionInfo } from "../../../../redux/reducers/subscriptionInfoSlice";
 import { useRouter } from "next/router";
-import {
-  COIN_OP_SUBSCRIPTION,
-  IPFS_CID_PKP,
-  PKP_ADDRESS,
-  PKP_PUBLIC_KEY,
-} from "../../../../lib/constants";
+import { COIN_OP_SUBSCRIPTION } from "../../../../lib/constants";
 import { ethers } from "ethers";
-import { setIsSubscribed } from "../../../../redux/reducers/isSubscribedSlice";
-import { connectLit } from "../../../../lib/subgraph/helpers/connectLit";
 import CoinOpSubscriptionABI from "../../../../abis/CoinOpSubscription.json";
+import { createTxData } from "../../../../lib/subgraph/helpers/createTxData";
+import { litExecute } from "../../../../lib/subgraph/helpers/litExecute";
+import { chunkString } from "../../../../lib/subgraph/helpers/chunkString";
 
 const useSubscription = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
-  const [subscriptionLoading, setSubscriptionLoading] =
+  const [subscriptionAddLoading, setSubscriptionAddLoading] =
+    useState<boolean>(false);
+  const [subscriptionCancelLoading, setSubscriptionCancelLoading] =
+    useState<boolean>(false);
+  const [subscriptionReactivateLoading, setSubscriptionReactivateLoading] =
     useState<boolean>(false);
   const subscriptionInfo = useSelector(
-    (state: RootState) => state.app.subscriptionInfoReducer.value
+    (state: RootState) => state.app.subscriptionInfoReducer.email
   );
   const litClient = useSelector(
     (state: RootState) => state.app.litClientReducer.value
@@ -37,18 +34,14 @@ const useSubscription = () => {
     (state: RootState) => state.app.currentPKPReducer.value
   );
 
-  const handleSubscription = async (): Promise<void> => {
-    setSubscriptionLoading(true);
+  const handleCreateSubscription = async (): Promise<void> => {
+    setSubscriptionAddLoading(true);
     try {
       if (!stripe || !elements || !currentPKP) {
         return;
       }
 
-      if (
-        subscriptionInfo?.email.trim() === "" ||
-        subscriptionInfo?.firstName.trim() === "" ||
-        subscriptionInfo?.lastName.trim() === ""
-      ) {
+      if (subscriptionInfo?.trim() === "") {
         dispatch(
           setModalOpen({
             actionOpen: true,
@@ -85,6 +78,15 @@ const useSubscription = () => {
         return;
       }
 
+      let tokenIdChunks: { [key: string]: string } = {};
+      if (currentPKP?.encryptedToken) {
+        const chunks = chunkString(currentPKP?.encryptedToken, 490);
+
+        chunks.forEach((chunk, index) => {
+          tokenIdChunks[`part_${index + 1}`] = chunk;
+        });
+      }
+
       const paymentMethodId = result.paymentMethod.id;
       const res = await fetch("/api/subscribe", {
         method: "POST",
@@ -92,9 +94,8 @@ const useSubscription = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: subscriptionInfo!.email,
-          firstName: subscriptionInfo!.firstName,
-          lastName: subscriptionInfo!.lastName,
+          social: subscriptionInfo,
+          encryptedTokenId: tokenIdChunks,
           paymentMethodId,
         }),
       });
@@ -102,14 +103,8 @@ const useSubscription = () => {
 
       if (res.status === 200) {
         await createPKPSubscription();
-        setSubscriptionLoading(false);
-        dispatch(
-          setSubscriptionInfo({
-            email: "",
-            firstName: "",
-            lastName: "",
-          })
-        );
+        setSubscriptionAddLoading(false);
+        dispatch(setSubscriptionInfo(""));
         dispatch(
           setMessagesModal({
             actionOpen: true,
@@ -117,11 +112,10 @@ const useSubscription = () => {
               "Subscription Confirmed. Return to your account page soon for next steps and keep an eye out on your email for web3 and AI instructables.",
           })
         );
-        dispatch(setIsSubscribed(true));
         await router.push("account");
       }
     } catch (err: any) {
-      setSubscriptionLoading(false);
+      setSubscriptionAddLoading(false);
       dispatch(
         setMessagesModal({
           actionOpen: true,
@@ -132,94 +126,168 @@ const useSubscription = () => {
     }
   };
 
-  const createTxData = async (provider: ethers.providers.JsonRpcProvider) => {
-    try {
-      const contractInterface = new ethers.utils.Interface(
-        CoinOpSubscriptionABI as any
-      );
-
-      const latestBlock = await provider.getBlock("latest");
-      const baseFeePerGas = latestBlock.baseFeePerGas;
-      const maxFeePerGas = baseFeePerGas?.add(
-        ethers.utils.parseUnits("10", "gwei")
-      );
-      const maxPriorityFeePerGas = ethers.utils.parseUnits("3", "gwei");
-      return {
-        to: COIN_OP_SUBSCRIPTION,
-        nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
-        chainId: 137,
-        gasLimit: ethers.BigNumber.from("8000000"),
-        maxFeePerGas: maxFeePerGas,
-        maxPriorityFeePerGas: maxPriorityFeePerGas,
-        from: "{{publicKey}}",
-        data: contractInterface.encodeFunctionData("subscribeWithPKP", [
-          BigInt(currentPKP?.tokenId.hex!).toString(),
-        ]),
-        value: ethers.BigNumber.from(0),
-        type: 2,
-      };
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
   const createPKPSubscription = async () => {
     try {
       const provider = new ethers.providers.JsonRpcProvider(
         `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
         137
       );
-      const tx = await createTxData(provider);
+      const tx = await createTxData(
+        provider,
+        CoinOpSubscriptionABI,
+        COIN_OP_SUBSCRIPTION,
+        "subscribeWithPKP",
+        [BigInt(currentPKP?.tokenId.hex!).toString()]
+      );
 
-      let client = litClient;
-      if (!client) {
-        client = await connectLit(dispatch);
-      }
-
-      const results = await client.executeJs({
-        ipfsId: IPFS_CID_PKP,
-        authSig: currentPKP?.authSig,
-        jsParams: {
-          publicKey: PKP_PUBLIC_KEY,
-          tx,
-          sigName: "addSubscription",
-        },
-      });
-
-      const signature = results.signatures["addSubscription"];
-      const sig: {
-        r: string;
-        s: string;
-        recid: number;
-        signature: string;
-        publicKey: string;
-        dataSigned: string;
-      } = signature as {
-        r: string;
-        s: string;
-        recid: number;
-        signature: string;
-        publicKey: string;
-        dataSigned: string;
-      };
-
-      const encodedSignature = joinSignature({
-        r: "0x" + sig.r,
-        s: "0x" + sig.s,
-        recoveryParam: sig.recid,
-      });
-      const serialized = serialize(tx as any, encodedSignature);
-      const transactionHash = await provider.sendTransaction(serialized);
-
-      await transactionHash.wait();
+      await litExecute(
+        provider,
+        dispatch,
+        litClient,
+        tx,
+        "addSubscription",
+        currentPKP?.authSig
+      );
     } catch (err: any) {
       console.error(err.message);
     }
   };
 
+  const handleCancelSubscription = async () => {
+    setSubscriptionCancelLoading(true);
+    try {
+      const res = await fetch("/api/cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          encryptedTokenId: currentPKP?.encryptedToken,
+        }),
+      });
+      await res.json();
+      if (res.status === 200) {
+        await cancelPKPSubscription();
+        setSubscriptionCancelLoading(false);
+
+        dispatch(
+          setModalOpen({
+            actionOpen: true,
+            actionMessage:
+              "Subscription status updated! It may take a little while for the changes to fully process on-chain, check back in a few minutes.",
+          })
+        );
+      }
+    } catch (err: any) {
+      dispatch(
+        setMessagesModal({
+          actionOpen: true,
+          actionMessage: "Something went wrong. Try again?",
+        })
+      );
+      setSubscriptionCancelLoading(false);
+      console.error(err.message);
+    }
+  };
+
+  const cancelPKPSubscription = async () => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        137
+      );
+      const tx = await createTxData(
+        provider,
+        CoinOpSubscriptionABI,
+        COIN_OP_SUBSCRIPTION,
+        "unsubscribeWithPKP",
+        [BigInt(currentPKP?.tokenId.hex!).toString()]
+      );
+
+      await litExecute(
+        provider,
+        dispatch,
+        litClient,
+        tx,
+        "cancelSubscription",
+        currentPKP?.authSig
+      );
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const reactivatePKPSubscription = async () => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        137
+      );
+      const tx = await createTxData(
+        provider,
+        CoinOpSubscriptionABI,
+        COIN_OP_SUBSCRIPTION,
+        "reactivateWithPKP",
+        [BigInt(currentPKP?.tokenId.hex!).toString()]
+      );
+
+      await litExecute(
+        provider,
+        dispatch,
+        litClient,
+        tx,
+        "reactivateSubscription",
+        currentPKP?.authSig
+      );
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const handleReactivateSubscription = async () => {
+    setSubscriptionReactivateLoading(true);
+    try {
+      const res = await fetch("/api/reactivate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          encryptedTokenId: currentPKP?.encryptedToken,
+        }),
+      });
+      await res.json();
+      if (res.status === 200) {
+        await reactivatePKPSubscription();
+        setSubscriptionReactivateLoading(false);
+
+        dispatch(
+          setModalOpen({
+            actionOpen: true,
+            actionMessage:
+              "Subscription status updated! It may take a little while for the changes to fully process on-chain, check back in a few minutes.",
+          })
+        );
+      }
+    } catch (err: any) {
+      setSubscriptionReactivateLoading(false);
+      dispatch(
+        setMessagesModal({
+          actionOpen: true,
+          actionMessage: "Something went wrong. Try again?",
+        })
+      );
+      console.error(err.message);
+    }
+  };
+
   return {
-    handleSubscription,
-    subscriptionLoading,
+    handleCreateSubscription,
+    subscriptionAddLoading,
+    handleCancelSubscription,
+    subscriptionCancelLoading,
+    handleReactivateSubscription,
+    subscriptionReactivateLoading,
   };
 };
 
