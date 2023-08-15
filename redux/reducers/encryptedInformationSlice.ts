@@ -1,13 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface EncryptedInfoState {
   information: string[] | undefined;
-  authSig: any;
 }
 
 const initialEncryptedInfoState: EncryptedInfoState = {
   information: undefined,
-  authSig: undefined,
 };
 
 export const encryptedInfoSlice = createSlice({
@@ -16,10 +14,9 @@ export const encryptedInfoSlice = createSlice({
   reducers: {
     setEncryptedInfo: (
       state: EncryptedInfoState,
-      { payload: { actionInformation, actionAuthSig } }
+      action: PayloadAction<string[] | undefined>
     ) => {
-      state.information = actionInformation;
-      state.authSig = actionAuthSig;
+      state.information = action.payload;
     },
   },
 });

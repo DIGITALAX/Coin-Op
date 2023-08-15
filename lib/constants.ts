@@ -65,6 +65,8 @@ export const COIN_OP_ORACLE: `0x${string}` =
   "0x7e066A206a982F7Aa0d6d0D4c5bC74E4bD048dF3";
 export const COIN_OP_FULFILLMENT: `0x${string}` =
   "0x84E7493b1DB31bf643FD0C8A129B3b8acfD9413b";
+export const COIN_OP_PKPS: `0x${string}` = "0x";
+export const COIN_OP_SUBSCRIPTION: `0x${string}` = "0x";
 export const PKP_ADDRESS: `0x${string}` =
   "0xb1d06c81fd47dd1abb1172feb369306a2746f220";
 export const IPFS_CID_PKP: string =

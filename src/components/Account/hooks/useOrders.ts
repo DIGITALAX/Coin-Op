@@ -29,7 +29,6 @@ import {
 import { InformationType, Order } from "../types/account.types";
 import { encryptItems } from "../../../../lib/subgraph/helpers/encryptItems";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
-import { generateAuthSignature } from "../../../../lib/subgraph/helpers/generateAuthSignature";
 
 const useOrders = () => {
   const publicClient = createPublicClient({
@@ -187,7 +186,7 @@ const useOrders = () => {
       await client.connect();
       let authSig;
       if (connectedPKP?.pkpWallet) {
-        authSig = await generateAuthSignature(connectedPKP);
+        authSig = connectedPKP?.authSig;
       } else {
         authSig = await checkAndSignAuthMessage({
           chain: "polygon",
@@ -299,7 +298,7 @@ const useOrders = () => {
       await client.connect();
       let authSig;
       if (connectedPKP?.pkpWallet) {
-        authSig = await generateAuthSignature(connectedPKP);
+        authSig = connectedPKP?.authSig;
       } else {
         authSig = await checkAndSignAuthMessage({
           chain: "polygon",
@@ -533,7 +532,7 @@ const useOrders = () => {
 
       let authSig = undefined;
       if (connectedPKP?.pkpWallet) {
-        authSig = await generateAuthSignature(connectedPKP);
+        authSig = connectedPKP?.authSig;
       }
 
       const returned = await encryptItems(

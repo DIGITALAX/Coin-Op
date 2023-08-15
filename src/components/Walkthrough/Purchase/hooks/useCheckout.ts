@@ -19,13 +19,11 @@ import { BigNumber, ethers } from "ethers";
 import CoinOpMarketABI from "../../../../../abis/CoinOpMarket.json";
 import { RootState } from "../../../../../redux/store";
 import { setCart } from "../../../../../redux/reducers/cartSlice";
-import { useRouter } from "next/router";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
 import { encryptItems } from "../../../../../lib/subgraph/helpers/encryptItems";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 import { setLogin } from "../../../../../redux/reducers/loginSlice";
-import { generateAuthSignature } from "../../../../../lib/subgraph/helpers/generateAuthSignature";
 import { setEncryptedInfo } from "../../../../../redux/reducers/encryptedInformationSlice";
 import { setLitClient } from "../../../../../redux/reducers/litClientSlice";
 import { setFulfillmentDetails } from "../../../../../redux/reducers/fulfillmentDetailsSlice";
@@ -215,7 +213,6 @@ const useCheckout = () => {
         }
       }
 
-      const authSig = await generateAuthSignature(currentPKP);
       const returned = await encryptItems(
         litClient,
         dispatch,
@@ -243,23 +240,13 @@ const useCheckout = () => {
         fulfillerGroups,
         fulfillmentDetails,
         currentPKP?.ethAddress as `0x${string}`,
-        authSig
+        currentPKP?.authSig
       );
 
-      dispatch(
-        setEncryptedInfo({
-          actionInformation: returned?.fulfillerDetails,
-          actionAuthSig: authSig,
-        })
-      );
+      dispatch(setEncryptedInfo(returned?.fulfillerDetails));
       dispatch(setLitClient(returned?.client));
     } catch (err: any) {
-      dispatch(
-        setEncryptedInfo({
-          actionInformation: undefined,
-          actionAuthSig: undefined,
-        })
-      );
+      dispatch(setEncryptedInfo(undefined));
       console.error(err.message);
     }
     setFiatCheckoutLoading(false);
@@ -319,12 +306,7 @@ const useCheckout = () => {
           country: "",
         })
       );
-      dispatch(
-        setEncryptedInfo({
-          actionInformation: undefined,
-          actionAuthSig: undefined,
-        })
-      );
+      dispatch(setEncryptedInfo(undefined));
       dispatch(
         setMessagesModal({
           actionOpen: true,
@@ -333,12 +315,7 @@ const useCheckout = () => {
         })
       );
     } catch (err: any) {
-      dispatch(
-        setEncryptedInfo({
-          actionInformation: undefined,
-          actionAuthSig: undefined,
-        })
-      );
+      dispatch(setEncryptedInfo(undefined));
       console.error(err.message);
     }
     setFiatCheckoutLoading(false);
@@ -635,7 +612,6 @@ const useCheckout = () => {
   };
 
   const createPKPOrder = async () => {
-    setFiatCheckoutLoading(true);
     try {
       const provider = new ethers.providers.JsonRpcProvider(
         `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
@@ -645,7 +621,7 @@ const useCheckout = () => {
 
       const results = await litClient.executeJs({
         ipfsId: IPFS_CID_PKP,
-        authSig: encrypted.authSig,
+        authSig: currentPKP?.authSig,
         jsParams: {
           publicKey: PKP_PUBLIC_KEY,
           tx,
@@ -683,7 +659,6 @@ const useCheckout = () => {
       setFiatCheckoutLoading(false);
       console.error(err.message);
     }
-    setFiatCheckoutLoading(false);
   };
 
   useEffect(() => {

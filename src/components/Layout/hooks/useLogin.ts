@@ -4,9 +4,15 @@ import { ProviderType } from "@lit-protocol/constants";
 import { isSignInRedirect } from "@lit-protocol/lit-auth-client";
 import {
   COIN_OP_MARKET,
+  COIN_OP_PKPS,
+  IPFS_CID_PKP,
+  PKP_ADDRESS,
+  PKP_PUBLIC_KEY,
   REDIRECT_URL,
   REDIRECT_URL_TEST,
 } from "../../../../lib/constants";
+import { joinSignature } from "@ethersproject/bytes";
+import { serialize } from "@ethersproject/transactions";
 import { useRouter } from "next/router";
 import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
 import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
@@ -28,6 +34,9 @@ import { RootState } from "../../../../redux/store";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setFulfillmentDetails } from "../../../../redux/reducers/fulfillmentDetailsSlice";
 import { getPKPs } from "../../../../graphql/subgraph/queries/getOrders";
+import { generateAuthSignature } from "../../../../lib/subgraph/helpers/generateAuthSignature";
+import { connectLit } from "../../../../lib/subgraph/helpers/connectLit";
+import CoinOpPKPsABI from "../../../../abis/CoinOpPKPs.json";
 
 export const chronicle: Chain = {
   id: 175177,
@@ -79,6 +88,9 @@ const useLogin = () => {
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
+  const litClient = useSelector(
+    (state: RootState) => state.app.litClientReducer.value
+  );
 
   const loginWithWeb2Auth = async () => {
     try {
@@ -104,6 +116,94 @@ const useLogin = () => {
           actionHighlight: undefined,
         })
       );
+    }
+  };
+
+  const createTxData = async (
+    provider: ethers.providers.JsonRpcProvider,
+    currentPKP: any
+  ) => {
+    try {
+      const contractInterface = new ethers.utils.Interface(
+        CoinOpPKPsABI as any
+      );
+
+      const latestBlock = await provider.getBlock("latest");
+      const baseFeePerGas = latestBlock.baseFeePerGas;
+      const maxFeePerGas = baseFeePerGas?.add(
+        ethers.utils.parseUnits("10", "gwei")
+      );
+      const maxPriorityFeePerGas = ethers.utils.parseUnits("3", "gwei");
+      return {
+        to: COIN_OP_PKPS,
+        nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
+        chainId: 137,
+        gasLimit: ethers.BigNumber.from("8000000"),
+        maxFeePerGas: maxFeePerGas,
+        maxPriorityFeePerGas: maxPriorityFeePerGas,
+        from: "{{publicKey}}",
+        data: contractInterface.encodeFunctionData("createUserPKPAccount", [
+          BigInt(currentPKP?.tokenId.hex!).toString(),
+        ]),
+        value: ethers.BigNumber.from(0),
+        type: 2,
+      };
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const storeAuthOnChain = async (authSig: any, currentPKP: any) => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        137
+      );
+      const tx = await createTxData(provider, currentPKP);
+
+      let client = litClient;
+      if (!client) {
+        client = await connectLit(dispatch);
+      }
+
+      const results = await client.executeJs({
+        ipfsId: IPFS_CID_PKP,
+        authSig: authSig,
+        jsParams: {
+          publicKey: PKP_PUBLIC_KEY,
+          tx,
+          sigName: "createUserPKPAccount",
+        },
+      });
+
+      const signature = results.signatures["createUserPKPAccount"];
+      const sig: {
+        r: string;
+        s: string;
+        recid: number;
+        signature: string;
+        publicKey: string;
+        dataSigned: string;
+      } = signature as {
+        r: string;
+        s: string;
+        recid: number;
+        signature: string;
+        publicKey: string;
+        dataSigned: string;
+      };
+
+      const encodedSignature = joinSignature({
+        r: "0x" + sig.r,
+        s: "0x" + sig.s,
+        recoveryParam: sig.recid,
+      });
+      const serialized = serialize(tx as any, encodedSignature);
+      const transactionHash = await provider.sendTransaction(serialized);
+
+      await transactionHash.wait();
+    } catch (err: any) {
+      console.error(err.message);
     }
   };
 
@@ -135,6 +235,8 @@ const useLogin = () => {
         pkpPubKey: currentPKP.publicKey,
         rpc: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
       });
+      const authSig = await generateAuthSignature(pkpWallet);
+      await storeAuthOnChain(authSig, currentPKP);
       dispatch(
         setLogin({
           actionOpen: false,
@@ -147,6 +249,7 @@ const useLogin = () => {
           ...currentPKP,
           sessionSig: sessionSigs,
           pkpWallet,
+          authSig,
         })
       );
     } catch (err: any) {
@@ -185,7 +288,7 @@ const useLogin = () => {
         functionName: "getPubkey",
         args: [logs[0].topics[3]],
       });
-      // add PKP here to the pkp contract 
+      // add PKP here to the pkp contract
       return {
         ethAddress: ethers.utils.computeAddress(publicKey as any),
         publicKey: publicKey,
@@ -259,7 +362,10 @@ const useLogin = () => {
   };
 
   useEffect(() => {
-    if (isSignInRedirect(`${REDIRECT_URL_TEST}${router.asPath}`) && !hasRedirectedRef.current) {
+    if (
+      isSignInRedirect(`${REDIRECT_URL_TEST}${router.asPath}`) &&
+      !hasRedirectedRef.current
+    ) {
       hasRedirectedRef.current = true;
       handleRedirect();
     }
