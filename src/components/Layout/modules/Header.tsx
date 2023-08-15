@@ -11,8 +11,6 @@ import { useRouter } from "next/router";
 import { HeaderProps } from "@/components/Common/types/common.types";
 import { useAccountModal, useChainModal } from "@rainbow-me/rainbowkit";
 import { setLogin } from "../../../../redux/reducers/loginSlice";
-import useLogin from "../hooks/useLogin";
-import { AiOutlineLoading } from "react-icons/ai";
 
 const Header: FunctionComponent<HeaderProps> = ({
   preRollRef,
@@ -27,7 +25,6 @@ const Header: FunctionComponent<HeaderProps> = ({
     handleAddToCart,
     cartAnim,
   } = useRollSearch();
-  const { loginLoading } = useLogin();
   const { openAccountModal } = useAccountModal();
   const { openChainModal } = useChainModal();
   const rollSearch = useSelector(
@@ -109,20 +106,12 @@ const Header: FunctionComponent<HeaderProps> = ({
                     )
             }
           >
-            <div
-              className={`relative text-xxs font-mana ${
-                loginLoading && "animate-spin"
-              }`}
-            >
-              {loginLoading ? (
-                <AiOutlineLoading size={10} color="white" />
-              ) : !connected && !connectedPKP ? (
-                "Connect"
-              ) : connected && chain !== 137 ? (
-                "Switch"
-              ) : (
-                "Connected"
-              )}
+            <div className={`relative text-xxs font-mana`}>
+              {!connected && !connectedPKP
+                ? "Connect"
+                : connected && chain !== 137
+                ? "Switch"
+                : "Connected"}
             </div>
           </div>
           <Link

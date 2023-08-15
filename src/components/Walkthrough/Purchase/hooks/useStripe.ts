@@ -1,17 +1,8 @@
-import { Appearance, StripeElementsOptions } from "@stripe/stripe-js";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import { setClientSecret } from "../../../../../redux/reducers/clientSecretSlice";
-
-const appearance: Appearance = {
-  theme: "night",
-  variables: {
-    colorPrimary: "#76b3f4",
-    colorBackground: "#000000",
-    fontFamily: "Manaspace",
-  },
-};
+import { APPEARANCE } from "../../../../../lib/constants";
 
 const useStripe = () => {
   const dispatch = useDispatch();
@@ -26,7 +17,7 @@ const useStripe = () => {
   );
   const options = {
     clientSecret,
-    appearance,
+    appearance: APPEARANCE,
   };
 
   const chunkString = (str: string, length: number) => {

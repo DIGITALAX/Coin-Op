@@ -1,8 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "@lit-protocol/lit-auth-client";
 import { ProviderType } from "@lit-protocol/constants";
 import { isSignInRedirect } from "@lit-protocol/lit-auth-client";
-import { REDIRECT_URI } from "../../../../lib/constants";
+import {
+  COIN_OP_MARKET,
+  REDIRECT_URL,
+  REDIRECT_URL_TEST,
+} from "../../../../lib/constants";
 import { useRouter } from "next/router";
 import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
 import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
@@ -23,6 +27,7 @@ import {
 import { RootState } from "../../../../redux/store";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setFulfillmentDetails } from "../../../../redux/reducers/fulfillmentDetailsSlice";
+import { getPKPs } from "../../../../graphql/subgraph/queries/getOrders";
 
 export const chronicle: Chain = {
   id: 175177,
@@ -65,6 +70,8 @@ const useLogin = () => {
     litNetwork: "serrano",
     debug: false,
   });
+  const hasRedirectedRef = useRef<boolean>(false);
+  const hasFetchedMintedRef = useRef<boolean>(false);
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const fulfillmentDetails = useSelector(
     (state: RootState) => state.app.fulfillmentDetailsReducer.value
@@ -76,7 +83,7 @@ const useLogin = () => {
   const loginWithWeb2Auth = async () => {
     try {
       const provider = litAuthClient.initProvider(ProviderType.Google, {
-        redirectUri: REDIRECT_URI,
+        redirectUri: `${REDIRECT_URL_TEST}${router.asPath}`,
       });
 
       setFulfillmentDetailsLocalStorage(JSON.stringify(fulfillmentDetails));
@@ -118,7 +125,7 @@ const useLogin = () => {
 
     try {
       const provider = litAuthClient.initProvider(ProviderType.Google, {
-        redirectUri: REDIRECT_URI,
+        redirectUri: `${REDIRECT_URL_TEST}${router.asPath}`,
       });
       const authMethod = await provider.authenticate();
       const currentPKP = await handlePKPs(provider, authMethod);
@@ -163,7 +170,8 @@ const useLogin = () => {
   };
 
   const mintPkp = async (provider: any, authMethod: any) => {
-    if (provider && authMethod) {
+    if (provider && authMethod && !hasFetchedMintedRef.current) {
+      hasFetchedMintedRef.current = true;
       await provider.mintPKPThroughRelayer(authMethod);
       const filter = await publicClient.createContractEventFilter({
         abi: PKPAbi,
@@ -177,6 +185,7 @@ const useLogin = () => {
         functionName: "getPubkey",
         args: [logs[0].topics[3]],
       });
+      // add PKP here to the pkp contract 
       return {
         ethAddress: ethers.utils.computeAddress(publicKey as any),
         publicKey: publicKey,
@@ -192,7 +201,22 @@ const useLogin = () => {
     try {
       if (provider && authMethod) {
         const res = await provider.fetchPKPsThroughRelayer(authMethod);
-        return res[0];
+        const { data } = await getPKPs();
+        let result = res[0];
+        if (data?.orderCreateds?.length > 0 && res?.length > 0) {
+          for (let i = 0; i < data?.orderCreateds?.length; i++) {
+            for (let j = 0; j < res?.length; j++) {
+              if (
+                data?.orderCreateds[i]?.toLowerCase() ===
+                BigInt(res[j]?.tokenId.hex!).toString()
+              ) {
+                result = res[j];
+                return;
+              }
+            }
+          }
+        }
+        return result;
       }
     } catch (error) {
       console.error(error);
@@ -235,7 +259,8 @@ const useLogin = () => {
   };
 
   useEffect(() => {
-    if (isSignInRedirect(REDIRECT_URI)) {
+    if (isSignInRedirect(`${REDIRECT_URL_TEST}${router.asPath}`) && !hasRedirectedRef.current) {
+      hasRedirectedRef.current = true;
       handleRedirect();
     }
   }, [handleRedirect]);

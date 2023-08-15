@@ -3,40 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useChainModal } from "@rainbow-me/rainbowkit";
 import Head from "next/head";
-import AllOrders from "@/components/Account/modals/AllOrders";
-import useOrders from "@/components/Account/hooks/useOrders";
 import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
 import { useEffect } from "react";
+import ActivateSub from "@/components/Subscription/modules/ActivateSub";
 
-const Account: NextPage = (): JSX.Element => {
-  const allOrders = useSelector(
-    (state: RootState) => state.app.allOrdersReducer.value
-  );
+const Subscription: NextPage = (): JSX.Element => {
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
-  const connected = useSelector(
-    (state: RootState) => state.app.walletConnectedReducer.value
-  );
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
-  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
+
   const dispatch = useDispatch();
-  const { openChainModal } = useChainModal();
-  const {
-    ordersLoading,
-    handleDecryptFulfillment,
-    decryptLoading,
-    orderOpen,
-    setOrderOpen,
-    updateFulfillmentInformation,
-    updateLoading,
-    updatedInformation,
-    setUpdatedInformation,
-    decryptMessageLoading,
-    handleDecryptMessage,
-  } = useOrders();
   useEffect(() => {
     if (preRollAnim) {
       setTimeout(() => {
@@ -47,9 +23,9 @@ const Account: NextPage = (): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>
-        <title>Coin Op | Account</title>
+        <title>Coin Op | Subscription</title>
         <meta name="og:url" content="https://coin.manufactory.xyz/" />
-        <meta name="og:title" content="Coin Op | Account" />
+        <meta name="og:title" content="Coin Op | Subscription" />
         <meta
           name="og:description"
           content="We know it's a lot to keep up with. How can you know if this is
@@ -138,27 +114,30 @@ const Account: NextPage = (): JSX.Element => {
           type="font/ttf"
         />
       </Head>
-      <AllOrders
-        connected={connected}
-        ordersLoading={ordersLoading}
-        allOrders={allOrders}
-        handleDecryptFulfillment={handleDecryptFulfillment}
-        decryptLoading={decryptLoading}
-        orderOpen={orderOpen}
-        setOrderOpen={setOrderOpen}
-        dispatch={dispatch}
-        updateFulfillmentInformation={updateFulfillmentInformation}
-        updatedInformation={updatedInformation}
-        updateLoading={updateLoading}
-        setUpdatedInformation={setUpdatedInformation}
-        decryptMessageLoading={decryptMessageLoading}
-        handleDecryptMessage={handleDecryptMessage}
-        connectedPKP={connectedPKP}
-        openChainModal={openChainModal}
-        chain={chain}
-      />
+      <div className="relative w-full h-fit flex items-center justify-center flex-col gap-5">
+        <div className="relative w-3/4 h-fit flex items-center justify-center font-vcr text-white text-center text-lg">
+          Subscribe to the learn it or lose it traning path. Complete the quests
+          in this module before the credits you could have unlocked are gifted
+          to creators who already get it.
+        </div>
+        <div className="relative w-fit h-fit items-center justify-center text-white font-sat text-2xl">
+          $25 MONTHLY SUBSCRIPTION
+        </div>
+        <div className="relative flex flex-col items-center justify-center">
+          <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-white text-center text-lg text-white gap-3">
+            What&apos;s included?
+          </div>
+          <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-white text-center text-lg text-white">
+            item one, item two, item three
+          </div>
+          <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-white text-center text-lg text-white">
+            cancel anytime
+          </div>
+        </div>
+      </div>
+      <ActivateSub dispatch={dispatch} />
     </div>
   );
 };
 
-export default Account;
+export default Subscription;

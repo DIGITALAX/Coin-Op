@@ -460,3 +460,12 @@ export type LoginProps = {
 export type FiatProps = {
   dispatch: DispatchRedux<AnyAction>;
 };
+
+export type QuestPreludeProps = {
+  dispatch: DispatchRedux<AnyAction>;
+  signUpForQuest: () => Promise<void>;
+  questSignUpLoading: boolean;
+  connected: boolean;
+  chain: number | undefined;
+  openChainModal: (() => void) | undefined;
+};

@@ -1,3 +1,5 @@
+import { Appearance } from "@stripe/stripe-js";
+
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
 
 export const BASE_URL: string = "https://api.lens.dev";
@@ -84,4 +86,14 @@ export const allFonts: string[] = [
 
 export const negative_prompt: string = "";
 
-export const REDIRECT_URI: string = "https://coinop.themanufactory.xyz";
+export const REDIRECT_URL: string = "https://coinop.themanufactory.xyz";
+export const REDIRECT_URL_TEST: string = "http://localhost:3000";
+
+export const APPEARANCE: Appearance = {
+  theme: "night",
+  variables: {
+    colorPrimary: "#76b3f4",
+    colorBackground: "#000000",
+    fontFamily: "Manaspace",
+  },
+};

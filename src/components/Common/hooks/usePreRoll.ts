@@ -74,15 +74,15 @@ const usePreRoll = () => {
 
       let algoilaIndex = algoila;
 
-      if (!algoila) {
-        const index = initializeAlgolia();
-        dispatch(setAlgolia(index));
-        algoilaIndex = index;
-      }
+      // if (!algoila) {
+      //   const index = initializeAlgolia();
+      //   dispatch(setAlgolia(index));
+      //   algoilaIndex = index;
+      // }
 
-      await algoilaIndex!.replaceAllObjects(preRollsAdded, {
-        autoGenerateObjectIDIfNotExist: true,
-      });
+      // await algoilaIndex!.replaceAllObjects(preRollsAdded, {
+      //   autoGenerateObjectIDIfNotExist: true,
+      // });
     } catch (err: any) {
       console.error(err.message);
     }

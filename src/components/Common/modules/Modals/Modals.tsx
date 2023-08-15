@@ -14,9 +14,11 @@ import SearchExpand from "./SearchExpand";
 import useRollSearch from "@/components/Layout/hooks/useRollSearch";
 import ApiAdd from "./ApiAdd";
 import { useRouter } from "next/router";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import Login from "./Login";
 import useLogin from "@/components/Layout/hooks/useLogin";
+import QuestPrelude from "./QuestPrelude";
+import useQuest from "@/components/Quests/hooks/useQuest";
 
 const Modals = () => {
   const dispatch = useDispatch();
@@ -27,6 +29,9 @@ const Modals = () => {
   const generalModal = useSelector(
     (state: RootState) => state.app.modalOpenReducer
   );
+  const questPrelude = useSelector(
+    (state: RootState) => state.app.questPreludeReducer
+  );
   const messageModal = useSelector(
     (state: RootState) => state.app.messagesModalReducer
   );
@@ -36,6 +41,10 @@ const Modals = () => {
   const searchExpand = useSelector(
     (state: RootState) => state.app.searchExpandReducer
   );
+  const connected = useSelector(
+    (state: RootState) => state.app.walletConnectedReducer.value
+  );
+  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const login = useSelector((state: RootState) => state.app.loginReducer);
   const lensPost = useSelector(
     (state: RootState) => state.app.lensPostBoxReducer
@@ -65,7 +74,7 @@ const Modals = () => {
     const handleScroll = () => {
       const distance =
         document.documentElement.scrollHeight -
-        window.pageYOffset -
+        window.scrollY -
         window.innerHeight;
       setDistanceFromBottom(distance + 10);
     };
@@ -105,6 +114,7 @@ const Modals = () => {
     preElement,
     handleImagePaste,
   } = useMakePost();
+  const { questSignUpLoading, signUpForQuest } = useQuest();
   const {
     collectNotif,
     referral,
@@ -142,6 +152,7 @@ const Modals = () => {
   } = useCollectOptions();
   const { handlePromptChoose, handleSearchSimilar } = useRollSearch();
   const { openConnectModal } = useConnectModal();
+  const { openChainModal } = useChainModal();
   return (
     <>
       {noHandle.value && <NoHandle dispatch={dispatch} />}
@@ -235,6 +246,16 @@ const Modals = () => {
       )}
       {imageModal?.value && (
         <ImageLarge mainImage={imageModal.image} dispatch={dispatch} />
+      )}
+      {questPrelude?.open && (
+        <QuestPrelude
+          questSignUpLoading={questSignUpLoading}
+          signUpForQuest={signUpForQuest}
+          openChainModal={openChainModal}
+          chain={chain}
+          connected={connected}
+          dispatch={dispatch}
+        />
       )}
       {login?.open && (
         <Login

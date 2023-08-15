@@ -6,15 +6,11 @@ const handler = nextConnect();
 
 handler.post(async (req: any, res: NextApiResponse<any>) => {
   try {
- 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Number(req.body.amount),
       currency: "usd",
       payment_method_types: ["card"],
       metadata: req.body.encryptedInformation,
-      // automatic_payment_methods: {
-      //   enabled: true,
-      // },
       confirm: false,
     });
 

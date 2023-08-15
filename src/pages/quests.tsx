@@ -5,8 +5,29 @@ import { INFURA_GATEWAY } from "../../lib/constants";
 import QuestStats from "@/components/Quests/modules/QuestStats";
 import QuestList from "@/components/Quests/modules/QuestList";
 import Countdown from "react-countdown";
+import { setQuestPrelude } from "../../redux/reducers/questPreludeSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useChainModal } from "@rainbow-me/rainbowkit";
+import { RootState } from "../../redux/store";
+import { setLogin } from "../../redux/reducers/loginSlice";
+import { useEffect, useState } from "react";
 
 const Quests: NextPage = (): JSX.Element => {
+  const dispatch = useDispatch();
+  const { openChainModal } = useChainModal();
+  const connected = useSelector(
+    (state: RootState) => state.app.walletConnectedReducer.value
+  );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
+  );
+  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const renderer = ({
     days,
     hours,
@@ -151,6 +172,25 @@ const Quests: NextPage = (): JSX.Element => {
               src={`${INFURA_GATEWAY}/ipfs/QmVYuYUAJfE9UQH6opwpFAEV3oj8qu6bewfEotPtDqv7y3`}
               draggable={false}
             />
+            <div
+              className="absolute bottom-2 left-3 flex w-fit px-1.5 h-10 rounded-md bg-eme/50 border border-white items-center justify-center cursor-pointer active:scale-95 text-xs text-white font-vcr overflow-hidden"
+              id="glisten"
+              onClick={
+                !connected && !connectedPKP
+                  ? () =>
+                      dispatch(
+                        setLogin({
+                          actionOpen: true,
+                          actionHighlight: undefined,
+                        })
+                      )
+                  : connected && chain !== 137
+                  ? openChainModal
+                  : () => dispatch(setQuestPrelude(true))
+              }
+            >
+              Claim Your Quest Sig
+            </div>
             <div className="absolute w-fit sm:w-48 h-fit sm:h-28 rounded-md border border-mist justify-between right-3 top-2 bg-black/80 flex flex-col p-2 break-words items-center break-all">
               <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-ama text-xs flex-row gap-1">
                 <p className="flex items-center justify-center">
@@ -166,7 +206,9 @@ const Quests: NextPage = (): JSX.Element => {
                 Next Quest Launching In:
               </div>
               <div className="relative w-full h-fit flex items-center justify-center">
-                <Countdown date={new Date(2023, 7, 30)} renderer={renderer} />
+                {isClient && (
+                  <Countdown date={new Date(2023, 7, 30)} renderer={renderer} />
+                )}
               </div>
               <div className="relative w-full h-fit items-center justify-center flex flex-row justify-between gap-1.5 font-vcr text-xxs text-white">
                 <div className="relative w-fit h-fit flex items-center justify-center">
