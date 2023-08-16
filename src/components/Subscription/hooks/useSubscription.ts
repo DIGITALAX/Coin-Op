@@ -99,8 +99,7 @@ const useSubscription = () => {
           paymentMethodId,
         }),
       });
-      await res.json();
-
+      const json = await res.json();
       if (res.status === 200) {
         await createPKPSubscription();
         setSubscriptionAddLoading(false);
@@ -124,6 +123,7 @@ const useSubscription = () => {
       );
       console.error(err.messsage);
     }
+    setSubscriptionAddLoading(false);
   };
 
   const createPKPSubscription = async () => {
@@ -156,16 +156,25 @@ const useSubscription = () => {
   const handleCancelSubscription = async () => {
     setSubscriptionCancelLoading(true);
     try {
+      let tokenIdChunks: { [key: string]: string } = {};
+      if (currentPKP?.encryptedToken) {
+        const chunks = chunkString(currentPKP?.encryptedToken, 490);
+
+        chunks.forEach((chunk, index) => {
+          tokenIdChunks[`part_${index + 1}`] = chunk;
+        });
+      }
       const res = await fetch("/api/cancel", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          encryptedTokenId: currentPKP?.encryptedToken,
+          encryptedTokenId: tokenIdChunks,
         }),
       });
-      await res.json();
+      const json = await res.json();
+
       if (res.status === 200) {
         await cancelPKPSubscription();
         setSubscriptionCancelLoading(false);
@@ -188,6 +197,7 @@ const useSubscription = () => {
       setSubscriptionCancelLoading(false);
       console.error(err.message);
     }
+    setSubscriptionCancelLoading(false);
   };
 
   const cancelPKPSubscription = async () => {
@@ -247,13 +257,21 @@ const useSubscription = () => {
   const handleReactivateSubscription = async () => {
     setSubscriptionReactivateLoading(true);
     try {
+      let tokenIdChunks: { [key: string]: string } = {};
+      if (currentPKP?.encryptedToken) {
+        const chunks = chunkString(currentPKP?.encryptedToken, 490);
+
+        chunks.forEach((chunk, index) => {
+          tokenIdChunks[`part_${index + 1}`] = chunk;
+        });
+      }
       const res = await fetch("/api/reactivate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          encryptedTokenId: currentPKP?.encryptedToken,
+          encryptedTokenId: tokenIdChunks,
         }),
       });
       await res.json();
@@ -279,6 +297,7 @@ const useSubscription = () => {
       );
       console.error(err.message);
     }
+    setSubscriptionReactivateLoading(false);
   };
 
   return {

@@ -2,11 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "@lit-protocol/lit-auth-client";
 import { ProviderType } from "@lit-protocol/constants";
 import { isSignInRedirect } from "@lit-protocol/lit-auth-client";
-import {
-  COIN_OP_PKPS,
-  REDIRECT_URL,
-  REDIRECT_URL_TEST,
-} from "../../../../lib/constants";
+import { COIN_OP_PKPS, REDIRECT_URL } from "../../../../lib/constants";
 import { useRouter } from "next/router";
 import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
 import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
@@ -34,6 +30,8 @@ import { litExecute } from "../../../../lib/subgraph/helpers/litExecute";
 import { createTxData } from "../../../../lib/subgraph/helpers/createTxData";
 import { encryptToken } from "../../../../lib/subgraph/helpers/encryptTokenId";
 import { getSessionSig } from "../../../../lib/subgraph/helpers/getSessionSig";
+import { setQuestInfo } from "../../../../redux/reducers/questInfoSlice";
+import { useAccount } from "wagmi";
 
 export const chronicle: Chain = {
   id: 175177,
@@ -65,6 +63,7 @@ const useLogin = () => {
     chain: chronicle,
     transport: http(),
   });
+  const { address } = useAccount();
   const router = useRouter();
   const dispatch = useDispatch();
   const litAuthClient = new LitAuthClient({
@@ -85,6 +84,9 @@ const useLogin = () => {
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
+  );
   const litClient = useSelector(
     (state: RootState) => state.app.litClientReducer.value
   );
@@ -92,7 +94,7 @@ const useLogin = () => {
   const loginWithWeb2Auth = async () => {
     try {
       const provider = litAuthClient.initProvider(ProviderType.Google, {
-        redirectUri: `${REDIRECT_URL_TEST}${router.asPath}`,
+        redirectUri: `${REDIRECT_URL}${router.asPath}`,
       });
 
       setFulfillmentDetailsLocalStorage(JSON.stringify(fulfillmentDetails));
@@ -137,7 +139,7 @@ const useLogin = () => {
         litClient,
         tx,
         "createUserPKPAccount",
-        currentPKP?.authSig
+        authSig
       );
     } catch (err: any) {
       console.error(err.message);
@@ -162,9 +164,11 @@ const useLogin = () => {
 
     try {
       const provider = litAuthClient.initProvider(ProviderType.Google, {
-        redirectUri: `${REDIRECT_URL_TEST}${router.asPath}`,
+        redirectUri: `${REDIRECT_URL}${router.asPath}`,
       });
+
       const authMethod = await provider.authenticate();
+
       const values = await handlePKPs(provider, authMethod);
 
       dispatch(
@@ -174,7 +178,6 @@ const useLogin = () => {
         })
       );
       setLoginLoading(false);
-      console.log({ authSig: values?.authSig });
       setLitLoginLocalStorage(
         JSON.stringify({
           ...values?.currentPKP,
@@ -311,13 +314,17 @@ const useLogin = () => {
 
   useEffect(() => {
     if (
-      isSignInRedirect(`${REDIRECT_URL_TEST}${router.asPath}`) &&
+      isSignInRedirect(`${REDIRECT_URL}${router.asPath}`) &&
       !hasRedirectedRef.current
     ) {
       hasRedirectedRef.current = true;
       handleRedirect();
     }
   }, [handleRedirect]);
+
+  useEffect(() => {
+    dispatch(setQuestInfo(undefined));
+  }, [address, connectedPKP]);
 
   return {
     loginWithWeb2Auth,

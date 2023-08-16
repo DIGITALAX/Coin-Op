@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { graphClient, graphClientTestnet } from "../../../lib/subgraph/client";
+import { graphClient } from "../../../lib/subgraph/client";
 
 const ALL_FULFILLERS = `
   query {

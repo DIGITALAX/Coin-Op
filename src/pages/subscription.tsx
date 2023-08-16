@@ -1,7 +1,6 @@
 import { NextPage } from "next";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { useChainModal } from "@rainbow-me/rainbowkit";
 import Head from "next/head";
 import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
 import { useEffect } from "react";
@@ -10,6 +9,12 @@ import ActivateSub from "@/components/Subscription/modules/ActivateSub";
 const Subscription: NextPage = (): JSX.Element => {
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
+  );
+  const subscriptionInfo = useSelector(
+    (state: RootState) => state.app.subscriptionInfoReducer
+  );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
   );
 
   const dispatch = useDispatch();
@@ -24,7 +29,7 @@ const Subscription: NextPage = (): JSX.Element => {
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>
         <title>Coin Op | Subscription</title>
-        <meta name="og:url" content="https://coin.manufactory.xyz/" />
+        <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
         <meta name="og:title" content="Coin Op | Subscription" />
         <meta
           name="og:description"
@@ -34,24 +39,24 @@ const Subscription: NextPage = (): JSX.Element => {
         />
         <meta
           name="og:image"
-          content="https://coin.manufactory.xyz/card.png/"
+          content="https://coinop.themanufactory.xyz/card.png/"
         />
         <meta name="twitter:card" content="summary" />
-        <meta name="og:url" content="https://coin.manufactory.xyz/" />
+        <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
         <meta
           name="og:image"
-          content="https://coin.manufactory.xyz/card.png/"
+          content="https://coinop.themanufactory.xyz/card.png/"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@digitalax_" />
         <meta name="twitter:creator" content="@digitalax_" />
         <meta
           name="twitter:image"
-          content="https://coin.manufactory.xyz/card.png/"
+          content="https://coinop.themanufactory.xyz/card.png/"
         />
-        <meta name="twitter:url" content="https://coin.manufactory.xyz/" />
+        <meta name="twitter:url" content="https://coinop.themanufactory.xyz/" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="canonical" href="https://coin.manufactory.xyz/" />
+        <link rel="canonical" href="https://coinop.themanufactory.xyz/" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
@@ -135,7 +140,11 @@ const Subscription: NextPage = (): JSX.Element => {
           </div>
         </div>
       </div>
-      <ActivateSub dispatch={dispatch} />
+      <ActivateSub
+        dispatch={dispatch}
+        subscriptionInfo={subscriptionInfo}
+        connectedPKP={connectedPKP}
+      />
     </div>
   );
 };

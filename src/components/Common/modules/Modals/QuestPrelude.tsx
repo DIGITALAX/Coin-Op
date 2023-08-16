@@ -13,6 +13,8 @@ const QuestPrelude: FunctionComponent<QuestPreludeProps> = ({
   chain,
   openChainModal,
   questSignUpLoading,
+  isSubscribed,
+  connectedPKP,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -45,18 +47,18 @@ const QuestPrelude: FunctionComponent<QuestPreludeProps> = ({
                 <div
                   className="relative flex w-48 h-10 rounded-md bg-gris/50 border border-white items-center justify-center cursor-pointer active:scale-95 text-white font-vcr overflow-hidden text-sm"
                   id="glisten"
-                  onClick={() =>
-                    !connected
+                  onClick={
+                    !connected && !connectedPKP
                       ? () =>
                           dispatch(
                             setLogin({
                               actionOpen: true,
-                              actionHighlight: "crypto",
+                              actionHighlight: undefined,
                             })
                           )
-                      : connected && chain !== 137
-                      ? openChainModal
-                      : signUpForQuest()
+                      : // : connected && chain !== 137
+                        // ? openChainModal
+                        () => signUpForQuest()
                   }
                 >
                   <div
@@ -71,34 +73,39 @@ const QuestPrelude: FunctionComponent<QuestPreludeProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="relative text-xl font-vcr text-white text-center flex items-center justify-center">
-                  Or
-                </div>
-                <div className="relative w-full h-fit gap-3 flex flex-col items-center justify-center text-center">
-                  <div
-                    className={`relative w-full h-fit justify-center items-center text-white font-vcr text-base text-center text-center break-words flex `}
-                  >
-                    <div className="relative w-fit h-fit flex items-center justify-center">
-                      skeptical of web3? <br /> don&apos;t know what to make of
-                      it?
-                      <br />
-                      still worried about getting left behind by AI?
+                {!isSubscribed && (
+                  <>
+                    <div className="relative text-xl font-vcr text-white text-center flex items-center justify-center">
+                      Or
                     </div>
-                  </div>
-                  <div></div>
-                  <Link
-                    className="relative flex w-48 h-10 rounded-md bg-eme/50 border border-white items-center justify-center cursor-pointer active:scale-95 text-white font-vcr overflow-hidden text-sm"
-                    id="glisten"
-                    href={"/subscription"}
-                    onClick={() => dispatch(setQuestPrelude(false))}
-                  >
-                    <div
-                      className={`relative w-fit h-fit flex items-center justify-center`}
-                    >
-                      claim subscription
+
+                    <div className="relative w-full h-fit gap-3 flex flex-col items-center justify-center text-center">
+                      <div
+                        className={`relative w-full h-fit justify-center items-center text-white font-vcr text-base text-center text-center break-words flex `}
+                      >
+                        <div className="relative w-fit h-fit flex items-center justify-center">
+                          skeptical of web3? <br /> don&apos;t know what to make
+                          of it?
+                          <br />
+                          still worried about getting left behind by AI?
+                        </div>
+                      </div>
+
+                      <Link
+                        className="relative flex w-48 h-10 rounded-md bg-eme/50 border border-white items-center justify-center cursor-pointer active:scale-95 text-white font-vcr overflow-hidden text-sm"
+                        id="glisten"
+                        href={"/subscription"}
+                        onClick={() => dispatch(setQuestPrelude(false))}
+                      >
+                        <div
+                          className={`relative w-fit h-fit flex items-center justify-center`}
+                        >
+                          claim subscription
+                        </div>
+                      </Link>
                     </div>
-                  </Link>
-                </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

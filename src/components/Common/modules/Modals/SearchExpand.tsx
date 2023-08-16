@@ -69,7 +69,10 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         title="use prompt"
                         onClick={async (e) => {
                           e.stopPropagation();
-                          if (router.asPath.includes("account")) {
+                          if (router.asPath.includes("account") ||
+                          router.asPath.includes("subscription") ||
+                          router.asPath.includes("quests")
+                        ) {
                             await router.push("/");
                           }
                           handlePromptChoose(searchItem);

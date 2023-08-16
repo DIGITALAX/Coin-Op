@@ -29,6 +29,9 @@ const Modals = () => {
   const generalModal = useSelector(
     (state: RootState) => state.app.modalOpenReducer
   );
+  const isSubscribed = useSelector(
+    (state: RootState) => state.app.allSubscriptionsReducer.value?.isSubscribed
+  );
   const questPrelude = useSelector(
     (state: RootState) => state.app.questPreludeReducer
   );
@@ -255,6 +258,8 @@ const Modals = () => {
           chain={chain}
           connected={connected}
           dispatch={dispatch}
+          isSubscribed={isSubscribed}
+          connectedPKP={currentPKP?.ethAddress}
         />
       )}
       {login?.open && (

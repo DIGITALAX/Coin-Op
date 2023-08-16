@@ -8,7 +8,7 @@ import { store } from "./../../redux/store";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Provider } from "react-redux";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { polygon } from "wagmi/chains";
+import { polygon} from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { MutableRefObject, useEffect, useState } from "react";
 import { useRouter } from "next/router";

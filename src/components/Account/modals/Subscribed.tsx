@@ -16,7 +16,7 @@ const Subscribed: FunctionComponent<SubscribedProps> = ({
   } = useSubscription();
   return (
     <div className={`relative w-full border border-white bg-smo/10 p-2 h-fit`}>
-      <div className="relative w-full h-28 sm:h-16 sm:gap-0 gap-3 inline-flex flex-wrap justify-between items-center text-white font-herm text-sm cursor-pointer">
+      <div className="relative w-full h-28 sm:h-16 sm:gap-0 gap-3 inline-flex flex-wrap justify-between items-center text-white font-herm text-sm">
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
           <div className="relative w-fit h-fit flex items-center justify-center">
             Subscription Id
@@ -97,12 +97,12 @@ const Subscribed: FunctionComponent<SubscribedProps> = ({
             <div>
               <div
                 className={`relative w-40 h-8 justify-center flex items-center flex-col text-base text-black font-monu border border-black bg-sol ${
-                  (subscriptionCancelLoading ||
-                    subscriptionReactivateLoading) &&
+                  !subscriptionCancelLoading &&
+                  !subscriptionReactivateLoading &&
                   "cursor-pointer hover:opacity-70"
                 }`}
                 onClick={
-                  subscriptionCancelLoading || subscriptionReactivateLoading
+                  !subscriptionCancelLoading && !subscriptionReactivateLoading
                     ? subscription?.isSubscribed
                       ? () => handleCancelSubscription()
                       : () => handleReactivateSubscription()

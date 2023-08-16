@@ -11,22 +11,44 @@ import { useChainModal } from "@rainbow-me/rainbowkit";
 import { RootState } from "../../redux/store";
 import { setLogin } from "../../redux/reducers/loginSlice";
 import { useEffect, useState } from "react";
+import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
+import useQuest from "@/components/Quests/hooks/useQuest";
+import { useRouter } from "next/router";
 
 const Quests: NextPage = (): JSX.Element => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { openChainModal } = useChainModal();
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
+  const questPoints = useSelector(
+    (state: RootState) => state.app.questPointsReducer.value
+  );
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
   );
+  const preRollAnim = useSelector(
+    (state: RootState) => state.app.preRollAnimReducer.value
+  );
+  const questInfo = useSelector(
+    (state: RootState) => state.app.questInfoReducer.questInfo
+  );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const [isClient, setIsClient] = useState(false);
+  const { questsLoading, getQuestInformation } = useQuest();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    if (preRollAnim) {
+      setTimeout(() => {
+        dispatch(setPreRollAnim(false));
+      }, 3000);
+    }
+  }, [preRollAnim]);
 
   const renderer = ({
     days,
@@ -49,7 +71,7 @@ const Quests: NextPage = (): JSX.Element => {
     <div className="relative w-full h-full flex flex-col gap-14">
       <Head>
         <title>Coin Op | Quests</title>
-        <meta name="og:url" content="https://coin.manufactory.xyz/" />
+        <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
         <meta name="og:title" content="Coin Op | Quests" />
         <meta
           name="og:description"
@@ -59,24 +81,24 @@ const Quests: NextPage = (): JSX.Element => {
         />
         <meta
           name="og:image"
-          content="https://coin.manufactory.xyz/card.png/"
+          content="https://coinop.themanufactory.xyz/card.png/"
         />
         <meta name="twitter:card" content="summary" />
-        <meta name="og:url" content="https://coin.manufactory.xyz/" />
+        <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
         <meta
           name="og:image"
-          content="https://coin.manufactory.xyz/card.png/"
+          content="https://coinop.themanufactory.xyz/card.png/"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@digitalax_" />
         <meta name="twitter:creator" content="@digitalax_" />
         <meta
           name="twitter:image"
-          content="https://coin.manufactory.xyz/card.png/"
+          content="https://coinop.themanufactory.xyz/card.png/"
         />
-        <meta name="twitter:url" content="https://coin.manufactory.xyz/" />
+        <meta name="twitter:url" content="https://coinop.themanufactory.xyz/" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="canonical" href="https://coin.manufactory.xyz/" />
+        <link rel="canonical" href="https://coinop.themanufactory.xyz/" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
@@ -139,7 +161,7 @@ const Quests: NextPage = (): JSX.Element => {
           type="font/ttf"
         />
       </Head>
-      <div className="absolute hidden 900:flex w-full h-full">
+      <div className="absolute hidden xl:flex w-full h-full">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmeDoviUgzhon6Gub8Wd1dA7tnmZTENxKwaoZwfpwTnQYT`}
           layout="fill"
@@ -164,7 +186,7 @@ const Quests: NextPage = (): JSX.Element => {
           </div>
         </div>
         <div className="relative w-full justify-center items-center h-60 flex 900:pl-3 xl:pt-0 pt-10 900:pt-3">
-          <div className="relative flex items-center justify-center w-5/6 sm:w-[70%] before:w-[85%] xl:w-[70%] synth:w-[87%] h-full bg-black border border-white rounded-md">
+          <div className="relative flex items-center justify-center w-5/6 sm:w-[70%] before:w-[85%] xl:w-[70%] synth:w-[87%] h-full bg-black border border-white rounded-md bg-mist">
             <Image
               layout="fill"
               objectFit="cover"
@@ -172,25 +194,28 @@ const Quests: NextPage = (): JSX.Element => {
               src={`${INFURA_GATEWAY}/ipfs/QmVYuYUAJfE9UQH6opwpFAEV3oj8qu6bewfEotPtDqv7y3`}
               draggable={false}
             />
-            <div
-              className="absolute bottom-2 left-3 flex w-fit px-1.5 h-10 rounded-md bg-eme/50 border border-white items-center justify-center cursor-pointer active:scale-95 text-xs text-white font-vcr overflow-hidden"
-              id="glisten"
-              onClick={
-                !connected && !connectedPKP
-                  ? () =>
-                      dispatch(
-                        setLogin({
-                          actionOpen: true,
-                          actionHighlight: undefined,
-                        })
-                      )
-                  : connected && chain !== 137
-                  ? openChainModal
-                  : () => dispatch(setQuestPrelude(true))
-              }
-            >
-              Claim Your Quest Sig
-            </div>
+            {(!questInfo?.participantId ||
+              Number(questInfo?.participantId) < 1) && (
+              <div
+                className="absolute bottom-2 left-3 flex w-fit px-1.5 h-10 rounded-md bg-eme/50 border border-white items-center justify-center cursor-pointer active:scale-95 text-xs text-white font-vcr overflow-hidden"
+                id="glisten"
+                onClick={
+                  !connected && !connectedPKP
+                    ? () =>
+                        dispatch(
+                          setLogin({
+                            actionOpen: true,
+                            actionHighlight: undefined,
+                          })
+                        )
+                    : // : connected && chain !== 137
+                      // ? openChainModal
+                      () => dispatch(setQuestPrelude(true))
+                }
+              >
+                Claim Prelude Quest Sig
+              </div>
+            )}
             <div className="absolute w-fit sm:w-48 h-fit sm:h-28 rounded-md border border-mist justify-between right-3 top-2 bg-black/80 flex flex-col p-2 break-words items-center break-all">
               <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-ama text-xs flex-row gap-1">
                 <p className="flex items-center justify-center">
@@ -228,8 +253,25 @@ const Quests: NextPage = (): JSX.Element => {
           </div>
         </div>
       </div>
-      <QuestStats />
-      <QuestList />
+      <QuestStats
+        questInfo={questInfo}
+        getQuestInformation={getQuestInformation}
+        chain={chain}
+        openChainModal={openChainModal}
+        connected={connected}
+        questsLoading={questsLoading}
+      />
+      <QuestList
+        questInfo={questInfo}
+        dispatch={dispatch}
+        chain={chain}
+        openChainModal={openChainModal}
+        connected={connected}
+        connectedPKP={connectedPKP}
+        questsLoading={questsLoading}
+        questPoints={questPoints}
+        router={router}
+      />
     </div>
   );
 };

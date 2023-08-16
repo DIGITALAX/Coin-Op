@@ -21,6 +21,14 @@ const usePreRoll = () => {
     try {
       const data = await getAllPreRolls();
 
+      if (
+        data?.data?.collectionCreateds?.length < 1 ||
+        !data?.data?.collectionCreateds
+      ) {
+        setPreRollsLoading(false);
+        return;
+      }
+
       const preRollsAddedPromises = data?.data?.collectionCreateds?.map(
         async (obj: PreRoll) => {
           const modifiedObj = {

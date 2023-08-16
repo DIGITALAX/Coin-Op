@@ -1,27 +1,22 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 import { NextApiResponse } from "next";
 import nextConnect from "next-connect";
-import { chunkString } from "../../../../lib/subgraph/helpers/chunkString";
-
 const handler = nextConnect();
 
 handler.post(async (req: any, res: NextApiResponse<any>) => {
   try {
     let customer;
-    let tokenIdChunks: { [key: string]: string } = {};
 
-    const chunks = chunkString(req.body.encryptedTokenId, 490);
+    const customers = await stripe.customers.list();
 
-    chunks.forEach((chunk, index) => {
-      tokenIdChunks[`part_${index + 1}`] = chunk;
+    const filteredCustomers = customers.data.filter((cust: any) => {
+      return (
+        cust.metadata &&
+        cust.metadata.part_2 === req.body.encryptedTokenId["part_2"]
+      );
     });
-
-    const customers = await stripe.customers.list({
-      "metadata[part_2]": tokenIdChunks["part_2"],
-    });
-
-    if (customers.data.length > 0) {
-      customer = customers.data[0];
+    if (filteredCustomers && filteredCustomers?.length > 0) {
+      customer = filteredCustomers[0];
     } else {
       customer = await stripe.customers.create({
         metadata: req.body.encryptedTokenId,
@@ -44,11 +39,13 @@ handler.post(async (req: any, res: NextApiResponse<any>) => {
     const subscription = await stripe.subscriptions.create({
       customer: customer.id,
       items: [{ price: process.env.NEXT_PUBLIC_STRIPE_SUBSCRIPTION_KEY }],
-      metadata: req.body.social,
+      metadata: {
+        social: req.body.social,
+      },
       expand: ["latest_invoice.payment_intent"],
     });
 
-    return res.status(200).json(subscription);
+    return res.status(200).json({ success: subscription });
   } catch (err: any) {
     return res.status(500).json({ message: err.message });
   }

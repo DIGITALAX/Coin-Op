@@ -3,7 +3,7 @@ import { Html, Head, Main, NextScript } from "next/document";
 export default function Document() {
   return (
     <Html lang="en">
-      <meta name="og:url" content="https://coin.manufactory.xyz/" />
+      <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
       <meta name="og:title" content="Coin Op" />
       <meta
         name="og:description"
@@ -11,20 +11,20 @@ export default function Document() {
             the blend of instant convenience and purchasing power you've
             been waiting for?"
       />
-      <meta name="og:image" content="https://coin.manufactory.xyz/card.png/" />
+      <meta name="og:image" content="https://coinop.themanufactory.xyz/card.png/" />
       <meta name="twitter:card" content="summary" />
-      <meta name="og:url" content="https://coin.manufactory.xyz/" />
-      <meta name="og:image" content="https://coin.manufactory.xyz/card.png/" />
+      <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
+      <meta name="og:image" content="https://coinop.themanufactory.xyz/card.png/" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@digitalax_" />
       <meta name="twitter:creator" content="@digitalax_" />
       <meta
         name="twitter:image"
-        content="https://coin.manufactory.xyz/card.png/"
+        content="https://coinop.themanufactory.xyz/card.png/"
       />
-      <meta name="twitter:url" content="https://coin.manufactory.xyz/" />
+      <meta name="twitter:url" content="https://coinop.themanufactory.xyz/" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="canonical" href="https://coin.manufactory.xyz/" />
+      <link rel="canonical" href="https://coinop.themanufactory.xyz/" />
       <link
         rel="preconnect"
         href="https://fonts.gstatic.com"

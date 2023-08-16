@@ -69,6 +69,10 @@ export const COIN_OP_PKPS: `0x${string}` =
   "0x1c6cE9018c8F3BDa3C527817CB324b8a85Af11A3";
 export const COIN_OP_SUBSCRIPTION: `0x${string}` =
   "0xF8371634aE217D9c24Fb5AB47D2641ea3FA343d8";
+export const MANUFACTORY: `0x${string}` =
+  "0x459fa8E27F943c2a37A0dFD18109686Cca6Ed0b7";
+export const COIN_OP_QUEST_PRELUDE: `0x${string}` =
+  "0x9CAC0A7944ba70Afd04AA62B532Cf041842E9A1a";
 export const PKP_ADDRESS: `0x${string}` =
   "0xb1d06c81fd47dd1abb1172feb369306a2746f220";
 export const IPFS_CID_PKP: string =

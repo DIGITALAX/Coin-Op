@@ -54,14 +54,16 @@ const Header: FunctionComponent<HeaderProps> = ({
         <div className="relative flex w-full h-fit items-center justify-center">
           <div
             className="relative w-fit md:left-10 px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 cursor-pointer active:scale-95"
-            onClick={
-              router.asPath.includes("account")
-                ? async () => {
-                    await router.push("/");
-                    scrollToCheckOut();
-                  }
-                : () => scrollToCheckOut()
-            }
+            onClick={async () => {
+              if (
+                router.asPath.includes("account") ||
+                router.asPath.includes("subscription") ||
+                router.asPath.includes("quests")
+              ) {
+                await router.push("/");
+              }
+              scrollToCheckOut();
+            }}
             id={cartAnim ? "cartAnim" : ""}
           >
             <div className="relative text-white font-mana text-xs items-center justify-center">
@@ -116,23 +118,23 @@ const Header: FunctionComponent<HeaderProps> = ({
           </div>
           <Link
             href={"/account"}
-            className="relative flex w-8 h-6 items-center break-words cursor-pointer"
+            className="relative flex w-5 h-5 items-center break-words cursor-pointer"
             draggable={false}
           >
             <Image
               layout="fill"
-              src={`${INFURA_GATEWAY}/ipfs/QmT18k71KZATGmJ8em4hUBRCAQVKmrBAb7QeLWTt5G9LdV`}
+              src={`${INFURA_GATEWAY}/ipfs/QmSica4PG5nCb89S3As986XcyfDL8bku1MkfoNFb6KyQyK`}
               draggable={false}
             />
           </Link>
           <Link
             href={"/quests"}
-            className="relative flex  w-8 h-6 items-center break-words cursor-pointer"
+            className="relative flex w-8 h-6 items-center break-words cursor-pointer"
             draggable={false}
           >
             <Image
               layout="fill"
-              src={`${INFURA_GATEWAY}/ipfs/QmZt7axg3QPFTg6DFwTxHkEMvTi6dPhwQQLcHAiiuGJiAa`}
+              src={`${INFURA_GATEWAY}/ipfs/QmUGDXPtu1K5FqKJECQSgekui6KUH3zmfwGrB23q6jdS5g`}
               draggable={false}
             />
           </Link>

@@ -43,6 +43,8 @@ import fulfillmentDetailsReducer from "./reducers/fulfillmentDetailsSlice";
 import questPreludeReducer from "./reducers/questPreludeSlice";
 import subscriptionInfoReducer from "./reducers/subscriptionInfoSlice";
 import allSubscriptionsReducer from "./reducers/allSubscriptionsSlice";
+import questInfoReducer from "./reducers/questInfoSlice";
+import questPointsReducer from "./reducers/questPointsSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -88,6 +90,8 @@ const reducer = combineReducers({
   questPreludeReducer,
   subscriptionInfoReducer,
   allSubscriptionsReducer,
+  questInfoReducer,
+  questPointsReducer
 });
 
 export const store = configureStore({

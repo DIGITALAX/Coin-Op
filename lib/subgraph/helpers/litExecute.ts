@@ -11,47 +11,67 @@ export const litExecute = async (
   litClient: any,
   tx: any,
   sigName: string,
-  authSig: any
+  authSig: any,
+  retryCount: number = 0
 ) => {
   let client = litClient;
   if (!client) {
     client = await connectLit(dispatch);
   }
 
-  const results = await client.executeJs({
-    ipfsId: IPFS_CID_PKP,
-    authSig,
-    jsParams: {
-      publicKey: PKP_PUBLIC_KEY,
-      tx,
-      sigName,
-    },
-  });
+  const maxRetries = 5;
 
-  const signature = results.signatures[sigName];
-  const sig: {
-    r: string;
-    s: string;
-    recid: number;
-    signature: string;
-    publicKey: string;
-    dataSigned: string;
-  } = signature as {
-    r: string;
-    s: string;
-    recid: number;
-    signature: string;
-    publicKey: string;
-    dataSigned: string;
-  };
+  try {
+    const results = await client.executeJs({
+      ipfsId: IPFS_CID_PKP,
+      authSig,
+      jsParams: {
+        publicKey: PKP_PUBLIC_KEY,
+        tx,
+        sigName,
+      },
+    });
 
-  const encodedSignature = joinSignature({
-    r: "0x" + sig.r,
-    s: "0x" + sig.s,
-    recoveryParam: sig.recid,
-  });
-  const serialized = serialize(tx as any, encodedSignature);
-  const transactionHash = await provider.sendTransaction(serialized);
+    const signature = results.signatures[sigName];
+    const sig: {
+      r: string;
+      s: string;
+      recid: number;
+      signature: string;
+      publicKey: string;
+      dataSigned: string;
+    } = signature as {
+      r: string;
+      s: string;
+      recid: number;
+      signature: string;
+      publicKey: string;
+      dataSigned: string;
+    };
 
-  await transactionHash.wait();
+    const encodedSignature = joinSignature({
+      r: "0x" + sig.r,
+      s: "0x" + sig.s,
+      recoveryParam: sig.recid,
+    });
+    const serialized = serialize(tx as any, encodedSignature);
+    const transactionHash = await provider.sendTransaction(serialized);
+
+    await transactionHash.wait();
+  } catch (err: any) {
+    if (err.message.includes("timeout") && retryCount < maxRetries) {
+      console.warn(`Retry attempt ${retryCount + 1} after timeout error.`);
+      await litExecute(
+        provider,
+        dispatch,
+        litClient,
+        tx,
+        sigName,
+        authSig,
+        retryCount + 1
+      );
+    } else {
+      console.error(err.message);
+    }
+  }
 };

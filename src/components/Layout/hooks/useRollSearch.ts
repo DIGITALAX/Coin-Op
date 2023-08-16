@@ -128,18 +128,22 @@ const useRollSearch = () => {
   const checkIfLoggedIn = async () => {
     try {
       const data = getLitLoginLocalStorage();
+
       if (data) {
-        const matchTimeExp = data?.authSig?.signedMessage.match(
-          /Expiration Time: ([\d\-T:.]+)Z/
+        const matchTimeIssued = data?.authSig?.signedMessage.match(
+          /Issued At: ([\d\-T:.]+)Z/
         )?.[1];
-        if (matchTimeExp && matchTimeExp) {
-          const expirationTime = new Date(matchTimeExp);
+
+        if (matchTimeIssued) {
+          const expirationTime = new Date(
+            new Date(matchTimeIssued).getTime() + 23 * 60 * 60 * 1000
+          );
           const thirtyMinsAgo = new Date(new Date().getTime() - 30 * 60 * 1000);
 
-          if (expirationTime <= thirtyMinsAgo) {
+          if (expirationTime >= thirtyMinsAgo) {
             dispatch(
               setCurrentPKP({
-                ...data?.currentPKP,
+                ...data,
                 tokenId: data?.tokenId,
                 sessionSig: data?.sessionSig,
                 pkpWallet: data?.pkpWallet,

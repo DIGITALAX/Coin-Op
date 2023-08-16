@@ -468,4 +468,6 @@ export type QuestPreludeProps = {
   connected: boolean;
   chain: number | undefined;
   openChainModal: (() => void) | undefined;
+  isSubscribed: boolean | undefined;
+  connectedPKP: string | undefined;
 };

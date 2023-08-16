@@ -1,8 +1,6 @@
 import { FunctionComponent } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { APPEARANCE } from "../../../../lib/constants";
 import Subscribe from "./Subscribe";
 import { setSubscriptionInfo } from "../../../../redux/reducers/subscriptionInfoSlice";
@@ -14,14 +12,9 @@ const stripePromise = loadStripe(
 
 const ActivateSub: FunctionComponent<ActivateSub> = ({
   dispatch,
+  connectedPKP,
+  subscriptionInfo,
 }): JSX.Element => {
-  const subscriptionInfo = useSelector(
-    (state: RootState) => state.app.subscriptionInfoReducer
-  );
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
-
   const options = {
     clientSecret: undefined,
     appearance: APPEARANCE,

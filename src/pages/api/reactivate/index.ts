@@ -7,13 +7,16 @@ const handler = nextConnect();
 handler.post(async (req: any, res: NextApiResponse<any>) => {
   try {
     let customer;
+    const customers = await stripe.customers.list();
 
-    const customers = await stripe.customers.list({
-      "metadata[encryptedTokenId]": req.body.encryptedTokenId,
+    const filteredCustomers = customers.data.filter((cust: any) => {
+      return (
+        cust.metadata &&
+        cust.metadata.part_2 === req.body.encryptedTokenId["part_2"]
+      );
     });
-
-    if (customers.data.length > 0) {
-      customer = customers.data[0];
+    if (filteredCustomers && filteredCustomers?.length > 0) {
+      customer = filteredCustomers[0];
     } else {
       return res.status(400).json({ success: false });
     }

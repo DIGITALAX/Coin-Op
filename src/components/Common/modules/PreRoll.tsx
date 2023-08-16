@@ -24,7 +24,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
       id={preRollAnim ? "anim" : ""}
     >
       <div className="relative w-full h-60 xl:h-80 flex flex-col object-cover bg-cross bg-cover bg-center cursor-pointer">
-        {preRoll.uri.images.length > 0 && (
+        {preRoll?.uri?.images?.length > 0 && (
           <Image
             src={`${INFURA_GATEWAY}/ipfs/${
               preRoll?.uri?.images?.[preRoll?.currentIndex]?.split("ipfs://")[1]
@@ -57,7 +57,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
               const updated = {
                 left: left
                   ? preRolls.left.map((obj) =>
-                      obj.uri.images?.[0] === preRoll.uri.images?.[0]
+                      obj.uri.images?.[0] === preRoll?.uri?.images?.[0]
                         ? {
                             ...obj,
                             currentIndex:
@@ -70,13 +70,13 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                   : preRolls.left,
                 right: right
                   ? preRolls.right.map((obj) =>
-                      obj.uri.images?.[0] === preRoll.uri.images?.[0]
+                      obj.uri.images?.[0] === preRoll?.uri?.images?.[0]
                         ? {
                             ...obj,
                             currentIndex:
-                              preRoll.currentIndex > 0
-                                ? preRoll.currentIndex - 1
-                                : preRoll.uri.images.length - 1,
+                              preRoll?.currentIndex > 0
+                                ? preRoll?.currentIndex - 1
+                                : preRoll?.uri?.images?.length - 1,
                           }
                         : obj
                     )
@@ -104,12 +104,12 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
               const updated = {
                 left: left
                   ? preRolls.left.map((obj) =>
-                      obj.uri.images?.[0] === preRoll.uri.images?.[0]
+                      obj.uri.images?.[0] === preRoll?.uri?.images?.[0]
                         ? {
                             ...obj,
                             currentIndex:
                               preRoll.currentIndex <
-                              preRoll.uri.images.length - 1
+                              preRoll?.uri?.images?.length - 1
                                 ? preRoll.currentIndex + 1
                                 : 0,
                           }
@@ -118,12 +118,12 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                   : preRolls.left,
                 right: right
                   ? preRolls.right.map((obj) =>
-                      obj.uri.images?.[0] === preRoll.uri.images?.[0]
+                      obj.uri.images?.[0] === preRoll?.uri?.images?.[0]
                         ? {
                             ...obj,
                             currentIndex:
                               preRoll.currentIndex <
-                              preRoll.uri.images.length - 1
+                              preRoll?.uri?.images?.length - 1
                                 ? preRoll.currentIndex + 1
                                 : 0,
                           }

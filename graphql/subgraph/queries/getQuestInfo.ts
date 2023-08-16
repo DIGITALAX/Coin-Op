@@ -1,39 +1,36 @@
 import { gql } from "@apollo/client";
-import { graphClient } from "../../../lib/subgraph/client";
+import { graphClient, graphClientTestnet } from "../../../lib/subgraph/client";
 
-const ALL_PREROLLS = `
-  query {
-    collectionCreateds {
-        printType
-        price
-        discount
-        collectionId
-        amount
-        blockTimestamp
-        uri
-        fulfillerAddress
-      }
-  }
-`;
-
-const PREROLL_ID = `
-  query($collectionId: String) {
-    collectionCreateds(where: {collectionId: $collectionId}) {
-      printType
-      price
-      discount
-      collectionId
-      amount
-      blockTimestamp
-      uri
-      fulfillerAddress
+const QUESTS = `
+  query($participantAddress: String) {
+    newQuestSignUps(where: {participantAddress: $participantAddress},orderBy: blockTimestamp, orderDirection: desc) {
+        participantAddress
+        participantId
+        pointScore
+        questsCompleted
+        questStartTime
+        questsCompletedIds
+        withPKP
+        transactionHash
     }
   }
 `;
 
-export const getAllPreRolls = async (): Promise<any> => {
+const POINTS_QUEST = `
+query {
+  pointsPerQuestSets {
+    pointScores
+  }
+}`;
+
+export const getQuestByAddress = async (
+  participantAddress: string
+): Promise<any> => {
   const queryPromise = graphClient.query({
-    query: gql(ALL_PREROLLS),
+    query: gql(QUESTS),
+    variables: {
+      participantAddress,
+    },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
   });
@@ -41,7 +38,7 @@ export const getAllPreRolls = async (): Promise<any> => {
   const timeoutPromise = new Promise((resolve) => {
     setTimeout(() => {
       resolve({ timedOut: true });
-    }, 20000); // 1 minute timeout
+    }, 60000); // 1 minute timeout
   });
 
   const result: any = await Promise.race([queryPromise, timeoutPromise]);
@@ -52,12 +49,9 @@ export const getAllPreRolls = async (): Promise<any> => {
   }
 };
 
-export const getPreRollId = async (collectionId: string): Promise<any> => {
+export const getAllQuestsPoints = async (): Promise<any> => {
   const queryPromise = graphClient.query({
-    query: gql(PREROLL_ID),
-    variables: {
-      collectionId,
-    },
+    query: gql(POINTS_QUEST),
     fetchPolicy: "no-cache",
     errorPolicy: "all",
   });

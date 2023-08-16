@@ -49,13 +49,11 @@ const Account: NextPage = (): JSX.Element => {
       }, 3000);
     }
   }, [preRollAnim]);
-
-  console.log({connectedPKP})
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>
         <title>Coin Op | Account</title>
-        <meta name="og:url" content="https://coin.manufactory.xyz/" />
+        <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
         <meta name="og:title" content="Coin Op | Account" />
         <meta
           name="og:description"
@@ -65,24 +63,24 @@ const Account: NextPage = (): JSX.Element => {
         />
         <meta
           name="og:image"
-          content="https://coin.manufactory.xyz/card.png/"
+          content="https://coinop.themanufactory.xyz/card.png/"
         />
         <meta name="twitter:card" content="summary" />
-        <meta name="og:url" content="https://coin.manufactory.xyz/" />
+        <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
         <meta
           name="og:image"
-          content="https://coin.manufactory.xyz/card.png/"
+          content="https://coinop.themanufactory.xyz/card.png/"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@digitalax_" />
         <meta name="twitter:creator" content="@digitalax_" />
         <meta
           name="twitter:image"
-          content="https://coin.manufactory.xyz/card.png/"
+          content="https://coinop.themanufactory.xyz/card.png/"
         />
-        <meta name="twitter:url" content="https://coin.manufactory.xyz/" />
+        <meta name="twitter:url" content="https://coinop.themanufactory.xyz/" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="canonical" href="https://coin.manufactory.xyz/" />
+        <link rel="canonical" href="https://coinop.themanufactory.xyz/" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"

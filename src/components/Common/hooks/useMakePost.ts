@@ -36,7 +36,7 @@ import handleIndexCheck from "../../../../lib/lens/helpers/handleIndexCheck";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import { setCollectOpen } from "../../../../redux/reducers/collectOpenSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { polygon } from "viem/chains";
+import { polygon} from "viem/chains";
 import { useAccount } from "wagmi";
 
 const useMakePost = () => {
