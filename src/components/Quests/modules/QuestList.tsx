@@ -60,7 +60,7 @@ const QuestList: FunctionComponent<QuestListProps> = ({
                     index: 0,
                   },
                   {
-                    text: "Subscribe to Kihívás for web3 & AI level up.",
+                    text: "Subscribe to The Keychain Primer for Web3 & AI level up.",
                     function: () => router.push("/subscription"),
                     index: 15,
                   },
@@ -231,9 +231,9 @@ const QuestList: FunctionComponent<QuestListProps> = ({
                             : "pending"}
                         </div>
                       </div>
-                      {questPoints?.[index] && (
+                      {questPoints?.[item.index] && (
                         <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-sm text-white">
-                          {questPoints?.[index]}
+                          {questPoints?.[item.index]}
                         </div>
                       )}
                       <div className="relative w-9 h-8 items-center justify-center flex">

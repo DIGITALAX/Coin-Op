@@ -56,9 +56,9 @@ const QuestPrelude: FunctionComponent<QuestPreludeProps> = ({
                               actionHighlight: undefined,
                             })
                           )
-                      : // : connected && chain !== 137
-                        // ? openChainModal
-                        () => signUpForQuest()
+                      : connected && chain !== 137
+                      ? openChainModal
+                      : () => signUpForQuest()
                   }
                 >
                   <div

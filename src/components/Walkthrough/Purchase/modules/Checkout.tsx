@@ -71,17 +71,19 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           <div className="relative w-fit h-fit">
             {paymentType === "crypto"
               ? `${
-                ACCEPTED_TOKENS.find(
+                  ACCEPTED_TOKENS.find(
                     (subArray) => subArray[1] === checkoutCurrency
                   )?.[1]
                 } `
               : "$"}
-            {cartItems?.reduce(
-              (accumulator, currentItem) =>
-                accumulator +
-                (currentItem.price * currentItem.amount) / 10 ** 18,
-              0
-            ) / oracleValue}
+            {(
+              cartItems?.reduce(
+                (accumulator, currentItem) =>
+                  accumulator +
+                  (currentItem.price * currentItem.amount) / 10 ** 18,
+                0
+              ) / oracleValue
+            )?.toFixed(2)}
           </div>
         </div>
         <ShippingInfo

@@ -67,7 +67,9 @@ const usePreRoll = () => {
           return modifiedObj;
         }
       );
+
       const preRollsAdded = await Promise.all(preRollsAddedPromises);
+      preRollsAdded.sort(() => Math.random() - 0.5);
       dispatch(
         setPreRoll({
           actionLeft: preRollsAdded?.slice(

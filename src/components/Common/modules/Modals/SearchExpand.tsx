@@ -46,14 +46,14 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                           setImageViewer({
                             actionValue: open,
                             actionImage:
-                              searchItem?.uri?.images?.[0]?.split("ipfs://")[1],
+                              searchItem?.uri?.image?.[0]?.split("ipfs://")[1],
                           })
                         )
                       }
                     >
                       <Image
                         src={`${INFURA_GATEWAY}/ipfs/${
-                          searchItem?.uri?.images?.[0]?.split("ipfs://")[1]
+                          searchItem?.uri?.image?.[0]?.split("ipfs://")[1]
                         }`}
                         layout="fill"
                         objectFit="cover"
@@ -156,7 +156,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                             amount: 1,
                             uri: {
                               ...searchItem?.uri,
-                              image: searchItem?.uri?.images?.[0],
+                              image: searchItem?.uri?.image?.[0],
                             },
                             price:
                               searchItem?.printType === "shirt" ||

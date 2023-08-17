@@ -48,9 +48,9 @@ export interface Order {
     name: string;
     prices: string[];
     uri: {
-      image: string;
+      image: string[];
       prompt: string;
-      tags: string;
+      tags: string[];
       category: string;
     };
     soldTokens: string[];

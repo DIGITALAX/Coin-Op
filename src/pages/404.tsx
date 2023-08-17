@@ -1,9 +1,8 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
+import Link from "next/link";
 import { FunctionComponent } from "react";
 
 const Custom404: FunctionComponent = (): JSX.Element => {
-  const router = useRouter();
   return (
     <div className="relative w-full h-screen flex flex-col items-center justify-center overflow-x-hidden">
       <Head>
@@ -11,7 +10,9 @@ const Custom404: FunctionComponent = (): JSX.Element => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="relative w-full h-full flex flex-col items-center justify-center">
-
+        <Link href={"/"} className="relative w-fit h-fit flex items-center justify-center font-mana text-white">
+          Wrong Way? Head home.
+        </Link>
       </div>
     </div>
   );

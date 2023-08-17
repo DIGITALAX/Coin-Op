@@ -513,7 +513,7 @@ const Order: FunctionComponent<OrderProps> = ({
                         <div className="relative w-10 h-10 rounded-md">
                           <Image
                             src={`${INFURA_GATEWAY}/ipfs/${
-                              collection.uri.image?.split("ipfs://")[1]
+                              collection.uri.image[0]?.split("ipfs://")[1]
                             }`}
                             className="rounded-md"
                             layout="fill"

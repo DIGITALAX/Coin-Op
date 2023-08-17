@@ -40,7 +40,6 @@ const useSynth = () => {
   );
   const [controlType, setControlType] = useState<number>(0.7);
   const presets: string[] = [
-    "none",
     "abstract",
     "anime",
     "synthwave",

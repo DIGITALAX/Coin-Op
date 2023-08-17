@@ -6,8 +6,14 @@ import { setLayerToSynth } from "../../../../../redux/reducers/layerToSynthSlice
 import Dash from "./Dash";
 import Presets from "./Presets";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
-import Canvas from "./Canvas";
 import CompleteImages from "./CompleteImages";
+
+import dynamic from 'next/dynamic';
+
+const DynamicCanvasComponent = dynamic(
+  () => import("./Canvas"),
+  { ssr: false }
+);
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -115,7 +121,7 @@ const Grid: FunctionComponent<GridProps> = ({
                 setItemClicked={setItemClicked}
               />
             )}
-            <Canvas
+            <DynamicCanvasComponent
               materialBackground={materialBackground}
               setMaterialBackground={setMaterialBackground}
               materialOpen={materialOpen}

@@ -20,7 +20,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
       <div className="relative w-full h-full object-cover">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${
-            promptSearch?.uri?.images[0]?.split("ipfs://")[1]
+            promptSearch?.uri?.image[0]?.split("ipfs://")[1]
           }`}
           layout="fill"
           objectFit="cover"

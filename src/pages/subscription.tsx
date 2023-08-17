@@ -33,9 +33,7 @@ const Subscription: NextPage = (): JSX.Element => {
         <meta name="og:title" content="Coin Op | Subscription" />
         <meta
           name="og:description"
-          content="We know it's a lot to keep up with. How can you know if this is
-            the blend of instant convenience and purchasing power you've
-            been waiting for?"
+          content="We know it's a lot to keep up with. How can you know if this is the blend of instant convenience and purchasing power you've been waiting for?"
         />
         <meta
           name="og:image"
@@ -123,7 +121,8 @@ const Subscription: NextPage = (): JSX.Element => {
         <div className="relative w-3/4 h-fit flex items-center justify-center font-vcr text-white text-center text-lg">
           Subscribe to the learn it or lose it traning path. Complete the quests
           in this module before the credits you could have unlocked are gifted
-          to creators who already get it.
+          to creators who already get it. Special product unlocks, collect API
+          keys, collect PKPs.
         </div>
         <div className="relative w-fit h-fit items-center justify-center text-white font-sat text-2xl">
           $25 MONTHLY SUBSCRIPTION
@@ -133,10 +132,10 @@ const Subscription: NextPage = (): JSX.Element => {
             What&apos;s included?
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-white text-center text-lg text-white">
-            item one, item two, item three
-          </div>
-          <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-white text-center text-lg text-white">
-            cancel anytime
+            <div className="relative w-fit h-fit items-center justify-center flex"></div>
+            <div className="relative w-fit h-fit items-center justify-center flex"></div>
+            <div className="relative w-fit h-fit items-center justify-center flex"></div>
+            <div className="relative w-fit h-fit items-center justify-center flex">feel like you've leveled up enough? cancel anytime.</div>
           </div>
         </div>
       </div>

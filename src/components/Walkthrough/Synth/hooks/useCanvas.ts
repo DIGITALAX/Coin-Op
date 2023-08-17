@@ -22,9 +22,11 @@ import updateElement from "../../../../../lib/canvas/helpers/updateElement";
 import { isPointInPattern } from "../../../../../lib/canvas/helpers/isPointInPattern";
 import { setCanvasSize } from "../../../../../redux/reducers/canvasSizeSlice";
 import { getRegionOfInterest } from "../../../../../lib/canvas/helpers/getRegionOfInterest";
+import { fabric } from "fabric";
 
 const useCanvas = () => {
   const dispatch = useDispatch();
+  // const fabricCanvas = new fabric.Canvas("canvasId");
   let animationFrameId: number | null = null;
   const layerToSynth = useSelector(
     (state: RootState) => state.app.layerToSynthReducer.value
@@ -614,11 +616,12 @@ const useCanvas = () => {
     }
   }, [layerToSynth, synthLayerSelected, canvasSize]);
 
-
   useEffect(() => {
     if (ctx) {
       canvas.width = canvas.offsetWidth * devicePixelRatio;
       canvas.height = canvas.offsetHeight * devicePixelRatio;
+      // fabricCanvas.setWidth(canvas.width);
+      // fabricCanvas.setHeight(canvas.height);
       if (
         canvasSize.width !== canvas.width ||
         canvasSize.height !== canvas.height
@@ -764,6 +767,18 @@ const useCanvas = () => {
         addImageToCanvas();
     }
   }, [completedSynths.get(String(layerToSynth.id))?.chosen, itemClicked]);
+
+  // fabricCanvas.on("mouse:down", (options) => {
+  //   canvas.isDrawingMode = true;
+  //   canvas.freeDrawingBrush.color = hex;
+  //   canvas.freeDrawingBrush.width = brushWidth;
+  // });
+
+  // fabricCanvas.on("mouse:up", (options) => {
+  //   canvas.isDrawingMode = true;
+  // });
+
+  // fabricCanvas.on("mouse:move", (options) => {});
 
   return {
     canvasRef,
