@@ -135,7 +135,7 @@ const Subscription: NextPage = (): JSX.Element => {
             <div className="relative w-fit h-fit items-center justify-center flex"></div>
             <div className="relative w-fit h-fit items-center justify-center flex"></div>
             <div className="relative w-fit h-fit items-center justify-center flex"></div>
-            <div className="relative w-fit h-fit items-center justify-center flex">feel like you've leveled up enough? cancel anytime.</div>
+            <div className="relative w-fit h-fit items-center justify-center flex">feel like you&apos;ve leveled up enough? cancel anytime.</div>
           </div>
         </div>
       </div>
