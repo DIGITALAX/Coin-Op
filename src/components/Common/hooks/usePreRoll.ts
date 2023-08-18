@@ -15,6 +15,8 @@ const usePreRoll = () => {
     (state: RootState) => state.app.algoliaReducer.value
   );
   const [preRollsLoading, setPreRollsLoading] = useState<boolean>(false);
+  const [imagesLoadingLeft, setImagesLoadingLeft] = useState<boolean[]>([]);
+  const [imagesLoadingRight, setImagesLoadingRight] = useState<boolean[]>([]);
 
   const getPreRolls = async () => {
     setPreRollsLoading(true);
@@ -105,8 +107,23 @@ const usePreRoll = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (preRolls.left?.length > 0 && preRolls.right?.length > 0) {
+      setImagesLoadingLeft(
+        Array.from({ length: preRolls.left?.length }, () => false)
+      );
+      setImagesLoadingRight(
+        Array.from({ length: preRolls.right?.length }, () => false)
+      );
+    }
+  }, [preRolls]);
+
   return {
     preRollsLoading,
+    imagesLoadingLeft,
+    setImagesLoadingLeft,
+    imagesLoadingRight,
+    setImagesLoadingRight,
   };
 };
 

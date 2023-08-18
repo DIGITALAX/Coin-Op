@@ -20,11 +20,15 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
-  const { preRollsLoading } = usePreRoll();
+  const {
+    preRollsLoading,
+    imagesLoadingLeft,
+    setImagesLoadingLeft,
+    imagesLoadingRight,
+    setImagesLoadingRight,
+  } = usePreRoll();
   return (
-    <div
-      className="relative w-full xl:min-w-80 xl:w-80 h-fit xl:h-full flex overflow-x-scroll xl:overflow-x-hidden xl:overflow-y-scroll"
-    >
+    <div className="relative w-full xl:min-w-80 xl:w-80 h-fit xl:h-full flex overflow-x-scroll xl:overflow-x-hidden xl:overflow-y-scroll">
       <div className="relative w-fit xl:w-full h-fit flex xl:flex-col flex-row justify-start items-center gap-10">
         {preRollsLoading
           ? Array.from({ length: 40 }).map((_, index: number) => {
@@ -52,6 +56,15 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
                     left={left}
                     right={right}
                     preRollAnim={preRollAnim}
+                    setImagesLoading={
+                      left ? setImagesLoadingLeft : setImagesLoadingRight
+                    }
+                    imageLoading={
+                      left
+                        ? imagesLoadingLeft[index]
+                        : imagesLoadingRight[index]
+                    }
+                    index={index}
                   />
                 );
               }

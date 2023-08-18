@@ -164,6 +164,9 @@ export type PreRollProps = {
   left?: boolean;
   right?: boolean;
   preRollAnim: boolean;
+  imageLoading: boolean;
+  setImagesLoading: (e: boolean[]) => void;
+  index: number
 };
 
 export type PrintTagProps = {

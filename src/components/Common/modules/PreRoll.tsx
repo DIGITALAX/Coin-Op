@@ -17,6 +17,9 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
   left,
   right,
   preRollAnim,
+  imageLoading,
+  setImagesLoading,
+  index,
 }): JSX.Element => {
   return (
     <div
@@ -24,29 +27,43 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
       id={preRollAnim ? "anim" : ""}
     >
       <div className="relative w-full h-60 xl:h-80 flex flex-col object-cover bg-cross bg-cover bg-center cursor-pointer">
-        {preRoll?.uri?.image?.length > 0 && (
-          <Image
-            src={`${INFURA_GATEWAY}/ipfs/${
-              preRoll?.uri?.image?.[preRoll?.currentIndex]?.split("ipfs://")[1]
-            }`}
-            layout="fill"
-            objectFit="cover"
-            draggable={false}
-            alt="preRoll"
-            priority
-            onClick={() =>
-              dispatch(
-                setImageViewer({
-                  actionValue: open,
-                  actionImage:
-                    preRoll?.uri?.image?.[preRoll?.currentIndex]?.split(
-                      "ipfs://"
-                    )[1],
-                })
-              )
-            }
-          />
-        )}
+        {preRoll?.uri?.image?.length > 0 &&
+          (imageLoading ? (
+            <div className="relative w-full h-full items-center justify-center flex flex-col"></div>
+          ) : (
+            <Image
+              src={`${INFURA_GATEWAY}/ipfs/${
+                preRoll?.uri?.image?.[preRoll?.currentIndex]?.split(
+                  "ipfs://"
+                )[1]
+              }`}
+              decoding="async"
+              fetchPriority="high"
+              layout="fill"
+              objectFit="cover"
+              draggable={false}
+              alt="preRoll"
+              priority
+              onClick={() =>
+                dispatch(
+                  setImageViewer({
+                    actionValue: open,
+                    actionImage:
+                      preRoll?.uri?.image?.[preRoll?.currentIndex]?.split(
+                        "ipfs://"
+                      )[1],
+                  })
+                )
+              }
+              onLoad={() =>
+                setImagesLoading(((prevStates: boolean[]) => {
+                  const newStates = [...prevStates];
+                  newStates[index] = false;
+                  return newStates;
+                }) as any)
+              }
+            />
+          ))}
         <div
           className={`absolute top-2 right-2 w-fit h-fit flex flex-row gap-1.5`}
         >
@@ -54,6 +71,11 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
             className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
             onClick={(e) => {
               e.stopPropagation();
+              setImagesLoading(((prevStates: boolean[]) => {
+                const newStates = [...prevStates];
+                newStates[index] = true;
+                return newStates;
+              }) as any);
               const updated = {
                 left: left
                   ? preRolls.left.map((obj) =>
@@ -101,6 +123,11 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
             className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
             onClick={(e) => {
               e.stopPropagation();
+              setImagesLoading(((prevStates: boolean[]) => {
+                const newStates = [...prevStates];
+                newStates[index] = true;
+                return newStates;
+              }) as any);
               const updated = {
                 left: left
                   ? preRolls.left.map((obj) =>
