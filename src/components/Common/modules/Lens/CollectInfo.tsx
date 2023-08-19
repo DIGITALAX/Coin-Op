@@ -38,8 +38,8 @@ const CollectInfo: FunctionComponent<CollectInfoProps> = ({
           draggable={false}
         />
       </div>
-      <div className="relative w-full h-full flex flex-col font-earl text-white text-center gap-3 items-center">
-        <div className="relative w-full h-fit text-ama font-earl text-lg items-center text-center justify-center">
+      <div className="relative w-full h-full flex flex-col font-xs text-white text-center gap-3 items-center">
+        <div className="relative w-full h-fit text-ama font-xs text-lg items-center text-center justify-center text-sm">
           {value} {symbol}
         </div>
         {(limit || time) && (
@@ -68,7 +68,7 @@ const CollectInfo: FunctionComponent<CollectInfoProps> = ({
           </div>
         )}
         <div
-          className={`relative w-20 h-10 rounded-md grid grid-flow-col auto-cols-auto text-white font-earl text-xs place-self-center text-center bg-moda ${
+          className={`relative w-20 h-10 rounded-md grid grid-flow-col auto-cols-auto text-white font-vcr text-xs place-self-center text-center bg-moda ${
             canClick && "cursor-pointer hover:opacity-70 active:scale-95"
           } row-start-2`}
         >
