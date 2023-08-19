@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { HeaderProps } from "@/components/Common/types/common.types";
 import { useAccountModal, useChainModal } from "@rainbow-me/rainbowkit";
 import { setLogin } from "../../../../redux/reducers/loginSlice";
+import { setVideoPlayer } from "../../../../redux/reducers/videoPlayerSlice";
 
 const Header: FunctionComponent<HeaderProps> = ({
   preRollRef,
@@ -36,6 +37,9 @@ const Header: FunctionComponent<HeaderProps> = ({
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
+  const videoPlayer = useSelector(
+    (state: RootState) => state.app.videoPlayerReducer.open
+  );
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
   );
@@ -53,11 +57,11 @@ const Header: FunctionComponent<HeaderProps> = ({
         </Link>
         <div className="relative flex w-full h-fit items-center justify-center">
           <div
-            className="relative w-fit md:left-10 px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 cursor-pointer active:scale-95"
+            className="relative w-fit md:left-12 px-2 py-1.5 h-full items-center justify-center flex flex-row border border-white/40 rounded-full gap-2 cursor-pointer active:scale-95"
             onClick={async () => {
               if (
                 router.asPath.includes("account") ||
-                router.asPath.includes("subscription") ||
+                router.asPath.includes("pregame") ||
                 router.asPath.includes("quests")
               ) {
                 await router.push("/");
@@ -84,6 +88,39 @@ const Header: FunctionComponent<HeaderProps> = ({
           </div>
         </div>
         <div className="relative w-fit h-fit flex flex-row gap-3 items-center justify-center md:ml-auto">
+          <Link
+            href={"/account"}
+            className="relative flex w-5 h-5 items-center break-words cursor-pointer"
+            draggable={false}
+          >
+            <Image
+              layout="fill"
+              src={`${INFURA_GATEWAY}/ipfs/QmSica4PG5nCb89S3As986XcyfDL8bku1MkfoNFb6KyQyK`}
+              draggable={false}
+            />
+          </Link>
+          <Link
+            href={"/quests"}
+            className="relative flex w-8 h-5 items-center break-words cursor-pointer"
+            draggable={false}
+          >
+            <Image
+              layout="fill"
+              src={`${INFURA_GATEWAY}/ipfs/QmUGDXPtu1K5FqKJECQSgekui6KUH3zmfwGrB23q6jdS5g`}
+              draggable={false}
+            />
+          </Link>
+          <div
+            className="relative flex w-5 h-5 items-center break-words cursor-pointer"
+            draggable={false}
+            onClick={() => dispatch(setVideoPlayer(!videoPlayer))}
+          >
+            <Image
+              layout="fill"
+              src={`${INFURA_GATEWAY}/ipfs/QmcWAPsmMpNoU87UWxH3L7iDqQXtmDVNxM6H8WYyaRjpHv`}
+              draggable={false}
+            />
+          </div>
           <div
             className="relative w-20 h-7 px-1 text-white flex items-center justify-center border border-white cursor-pointer"
             onClick={
@@ -116,28 +153,6 @@ const Header: FunctionComponent<HeaderProps> = ({
                 : "Connected"}
             </div>
           </div>
-          <Link
-            href={"/account"}
-            className="relative flex w-5 h-5 items-center break-words cursor-pointer"
-            draggable={false}
-          >
-            <Image
-              layout="fill"
-              src={`${INFURA_GATEWAY}/ipfs/QmSica4PG5nCb89S3As986XcyfDL8bku1MkfoNFb6KyQyK`}
-              draggable={false}
-            />
-          </Link>
-          <Link
-            href={"/quests"}
-            className="relative flex w-8 h-5 items-center break-words cursor-pointer"
-            draggable={false}
-          >
-            <Image
-              layout="fill"
-              src={`${INFURA_GATEWAY}/ipfs/QmUGDXPtu1K5FqKJECQSgekui6KUH3zmfwGrB23q6jdS5g`}
-              draggable={false}
-            />
-          </Link>
         </div>
       </div>
       <div className="relative flex flex-col items-center justify-center w-full h-fit gap-28">

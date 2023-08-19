@@ -28,7 +28,7 @@ handler.post(async (req: any, res: NextApiResponse<any>) => {
     if (subscriptions.data.some((sub: any) => sub.status === "active")) {
       return res.status(400).json({
         success: false,
-        message: "Customer already has an active subscription.",
+        message: "Customer already has an active pregame.",
       });
     }
 

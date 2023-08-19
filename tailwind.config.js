@@ -21,6 +21,7 @@ module.exports = {
         oscurazul: "#030D6B",
         fresa: "#B620E0",
         ama: "#FBDB86",
+        moda: "#CFB0FA",
         leg: "#32C5FF",
         mod: "#6236FF",
         sol: "#FFC800",
@@ -32,6 +33,7 @@ module.exports = {
         mist: "#81A8F8",
       },
       height: {
+        98: "28rem",
         100: "36rem",
         110: "38rem",
         120: "50rem",

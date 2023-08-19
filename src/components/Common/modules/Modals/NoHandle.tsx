@@ -29,7 +29,7 @@ const NoHandle: FunctionComponent<NoHandleProps> = ({
               <ImCross
                 color="white"
                 size={15}
-                onClick={() => dispatch(setNoHandle(true))}
+                onClick={() => dispatch(setNoHandle(false))}
               />
             </div>
             <div className="relative w-full h-full flex flex-col gap-8 items-center justify-center">

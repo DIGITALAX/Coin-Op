@@ -33,15 +33,15 @@ const QuestPrelude: FunctionComponent<QuestPreludeProps> = ({
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
                 <div className="relative text-xl font-vcr text-white text-center flex items-center justify-center">
-                  Claim Quest Sig
+                  The Machines Challenge You To A Dance Off.
                 </div>
                 <div
                   className={`relative w-full h-fit justify-center items-center text-sol font-vcr text-sm text-center text-center break-words flex`}
                 >
-                  <div className="relative w-fit h-fit flex flex-row gap-1 items-center justify-center flex-wrap">
-                    <p className="flex">but first...know your way around</p>
-                    <p className="text-eme flex">self-custody</p>
-                    <p className="flex">yet?</p>
+                  <div className="relative w-fit h-fit flex flex-row gap-2 items-center justify-center flex-wrap">
+                    <p className="flex">But first...got motion climbing</p>
+                    <p className="text-eme flex">Maslow&apos;s self custody</p>
+                    <p className="flex">ladder?</p>
                   </div>
                 </div>
                 <div
@@ -74,37 +74,27 @@ const QuestPrelude: FunctionComponent<QuestPreludeProps> = ({
                   </div>
                 </div>
                 {!isSubscribed && (
-                  <>
-                    <div className="relative text-xl font-vcr text-white text-center flex items-center justify-center">
-                      Or
-                    </div>
-
-                    <div className="relative w-full h-fit gap-3 flex flex-col items-center justify-center text-center">
-                      <div
-                        className={`relative w-full h-fit justify-center items-center text-white font-vcr text-base text-center text-center break-words flex `}
-                      >
-                        <div className="relative w-fit h-fit flex items-center justify-center">
-                          skeptical of web3? <br /> don&apos;t know what to make
-                          of it?
-                          <br />
-                          still worried about getting left behind by AI?
-                        </div>
+                  <div className="relative w-full h-fit gap-3 flex flex-col items-center justify-center text-center pt-4">
+                    <div
+                      className={`relative w-full h-fit justify-center items-center text-white font-vcr text-base text-center text-center break-words flex `}
+                    >
+                      <div className="relative w-fit h-fit flex items-center justify-center">
+                        Need something extra before the main attraction?
                       </div>
-
-                      <Link
-                        className="relative flex w-48 h-10 rounded-md bg-eme/50 border border-white items-center justify-center cursor-pointer active:scale-95 text-white font-vcr overflow-hidden text-sm"
-                        id="glisten"
-                        href={"/subscription"}
-                        onClick={() => dispatch(setQuestPrelude(false))}
-                      >
-                        <div
-                          className={`relative w-fit h-fit flex items-center justify-center`}
-                        >
-                          claim subscription
-                        </div>
-                      </Link>
                     </div>
-                  </>
+                    <Link
+                      className="relative flex w-48 h-10 rounded-md bg-eme/50 border border-white items-center justify-center cursor-pointer active:scale-95 text-white font-vcr overflow-hidden text-sm"
+                      id="glisten"
+                      href={"/pregame"}
+                      onClick={() => dispatch(setQuestPrelude(false))}
+                    >
+                      <div
+                        className={`relative w-fit h-fit flex items-center justify-center`}
+                      >
+                        level up or lose it
+                      </div>
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>

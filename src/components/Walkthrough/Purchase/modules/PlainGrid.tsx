@@ -34,11 +34,12 @@ const PlainGrid: FunctionComponent<GridProps> = ({
       <div className="relative w-full flex flex-col synth:flex-row h-5/6 synth:pr-7 pt-4 items-center justify-start gap-5">
         <div className="relative w-full synth:w-3/4 h-full flex overflow-y-scroll">
           <div className="relative w-full h-fit flex flex-col gap-4 items-center justify-center">
+          <div className="relative flex items-center justify-center font-mana text-white text-xs">pay with:</div>
             <div className="relative w-1/2 justify-center flex flex-row font-mana text-white text-sm uppercase">
               <div
                 className={`relative bg-azul flex items-center justify-center bg-azul rounded-sm border border-y-white border-r-white px-2 py-1 w-24 h-fit hover:opacity-70 cursor-pointer bg-azul`}
               >
-                fiat
+                card
               </div>
               <div
                 className={`relative rounded-sm px-2 py-1 bg-azul flex items-center justify-center border border-white w-24 h-fit hover:opacity-70 cursor-pointer bg-oscurazul`}

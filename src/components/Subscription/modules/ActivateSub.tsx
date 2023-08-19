@@ -22,10 +22,10 @@ const ActivateSub: FunctionComponent<ActivateSub> = ({
   return (
     <div className="relative w-full h-fit flex flex-col items-center justify-center">
       <Elements stripe={stripePromise} options={options}>
-        <div className="relative w-full h-fit flex flex-col gap-3">
-          <div className="relative w-full h-fit flex flex-row items-center justify-center gap-3">
+        <div className="relative w-full h-fit inline-flex flex-wrap gap-3 items-center justify-center">
+          <div className="relative w-1/2 h-fit flex flex-row items-center justify-center gap-3">
             <input
-              className="relative bg-black border border-white w-full h-10 p-1 font-sat text-white"
+              className="relative bg-black border border-white w-full h-10 p-1 font-sat text-white items-center justify-center"
               onChange={(e) => dispatch(setSubscriptionInfo(e.target.value))}
               placeholder={
                 subscriptionInfo?.email?.trim() !== ""

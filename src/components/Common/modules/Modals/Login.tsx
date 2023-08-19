@@ -43,14 +43,27 @@ const Login: FunctionComponent<LoginProps> = ({
                 <div className="relative text-xl font-vcr text-white text-center flex items-center justify-center">
                   Connect
                 </div>
-                {!highlight && (
+                {!highlight ? (
                   <div
-                    className={`relative w-full h-fit justify-center items-center text-white font-vcr text-xs text-center text-center break-words flex `}
+                    className={`relative w-full h-fit justify-center items-center text-white font-vcr text-xs text-center text-center break-words flex flex-col gap-2`}
                   >
                     <div className="relative w-fit h-fit flex items-center justify-center">
-                      login via web3 if your savy or web2 for full account
-                      abstraction. either way no data or details are recorded or
-                      saved, anons wear streetwear too.
+                      You know what to do if you&apos;re web3 fluent already.
+                      Not sure yet about how to self custody? Click Google Auth
+                      to abstract away any confusion.
+                    </div>
+                    <div className="relative w-fit h-fit flex items-center justify-center">
+                      Either way, your privacy is encrypted end to end. Anons
+                      collect streetwear, too.
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className={`relative w-full h-fit justify-center items-center text-white font-vcr text-xs text-center text-center break-words flex flex-col gap-2`}
+                  >
+                    <div className="relative w-fit h-fit flex items-center justify-center">
+                      Your privacy is encrypted end to end. Anons collect
+                      streetwear, too.
                     </div>
                   </div>
                 )}

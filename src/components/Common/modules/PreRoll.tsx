@@ -38,7 +38,6 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                 )[1]
               }`}
               decoding="async"
-              fetchPriority="high"
               layout="fill"
               objectFit="cover"
               draggable={false}
@@ -85,7 +84,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                             currentIndex:
                               preRoll.currentIndex > 0
                                 ? preRoll.currentIndex - 1
-                                : 0,
+                                : preRoll?.uri?.image?.length - 1,
                           }
                         : obj
                     )

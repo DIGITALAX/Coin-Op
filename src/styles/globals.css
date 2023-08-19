@@ -325,3 +325,48 @@ input[type="range"]::-ms-thumb {
     left: 100%;
   }
 }
+
+#videoplayer {
+  background-image: url("https://thedial.infura-ipfs.io/ipfs/QmekpQQEtQBP1M71SohCHiDRQbV1Sc2bKveVvwEfzAJCPx");
+  background-color: white;
+  background-position: center;
+  background-size: cover;
+}
+
+#videoplayer:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 2000px rgba(255, 255, 255, 0.2);
+  filter: blur(5px);
+}
+
+#record1 {
+  background: radial-gradient(#fc9cf3, #b9d9ff, #0091ff, #99fdc1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.frame {
+  width: 100%;
+  height: fit-content;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.expand {
+  position: relative;
+  display: flex;
+  justify-items: start;
+  grid-row-start: 1;
+  grid-column-start: 1;
+  width: fit-content;
+  height: fit-content;
+  rotate: -90;
+  cursor: pointer;
+}

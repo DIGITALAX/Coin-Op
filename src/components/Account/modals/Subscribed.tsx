@@ -19,7 +19,7 @@ const Subscribed: FunctionComponent<SubscribedProps> = ({
       <div className="relative w-full h-28 sm:h-16 sm:gap-0 gap-3 inline-flex flex-wrap justify-between items-center text-white font-herm text-sm">
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
           <div className="relative w-fit h-fit flex items-center justify-center">
-            Subscription Id
+          Pregame Id
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
             {subscription?.subscriberId}
@@ -27,7 +27,7 @@ const Subscribed: FunctionComponent<SubscribedProps> = ({
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
           <div className="relative w-fit h-fit flex items-center justify-center">
-            Total Subscription Price (per month)
+            Monthly
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
             $25 (USD)
@@ -35,7 +35,7 @@ const Subscribed: FunctionComponent<SubscribedProps> = ({
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
           <div className="relative w-fit h-fit flex items-center justify-center">
-            Subscription Status
+          Pregame Status
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat text-sol">
             {subscription?.isSubscribed ? "Subscribed" : "Unsubscribed"}
@@ -67,11 +67,11 @@ const Subscribed: FunctionComponent<SubscribedProps> = ({
                 <div className="relative w-fit h-fit flex items-center justify-center">
                   {subscription?.isSubscribed &&
                   subscription?.resubscribedTimestamp === "0"
-                    ? "Subscribed Date"
+                    ? "Pregame Start Date"
                     : subscription?.isSubscribed &&
                       subscription?.resubscribedTimestamp !== "0"
-                    ? "Reactivated Date"
-                    : "Unsubscribed Date"}
+                    ? "Pregame Reactivate Date"
+                    : "Pregame Cancel Date"}
                 </div>
                 <div className="relative w-fit h-fit flex items-center justify-center font-sat">
                   {convertDate(
@@ -88,10 +88,11 @@ const Subscribed: FunctionComponent<SubscribedProps> = ({
             </div>
             <div className="relative w-full h-fit items-start justify-center flex flex-col gap-2">
               <div className="relative w-fit h-fit flex items-center justify-center font-satB text-base break-all">
-                Monthly Assets
+                Keys Collected
               </div>
               <div className="relative w-fit h-fit flex items-center justify-center font-sat">
-                Check back soon as you level up.
+                Keychain hella empty. Claim a challenge from the machines to
+                level up.
               </div>
             </div>
             <div>
@@ -120,9 +121,9 @@ const Subscribed: FunctionComponent<SubscribedProps> = ({
                   subscriptionReactivateLoading ? (
                     <AiOutlineLoading size={12} color="black" />
                   ) : subscription?.isSubscribed ? (
-                    "Cancel Subscription"
+                    "Cancel Pregame"
                   ) : (
-                    "Reactivate Subscription"
+                    "Reactivate Pregame"
                   )}
                 </div>
               </div>

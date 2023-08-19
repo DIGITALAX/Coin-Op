@@ -5,8 +5,10 @@ import Head from "next/head";
 import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
 import { useEffect } from "react";
 import ActivateSub from "@/components/Subscription/modules/ActivateSub";
+import Image from "next/legacy/image";
+import { INFURA_GATEWAY } from "../../lib/constants";
 
-const Subscription: NextPage = (): JSX.Element => {
+const Pregame: NextPage = (): JSX.Element => {
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
@@ -30,7 +32,7 @@ const Subscription: NextPage = (): JSX.Element => {
       <Head>
         <title>Coin Op | Subscription</title>
         <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
-        <meta name="og:title" content="Coin Op | Subscription" />
+        <meta name="og:title" content="Coin Op | Pregame" />
         <meta
           name="og:description"
           content="We know it's a lot to keep up with. How can you know if this is the blend of instant convenience and purchasing power you've been waiting for?"
@@ -118,25 +120,35 @@ const Subscription: NextPage = (): JSX.Element => {
         />
       </Head>
       <div className="relative w-full h-fit flex items-center justify-center flex-col gap-5">
-        <div className="relative w-3/4 h-fit flex items-center justify-center font-vcr text-white text-center text-lg">
-          Subscribe to the learn it or lose it traning path. Complete the quests
-          in this module before the credits you could have unlocked are gifted
-          to creators who already get it. Special product unlocks, collect API
-          keys, collect PKPs.
+        <div className="relative w-4/5 h-fit flex items-center justify-center font-vcr text-white text-center text-2xl">
+          Don&apos;t waste your money on subscriptions when you can pregame
+          instead.
         </div>
-        <div className="relative w-fit h-fit items-center justify-center text-white font-sat text-2xl">
-          $25 MONTHLY SUBSCRIPTION
+        <div className="relative w-4/5 h-80 flex items-center justify-center rounded-md border border-white">
+          <Image
+            layout="fill"
+            objectFit="cover"
+            className="rounded-md"
+            src={`${INFURA_GATEWAY}/ipfs/QmSeWaaiUkQqVdJunnMUw1dnXJFZRC2yh9GHrhzhBHRb8j`}
+            draggable={false}
+            objectPosition={"bottom"}
+          />
         </div>
-        <div className="relative flex flex-col items-center justify-center">
-          <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-white text-center text-lg text-white gap-3">
-            What&apos;s included?
-          </div>
-          <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-white text-center text-lg text-white">
-            <div className="relative w-fit h-fit items-center justify-center flex"></div>
-            <div className="relative w-fit h-fit items-center justify-center flex"></div>
-            <div className="relative w-fit h-fit items-center justify-center flex"></div>
-            <div className="relative w-fit h-fit items-center justify-center flex">feel like you&apos;ve leveled up enough? cancel anytime.</div>
-          </div>
+        <div className="relative w-4/5 h-fit flex items-center justify-center font-vcr text-white text-center text-base">
+          Can&apos;t keep up with the culture, web3 and the language machines if
+          you&apos;re not in the game. We don&apos;t want you to pay to play.
+        </div>
+        <div className="relative w-3/4 h-fit items-center justify-center text-white font-sat text-base text-center">
+          Buy in starts at $25 per month. Renews automatically for 90 days, then
+          re-up to pregame indefinitely. All creds are in your hands when you
+          hit Level 1 and above, if you claim your quests each month.
+          <br />
+          <br />
+          Step by step you too can skill up or lose your creds to frenemies and
+          and earlier arrivals.
+          <br />
+          <br />
+          Had enough of the levels up? Cancel anytime.
         </div>
       </div>
       <ActivateSub
@@ -148,4 +160,4 @@ const Subscription: NextPage = (): JSX.Element => {
   );
 };
 
-export default Subscription;
+export default Pregame;

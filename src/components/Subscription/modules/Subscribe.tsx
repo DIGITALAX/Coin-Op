@@ -65,7 +65,7 @@ const Subscribe: FunctionComponent<SubscribeProps> = ({
           ) : !connectedPKP ? (
             "CONNECT"
           ) : (
-            "SUBSCRIBE"
+            "PREGAME"
           )}
         </div>
       </div>

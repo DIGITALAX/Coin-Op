@@ -17,13 +17,18 @@ import {
 import authenticate from "../../../../graphql/lens/mutations/authenticate";
 import { setNoHandle } from "../../../../redux/reducers/noHandleSlice";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
+import { setAuthStatus } from "../../../../redux/reducers/authStatusSlice";
 
 const useSignIn = () => {
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
 
-  const { signMessageAsync } = useSignMessage();
+  const { signMessageAsync } = useSignMessage({
+    onError() {
+      dispatch(setAuthStatus(false));
+    },
+  });
 
   const handleLensSignIn = async (): Promise<void> => {
     setSignInLoading(true);
@@ -43,8 +48,10 @@ const useSignIn = () => {
 
         if (profile?.data?.defaultProfile) {
           dispatch(setProfile(profile?.data?.defaultProfile));
+          dispatch(setAuthStatus(true));
         } else {
           dispatch(setNoHandle(true));
+          dispatch(setAuthStatus(false));
         }
       }
     } catch (err: any) {
@@ -58,8 +65,10 @@ const useSignIn = () => {
       const profile = await getDefaultProfile(address);
       if (profile?.data?.defaultProfile !== null) {
         dispatch(setProfile(profile?.data?.defaultProfile));
+        dispatch(setAuthStatus(true));
       } else {
         removeAuthenticationToken();
+        dispatch(setAuthStatus(false));
       }
     } catch (err: any) {
       console.error(err.message);

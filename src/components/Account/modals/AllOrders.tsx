@@ -73,7 +73,7 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
             className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
             onClick={() => dispatch(setPreRollAnim(true))}
           >
-            No Orders Yet. Shop PreRolls? <br />
+            No Orders Yet. Shop Prerolls? <br />
             <br />
             If you&apos;ve bought some items but they&apos;re not showing in
             your account yet, no stress, these on-chain order updates
@@ -106,23 +106,11 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
       </div>
       <div className="relative w-full h-full flex flex-col text-white gap-4">
         <div className="font-monu text-2xl text-left w-fit h-fit flex justify-start items-center">
-          Subscriptions.
+          {!allSubscriptions
+            ? `We've All Been There.`
+            : "Level Up or Lose It Plan."}
         </div>
-        {!connectedPKP ? (
-          <div
-            className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
-            onClick={() =>
-              dispatch(
-                setLogin({
-                  actionOpen: true,
-                  actionHighlight: "fiat",
-                })
-              )
-            }
-          >
-            Connect to View Your Subscriptions.
-          </div>
-        ) : subscriptionsLoading ? (
+        {subscriptionsLoading ? (
           Array.from({ length: 1 }).map((_, index: number) => {
             return (
               <div
@@ -132,12 +120,14 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
               ></div>
             );
           })
-        ) : !subscriptionsLoading && !allSubscriptions ? (
+        ) : (!subscriptionsLoading && !allSubscriptions) || !connectedPKP ? (
           <Link
             className="relative w-full h-fit justify-center text-left items-center justify-center cursor-pointer text-white font-mana text-base"
-            href={"/subscription"}
+            href={"/pregame"}
           >
-            Level up your web3 and AI game? Subscribe here.
+            The new language machines challenge humans to a dance off. New
+            players all start at Level 0. Level up or lose it to random rival
+            collectors.
           </Link>
         ) : (
           <Elements stripe={stripePromise} options={options}>

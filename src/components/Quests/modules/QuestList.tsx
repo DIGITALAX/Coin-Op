@@ -60,8 +60,8 @@ const QuestList: FunctionComponent<QuestListProps> = ({
                     index: 0,
                   },
                   {
-                    text: "Subscribe to The Keychain Primer for Web3 & AI level up.",
-                    function: () => router.push("/subscription"),
+                    text: "Pregame to level up or lose it.",
+                    function: () => router.push("/pregame"),
                     index: 15,
                   },
                   {

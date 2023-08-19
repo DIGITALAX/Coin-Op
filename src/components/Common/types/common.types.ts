@@ -17,9 +17,13 @@ import {
   WheelEvent,
 } from "react";
 import { AnyAction, Dispatch, Dispatch as DispatchRedux } from "redux";
-import { Erc20, Profile } from "./lens.types";
+import { Erc20, Profile, Publication } from "./lens.types";
 import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
 import { SynthData } from "../../../../redux/reducers/completedSynthsSlice";
+import { MainVideoState } from "../../../../redux/reducers/mainVideoSlice";
+import ReactPlayer from "react-player";
+import { FollowerOnlyState } from "../../../../redux/reducers/followerOnlySlice";
+import { PostCollectValuesState } from "../../../../redux/reducers/postCollectValuesSlice";
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
@@ -166,7 +170,7 @@ export type PreRollProps = {
   preRollAnim: boolean;
   imageLoading: boolean;
   setImagesLoading: (e: boolean[]) => void;
-  index: number
+  index: number;
 };
 
 export type PrintTagProps = {
@@ -473,4 +477,231 @@ export type QuestPreludeProps = {
   openChainModal: (() => void) | undefined;
   isSubscribed: boolean | undefined;
   connectedPKP: string | undefined;
+};
+
+export interface VideoSyncState {
+  duration: number;
+  currentTime: number;
+  heart: boolean;
+  isPlaying: boolean;
+  likedArray: boolean[];
+  mirroredArray: boolean[];
+  collectedArray: boolean[];
+  videosLoading: boolean;
+}
+
+export type ComponentProps = {
+  streamRef: Ref<ReactPlayer>;
+  mainVideo: MainVideoState;
+  isPlaying: boolean;
+  volume: number;
+  dispatchVideos: Publication[];
+  videoSync: VideoSyncState;
+  dispatch: Dispatch<AnyAction>;
+  hasMore: boolean;
+  fetchMoreVideos: () => Promise<
+    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
+    | undefined
+  >;
+  videoLoading: boolean;
+  setVideoLoading: (e: boolean) => void;
+};
+
+export type PlayerProps = {
+  streamRef: Ref<ReactPlayer>;
+  mainVideo: MainVideoState;
+  volume: number;
+  wrapperRef: Ref<HTMLDivElement>;
+  dispatchVideos: Publication[];
+  videoSync: VideoSyncState;
+  dispatch: Dispatch<AnyAction>;
+  hasMore: boolean;
+  fetchMoreVideos: () => Promise<
+    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
+    | undefined
+  >;
+  videoLoading: boolean;
+  setVideoLoading: (e: boolean) => void;
+};
+
+export type LoadingProps = {
+  size: string;
+};
+
+export type FullScreenVideoProps = {
+  dispatch: Dispatch<AnyAction>;
+  mainVideo: MainVideoState;
+  videoRef: Ref<HTMLDivElement>;
+  streamRef: Ref<ReactPlayer>;
+  wrapperRef: Ref<HTMLDivElement>;
+  dispatchVideos: Publication[];
+  videoSync: VideoSyncState;
+  mirrorLoading: boolean;
+  collectLoading: boolean;
+  likeLoading: boolean;
+  authStatus: boolean;
+  profileId: string;
+  hasMore: boolean;
+  connected: boolean;
+  commentors: Publication[];
+  handleLensSignIn: () => Promise<void>;
+  fetchMoreVideos: () => Promise<
+    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
+    | undefined
+  >;
+  videoLoading: boolean;
+  setVideoLoading: (e: boolean) => void;
+  handleHeart: () => void;
+  collected: boolean;
+  mirrored: boolean;
+  liked: boolean;
+  mirrorVideo: () => Promise<void>;
+  likeVideo: () => Promise<void>;
+  collectVideo: () => Promise<void>;
+  volume: number;
+  volumeOpen: boolean;
+  setVolumeOpen: (volumeOpen: boolean) => void;
+  handleVolumeChange: (e: FormEvent) => void;
+  progressRef: Ref<HTMLDivElement>;
+  handleSeek: (
+    e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
+  ) => void;
+  formatTime: (time: number) => string;
+  collectAmount: number[];
+  mirrorAmount: number[];
+  likeAmount: number[];
+  getMorePostComments: () => Promise<void>;
+  commentsLoading: boolean;
+  hasMoreComments: boolean;
+  mirrorCommentLoading: boolean[];
+  likeCommentLoading: boolean[];
+  collectCommentLoading: boolean[];
+  hasMirrored: boolean[];
+  hasReacted: boolean[];
+  commentId: string;
+  commentsOpen: boolean;
+  setCommentsOpen: (e: boolean) => void;
+};
+
+export interface ApprovalArgs {
+  to: string;
+  from: string;
+  data: string;
+}
+
+export type CollectModalProps = {
+  message: string;
+  dispatch: Dispatch<AnyAction>;
+};
+
+export type FollowerOnlyProps = {
+  profile: Profile | undefined;
+  followProfile: () => Promise<void>;
+  followLoading: boolean;
+  approved: boolean;
+  approveCurrency: () => Promise<void>;
+  dispatch: Dispatch<AnyAction>;
+  followDetails: FollowerOnlyState;
+};
+
+export type CollectInfoProps = {
+  buttonText: string;
+  symbol?: string;
+  value?: string;
+  limit?: string;
+  time?: string;
+  totalCollected?: number;
+  canClick?: boolean;
+  isApproved?: boolean;
+  approveCurrency?: () => Promise<void>;
+  handleCollect?: (id?: string) => Promise<void>;
+  collectLoading: boolean;
+  approvalLoading?: boolean;
+  handleLensSignIn: () => Promise<void>;
+  commentId: string;
+  openConnectModal: (() => void) | undefined;
+  lensProfile: string | undefined;
+  address: `0x${string}` | undefined;
+};
+
+export type PurchaseProps = {
+  collectInfoLoading: boolean;
+  approvalLoading: boolean;
+  address: `0x${string}` | undefined;
+  collectModuleValues: PostCollectValuesState;
+  lensProfile: string;
+  collectComment: (id?: any) => Promise<void>;
+  collectLoading: boolean;
+  approveCurrency: () => Promise<void>;
+  handleLensSignIn: () => Promise<void>;
+  commentId: string;
+  dispatch: Dispatch<AnyAction>;
+  openConnectModal: (() => void) | undefined;
+};
+
+export type WhoProps = {
+  accounts: any[];
+  fetchMore: () => Promise<void>;
+  loading: boolean;
+  dispatch: Dispatch<AnyAction>;
+  hasMore: boolean;
+  type: number;
+};
+
+export type ControlsProps = {
+  videoSync: VideoSyncState;
+  formatTime: (time: number) => string;
+  volume: number;
+  connected: boolean;
+  handleLensSignIn: () => Promise<void>;
+  volumeOpen: boolean;
+  setVolumeOpen: (volumeOpen: boolean) => void;
+  handleVolumeChange: (e: FormEvent) => void;
+  handleHeart: () => void;
+  collected: boolean;
+  mirrored: boolean;
+  liked: boolean;
+  mirrorVideo: () => Promise<void>;
+  likeVideo: () => Promise<void>;
+  collectVideo: () => Promise<void>;
+  mirrorLoading: boolean;
+  collectLoading: boolean;
+  likeLoading: boolean;
+  authStatus: boolean;
+  profileId: string;
+  mainVideo: MainVideoState;
+  progressRef: Ref<HTMLDivElement>;
+  handleSeek: (
+    e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
+  ) => void;
+  dispatchVideos: Publication[];
+  collectAmount: number[];
+  mirrorAmount: number[];
+  likeAmount: number[];
+  dispatch: Dispatch<AnyAction>;
+  hasMore: boolean;
+  fetchMoreVideos: () => Promise<
+    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
+    | undefined
+  >;
+  videoLoading: boolean;
+  setVideoLoading: (e: boolean) => void;
+};
+
+export type CommentsProps = {
+  commentors: Publication[];
+  video: Publication;
+  getMorePostComments: () => Promise<void>;
+  commentsLoading: boolean;
+  hasMoreComments: boolean;
+  mirrorCommentLoading: boolean[];
+  likeCommentLoading: boolean[];
+  collectCommentLoading: boolean[];
+  likeComment: (id?: string) => Promise<void>;
+  collectComment: (id?: string) => Promise<void>;
+  mirrorComment: (id?: string) => Promise<void>;
+  dispatch: Dispatch<AnyAction>;
+  hasMirrored: boolean[];
+  hasReacted: boolean[];
+  commentId: string;
 };

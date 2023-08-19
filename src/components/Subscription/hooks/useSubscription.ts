@@ -108,10 +108,10 @@ const useSubscription = () => {
           setMessagesModal({
             actionOpen: true,
             actionMessage:
-              "Subscription Confirmed. Return to your account page soon for next steps and keep an eye out on your email for web3 and AI instructables.",
+              "Level up or lose it confirmed! Your first prelude quests await.",
           })
         );
-        await router.push("account");
+        await router.push("/pregame");
       }
     } catch (err: any) {
       setSubscriptionAddLoading(false);
@@ -183,7 +183,7 @@ const useSubscription = () => {
           setModalOpen({
             actionOpen: true,
             actionMessage:
-              "Subscription status updated! It may take a little while for the changes to fully process on-chain, check back in a few minutes.",
+              "Pregame status updated! It may take a little while for the changes to fully process on-chain, check back in a few minutes.",
           })
         );
       }
@@ -283,7 +283,7 @@ const useSubscription = () => {
           setModalOpen({
             actionOpen: true,
             actionMessage:
-              "Subscription status updated! It may take a little while for the changes to fully process on-chain, check back in a few minutes.",
+              "Pregame status updated! It may take a little while for the changes to fully process on-chain, check back in a few minutes.",
           })
         );
       }

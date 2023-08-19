@@ -37,7 +37,7 @@ const Crypto: FunctionComponent<CryptoProps> = ({
                       ? undefined
                       : cartItems.length > 0 && !address
                       ? "crypto"
-                      : "fiat",
+                      : "card",
                 })
               )
           : cartItems.length < 1 && connectedPKP

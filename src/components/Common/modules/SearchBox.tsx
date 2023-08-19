@@ -47,7 +47,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
                   e.stopPropagation();
                   if (
                     router.asPath.includes("account") ||
-                    router.asPath.includes("subscription") ||
+                    router.asPath.includes("pregame") ||
                     router.asPath.includes("quests")
                   ) {
                     await router.push("/");

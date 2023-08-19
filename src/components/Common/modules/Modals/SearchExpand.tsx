@@ -70,7 +70,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         onClick={async (e) => {
                           e.stopPropagation();
                           if (router.asPath.includes("account") ||
-                          router.asPath.includes("subscription") ||
+                          router.asPath.includes("pregame") ||
                           router.asPath.includes("quests")
                         ) {
                             await router.push("/");

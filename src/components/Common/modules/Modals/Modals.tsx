@@ -7,7 +7,7 @@ import useImageUpload from "../../hooks/useImageUpload";
 import useCollectOptions from "../../hooks/useCollectOptions";
 import useMakePost from "../../hooks/useMakePost";
 import Index from "./Index";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImageLarge from "./ImageLarge";
 import Messages from "./Messages";
 import SearchExpand from "./SearchExpand";
@@ -19,8 +19,20 @@ import Login from "./Login";
 import useLogin from "@/components/Layout/hooks/useLogin";
 import QuestPrelude from "./QuestPrelude";
 import useQuest from "@/components/Quests/hooks/useQuest";
+import FullScreenVideo from "./FullScreenVideo";
+import useControls from "../../hooks/useControls";
+import Purchase from "./Purchase";
+import Who from "./Who";
+import FollowerOnly from "./FollowerOnly";
+import { useAccount } from "wagmi";
+import useSignIn from "../../hooks/useSignIn";
+import useWho from "../../hooks/useWho";
+import useFollowers from "../../hooks/useFollowers";
+import useChannels from "../../hooks/useChannels";
+import useInteractions from "../../hooks/useInteractions";
 
 const Modals = () => {
+  const videoRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const router = useRouter();
   const imageLoading = useSelector(
@@ -32,11 +44,26 @@ const Modals = () => {
   const isSubscribed = useSelector(
     (state: RootState) => state.app.allSubscriptionsReducer.value?.isSubscribed
   );
+  const videoSync = useSelector(
+    (state: RootState) => state.app.videoSyncReducer
+  );
+  const lensProfile = useSelector(
+    (state: RootState) => state.app.profileReducer.profile
+  );
+  const dispatchVideos = useSelector(
+    (state: RootState) => state.app.channelsReducer.value
+  );
+  const fullScreenVideo = useSelector(
+    (state: RootState) => state.app.videoPlayerReducer
+  );
   const questPrelude = useSelector(
     (state: RootState) => state.app.questPreludeReducer
   );
   const messageModal = useSelector(
     (state: RootState) => state.app.messagesModalReducer
+  );
+  const mainVideo = useSelector(
+    (state: RootState) => state.app.mainVideoReducer
   );
   const currentPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
@@ -64,13 +91,33 @@ const Modals = () => {
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
+  const collectModuleValues = useSelector(
+    (state: RootState) => state.app.postCollectValuesReducer
+  );
+  const reaction = useSelector(
+    (state: RootState) => state.app.reactionStateReducer
+  );
+  const reactions = useSelector(
+    (state: RootState) => state.app.videoCountReducer
+  );
+  const followersModal = useSelector(
+    (state: RootState) => state.app.followerOnlyReducer
+  );
+  const purchaseModal = useSelector(
+    (state: RootState) => state.app.purchaseReducer
+  );
+  const hasMore = useSelector(
+    (state: RootState) => state.app.hasMoreVideoReducer.value
+  );
   const apiAdd = useSelector((state: RootState) => state.app.apiAddReducer);
+  const commentId = useSelector(
+    (state: RootState) => state.app.secondaryCommentReducer.value
+  );
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
   const noHandle = useSelector((state: RootState) => state.app.noHandleReducer);
   const postImagesDispatched = useSelector(
     (state: RootState) => state.app.postImagesReducer.value
   );
-
   const [distanceFromBottom, setDistanceFromBottom] = useState<number>(10);
 
   useEffect(() => {
@@ -89,6 +136,8 @@ const Modals = () => {
     };
   }, []);
 
+  const { address } = useAccount();
+  const { handleLensSignIn } = useSignIn();
   const {
     videoLoading,
     uploadImage,
@@ -156,8 +205,185 @@ const Modals = () => {
   const { handlePromptChoose, handleSearchSimilar } = useRollSearch();
   const { openConnectModal } = useConnectModal();
   const { openChainModal } = useChainModal();
+  const {
+    collectInfoLoading: controlsCollectInfoLoading,
+    formatTime,
+    volume,
+    volumeOpen,
+    setVolumeOpen,
+    handleHeart,
+    mirrorLoading,
+    collectLoading,
+    likeLoading,
+    collectVideo,
+    mirrorVideo,
+    likeVideo,
+    authStatus,
+    profileId,
+    mirrorCommentLoading,
+    likeCommentLoading,
+    collectCommentLoading,
+    approvalLoading,
+    approveCurrency,
+    handleVolumeChange,
+    wrapperRef,
+    progressRef,
+    handleSeek,
+    fullVideoRef,
+  } = useControls();
+  const {
+    fetchMoreVideos,
+    videoLoading: channelVideoLoading,
+    setVideoLoading,
+  } = useChannels();
+  const {
+    commentors,
+    getMorePostComments,
+    commentsLoading,
+    hasMoreComments,
+    hasMirrored,
+    hasReacted,
+    commentsOpen,
+    setCommentsOpen,
+  } = useInteractions();
+  const {
+    reacters,
+    mirrorers,
+    collectors,
+    getMorePostCollects,
+    getMorePostMirrors,
+    getMorePostReactions,
+    mirrorInfoLoading,
+    reactInfoLoading,
+    collectInfoLoading,
+    hasMoreReact,
+    hasMoreCollect,
+    hasMoreMirror,
+  } = useWho();
+
+  const {
+    followerProfile: profile,
+    followProfile,
+    followLoading,
+    approved,
+    approveCurrency: approveFollowCurrency,
+  } = useFollowers();
   return (
     <>
+      {fullScreenVideo.open && (
+        <FullScreenVideo
+          formatTime={formatTime}
+          dispatch={dispatch}
+          mainVideo={mainVideo}
+          streamRef={fullVideoRef}
+          wrapperRef={wrapperRef}
+          dispatchVideos={dispatchVideos}
+          videoSync={videoSync}
+          videoRef={videoRef}
+          hasMore={hasMore}
+          connected={connected}
+          videoLoading={channelVideoLoading}
+          setVideoLoading={setVideoLoading}
+          volume={volume}
+          handleVolumeChange={handleVolumeChange}
+          volumeOpen={volumeOpen}
+          setVolumeOpen={setVolumeOpen}
+          handleHeart={handleHeart}
+          collected={mainVideo.collected}
+          mirrored={mainVideo.mirrored}
+          liked={mainVideo.liked}
+          mirrorVideo={mirrorVideo}
+          collectVideo={collectVideo}
+          likeVideo={likeVideo}
+          likeLoading={likeLoading}
+          collectLoading={collectLoading}
+          mirrorLoading={mirrorLoading}
+          authStatus={authStatus}
+          profileId={profileId}
+          progressRef={progressRef}
+          handleSeek={handleSeek}
+          collectAmount={reactions.collect}
+          mirrorAmount={reactions.mirror}
+          likeAmount={reactions.like}
+          fetchMoreVideos={fetchMoreVideos}
+          commentId={commentId}
+          commentors={commentors}
+          collectCommentLoading={collectCommentLoading}
+          commentsLoading={commentsLoading}
+          mirrorCommentLoading={mirrorCommentLoading}
+          likeCommentLoading={likeCommentLoading}
+          hasMoreComments={hasMoreComments}
+          hasMirrored={hasMirrored}
+          hasReacted={hasReacted}
+          getMorePostComments={getMorePostComments}
+          commentsOpen={commentsOpen}
+          setCommentsOpen={setCommentsOpen}
+          handleLensSignIn={handleLensSignIn}
+        />
+      )}
+      {reaction.open && (
+        <Who
+          accounts={
+            reaction.type === "heart"
+              ? reacters
+              : reaction.type === "mirror"
+              ? mirrorers
+              : collectors
+          }
+          fetchMore={
+            reaction.type === "heart"
+              ? getMorePostReactions
+              : reaction.type === "mirror"
+              ? getMorePostMirrors
+              : getMorePostCollects
+          }
+          loading={
+            reaction.type === "heart"
+              ? reactInfoLoading
+              : reaction.type === "mirror"
+              ? mirrorInfoLoading
+              : collectInfoLoading
+          }
+          dispatch={dispatch}
+          hasMore={
+            reaction.type === "heart"
+              ? hasMoreReact
+              : reaction.type === "mirror"
+              ? hasMoreMirror
+              : hasMoreCollect
+          }
+          type={
+            reaction.type === "heart" ? 0 : reaction.type === "collect" ? 1 : 2
+          }
+        />
+      )}
+      {purchaseModal?.open && (
+        <Purchase
+          dispatch={dispatch}
+          collectInfoLoading={controlsCollectInfoLoading}
+          approvalLoading={approvalLoading}
+          address={address}
+          collectModuleValues={collectModuleValues}
+          lensProfile={lensProfile?.id}
+          collectComment={collectVideo}
+          collectLoading={collectCommentLoading[purchaseModal?.index!]}
+          approveCurrency={approveCurrency}
+          handleLensSignIn={handleLensSignIn}
+          commentId={purchaseModal?.id}
+          openConnectModal={openConnectModal}
+        />
+      )}
+      {followersModal?.open && (
+        <FollowerOnly
+          profile={profile}
+          followProfile={followProfile}
+          followLoading={followLoading}
+          approved={approved}
+          approveCurrency={approveFollowCurrency}
+          dispatch={dispatch}
+          followDetails={followersModal}
+        />
+      )}
       {noHandle.value && <NoHandle dispatch={dispatch} />}
       {lensPost.value && (
         <PostBox

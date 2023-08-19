@@ -30,7 +30,7 @@ handler.post(async (req: any, res: NextApiResponse<any>) => {
     if (subscriptions.data.length < 1) {
       return res
         .status(404)
-        .json({ success: false, message: "Subscription not found" });
+        .json({ success: false, message: "Pregame not found" });
     }
     const canceledSubscription = await stripe.subscriptions.del(
       subscriptions.data[0].id
@@ -41,7 +41,7 @@ handler.post(async (req: any, res: NextApiResponse<any>) => {
     } else {
       return res
         .status(400)
-        .json({ success: false, message: "Failed to cancel the subscription" });
+        .json({ success: false, message: "Failed to cancel pregame" });
     }
   } catch (err: any) {
     return res.status(500).json({ message: err.message });
