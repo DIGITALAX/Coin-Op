@@ -173,7 +173,7 @@ const useCheckout = () => {
       });
 
       if (data) {
-        const oracle = Number(data as BigNumber) / 10 ** 18;
+        const oracle = Number(data as any) / 10 ** 18;
         setOracleValue(oracle);
         setTotalAmount(Number(total) / Number(oracle));
       }
