@@ -168,7 +168,7 @@ const useCheckout = () => {
         args: [
           ACCEPTED_TOKENS.find(
             ([_, token]) => token === checkoutCurrency
-          )?.[2].toLowerCase(),
+          )?.[2].toLowerCase() as `0x${string}`,
         ],
       });
 
