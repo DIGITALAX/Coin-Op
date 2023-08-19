@@ -113,7 +113,7 @@ const useCheckout = () => {
       });
 
       if (
-        Number(data as BigNumber) /
+        Number(data as any) /
           ((ACCEPTED_TOKENS.find(
             ([_, token]) => token === checkoutCurrency
           )?.[2] as `0x${string}`) ===
