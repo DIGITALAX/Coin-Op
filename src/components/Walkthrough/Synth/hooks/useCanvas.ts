@@ -145,7 +145,12 @@ const useCanvas = () => {
     [zoom, setZoom, canvas, pan, setPan, canvasOpen]
   );
 
+  console.log({action, synthLoading})
+
   const handleMouseDown = (e: MouseEvent): void => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (synthLoading) return;
     const bounds = canvas?.getBoundingClientRect();
     if (tool === "default") {
@@ -250,10 +255,14 @@ const useCanvas = () => {
         ...(history.get(String(layerToSynth.id)) || []),
         newElement,
       ]);
+      console.log("here")
     }
   };
 
   const handleMouseMove = (e: MouseEvent): void => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (synthLoading) return;
     const bounds = canvas?.getBoundingClientRect();
 
@@ -285,11 +294,13 @@ const useCanvas = () => {
           : false
       )
     ) {
+      console.log("here")
       setColorPicker(false);
       setFontOpen(false);
       setThickness(false);
       const index = (history.get(String(layerToSynth.id)) || [])?.length - 1;
       const values = (history.get(String(layerToSynth.id)) || [])?.[index];
+      console.log({index,values})
       updateElement(
         {
           xOffset: pan.xOffset * 0.5,
@@ -430,6 +441,9 @@ const useCanvas = () => {
   };
 
   const handleMouseUp = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     setIsDragging(false);
     if (animationFrameId !== null) {
       window.cancelAnimationFrame(animationFrameId);
