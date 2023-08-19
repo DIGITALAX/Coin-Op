@@ -170,7 +170,7 @@ const useOrders = () => {
           },
         ],
         functionName: "getFulfillerAddress",
-        args: [1],
+        args: [BigInt(1)],
       });
 
       return data as string | undefined;
