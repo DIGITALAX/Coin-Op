@@ -96,7 +96,6 @@ const useCanvas = () => {
   const synthLayerSwitch = async () => {
     if (!layerToSynth.layer || newLayersLoading) return;
     setNewLayersLoading(true);
-    console.log("inside canvas switch");
     let addRashToCanvasPromise;
     if (!history.get(String(layerToSynth.id))) {
       addRashToCanvasPromise = addRashToCanvas(
@@ -107,7 +106,6 @@ const useCanvas = () => {
         dispatch
       );
     } else {
-      console.log("castigo");
       addRashToCanvasPromise = addRashToCanvas(
         setElements,
         layerToSynth.layer!,
@@ -251,10 +249,6 @@ const useCanvas = () => {
         tool === "pencil" ? "drawing" : tool === "erase" ? "erasing" : "writing"
       );
       setSelectedElement(newElement!);
-      console.log(history.get(String(layerToSynth.id)), [
-        ...(history.get(String(layerToSynth.id)) || []),
-        newElement,
-      ]);
       setElements(
         String(layerToSynth.id),
         [...(history.get(String(layerToSynth.id)) || []), newElement],

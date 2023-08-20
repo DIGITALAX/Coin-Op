@@ -43,20 +43,22 @@ const useElements = (): UseElementsReturnType => {
           : action;
 
       if (resize) {
-        console.log("1")
+        console.log("1");
         newHistory.set(patternId, newState);
       } else if (overwrite) {
-        console.log("2")
+        console.log("2");
         newHistory.set(patternId, newState);
         setIndex(
           (prevIndex) => new Map(prevIndex.set(patternId, newState.length - 1))
         );
       } else {
-        console.log("3")
+        console.log("3");
         const currentIndex = index.get(patternId)!;
+        console.log(newHistory.get(patternId), "more");
         const updatedHistory = newHistory
           .get(patternId)!
           .slice(0, currentIndex);
+        console.log({ currentIndex, updatedHistory });
         console.log("yep", [...updatedHistory, newState[newState.length - 1]]);
         newHistory.set(patternId, [
           ...updatedHistory,
