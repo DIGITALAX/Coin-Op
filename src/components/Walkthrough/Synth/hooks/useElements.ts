@@ -43,14 +43,16 @@ const useElements = (): UseElementsReturnType => {
           : action;
 
       if (resize) {
+        console.log("1")
         newHistory.set(patternId, newState);
       } else if (overwrite) {
+        console.log("2")
         newHistory.set(patternId, newState);
         setIndex(
           (prevIndex) => new Map(prevIndex.set(patternId, newState.length - 1))
         );
       } else {
-        console.log("in here");
+        console.log("3")
         const currentIndex = index.get(patternId)!;
         const updatedHistory = newHistory
           .get(patternId)!

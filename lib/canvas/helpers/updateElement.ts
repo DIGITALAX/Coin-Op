@@ -8,7 +8,7 @@ const updateElement = (
   canvas: HTMLCanvasElement,
   zoom: number,
   elements: any,
-  setElements: (patternId: string, action: any, overwrite?: boolean) => void,
+  setElements: (patternId: string, action: any, overwrite?: boolean, resize?: boolean) => void,
   patternId: string,
   ctx: CanvasRenderingContext2D,
   x1: number,
@@ -66,7 +66,7 @@ const updateElement = (
       };
       break;
   }
-  setElements(patternId, elementsCopy, true);
+  setElements(patternId, elementsCopy, true, false);
 };
 
 export default updateElement;

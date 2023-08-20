@@ -258,6 +258,7 @@ const useCanvas = () => {
       setElements(
         String(layerToSynth.id),
         [...(history.get(String(layerToSynth.id)) || []), newElement],
+        false,
         false
       );
     }
@@ -395,7 +396,7 @@ const useCanvas = () => {
         }
       });
 
-      setElements(String(layerToSynth.id), newElements, true);
+      setElements(String(layerToSynth.id), newElements, true, false);
     } else if (action === "resizing") {
       const allElements = history.get(String(layerToSynth.id)) || [];
       let newElements: (SvgPatternType | ElementInterface)[] = [];
@@ -438,7 +439,7 @@ const useCanvas = () => {
         }
       });
 
-      setElements(String(layerToSynth.id), newElements, true);
+      setElements(String(layerToSynth.id), newElements, true, false);
     }
   };
 
@@ -520,7 +521,8 @@ const useCanvas = () => {
       setElements(
         String(layerToSynth.id),
         newElements?.map((element, index) => ({ ...element, id: index })),
-        true
+        true,
+        false
       );
     } catch (err: any) {
       console.error(err.message);
@@ -564,7 +566,7 @@ const useCanvas = () => {
           }
         }
       );
-      setElements(String(layerToSynth.id), newElements);
+      setElements(String(layerToSynth.id), newElements, false, false);
       setClear(false);
     }
   }, [clear]);
