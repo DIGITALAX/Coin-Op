@@ -33,41 +33,48 @@ const useElements = (): UseElementsReturnType => {
       const newHistory = new Map(prevHistory);
 
       if (!newHistory.has(patternId)) {
-        console.log(!newHistory.has(patternId))
         newHistory.set(patternId, []);
-        setIndex((prevIndex) => new Map(prevIndex.set(patternId, -1)));
+        setIndex((prevIndex) => {
+          const updatedIndex = new Map(prevIndex);
+          updatedIndex.set(patternId, -1);
+          return updatedIndex;
+        });
+      }
+
+      let currentIdx = index.get(patternId);
+      console.log({ currentIdx });
+      if (currentIdx === undefined) {
+        currentIdx = 0;
+        setIndex((prevIndex) => new Map(prevIndex.set(patternId, currentIdx!)));
       }
 
       let newState: any[] =
         typeof action === "function"
-          ? action(newHistory.get(patternId)![index.get(patternId)!])
+          ? action(newHistory.get(patternId)![currentIdx])
           : action;
 
       if (resize) {
-        console.log({ newState, patternId });
         newHistory.set(patternId, newState);
       } else if (overwrite) {
         newHistory.set(patternId, newState);
-        setIndex(
-          (prevIndex) => new Map(prevIndex.set(patternId, newState.length - 1))
-        );
+        setIndex((prevIndex) => {
+          const updatedIndex = new Map(prevIndex);
+          updatedIndex.set(patternId, newState.length - 1);
+          return updatedIndex;
+        });
       } else {
-        console.log({ b: index.get(patternId) });
-        const currentIndex: number = index.get(patternId) !== undefined
-        ? Number(index.get(patternId))
-        : -1;
-        console.log({ currentIndex });
-        const updatedHistory = newHistory
-          .get(patternId)!
-          .slice(0, currentIndex);
-        console.log({newHistory, updatedHistory})
+        const updatedHistory = newHistory.get(patternId)!.slice(0, currentIdx);
+
         newHistory.set(patternId, [
           ...updatedHistory,
           newState[newState.length - 1],
         ]);
-        setIndex(
-          (prevIndex) => new Map(prevIndex.set(patternId, currentIndex + 1))
-        );
+        setIndex((prevIndex) => {
+          const updatedIndex = new Map(prevIndex);
+          const currentValue = updatedIndex.get(patternId) || 0;
+          updatedIndex.set(patternId, currentValue + 1);
+          return updatedIndex;
+        });
       }
       setUpdatedHistory(lodash.cloneDeep(newHistory.get(patternId)!));
       return newHistory;
