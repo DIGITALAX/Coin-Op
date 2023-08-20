@@ -89,18 +89,28 @@ const addRashToCanvas = async (
       )
         return;
 
-        console.log("here", {elements});
-
       setElements(
         String(id),
         elements?.map((element, index: number) => {
           if (index === 0) {
             return newElement;
           } else {
-            const isScalingDown = canvasSize!.width < canvasSize!.oldWidth;
+            const isScalingDown =
+              canvasSize!.width <
+              (canvasSize!.oldWidth === 0
+                ? canvasSize!.width
+                : canvasSize!.oldWidth);
             let scaleFactorWidth, scaleFactorHeight;
-            scaleFactorWidth = canvasSize!.width / canvasSize!.oldWidth;
-            scaleFactorHeight = canvasSize!.height / canvasSize!.oldHeight;
+            scaleFactorWidth =
+              canvasSize!.width /
+              (canvasSize!.oldWidth === 0
+                ? canvasSize!.width
+                : canvasSize!.oldWidth);
+            scaleFactorHeight =
+              canvasSize!.height /
+              (canvasSize!.oldHeight === 0
+                ? canvasSize!.height
+                : canvasSize!.oldHeight);
 
             const scaleFactor = Math.sqrt(scaleFactorWidth * scaleFactorHeight);
             if (element.type === "image") {
@@ -123,11 +133,17 @@ const addRashToCanvas = async (
               const heightAfter = heightBefore * scaleFactorSizeText;
               const offsetXText =
                 (canvasSize!.width -
-                  canvasSize!.oldWidth * scaleFactorSizeText) /
+                  (canvasSize!.oldWidth === 0
+                    ? canvasSize!.width
+                    : canvasSize!.oldWidth) *
+                    scaleFactorSizeText) /
                 2;
               const offsetYText =
                 (canvasSize!.height -
-                  canvasSize!.oldHeight * scaleFactorSizeText) /
+                  (canvasSize!.oldHeight === 0
+                    ? canvasSize!.height
+                    : canvasSize!.oldHeight) *
+                    scaleFactorSizeText) /
                 2;
 
               const x1New = element.x1 * scaleFactorSizeText + offsetXText;
@@ -148,11 +164,17 @@ const addRashToCanvas = async (
 
               const offsetXPolygon =
                 (canvasSize!.width -
-                  canvasSize!.oldWidth * scaleFactorSizePolygon) /
+                  (canvasSize!.oldWidth === 0
+                    ? canvasSize!.width
+                    : canvasSize!.oldWidth) *
+                    scaleFactorSizePolygon) /
                 2;
               const offsetYPolygon =
                 (canvasSize!.height -
-                  canvasSize!.oldHeight * scaleFactorSizePolygon) /
+                  (canvasSize!.oldHeight === 0
+                    ? canvasSize!.height
+                    : canvasSize!.oldHeight) *
+                    scaleFactorSizePolygon) /
                 2;
 
               return {

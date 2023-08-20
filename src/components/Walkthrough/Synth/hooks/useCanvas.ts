@@ -106,6 +106,7 @@ const useCanvas = () => {
         dispatch
       );
     } else {
+      console.log({canvasSize})
       addRashToCanvasPromise = addRashToCanvas(
         setElements,
         layerToSynth.layer!,
@@ -389,7 +390,6 @@ const useCanvas = () => {
           newElements.push(element);
         }
       });
-
       setElements(String(layerToSynth.id), newElements, true, false);
     } else if (action === "resizing") {
       const allElements = history.get(String(layerToSynth.id)) || [];
@@ -432,7 +432,6 @@ const useCanvas = () => {
           newElements.push(element);
         }
       });
-
       setElements(String(layerToSynth.id), newElements, true, false);
     }
   };
@@ -664,8 +663,6 @@ const useCanvas = () => {
           ? history.get(String(layerToSynth.id))
           : [];
       const elements = allElements?.slice(0, currentIndex! + 1);
-
-      console.log({ currentIndex, allElements, elements });
 
       (ctx as CanvasRenderingContext2D).globalCompositeOperation =
         "source-over";

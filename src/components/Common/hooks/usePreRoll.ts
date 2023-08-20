@@ -37,22 +37,22 @@ const usePreRoll = () => {
             ...obj,
             uri: await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]),
             chosenSize:
-              obj.printType === "Sticker"
+              obj.printType === "sticker"
                 ? '2"x2"'
-                : obj.printType === "Poster"
+                : obj.printType === "poster"
                 ? '11"x17"'
                 : "M",
             chosenColor: "#ffffff",
             colors:
-              obj.printType === "Sticker"
-                ? ["#ffffff", "#000000"]
-                : obj.printType === "Poster"
-                ? ["#ffffff", "#000000"]
+              obj.printType === "sticker"
+                ? ["#ffffff"]
+                : obj.printType === "poster"
+                ? ["#ffffff"]
                 : ["#030D6B", "#FBDB86", "#ffffff", "#000000"],
             sizes:
-              obj.printType === "Sticker"
+              obj.printType === "sticker"
                 ? ['2"x2"', '4"x4"', '6"x6"']
-                : obj.printType === "Poster"
+                : obj.printType === "poster"
                 ? ['11"x17"', '18"x24"', '24"x36"']
                 : ["XS", "S", "M", "L", "XL"],
             bgColor:

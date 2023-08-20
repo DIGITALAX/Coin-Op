@@ -44,16 +44,12 @@ const useElements = (): UseElementsReturnType => {
       }
 
       let currentIdx = index.get(patternId);
-      console.log({ currentIdx });
       if (currentIdx === undefined) {
         currentIdx = 0;
         setIndex((prevIndex) => new Map(prevIndex.set(patternId, currentIdx!)));
       }
 
-      let newState: any[] =
-        typeof action === "function"
-          ? action(newHistory.get(patternId)![currentIdx])
-          : action;
+      let newState: any[] = action;
 
       if (resize) {
         newHistory.set(patternId, newState);

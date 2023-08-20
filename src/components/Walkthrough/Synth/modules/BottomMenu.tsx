@@ -213,7 +213,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
             toolTip={"move"}
             canvasExpand={canvasExpand}
           />
-          <CanvasOption
+          {/* <CanvasOption
             bgColor="black"
             image="QmPVmyozQu3DwX2f5dQnv6MgRtmDckrnKNje2A4ettN9qS"
             width={20}
@@ -222,7 +222,7 @@ const BottomMenu: FunctionComponent<BottomMenuProps> = ({
             string_option={"resize"}
             toolTip={"resize"}
             canvasExpand={canvasExpand}
-          />
+          /> */}
           <CanvasOption
             canvasExpand={canvasExpand}
             image="QmNQ36ibTtP1PRmwUwVr857q7CcosmQrQWmfXJ5sQeVp7Y"
