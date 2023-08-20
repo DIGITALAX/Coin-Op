@@ -32,7 +32,10 @@ const useElements = (): UseElementsReturnType => {
     setHistory((prevHistory) => {
       const newHistory = new Map(prevHistory);
 
+      console.log(newHistory.has(patternId), "again")
+
       if (!newHistory.has(patternId)) {
+        console.log("here in in in ")
         newHistory.set(patternId, []);
         setIndex((prevIndex) => new Map(prevIndex.set(patternId, -1)));
       }
@@ -53,13 +56,8 @@ const useElements = (): UseElementsReturnType => {
         );
       } else {
         console.log("3");
-        let currentIndex: number = index.get(patternId)!;
-        if (currentIndex === undefined) {
-          currentIndex = 0;
-          setIndex(
-            (prevIndex) => new Map(prevIndex.set(patternId, currentIndex!))
-          );
-        }
+        const currentIndex = index.get(patternId) || -1;
+        console.log({currentIndex})
         console.log(newHistory.get(patternId), "more");
         const updatedHistory = newHistory
           .get(patternId)!
@@ -70,9 +68,8 @@ const useElements = (): UseElementsReturnType => {
           ...updatedHistory,
           newState[newState.length - 1],
         ]);
-        (typeof currentIndex === 'number') ? currentIndex + 1 : 0;
         setIndex(
-          (prevIndex) => new Map(prevIndex.set(patternId, currentIndex! + 1))
+          (prevIndex) => new Map(prevIndex.set(patternId, currentIndex + 1))
         );
       }
       console.log("clone", lodash.cloneDeep(newHistory.get(patternId)!));

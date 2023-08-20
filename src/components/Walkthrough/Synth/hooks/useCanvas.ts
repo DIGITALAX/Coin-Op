@@ -659,8 +659,6 @@ const useCanvas = () => {
       const allElements = history.get(String(layerToSynth.id)) || [];
       const elements = allElements.slice(0, currentIndex + 1);
 
-      console.log({ allElements });
-
       (ctx as CanvasRenderingContext2D).globalCompositeOperation =
         "source-over";
       elements?.forEach(
