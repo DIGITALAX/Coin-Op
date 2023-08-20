@@ -8,7 +8,13 @@ const updateElement = (
   canvas: HTMLCanvasElement,
   zoom: number,
   elements: any,
-  setElements: (patternId: string, action: any, overwrite?: boolean, resize?: boolean) => void,
+  setElements: (
+    patternId: string,
+    action: any,
+    overwrite?: boolean,
+    resize?: boolean,
+    continuousDrawing?: boolean
+  ) => void,
   patternId: string,
   ctx: CanvasRenderingContext2D,
   x1: number,
@@ -60,13 +66,13 @@ const updateElement = (
           index,
           strokeWidth!,
           fill!,
-          font,
+          font
         ),
         text,
       };
       break;
   }
-  setElements(patternId, elementsCopy, true, false);
+  setElements(patternId, elementsCopy, true, false, true);
 };
 
 export default updateElement;

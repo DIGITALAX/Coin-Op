@@ -10,7 +10,8 @@ type UseElementsReturnType = {
     patternId: string,
     action: any,
     overwrite?: boolean,
-    resize?: boolean
+    resize?: boolean,
+    continuousDrawing?: boolean
   ) => void;
   undo: (patternId: string) => void;
   redo: (patternId: string) => void;
@@ -27,7 +28,8 @@ const useElements = (): UseElementsReturnType => {
     patternId: string,
     action: any,
     overwrite = false,
-    resize = false
+    resize = false,
+    continuousDrawing = false
   ) => {
     setHistory((prevHistory) => {
       const newHistory = new Map(prevHistory);
@@ -56,12 +58,20 @@ const useElements = (): UseElementsReturnType => {
       if (resize) {
         newHistory.set(patternId, newState);
       } else if (overwrite) {
-        newHistory.set(patternId, newState);
-        setIndex((prevIndex) => {
-          const updatedIndex = new Map(prevIndex);
-          updatedIndex.set(patternId, newState.length - 1);
-          return updatedIndex;
-        });
+        if (continuousDrawing) {
+          // Assuming you add a continuousDrawing flag
+          const currentHistory = newHistory.get(patternId)!;
+          currentHistory[currentHistory.length - 1] =
+            newState[newState.length - 1];
+          newHistory.set(patternId, currentHistory);
+        } else {
+          newHistory.set(patternId, newState);
+          setIndex((prevIndex) => {
+            const updatedIndex = new Map(prevIndex);
+            updatedIndex.set(patternId, newState.length - 1);
+            return updatedIndex;
+          });
+        }
       } else {
         const updatedHistory = newHistory.get(patternId)!.slice(0, currentIdx);
 
