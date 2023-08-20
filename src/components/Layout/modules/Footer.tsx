@@ -7,6 +7,19 @@ import Link from "next/link";
 const Footer: FunctionComponent = (): JSX.Element => {
   return (
     <div className="relative w-full h-fit inline-flex flex-wrap items-center justify-start px-4 pb-3 mt-auto pt-8 md:gap-0 gap-5">
+      <div className="flex flex-col items-center justify-center preG:items-end preG:justify-end relative preG:absolute preG:right-3 preG:bottom-3 w-full h-fit preG:h-auto preG:w-auto">
+        <div
+          className="relative flex w-5 h-5 justify-center items-start"
+          title="all in the public domain"
+        >
+          <Image
+            src={`${INFURA_GATEWAY}/ipfs/QmbdBp58hLPngQ8nmQTtYDfQbUBoT3RowBKu2nrJ67Xne3`}
+            layout="fill"
+            priority
+            draggable={false}
+          />
+        </div>
+      </div>
       <div className="w-full h-full flex flex-row gap-3 justify-center items-center">
         <a
           rel="noreferrer"

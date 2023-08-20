@@ -68,14 +68,14 @@ const useRollSearch = () => {
   const handleSearchSimilar = async (preRoll: PreRoll) => {
     try {
       if (!algolia) return;
+
       const tagFilters = preRoll.uri.tags
-        .map((tag) => `tags:${tag}`)
+        .map((tag) => `uri.tags:${tag}`)
         .join(" OR ");
 
       const { hits } = await algolia.search("", {
         filters: tagFilters,
       });
-
       dispatch(setRollSearch(hits.length > 0 ? hits : (undefined as any)));
     } catch (err: any) {
       console.error(err.message);

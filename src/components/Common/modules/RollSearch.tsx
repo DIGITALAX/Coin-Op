@@ -11,7 +11,7 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
   handleSearchSimilar,
   dispatch,
   handleAddToCart,
-  router
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 flex flex-col justify-start h-fit gap-4">
@@ -23,10 +23,11 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
         }
         onKeyDown={(e) => {
           if (e.key === "Enter") {
+            e.stopPropagation();
             handleRollSearch();
           }
         }}
-        defaultValue={prompt}
+        value={prompt || ""}
       />
       <div
         className="relative justify-start rounded-sm bg-white text-black font-mega text-xs cursor-pointer active:scale-95 px-1.5 py-1 w-fit h-8 items-center flex hover:opacity-70"
