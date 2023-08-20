@@ -81,7 +81,7 @@ const addRashToCanvas = async (
     );
 
     if (!elements) {
-      setElements(String(id), [newElement]);
+      setElements(String(id), [newElement, false, false]);
     } else {
       if (
         scaleFactorX === elements[0].scaleFactorX &&

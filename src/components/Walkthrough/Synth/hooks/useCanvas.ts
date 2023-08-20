@@ -107,6 +107,7 @@ const useCanvas = () => {
         dispatch
       );
     } else {
+      console.log("castigo")
       addRashToCanvasPromise = addRashToCanvas(
         setElements,
         layerToSynth.layer!,
@@ -257,6 +258,8 @@ const useCanvas = () => {
       setElements(String(layerToSynth.id), [
         ...(history.get(String(layerToSynth.id)) || []),
         newElement,
+        false,
+        false
       ]);
     }
   };
