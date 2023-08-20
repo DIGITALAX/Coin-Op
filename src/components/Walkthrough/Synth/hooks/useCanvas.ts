@@ -250,6 +250,10 @@ const useCanvas = () => {
         tool === "pencil" ? "drawing" : tool === "erase" ? "erasing" : "writing"
       );
       setSelectedElement(newElement!);
+      console.log(history.get(String(layerToSynth.id)), [
+        ...(history.get(String(layerToSynth.id)) || []),
+        newElement,
+      ])
       setElements(String(layerToSynth.id), [
         ...(history.get(String(layerToSynth.id)) || []),
         newElement,
