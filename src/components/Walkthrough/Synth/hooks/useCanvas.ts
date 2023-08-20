@@ -106,7 +106,6 @@ const useCanvas = () => {
         dispatch
       );
     } else {
-      console.log({canvasSize})
       addRashToCanvasPromise = addRashToCanvas(
         setElements,
         layerToSynth.layer!,
