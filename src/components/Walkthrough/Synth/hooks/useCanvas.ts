@@ -96,6 +96,7 @@ const useCanvas = () => {
   const synthLayerSwitch = async () => {
     if (!layerToSynth.layer || newLayersLoading) return;
     setNewLayersLoading(true);
+    console.log("inside canvas switch")
     let addRashToCanvasPromise;
     if (!history.get(String(layerToSynth.id))) {
       addRashToCanvasPromise = addRashToCanvas(
@@ -144,8 +145,6 @@ const useCanvas = () => {
     }, 1000 / 60),
     [zoom, setZoom, canvas, pan, setPan, canvasOpen]
   );
-
-  console.log({action, synthLoading})
 
   const handleMouseDown = (e: MouseEvent): void => {
     e.preventDefault();
@@ -255,7 +254,6 @@ const useCanvas = () => {
         ...(history.get(String(layerToSynth.id)) || []),
         newElement,
       ]);
-      console.log("here")
     }
   };
 
@@ -294,13 +292,11 @@ const useCanvas = () => {
           : false
       )
     ) {
-      console.log("here")
       setColorPicker(false);
       setFontOpen(false);
       setThickness(false);
       const index = (history.get(String(layerToSynth.id)) || [])?.length - 1;
       const values = (history.get(String(layerToSynth.id)) || [])?.[index];
-      console.log({index,values})
       updateElement(
         {
           xOffset: pan.xOffset * 0.5,
@@ -628,6 +624,8 @@ const useCanvas = () => {
     }
   }, [layerToSynth, synthLayerSelected, canvasSize]);
 
+  console.log({canvasSize})
+
   useEffect(() => {
     if (ctx) {
       canvas.width = canvas.offsetWidth * devicePixelRatio;
@@ -660,6 +658,8 @@ const useCanvas = () => {
       const currentIndex = index.get(String(layerToSynth.id)) || 0;
       const allElements = history.get(String(layerToSynth.id)) || [];
       const elements = allElements.slice(0, currentIndex + 1);
+
+      console.log({currentIndex,elements});
 
       (ctx as CanvasRenderingContext2D).globalCompositeOperation =
         "source-over";
