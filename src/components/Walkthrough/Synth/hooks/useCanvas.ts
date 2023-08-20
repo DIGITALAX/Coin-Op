@@ -77,7 +77,7 @@ const useCanvas = () => {
   });
   const [selectedElement, setSelectedElement] =
     useState<ElementInterface | null>(null);
-  const [hex, setHex] = useState<string>("#000000");
+  const [hex, setHex] = useState<string>("#F5A623");
   const [colorPicker, setColorPicker] = useState<boolean>(false);
   const [brushWidth, setBrushWidth] = useState<number>(3);
   const [thickness, setThickness] = useState<boolean>(false);
