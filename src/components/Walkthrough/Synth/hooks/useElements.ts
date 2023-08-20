@@ -53,7 +53,13 @@ const useElements = (): UseElementsReturnType => {
         );
       } else {
         console.log("3");
-        const currentIndex = index.get(patternId)!;
+        let currentIndex: number = index.get(patternId)!;
+        if (currentIndex === undefined) {
+          currentIndex = 0;
+          setIndex(
+            (prevIndex) => new Map(prevIndex.set(patternId, currentIndex!))
+          );
+        }
         console.log(newHistory.get(patternId), "more");
         const updatedHistory = newHistory
           .get(patternId)!
@@ -64,8 +70,9 @@ const useElements = (): UseElementsReturnType => {
           ...updatedHistory,
           newState[newState.length - 1],
         ]);
+        (typeof currentIndex === 'number') ? currentIndex + 1 : 0;
         setIndex(
-          (prevIndex) => new Map(prevIndex.set(patternId, currentIndex + 1))
+          (prevIndex) => new Map(prevIndex.set(patternId, currentIndex! + 1))
         );
       }
       console.log("clone", lodash.cloneDeep(newHistory.get(patternId)!));
