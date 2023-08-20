@@ -58,6 +58,7 @@ const useElements = (): UseElementsReturnType => {
         );
       }
       setUpdatedHistory(lodash.cloneDeep(newHistory.get(patternId)!));
+      console.log({newHistory})
       return newHistory;
     });
   };
@@ -126,6 +127,8 @@ const useElements = (): UseElementsReturnType => {
       setUpdatedHistory([]);
     }
   }, [updatedHistory]);
+
+  console.log({history})
 
   return {
     history,

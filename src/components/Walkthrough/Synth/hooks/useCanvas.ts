@@ -628,7 +628,6 @@ const useCanvas = () => {
     }
   }, [layerToSynth, synthLayerSelected, canvasSize]);
 
-  console.log({canvasSize})
 
   useEffect(() => {
     if (ctx) {
@@ -663,7 +662,7 @@ const useCanvas = () => {
       const allElements = history.get(String(layerToSynth.id)) || [];
       const elements = allElements.slice(0, currentIndex + 1);
 
-      console.log({currentIndex,elements});
+      console.log({allElements});
 
       (ctx as CanvasRenderingContext2D).globalCompositeOperation =
         "source-over";
