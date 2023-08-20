@@ -88,6 +88,9 @@ const addRashToCanvas = async (
         scaleFactorY === elements[0].scaleFactorY
       )
         return;
+
+        console.log("here", {elements});
+
       setElements(
         String(id),
         elements?.map((element, index: number) => {

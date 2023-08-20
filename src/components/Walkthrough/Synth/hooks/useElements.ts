@@ -32,10 +32,7 @@ const useElements = (): UseElementsReturnType => {
     setHistory((prevHistory) => {
       const newHistory = new Map(prevHistory);
 
-      console.log(newHistory.has(patternId), "again")
-
       if (!newHistory.has(patternId)) {
-        console.log("here in in in ")
         newHistory.set(patternId, []);
         setIndex((prevIndex) => new Map(prevIndex.set(patternId, -1)));
       }
@@ -46,24 +43,22 @@ const useElements = (): UseElementsReturnType => {
           : action;
 
       if (resize) {
-        console.log("1");
+        console.log({ newState, patternId });
         newHistory.set(patternId, newState);
       } else if (overwrite) {
-        console.log("2");
         newHistory.set(patternId, newState);
         setIndex(
           (prevIndex) => new Map(prevIndex.set(patternId, newState.length - 1))
         );
       } else {
-        console.log("3");
-        const currentIndex = index.get(patternId) || -1;
-        console.log({currentIndex})
-        console.log(newHistory.get(patternId), "more");
+        console.log({ b: index.get(patternId) });
+        const currentIndex: number = index.get(patternId) !== undefined
+        ? Number(index.get(patternId))
+        : -1;
+        console.log({ currentIndex });
         const updatedHistory = newHistory
           .get(patternId)!
           .slice(0, currentIndex);
-        console.log({ currentIndex, updatedHistory });
-        console.log("yep", [...updatedHistory, newState[newState.length - 1]]);
         newHistory.set(patternId, [
           ...updatedHistory,
           newState[newState.length - 1],
@@ -72,9 +67,7 @@ const useElements = (): UseElementsReturnType => {
           (prevIndex) => new Map(prevIndex.set(patternId, currentIndex + 1))
         );
       }
-      console.log("clone", lodash.cloneDeep(newHistory.get(patternId)!));
       setUpdatedHistory(lodash.cloneDeep(newHistory.get(patternId)!));
-      console.log({ newHistory });
       return newHistory;
     });
   };
@@ -143,8 +136,6 @@ const useElements = (): UseElementsReturnType => {
       setUpdatedHistory([]);
     }
   }, [updatedHistory]);
-
-  console.log({ history });
 
   return {
     history,

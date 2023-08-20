@@ -655,9 +655,17 @@ const useCanvas = () => {
       ctx.imageSmoothingEnabled = false;
       ctx.imageSmoothingQuality = "high";
 
-      const currentIndex = index.get(String(layerToSynth.id)) || 0;
-      const allElements = history.get(String(layerToSynth.id)) || [];
-      const elements = allElements.slice(0, currentIndex + 1);
+      const currentIndex =
+        index.get(String(layerToSynth.id)) !== undefined
+          ? index.get(String(layerToSynth.id))
+          : -1;
+      const allElements =
+        history.get(String(layerToSynth.id)) !== undefined
+          ? history.get(String(layerToSynth.id))
+          : [];
+      const elements = allElements?.slice(0, currentIndex! + 1);
+
+      console.log({ currentIndex, allElements, elements });
 
       (ctx as CanvasRenderingContext2D).globalCompositeOperation =
         "source-over";
