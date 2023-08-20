@@ -33,6 +33,7 @@ const useElements = (): UseElementsReturnType => {
       const newHistory = new Map(prevHistory);
 
       if (!newHistory.has(patternId)) {
+        console.log(!newHistory.has(patternId))
         newHistory.set(patternId, []);
         setIndex((prevIndex) => new Map(prevIndex.set(patternId, -1)));
       }
@@ -59,6 +60,7 @@ const useElements = (): UseElementsReturnType => {
         const updatedHistory = newHistory
           .get(patternId)!
           .slice(0, currentIndex);
+        console.log({newHistory, updatedHistory})
         newHistory.set(patternId, [
           ...updatedHistory,
           newState[newState.length - 1],
