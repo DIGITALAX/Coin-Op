@@ -96,7 +96,7 @@ const useCanvas = () => {
   const synthLayerSwitch = async () => {
     if (!layerToSynth.layer || newLayersLoading) return;
     setNewLayersLoading(true);
-    console.log("inside canvas switch")
+    console.log("inside canvas switch");
     let addRashToCanvasPromise;
     if (!history.get(String(layerToSynth.id))) {
       addRashToCanvasPromise = addRashToCanvas(
@@ -107,7 +107,7 @@ const useCanvas = () => {
         dispatch
       );
     } else {
-      console.log("castigo")
+      console.log("castigo");
       addRashToCanvasPromise = addRashToCanvas(
         setElements,
         layerToSynth.layer!,
@@ -254,13 +254,12 @@ const useCanvas = () => {
       console.log(history.get(String(layerToSynth.id)), [
         ...(history.get(String(layerToSynth.id)) || []),
         newElement,
-      ])
-      setElements(String(layerToSynth.id), [
-        ...(history.get(String(layerToSynth.id)) || []),
-        newElement,
-        false,
-        false
       ]);
+      setElements(
+        String(layerToSynth.id),
+        [...(history.get(String(layerToSynth.id)) || []), newElement],
+        false
+      );
     }
   };
 
@@ -631,7 +630,6 @@ const useCanvas = () => {
     }
   }, [layerToSynth, synthLayerSelected, canvasSize]);
 
-
   useEffect(() => {
     if (ctx) {
       canvas.width = canvas.offsetWidth * devicePixelRatio;
@@ -665,7 +663,7 @@ const useCanvas = () => {
       const allElements = history.get(String(layerToSynth.id)) || [];
       const elements = allElements.slice(0, currentIndex + 1);
 
-      console.log({allElements});
+      console.log({ allElements });
 
       (ctx as CanvasRenderingContext2D).globalCompositeOperation =
         "source-over";

@@ -6,7 +6,12 @@ import lodash from "lodash";
 type UseElementsReturnType = {
   history: Map<string, any[]>;
   index: Map<string, number>;
-  setState: (patternId: string, action: any, overwrite?: boolean) => void;
+  setState: (
+    patternId: string,
+    action: any,
+    overwrite?: boolean,
+    resize?: boolean
+  ) => void;
   undo: (patternId: string) => void;
   redo: (patternId: string) => void;
 };
@@ -45,10 +50,12 @@ const useElements = (): UseElementsReturnType => {
           (prevIndex) => new Map(prevIndex.set(patternId, newState.length - 1))
         );
       } else {
+        console.log("in here");
         const currentIndex = index.get(patternId)!;
         const updatedHistory = newHistory
           .get(patternId)!
           .slice(0, currentIndex);
+        console.log("yep", [...updatedHistory, newState[newState.length - 1]]);
         newHistory.set(patternId, [
           ...updatedHistory,
           newState[newState.length - 1],
@@ -57,8 +64,9 @@ const useElements = (): UseElementsReturnType => {
           (prevIndex) => new Map(prevIndex.set(patternId, currentIndex + 1))
         );
       }
+      console.log("clone", lodash.cloneDeep(newHistory.get(patternId)!));
       setUpdatedHistory(lodash.cloneDeep(newHistory.get(patternId)!));
-      console.log({newHistory})
+      console.log({ newHistory });
       return newHistory;
     });
   };
@@ -128,7 +136,7 @@ const useElements = (): UseElementsReturnType => {
     }
   }, [updatedHistory]);
 
-  console.log({history})
+  console.log({ history });
 
   return {
     history,
