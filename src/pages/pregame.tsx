@@ -145,7 +145,7 @@ const Pregame: NextPage = (): JSX.Element => {
           <br />
           <br />
           Step by step you too can skill up or lose your creds to frenemies and
-          and earlier arrivals.
+          earlier arrivals.
           <br />
           <br />
           Had enough of the levels up? Cancel anytime.
