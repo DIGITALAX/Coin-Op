@@ -100,6 +100,7 @@ export type ItemsProps = {
   dispatch: Dispatch<AnyAction>;
   checkoutCurrency: string;
   setCartItem: (e: CartItem) => void;
+  oracleValue: number;
 };
 
 export type ShippingInfoProps = {

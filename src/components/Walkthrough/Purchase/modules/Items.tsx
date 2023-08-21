@@ -18,6 +18,7 @@ const Items: FunctionComponent<ItemsProps> = ({
   dispatch,
   checkoutCurrency,
   setCartItem,
+  oracleValue,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 h-40 flex">
@@ -63,7 +64,9 @@ const Items: FunctionComponent<ItemsProps> = ({
                             (subArray) => subArray[1] === checkoutCurrency
                           )?.[1]
                         : "$"}{" "}
-                      {item.price / 10 ** 18}
+                      {paymentType === "crypto"
+                        ? (item.price / 10 ** 18 / oracleValue)?.toFixed(2)
+                        : item.price / 10 ** 18}
                     </div>
                     <div className="relative w-fit h-fit text-ama flex">
                       {item.amount}

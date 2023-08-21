@@ -40,7 +40,9 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   return (
     <div className="relative w-full synth:w-3/4 h-full flex overflow-y-scroll">
       <div className="relative w-full h-fit flex flex-col gap-4 items-center justify-center">
-        <div className="relative flex items-center justify-center font-mana text-white text-xs">pay with:</div>
+        <div className="relative flex items-center justify-center font-mana text-white text-xs">
+          pay with:
+        </div>
         <div className="relative w-1/2 justify-center flex flex-row font-mana text-white text-sm uppercase">
           <div
             className={`relative bg-azul flex items-center justify-center bg-azul rounded-sm border border-y-white border-r-white px-2 py-1 w-24 h-fit hover:opacity-70 cursor-pointer ${
@@ -66,6 +68,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           paymentType={paymentType}
           dispatch={dispatch}
           checkoutCurrency={checkoutCurrency}
+          oracleValue={oracleValue}
         />
         <div className="relative justify-start items-start w-3/4  h-fit flex flex-row font-mana text-ama text-base gap-3">
           <div className="relative w-fit h-fit">Total:</div>
@@ -77,14 +80,21 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                   )?.[1]
                 } `
               : "$"}
-            {(
-              cartItems?.reduce(
-                (accumulator, currentItem) =>
-                  accumulator +
-                  (currentItem.price * currentItem.amount) / 10 ** 18,
-                0
-              ) / oracleValue
-            )?.toFixed(2)}
+            {paymentType === "crypto"
+              ? (
+                  cartItems?.reduce(
+                    (accumulator, currentItem) =>
+                      accumulator +
+                      (currentItem.price * currentItem.amount) / 10 ** 18,
+                    0
+                  ) / oracleValue
+                )?.toFixed(2)
+              : cartItems?.reduce(
+                  (accumulator, currentItem) =>
+                    accumulator +
+                    (currentItem.price * currentItem.amount) / 10 ** 18,
+                  0
+                )}
           </div>
         </div>
         <ShippingInfo
