@@ -457,7 +457,7 @@ const useQuest = () => {
   }, []);
 
   useEffect(() => {
-    if (connectedPKP && questPoints?.length > 1) {
+    if (connectedPKP?.ethAddress && questPoints?.length > 1) {
       getQuestInformation();
       getAllSubscriptions();
     }
