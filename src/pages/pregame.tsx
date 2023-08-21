@@ -148,7 +148,7 @@ const Pregame: NextPage = (): JSX.Element => {
           earlier arrivals.
           <br />
           <br />
-          Had enough of the levels up? Cancel anytime.
+          Had enough of the level up? Cancel anytime.
         </div>
       </div>
       <ActivateSub
