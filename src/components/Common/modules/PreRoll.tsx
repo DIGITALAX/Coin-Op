@@ -46,7 +46,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
               onClick={() =>
                 dispatch(
                   setImageViewer({
-                    actionValue: open,
+                    actionValue: true,
                     actionImage:
                       preRoll?.uri?.image?.[preRoll?.currentIndex]?.split(
                         "ipfs://"

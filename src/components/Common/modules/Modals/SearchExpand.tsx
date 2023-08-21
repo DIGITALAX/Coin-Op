@@ -44,7 +44,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                       onClick={() =>
                         dispatch(
                           setImageViewer({
-                            actionValue: open,
+                            actionValue: true,
                             actionImage:
                               searchItem?.uri?.image?.[0]?.split("ipfs://")[1],
                           })
@@ -69,10 +69,11 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         title="use prompt"
                         onClick={async (e) => {
                           e.stopPropagation();
-                          if (router.asPath.includes("account") ||
-                          router.asPath.includes("pregame") ||
-                          router.asPath.includes("quests")
-                        ) {
+                          if (
+                            router.asPath.includes("account") ||
+                            router.asPath.includes("pregame") ||
+                            router.asPath.includes("quests")
+                          ) {
                             await router.push("/");
                           }
                           handlePromptChoose(searchItem);
