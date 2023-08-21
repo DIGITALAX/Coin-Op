@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.16",
-    "@lit-protocol/lit-auth-client": "^2.2.47",
+    "@lit-protocol/lit-auth-client": "^2.2.49",
     "@lit-protocol/lit-node-client": "^2.2.24",
     "@lit-protocol/pkp-ethers": "^2.2.41",
     "@rainbow-me/rainbowkit": "^1.0.3",
