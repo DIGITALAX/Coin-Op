@@ -23,7 +23,9 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className="relative w-48 xl:w-full h-fit flex flex-col rounded-sm border border-white p-3 gap-5"
+      className={`relative w-48 xl:w-full h-fit flex flex-col rounded-sm border border-white p-3 gap-5 ${
+        preRoll.newDrop && "bg-[radial-gradient(at_center_bottom,_#00abfe,_#00cdc2,_#86a4b3,_#00CDC2)]"
+      }`}
       id={preRollAnim ? "anim" : ""}
     >
       <div className="relative w-full h-60 xl:h-80 flex flex-col object-cover bg-cross bg-cover bg-center cursor-pointer">
@@ -173,6 +175,12 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
             />
           </div>
         </div>
+        {
+          preRoll.newDrop &&  <div className="absolute bottom-2 right-2 bg-ama flex w-fit text-xxs h-fit px-2 py-1 text-black font-monu">
+           🔥 new drop 🔥
+          </div>
+        }
+       
       </div>
       <div className="relative flex flex-row gap-2 w-full h-fit justify-between">
         <PrintTag backgroundColor={preRoll.bgColor} type={preRoll.printType} />

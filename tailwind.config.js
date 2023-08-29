@@ -31,6 +31,8 @@ module.exports = {
         gris: "#6D7278",
         ligero: "#E5F0D4",
         mist: "#81A8F8",
+        pozo: "#00ABFE",
+        fuego: "#E50013",
       },
       height: {
         98: "28rem",

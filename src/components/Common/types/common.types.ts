@@ -133,6 +133,7 @@ export interface PreRoll {
   chosenColor: string;
   chosenSize: string;
   fulfillerAddress: string;
+  newDrop: boolean;
 }
 
 export interface CartItem {

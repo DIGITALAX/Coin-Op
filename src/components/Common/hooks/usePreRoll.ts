@@ -32,7 +32,7 @@ const usePreRoll = () => {
       }
 
       const preRollsAddedPromises = data?.data?.collectionCreateds?.map(
-        async (obj: PreRoll) => {
+        async (obj: PreRoll, index: number) => {
           const modifiedObj = {
             ...obj,
             uri: await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]),
@@ -64,6 +64,7 @@ const usePreRoll = () => {
                 ? "#FFC800"
                 : "#B620E0",
             currentIndex: 0,
+            newDrop: index < 5 ? true : false,
           };
 
           return modifiedObj;
