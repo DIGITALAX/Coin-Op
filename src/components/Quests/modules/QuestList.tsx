@@ -65,6 +65,12 @@ const QuestList: FunctionComponent<QuestListProps> = ({
                     index: 15,
                   },
                   {
+                    text: "Collect Chromadin audiovisual NFT 🔥🔥🔥",
+                    link: "https://www.chromadin.xyz/autograph/f3manifesto/drop/les_exchange",
+                    index: 16,
+                    new: true,
+                  },
+                  {
                     text: "Collect coin op shirt preroll.",
                     function: () => dispatch(setPreRollAnim(true)),
                     index: 2,
@@ -102,6 +108,12 @@ const QuestList: FunctionComponent<QuestListProps> = ({
                     text: "Mint membership waitlist NFT from The Manufactory.",
                     link: "https://themanufactory.xyz",
                     index: 1,
+                  },
+                  {
+                    text: "Collect Chromadin audiovisual NFT 🔥🔥🔥",
+                    link: "https://www.chromadin.xyz/autograph/f3manifesto/drop/les_exchange",
+                    index: 16,
+                    new: true,
                   },
                   {
                     text: "Collect coin op shirt preroll.",
@@ -174,6 +186,7 @@ const QuestList: FunctionComponent<QuestListProps> = ({
                   link?: string;
                   function?: () => void;
                   index: number;
+                  new?: boolean;
                 },
                 index: number
               ) => {
@@ -181,9 +194,10 @@ const QuestList: FunctionComponent<QuestListProps> = ({
                   <div
                     key={index}
                     className={`relative flex flex-col md:flex-row justify-center md:justify-between items-center w-full h-24 md:h-16 border border-mist rounded-md font-vcr text-white px-2 py-2 md:py-1 gap-5 ${
-                      questInfo?.questsCompletedIds.includes(
-                        String(item.index)
-                      ) && "bg-sol/20"
+                      questInfo?.questsCompletedIds.includes(String(item.index))
+                        ? "bg-sol/20"
+                        : item.new &&
+                          "bg-[radial-gradient(at_center_bottom,_#00abfe,_#00cdc2,_#86a4b3,_#00CDC2)]"
                     }`}
                   >
                     <div className="relative break-all w-full h-fit items-center justify-center md:justify-start flex text-xs md:text-base">

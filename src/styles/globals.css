@@ -370,3 +370,12 @@ input[type="range"]::-ms-thumb {
   rotate: -90;
   cursor: pointer;
 }
+
+.close {
+  position: relative;
+  display: flex;
+  justify-items: end;
+  width: fit-content;
+  height: fit-content;
+  margin-left: auto;
+}
