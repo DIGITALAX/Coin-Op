@@ -3,7 +3,7 @@ import { graphClient } from "../../../lib/subgraph/client";
 
 const ALL_PREROLLS = `
   query {
-    collectionCreateds {
+    collectionCreateds(orderDirection: desc, orderBy: blockNumber) {
         printType
         price
         discount
