@@ -65,12 +65,6 @@ const QuestList: FunctionComponent<QuestListProps> = ({
                     index: 15,
                   },
                   {
-                    text: "Collect Chromadin audiovisual NFT 🔥🔥🔥",
-                    link: "https://www.chromadin.xyz/autograph/f3manifesto/drop/les_exchange",
-                    index: 16,
-                    new: true,
-                  },
-                  {
                     text: "Collect coin op shirt preroll.",
                     function: () => dispatch(setPreRollAnim(true)),
                     index: 2,

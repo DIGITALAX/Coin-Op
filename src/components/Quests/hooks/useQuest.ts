@@ -199,6 +199,7 @@ const useQuest = () => {
           abi: QuestPreludeABI,
           functionName: "getTotalQuests",
         })) as any;
+
         const results = await checkCompletedQuests(
           res?.data?.newQuestSignUps[0].questsCompletedIds || []
         );
@@ -271,6 +272,22 @@ const useQuest = () => {
           const res = await getIsFollowing(address);
           if (res?.data?.doesFollow.every((item: any) => item.follows === true))
             questsCompletedIds.push(11);
+        }
+
+        // check for audiovisual
+        if (!currentQuestCount.includes(String(16))) {
+          const res = await getChromadinBought(address);
+          if (res?.data?.updatedChromadinMarketTokensBoughts) {
+            for (let tokenBoughtUpdated of res.data
+              .updatedChromadinMarketTokensBoughts) {
+              if (
+                ["32", "33", "34", "35"].includes(tokenBoughtUpdated.tokenIds)
+              ) {
+                questsCompletedIds.push(16);
+                break;
+              }
+            }
+          }
         }
 
         if (!currentQuestCount.includes(String(12))) {
@@ -430,7 +447,13 @@ const useQuest = () => {
   const getQuestPoints = async () => {
     try {
       const res = await getAllQuestsPoints();
-      dispatch(setQuestPoints(res?.data?.pointsPerQuestSets[0].pointScores));
+      dispatch(
+        setQuestPoints(
+          res?.data?.pointsPerQuestSets[
+            res?.data?.pointsPerQuestSets.length - 1
+          ].pointScores
+        )
+      );
     } catch (err: any) {
       console.error(err.message);
     }
