@@ -10,7 +10,7 @@ import {
   COIN_OP_MARKET,
   COIN_OP_ORACLE,
 } from "../../../../../lib/constants";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import CoinOpMarketABI from "../../../../../abis/CoinOpMarket.json";
 import { RootState } from "../../../../../redux/store";
 import { setCart } from "../../../../../redux/reducers/cartSlice";

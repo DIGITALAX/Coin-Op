@@ -57,15 +57,6 @@ const PKP_SORT = `
   }
 `;
 
-const PRINT = `
-  query($buyerAddress: String) {
-    orderCreateds(where: {buyer: $buyerAddress},orderBy: blockTimestamp, orderDirection: desc) {
-      subOrderIsFulfilled
-      collectionIds
-    }
-  }
-`;
-
 export const getOrders = async (buyerAddress: string): Promise<any> => {
   const queryPromise = graphClient.query({
     query: gql(ORDERS),

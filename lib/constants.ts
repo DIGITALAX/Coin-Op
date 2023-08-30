@@ -95,7 +95,7 @@ export const allFonts: string[] = [
 export const negative_prompt: string = "";
 
 export const REDIRECT_URL: string = "https://coinop.themanufactory.xyz";
-export const REDIRECT_URL_TEST: string = "http://localhost:3000";
+export const REDIRECT_URL_TEST: string = "http://localhost:3001";
 
 export const APPEARANCE: Appearance = {
   theme: "night",

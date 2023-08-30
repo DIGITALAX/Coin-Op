@@ -13,15 +13,18 @@ export const createTxData = async (
 
     const latestBlock = await provider.getBlock("latest");
     const baseFeePerGas = latestBlock.baseFeePerGas;
-    const maxFeePerGas = baseFeePerGas?.add(
-      ethers.utils.parseUnits("10", "gwei")
-    );
-    const maxPriorityFeePerGas = ethers.utils.parseUnits("3", "gwei");
+    const maxFeePerGas = baseFeePerGas?.lt(
+      ethers.utils.parseUnits("40", "gwei")
+    )
+      ? ethers.utils.parseUnits("40", "gwei")
+      : baseFeePerGas;
+
+    const maxPriorityFeePerGas = ethers.utils.parseUnits("40", "gwei");
     return {
       to: contractAddress,
       nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
       chainId: 137,
-      gasLimit: ethers.BigNumber.from("8000000"),
+      gasLimit: ethers.BigNumber.from("25000000"),
       maxFeePerGas: maxFeePerGas,
       maxPriorityFeePerGas: maxPriorityFeePerGas,
       from: "{{publicKey}}",

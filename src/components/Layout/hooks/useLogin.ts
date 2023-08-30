@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "@lit-protocol/lit-auth-client";
 import { ProviderType } from "@lit-protocol/constants";
 import { isSignInRedirect } from "@lit-protocol/lit-auth-client";
-import { COIN_OP_PKPS, REDIRECT_URL } from "../../../../lib/constants";
+import { COIN_OP_PKPS, REDIRECT_URL_TEST } from "../../../../lib/constants";
 import { useRouter } from "next/router";
 import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
 import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
@@ -94,7 +94,7 @@ const useLogin = () => {
   const loginWithWeb2Auth = async () => {
     try {
       const provider = litAuthClient.initProvider(ProviderType.Google, {
-        redirectUri: `${REDIRECT_URL}${router.asPath}`,
+        redirectUri: `${REDIRECT_URL_TEST}${router.asPath}`,
       });
 
       setFulfillmentDetailsLocalStorage(JSON.stringify(fulfillmentDetails));
@@ -164,7 +164,7 @@ const useLogin = () => {
 
     try {
       const provider = litAuthClient.initProvider(ProviderType.Google, {
-        redirectUri: `${REDIRECT_URL}${router.asPath}`,
+        redirectUri: `${REDIRECT_URL_TEST}${router.asPath}`,
       });
 
       const authMethod = await provider.authenticate();
@@ -227,12 +227,18 @@ const useLogin = () => {
       });
       const authSig = await generateAuthSignature(pkpWallet);
 
-      const doesExist = await publicClient.readContract({
-        address: COIN_OP_PKPS,
-        abi: CoinOpPKPsABI,
-        functionName: "userExists",
-        args: [BigInt(res?.tokenId.hex!).toString()],
-      });
+      let doesExist: boolean = false;
+
+      try {
+        doesExist = (await publicClient.readContract({
+          address: COIN_OP_PKPS,
+          abi: CoinOpPKPsABI,
+          functionName: "userExists",
+          args: [BigInt(res?.tokenId.hex!).toString()],
+        })) as boolean;
+      } catch (err: any) {
+        doesExist = false;
+      }
 
       if (!doesExist) {
         await storeAuthOnChain(authSig, res);
@@ -261,11 +267,16 @@ const useLogin = () => {
   const mintPkp = async (provider: any, authMethod: any) => {
     if (provider && authMethod && !hasFetchedMintedRef.current) {
       hasFetchedMintedRef.current = true;
-      await provider.mintPKPThroughRelayer(authMethod);
+      const mintRes = await provider.mintPKPThroughRelayer(authMethod);
+      const transaction = await publicClient.getTransaction({
+        hash: mintRes,
+      });
       const filter = await publicClient.createContractEventFilter({
         abi: PKPAbi,
         address: "0x8F75a53F65e31DD0D2e40d0827becAaE2299D111",
         eventName: "Transfer",
+        fromBlock: transaction.blockNumber as bigint,
+        toBlock: transaction.blockNumber as bigint,
       });
       const logs = await publicClient.getFilterLogs({ filter });
       const publicKey = await publicClient.readContract({
@@ -314,7 +325,7 @@ const useLogin = () => {
 
   useEffect(() => {
     if (
-      isSignInRedirect(`${REDIRECT_URL}${router.asPath}`) &&
+      isSignInRedirect(`${REDIRECT_URL_TEST}${router.asPath}`) &&
       !hasRedirectedRef.current
     ) {
       hasRedirectedRef.current = true;

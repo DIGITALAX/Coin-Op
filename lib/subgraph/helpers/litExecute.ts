@@ -59,7 +59,7 @@ export const litExecute = async (
 
     await transactionHash.wait();
   } catch (err: any) {
-    if (err.message.includes("timeout") && retryCount < maxRetries) {
+    if ((err.message.includes("timeout") || err.message.includes("underpriced")) && retryCount < maxRetries) {
       console.warn(`Retry attempt ${retryCount + 1} after timeout error.`);
       await litExecute(
         provider,
