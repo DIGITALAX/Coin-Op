@@ -230,7 +230,7 @@ const Quests: NextPage = (): JSX.Element => {
               </div>
               <div className="relative w-full h-fit flex items-center justify-center">
                 {isClient && (
-                  <Countdown date={new Date(2023, 7, 30)} renderer={renderer} />
+                  <Countdown date={new Date(2023, 8, 15)} renderer={renderer} />
                 )}
               </div>
               <div className="relative w-full h-fit items-center justify-center flex flex-row justify-between gap-1.5 font-vcr text-xxs text-white">
