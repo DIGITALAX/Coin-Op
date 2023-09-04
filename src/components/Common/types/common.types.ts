@@ -113,6 +113,7 @@ export enum PrintType {
   Hoodie = "hoodie",
   Sticker = "sticker",
   Shirt = "shirt",
+  Sleeve = "sleeve",
 }
 
 export interface PreRoll {
@@ -122,6 +123,8 @@ export interface PreRoll {
     prompt: string;
     tags: string[];
     category: string;
+    profile: Profile;
+    chromadinCollectionName?: string;
   };
   currentIndex: number;
   amount: number;
@@ -143,6 +146,8 @@ export interface CartItem {
     prompt: string;
     tags: string[];
     category: string;
+    profile: Profile;
+    chromadinCollectionName?: string;
   };
   sizes: string[];
   price: number;

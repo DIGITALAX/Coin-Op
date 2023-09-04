@@ -1,3 +1,4 @@
+import { Profile } from "@/components/Common/types/lens.types";
 import { AnyAction, Dispatch } from "redux";
 
 export interface Order {
@@ -52,6 +53,8 @@ export interface Order {
       prompt: string;
       tags: string[];
       category: string;
+      profile: Profile;
+      chromadinCollectionName?: string;
     };
     soldTokens: string[];
     noLimit: boolean;

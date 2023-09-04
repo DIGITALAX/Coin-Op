@@ -50,7 +50,7 @@ const Template: FunctionComponent<TemplateProps> = ({
           <div className="absolute flex w-full h-full items-center justify-center rounded-md">
             <div className="relative flex w-4/5 md:w-3/5 h-fit bg-black p-2 rounded-md border border-ama text-white font-mana text-xs flex-col break-all">
               <div className="relative w-fit h-fit flex items-start justify-center text-left break-all">
-                {template?.type === "hoodie" || template?.type === "shirt"
+                {template?.type === "hoodie" || template?.type === "shirt"  
                   ? "streatwear"
                   : "street art"}
               </div>

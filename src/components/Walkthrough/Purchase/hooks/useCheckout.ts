@@ -495,7 +495,7 @@ const useCheckout = () => {
               return accumulator;
             }, []),
             preRollIndexes: cartItems.map((item) =>
-              ["shirt", "hoodie"].includes(item.printType.toLowerCase())
+              ["shirt", "hoodie", "sleeve"].includes(item.printType.toLowerCase())
                 ? 0
                 : item.sizes.indexOf(item.chosenSize)
             ),
@@ -575,7 +575,7 @@ const useCheckout = () => {
               return accumulator;
             }, []),
             preRollIndexes: cartItems.map((item) =>
-              ["shirt", "hoodie"].includes(item.printType.toLowerCase())
+              ["shirt", "hoodie", "sleeve"].includes(item.printType.toLowerCase())
                 ? 0
                 : item.sizes.indexOf(item.chosenSize)
             ),

@@ -7,6 +7,9 @@ import { PreRoll } from "../types/common.types";
 import { fetchIpfsJson } from "../../../../lib/algolia/helpers/fetchIpfsJson";
 import { initializeAlgolia } from "../../../../lib/algolia/client";
 import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
+import { getOneProfile } from "../../../../graphql/lens/queries/getProfile";
+import { DIGITALAX_PROFILE_ID_LENS } from "../../../../lib/constants";
+import { Profile } from "../types/lens.types";
 
 const usePreRoll = () => {
   const dispatch = useDispatch();
@@ -30,12 +33,35 @@ const usePreRoll = () => {
         setPreRollsLoading(false);
         return;
       }
+      const profileCache: { [key: string]: Profile } = {};
+      const digitalaxProfile = await getOneProfile({
+        profileId: DIGITALAX_PROFILE_ID_LENS,
+      });
+      profileCache[DIGITALAX_PROFILE_ID_LENS] = digitalaxProfile.data.profile;
 
       const preRollsAddedPromises = data?.data?.collectionCreateds?.map(
         async (obj: PreRoll, index: number) => {
+          const uri = await fetchIpfsJson(
+            (obj.uri as any)?.split("ipfs://")[1]
+          );
+          let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
+
+          if (uri?.profile) {
+            if (!profileCache[uri.profile]) {
+              const res = await getOneProfile({
+                profileId: uri.profile,
+              });
+              profileCache[uri.profile] = res.data.profile;
+            }
+            profile = profileCache[uri.profile];
+          }
+
           const modifiedObj = {
             ...obj,
-            uri: await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]),
+            uri: {
+              ...uri,
+              profile,
+            },
             chosenSize:
               obj.printType === "sticker"
                 ? '2"x2"'
@@ -62,9 +88,11 @@ const usePreRoll = () => {
                 ? "#6236FF"
                 : obj.printType === "poster"
                 ? "#FFC800"
+                : obj.printType === "sleeve"
+                ? "#29C28A"
                 : "#B620E0",
             currentIndex: 0,
-            newDrop: index < 5 ? true : false,
+            newDrop: index < 28 ? true : false,
           };
 
           return modifiedObj;

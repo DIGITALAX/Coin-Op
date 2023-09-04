@@ -111,7 +111,9 @@ const useRollSearch = () => {
           image: preRoll?.uri?.image?.[0],
         },
         price:
-          preRoll?.printType === "shirt" || preRoll?.printType === "hoodie"
+          preRoll?.printType === "shirt" ||
+          preRoll?.printType === "hoodie" ||
+          preRoll?.printType === "sleeve"
             ? preRoll.price?.[0]
             : preRoll.price?.[preRoll.sizes?.indexOf(preRoll.chosenSize)],
       });

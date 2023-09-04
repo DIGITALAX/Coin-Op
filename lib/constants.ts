@@ -105,3 +105,5 @@ export const APPEARANCE: Appearance = {
     fontFamily: "Manaspace",
   },
 };
+
+export const DIGITALAX_PROFILE_ID_LENS: string = "0x016305"

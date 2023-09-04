@@ -24,7 +24,9 @@ const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
                   ? "border-fresa bg-white text-black"
                   : "border-white text-white"
               } ${
-                preRoll.printType === "shirt" || preRoll.printType === "hoodie"
+                preRoll.printType === "shirt" ||
+                preRoll.printType === "hoodie" ||
+                preRoll?.printType === "sleeve"
                   ? "w-6"
                   : "w-fit px-1.5"
               }`}
