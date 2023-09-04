@@ -1,6 +1,7 @@
 import { FunctionComponent } from "react";
 import { SizingChoiceProps } from "../types/common.types";
 import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
+import { setSearchExpand } from "../../../../redux/reducers/searchExpandSlice";
 
 const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
   dispatch,
@@ -8,6 +9,7 @@ const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
   preRoll,
   left,
   right,
+  search,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex justify-center">
@@ -31,29 +33,32 @@ const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
                   : "w-fit px-1.5"
               }`}
               onClick={() => {
-                const updated = {
-                  left: left
-                    ? preRolls.left.map((obj) =>
-                        obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                          ? { ...obj, chosenSize: size }
-                          : obj
-                      )
-                    : preRolls.left,
-                  right: right
-                    ? preRolls.right.map((obj) =>
-                        obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                          ? { ...obj, chosenSize: size }
-                          : obj
-                      )
-                    : preRolls.right,
-                };
-
-                dispatch(
-                  setPreRoll({
-                    actionLeft: updated.left,
-                    actionRight: updated.right,
-                  })
-                );
+                if (search) {
+                  dispatch(setSearchExpand({ ...preRoll, chosenSize: size }));
+                } else {
+                  const updated = {
+                    left: left
+                      ? preRolls.left.map((obj) =>
+                          obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
+                            ? { ...obj, chosenSize: size }
+                            : obj
+                        )
+                      : preRolls.left,
+                    right: right
+                      ? preRolls.right.map((obj) =>
+                          obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
+                            ? { ...obj, chosenSize: size }
+                            : obj
+                        )
+                      : preRolls.right,
+                  };
+                  dispatch(
+                    setPreRoll({
+                      actionLeft: updated.left,
+                      actionRight: updated.right,
+                    })
+                  );
+                }
               }}
             >
               {size}

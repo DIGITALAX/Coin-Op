@@ -13,6 +13,7 @@ import { AiOutlineCode } from "react-icons/ai";
 import { ImRedo } from "react-icons/im";
 import copy from "copy-to-clipboard";
 import { BiCopy } from "react-icons/bi";
+import createProfilePicture from "../../../../../lib/lens/helpers/createProfilePicture";
 
 const SearchExpand: FunctionComponent<SearchExpandProps> = ({
   searchItem,
@@ -23,6 +24,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
   handlePromptChoose,
   router,
 }): JSX.Element => {
+  const profileImage = createProfilePicture(searchItem.uri.profile);
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
       <div className="relative w-full lg:w-fit h-fit col-start-1 place-self-center bg-black rounded-lg">
@@ -97,6 +99,60 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                     <div className="relative w-fit h-fit flex font-herm text-3xl">
                       {searchItem.uri.category}
                     </div>
+                    <div className="relative w-fit h-fit flex flex-row items-center justify-between gap-3">
+                      <div
+                        className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
+                        onClick={() =>
+                          window.open(
+                            `https://www.chromadin.xyz/autograph/${
+                              searchItem?.uri?.profile?.handle?.split(
+                                ".lens"
+                              )[0]
+                            }`
+                          )
+                        }
+                      >
+                        <div className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center">
+                          <Image
+                            className="rounded-full"
+                            src={profileImage}
+                            layout="fill"
+                            objectFit="cover"
+                          />
+                        </div>
+                        <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
+                          @{searchItem?.uri?.profile?.handle?.split(".lens")[0]}
+                        </div>
+                      </div>
+                      {searchItem?.uri?.chromadinCollectionName && (
+                        <div className="relative w-fit h-fit flex items-center justify-center">
+                          <div
+                            className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
+                            onClick={() =>
+                              window.open(
+                                `https://www.chromadin.xyz/autograph/${
+                                  searchItem?.uri?.profile?.handle?.split(
+                                    ".lens"
+                                  )[0]
+                                }/collection/${searchItem?.uri?.chromadinCollectionName
+                                  ?.toLowerCase()
+                                  ?.replaceAll(" ", "_")}`
+                              )
+                            }
+                            title="nft art"
+                          >
+                            <Image
+                              className="rounded-full"
+                              src={
+                                "https://ik.imagekit.io/lens/media-snapshot/71fa64480da4a5be0d7904712715f2ba19bb8aad4fdfecc4616572e8ffef0101.png"
+                              }
+                              layout="fill"
+                              objectFit="cover"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                     <PrintTag
                       backgroundColor={searchItem.bgColor}
                       type={searchItem.printType}
@@ -107,6 +163,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                       preRoll={searchItem}
                       left={preRolls.left?.indexOf(searchItem) ? true : false}
                       right={preRolls.right?.indexOf(searchItem) ? true : false}
+                      search
                     />
                     <div className="relative justify-end items-end w-fit h-fit flex">
                       <SizingChoice
@@ -117,6 +174,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         right={
                           preRolls.right?.indexOf(searchItem) ? true : false
                         }
+                        search
                       />
                     </div>
                     <div className="relative text-xl text-white font-aqua flex justify-end items-end w-fit h-fit">

@@ -1,6 +1,7 @@
 import { FunctionComponent } from "react";
 import { ColorChoiceProps } from "../types/common.types";
 import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
+import { setSearchExpand } from "../../../../redux/reducers/searchExpandSlice";
 
 const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
   dispatch,
@@ -8,6 +9,7 @@ const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
   preRoll,
   left,
   right,
+  search,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex justify-end">
@@ -20,29 +22,33 @@ const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
                 preRoll.chosenColor === color ? "border-fresa" : "border-white"
               }`}
               onClick={() => {
-                const updated = {
-                  left: left
-                    ? preRolls.left.map((obj) =>
-                        obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                          ? { ...obj, chosenColor: color }
-                          : obj
-                      )
-                    : preRolls.left,
-                  right: right
-                    ? preRolls.right.map((obj) =>
-                        obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                          ? { ...obj, chosenColor: color }
-                          : obj
-                      )
-                    : preRolls.right,
-                };
+                if (search) {
+                  dispatch(setSearchExpand({ ...preRoll, chosenColor: color }));
+                } else {
+                  const updated = {
+                    left: left
+                      ? preRolls.left.map((obj) =>
+                          obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
+                            ? { ...obj, chosenColor: color }
+                            : obj
+                        )
+                      : preRolls.left,
+                    right: right
+                      ? preRolls.right.map((obj) =>
+                          obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
+                            ? { ...obj, chosenColor: color }
+                            : obj
+                        )
+                      : preRolls.right,
+                  };
 
-                dispatch(
-                  setPreRoll({
-                    actionLeft: updated.left,
-                    actionRight: updated.right,
-                  })
-                );
+                  dispatch(
+                    setPreRoll({
+                      actionLeft: updated.left,
+                      actionRight: updated.right,
+                    })
+                  );
+                }
               }}
               style={{ backgroundColor: color }}
             ></div>

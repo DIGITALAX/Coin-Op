@@ -193,6 +193,7 @@ export type ColorChoiceProps = {
   preRoll: PreRoll;
   left?: boolean;
   right?: boolean;
+  search?: boolean;
 };
 
 export type SizingChoiceProps = {
@@ -204,6 +205,7 @@ export type SizingChoiceProps = {
   preRoll: PreRoll;
   left?: boolean;
   right?: boolean;
+  search?: boolean
 };
 
 export type SearchBoxProps = {
