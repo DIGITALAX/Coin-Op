@@ -57,7 +57,7 @@ const ToS: FunctionComponent = (): JSX.Element => {
       primary payment processor, although we reserve the right to switch or add
       payment processing providers. In the spirit of financial autonomy and
       decentralization, we also accept payments in various EVM-based tokens,
-      including $ETH, $USDT, $MONA, and $MATIC. To make a token payment, you'll
+      including $ETH, $USDT, $MONA, and $MATIC. To make a token payment, you&apos;ll
       need a self-custody wallet like Rainbow, Metamask, or Coinbase Wallet. By
       using these payment methods, you agree to the respective terms and
       conditions of these payment processors and wallets.
@@ -67,7 +67,7 @@ const ToS: FunctionComponent = (): JSX.Element => {
       If you choose to make payments using EVM-based tokens, you are solely
       responsible for reporting and paying any applicable taxes associated with
       such transactions. Different jurisdictions have varying tax rules relating
-      to the use of tokens for payments, and it's your responsibility to
+      to the use of tokens for payments, and it&apos;s your responsibility to
       understand and comply with these. Coin Op is not responsible for reporting
       or paying taxes on your behalf for token-based transactions.
       <br /> <br />

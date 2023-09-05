@@ -106,13 +106,13 @@ const Privacy: FunctionComponent = (): JSX.Element => {
       We do not use cookies or tracking technologies, reinforcing our commitment
       to your privacy.
       <br /> <br />
-      ## Children's Privacy
+      ## Children&apos;s Privacy
       <br />
       Our Services are intended for individuals who are at least 13 years of
       age. We do not knowingly collect Personal Information from children under
       13. If we become aware that a child under 13 has provided us with Personal
       Information, we will take steps to remove such information and terminate
-      the child's account.
+      the child&apos;s account.
       <br /> <br />
       ## Changes to This Policy
       <br />
