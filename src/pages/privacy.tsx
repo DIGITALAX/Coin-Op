@@ -35,7 +35,7 @@ const Privacy: FunctionComponent = (): JSX.Element => {
       <br /> <br />
       ### Non-Personal Information
       <br />
-      Non-personal information ("Non-Personal Information") may also be
+      Non-personal information (Non-Personal Information) may also be
       collected, including:
       <br />
       - Browser and device data

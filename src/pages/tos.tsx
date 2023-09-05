@@ -11,8 +11,8 @@ const ToS: FunctionComponent = (): JSX.Element => {
       <br />
       Welcome to Coin Op. By opting for this platform, you are aligning with a
       vision of personal autonomy, open-source technology, and public domain
-      creativity. These Terms of Service ("ToS") govern the use of various
-      decentralized services ("Services").
+      creativity. These Terms of Service (ToS) govern the use of various
+      decentralized services (Services).
       <br /> <br />
       ## Acceptance of Terms
       <br />
@@ -30,7 +30,7 @@ const ToS: FunctionComponent = (): JSX.Element => {
       <br />
       We offer a decentralized platform for creating and purchasing custom and
       pre-made streetwear and street art prints, facilitated by AI diffusion
-      models. We also provide "prerolls" of prints and apparel.
+      models. We also provide prerolls of prints and apparel.
       <br /> <br />
       ### User Requirements
       <br />
