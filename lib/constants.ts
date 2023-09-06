@@ -73,14 +73,6 @@ export const MANUFACTORY: `0x${string}` =
   "0xD17C63937aB8c91f57CB5bB1dD9B3480513bC1a9";
 export const COIN_OP_QUEST_PRELUDE: `0x${string}` =
   "0x9CAC0A7944ba70Afd04AA62B532Cf041842E9A1a";
-export const PKP_ADDRESS: `0x${string}` =
-  "0xb1d06c81fd47dd1abb1172feb369306a2746f220";
-export const IPFS_CID_PKP: string =
-  "QmQv8pjUnz3wkTzQJtbv6gpBzdHDQHyqAAUryAmvioUh3L";
-export const PKP_TOKEN_ID: string =
-  "82219119439491908067162140632966258754043386597747120916337702503268800114842";
-export const PKP_PUBLIC_KEY: `0x${string}` =
-  "0x041fc46ca07e11644b4e3b6cd8f1977066526a76a8320e17a96483f7ccb1ba3cc71e0014b2f0475171167a01a4200f04b90407a49d8749e53e853d784bf2d4cde2";
 
 export const allFonts: string[] = [
   "Manaspace",

@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import { PKP_ADDRESS } from "../../constants";
 
 export const createTxData = async (
   provider: ethers.providers.JsonRpcProvider,
@@ -22,7 +21,7 @@ export const createTxData = async (
     const maxPriorityFeePerGas = ethers.utils.parseUnits("40", "gwei");
     return {
       to: contractAddress,
-      nonce: (await provider.getTransactionCount(PKP_ADDRESS)) || 0,
+      nonce: (await provider.getTransactionCount(process.env.PKP_ADDRESS!)) || 0,
       chainId: 137,
       gasLimit: ethers.BigNumber.from("25000000"),
       maxFeePerGas: maxFeePerGas,

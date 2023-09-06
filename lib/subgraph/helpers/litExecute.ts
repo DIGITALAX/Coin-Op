@@ -3,7 +3,6 @@ import { serialize } from "@ethersproject/transactions";
 import { connectLit } from "./connectLit";
 import { AnyAction, Dispatch } from "redux";
 import { ethers } from "ethers";
-import { IPFS_CID_PKP, PKP_PUBLIC_KEY } from "../../constants";
 
 export const litExecute = async (
   provider: ethers.providers.JsonRpcProvider,
@@ -23,10 +22,10 @@ export const litExecute = async (
 
   try {
     const results = await client.executeJs({
-      ipfsId: IPFS_CID_PKP,
+      ipfsId: process.env.IPFS_CID_PKP,
       authSig,
       jsParams: {
-        publicKey: PKP_PUBLIC_KEY,
+        publicKey: process.env.PKP_PUBLIC_KEY,
         tx,
         sigName,
       },
