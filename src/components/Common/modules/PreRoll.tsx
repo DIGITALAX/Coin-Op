@@ -286,6 +286,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
               src={profileImage}
               layout="fill"
               objectFit="cover"
+              draggable={false}
             />
           </div>
           <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
@@ -314,6 +315,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
                 }
                 layout="fill"
                 objectFit="cover"
+                draggable={false}
               />
             </div>
           </div>
