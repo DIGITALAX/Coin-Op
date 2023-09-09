@@ -88,11 +88,17 @@ const Grid: FunctionComponent<GridProps> = ({
           </div>
         </div>
       </div>
-      <div
-        className="absolute text-white font-mana text-base sm:text-2xl 900:text-4xl uppercase bottom-48 preG:bottom-4"
-        draggable={false}
-      >
-        choose format
+      <div className="flex flex-col absolute w-fit h-fit gap-1.5 bottom-44 preG:-bottom-3">
+        <div
+          className="relative text-base sm:text-2xl 900:text-4xl uppercase font-mana flex text-white"
+          draggable={false}
+        >
+          choose format
+        </div>
+        <div className="text-sm relative flex font-sat text-bb">
+          Ethical Climatecore? Don't wait for the suits to fix things; they
+          won't.
+        </div>
       </div>
     </div>
   );

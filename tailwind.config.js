@@ -33,6 +33,7 @@ module.exports = {
         mist: "#81A8F8",
         pozo: "#00ABFE",
         fuego: "#E50013",
+        bb: "#00abfe"
       },
       height: {
         98: "28rem",
