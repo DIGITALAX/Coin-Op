@@ -96,8 +96,8 @@ const Grid: FunctionComponent<GridProps> = ({
           choose format
         </div>
         <div className="text-sm relative flex font-sat text-bb">
-          Ethical Climatecore? Don't wait for the suits to fix things; they
-          won't.
+          Ethical Climatecore? Don&apos;t wait for the suits to fix things; they
+          won&apos;t.
         </div>
       </div>
     </div>
