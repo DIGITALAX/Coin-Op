@@ -392,3 +392,13 @@ input[type="range"]::-ms-thumb {
   60% { transform: translate(10px, 0) rotate(10deg); }
   100% { transform: translate(0, 0) rotate(0); }
 }
+
+#videoRef {
+  top: 100px;
+}
+
+@media (min-width: 641px) {
+  #videoRef {
+    top: 10rem;
+  }
+}

@@ -74,7 +74,9 @@ const Modals = () => {
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
-  const cartAddAnim = useSelector((state: RootState) => state.app.cartAddAnimReducer.value)
+  const cartAddAnim = useSelector(
+    (state: RootState) => state.app.cartAddAnimReducer.value
+  );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const login = useSelector((state: RootState) => state.app.loginReducer);
   const lensPost = useSelector(

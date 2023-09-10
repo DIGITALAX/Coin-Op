@@ -216,7 +216,7 @@ export type SearchBoxProps = {
   dispatch: Dispatch<AnyAction>;
   handleAddToCart: (e: PreRoll) => void;
   router: NextRouter;
-  cartAddAnim: string
+  cartAddAnim: string;
 };
 
 export type RollSearchProps = {
@@ -229,7 +229,7 @@ export type RollSearchProps = {
   dispatch: Dispatch<AnyAction>;
   handleAddToCart: (e: PreRoll) => void;
   router: NextRouter;
-  cartAddAnim: string
+  cartAddAnim: string;
 };
 
 export type GeneralProps = {
@@ -443,7 +443,7 @@ export type SearchExpandProps = {
   handleSearchSimilar: (e: PreRoll) => Promise<void>;
   handlePromptChoose: (e: PreRoll) => Promise<void>;
   router: NextRouter;
-  cartAddAnim: string
+  cartAddAnim: string;
 };
 
 export type ApiAddProps = {
