@@ -120,7 +120,7 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     if (cartAddAnim) {
       setTimeout(() => {
-        dispatch(setCartAddAnim(false));
+        dispatch(setCartAddAnim(""));
       }, 3000);
     }
   }, [cartAddAnim]);

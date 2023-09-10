@@ -56,7 +56,7 @@ const Account: NextPage = (): JSX.Element => {
   useEffect(() => {
     if (cartAddAnim) {
       setTimeout(() => {
-        dispatch(setCartAddAnim(false));
+        dispatch(setCartAddAnim(""));
       }, 3000);
     }
   }, [cartAddAnim]);
