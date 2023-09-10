@@ -8,7 +8,7 @@ import { store } from "./../../redux/store";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Provider } from "react-redux";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { polygon} from "wagmi/chains";
+import { polygon } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { MutableRefObject, useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -16,6 +16,7 @@ import RouterChange from "@/components/Common/modules/RouterChange";
 import { createContext, useRef } from "react";
 import Modals from "@/components/Common/modules/Modals/Modals";
 import PreRolls from "@/components/Common/modules/PreRolls";
+import Sticky from "@/components/Layout/modules/Sticky";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [polygon],

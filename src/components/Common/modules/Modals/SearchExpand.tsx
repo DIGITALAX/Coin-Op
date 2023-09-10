@@ -26,11 +26,11 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
 }): JSX.Element => {
   const profileImage = createProfilePicture(searchItem.uri.profile);
   return (
-    <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
+    <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm grid grid-flow-col auto-cols-auto w-full h-auto overflow-y-auto">
       <div className="relative w-full lg:w-fit h-fit col-start-1 place-self-center bg-black rounded-lg">
         <div className="relative w-full row-start-2 h-fit rounded-xl grid grid-flow-col auto-cols-auto">
           <div className="relative w-full h-full col-start-1 rounded-xl place-self-center">
-            <div className="relative w-fit h-full grid grid-flow-row auto-rows-auto gap-4 pb-8">
+            <div className="relative w-full sm:w-fit h-full grid grid-flow-row auto-rows-auto gap-4 pb-8">
               <div className="relative w-fit h-fit row-start-1 self-center justify-self-end pr-3 pt-3 cursor-pointer">
                 <ImCross
                   color="white"
@@ -38,9 +38,9 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                   onClick={() => dispatch(setSearchExpand(undefined))}
                 />
               </div>
-              <div className="relative w-fit h-full flex flex-col items-start justify-center px-4 gap-4">
-                <div className="relative w-fit h-fit flex flex-row items-start justify-center gap-6">
-                  <div className="relative w-80 h-80 rounded-md border border-white/70 p-3 flex items-center justify-start">
+              <div className="relative w-[90vw] sm:w-fit h-full flex flex-col items-center sm:items-start justify-center px-4 gap-4">
+                <div className="relative w-full h-fit flex flex-col sm:flex-row items-center sm:items-start justify-center gap-6">
+                  <div className="relative w-full sm:w-80 h-80 rounded-md border border-white/70 p-3 flex items-center justify-center sm:justify-start">
                     <div
                       className="relative w-full h-full object-cover flex items-center justify-start cursor-pointer"
                       onClick={() =>
@@ -59,12 +59,13 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         }`}
                         layout="fill"
                         objectFit="cover"
+                        objectPosition={"top"}
                         alt="searchPrompt"
                         draggable={false}
                       />
                     </div>
                   </div>
-                  <div className="relative w-full h-full flex flex-col text-right text-white font-mana items-end justify-center gap-6">
+                  <div className="relative w-full sm:w-fit h-fit sm:h-full flex flex-col text-center sm:text-right text-white font-mana items-end justify-center gap-3 sm:gap-6">
                     <div className="relative w-fit h-fit flex flex-row gap-2">
                       <div
                         className="relative flex cursor-pointer active:scale-95 hover:opacity-50 items-center justify-center"
@@ -247,7 +248,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                 <div className="relative w-full h-52 items-start justify-center flex flex-col gap-1.5 border border-white rounded-md">
                   <textarea
                     disabled={true}
-                    className="bg-black w-full relative flex h-full p-3 text-center font-mana text-white text-xs rounded-md "
+                    className="bg-black w-full relative flex h-full p-3 text-center font-mana text-white text-xs rounded-md break-words"
                     placeholder={searchItem?.uri?.prompt}
                     style={{ resize: "none" }}
                   ></textarea>

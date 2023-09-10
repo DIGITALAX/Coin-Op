@@ -3,6 +3,7 @@ import { serialize } from "@ethersproject/transactions";
 import { connectLit } from "./connectLit";
 import { AnyAction, Dispatch } from "redux";
 import { ethers } from "ethers";
+import { COIN_OP_MARKET } from "../../constants";
 
 export const litExecute = async (
   provider: ethers.providers.JsonRpcProvider,
@@ -28,6 +29,8 @@ export const litExecute = async (
         publicKey: process.env.PKP_PUBLIC_KEY,
         tx,
         sigName,
+        hashKeyItem: process.env.HASH_KEY_ITEM,
+        multihashDevKey: process.env.MULTI_HASH_DEV_KEY,
       },
     });
 
@@ -58,7 +61,11 @@ export const litExecute = async (
 
     await transactionHash.wait();
   } catch (err: any) {
-    if ((err.message.includes("timeout") || err.message.includes("underpriced")) && retryCount < maxRetries) {
+    if (
+      (err.message.includes("timeout") ||
+        err.message.includes("underpriced")) &&
+      retryCount < maxRetries
+    ) {
       console.warn(`Retry attempt ${retryCount + 1} after timeout error.`);
       await litExecute(
         provider,
