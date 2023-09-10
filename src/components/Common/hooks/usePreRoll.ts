@@ -10,7 +10,7 @@ import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
 import { getOneProfile } from "../../../../graphql/lens/queries/getProfile";
 import { DIGITALAX_PROFILE_ID_LENS } from "../../../../lib/constants";
 import { Profile } from "../types/lens.types";
-import { setPreRollLoading } from "../../../../redux/reducers/prerollsLoading";
+import { setPreRollLoading } from "../../../../redux/reducers/prerollsLoadingSlice";
 
 const usePreRoll = () => {
   const dispatch = useDispatch();

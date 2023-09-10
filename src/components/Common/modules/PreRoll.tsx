@@ -9,6 +9,7 @@ import { setImageViewer } from "../../../../redux/reducers/imageViewerSlice";
 import SizingChoice from "./SizingChoice";
 import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
 import createProfilePicture from "../../../../lib/lens/helpers/createProfilePicture";
+import { setCartAddAnim } from "../../../../redux/reducers/cartAddAnimSlice";
 
 const PreRoll: FunctionComponent<PreRollProps> = ({
   preRoll,
@@ -21,6 +22,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
   imageLoading,
   setImagesLoading,
   index,
+  cartAddAnim,
 }): JSX.Element => {
   const profileImage = createProfilePicture(preRoll.uri.profile);
   return (
@@ -217,6 +219,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
           </div>
           <div
             className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
+            id={cartAddAnim === preRoll.uri.image[0] ? "cartAddAnim" : ""}
             onClick={() => {
               let { colors, bgColor, ...newObj } = preRoll;
               const existing = [...cartItems].findIndex(
@@ -257,6 +260,7 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
               }
 
               dispatch(setCart(newCartItems));
+              dispatch(setCartAddAnim(preRoll.uri.image[0]));
             }}
           >
             <Image

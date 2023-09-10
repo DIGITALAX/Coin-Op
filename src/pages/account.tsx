@@ -7,6 +7,7 @@ import AllOrders from "@/components/Account/modals/AllOrders";
 import useOrders from "@/components/Account/hooks/useOrders";
 import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
 import { useEffect } from "react";
+import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
 
 const Account: NextPage = (): JSX.Element => {
   const allOrders = useSelector(
@@ -23,6 +24,9 @@ const Account: NextPage = (): JSX.Element => {
   );
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
+  );
+  const cartAddAnim = useSelector(
+    (state: RootState) => state.app.cartAddAnimReducer.value
   );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const dispatch = useDispatch();
@@ -49,6 +53,13 @@ const Account: NextPage = (): JSX.Element => {
       }, 3000);
     }
   }, [preRollAnim]);
+  useEffect(() => {
+    if (cartAddAnim) {
+      setTimeout(() => {
+        dispatch(setCartAddAnim(false));
+      }, 3000);
+    }
+  }, [cartAddAnim]);
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>

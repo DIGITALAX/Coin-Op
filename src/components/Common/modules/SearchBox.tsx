@@ -14,6 +14,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
   handlePromptChoose,
   handleAddToCart,
   router,
+  cartAddAnim
 }): JSX.Element => {
   return (
     <div className="relative w-40 h-40 rounded-md border border-white/70 p-3">
@@ -75,6 +76,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
                 e.stopPropagation();
                 handleAddToCart(promptSearch);
               }}
+              id={cartAddAnim === promptSearch.uri.image[0] ? "cartAddAnim" : ""}
             >
               <Image
                 src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}

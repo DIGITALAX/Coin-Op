@@ -11,6 +11,7 @@ import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import useSignIn from "@/components/Common/hooks/useSignIn";
 import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
 import useCanvas from "@/components/Walkthrough/Synth/hooks/useCanvas";
+import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
 
 export default function Home(): JSX.Element {
   const { scrollRef, synthRef } = useContext(ScrollContext);
@@ -103,6 +104,9 @@ export default function Home(): JSX.Element {
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
+  const cartAddAnim = useSelector(
+    (state: RootState) => state.app.cartAddAnimReducer.value
+  );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
 
   useEffect(() => {
@@ -112,6 +116,14 @@ export default function Home(): JSX.Element {
       }, 3000);
     }
   }, [preRollAnim]);
+
+  useEffect(() => {
+    if (cartAddAnim) {
+      setTimeout(() => {
+        dispatch(setCartAddAnim(false));
+      }, 3000);
+    }
+  }, [cartAddAnim]);
 
   return (
     <PageContainer

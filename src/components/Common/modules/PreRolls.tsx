@@ -21,7 +21,10 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
     (state: RootState) => state.app.preRollAnimReducer.value
   );
   const preRollsLoading = useSelector(
-    (state: RootState) => state.app.prerollsLoading.value
+    (state: RootState) => state.app.prerollsLoadingReducer.value
+  );
+  const cartAddAnim = useSelector(
+    (state: RootState) => state.app.cartAddAnimReducer.value
   );
   const {
     imagesLoadingLeft,
@@ -51,6 +54,7 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
                 return (
                   <PreRoll
                     key={index}
+                    cartAddAnim={cartAddAnim}
                     preRoll={preRoll}
                     cartItems={cartItems}
                     dispatch={dispatch}

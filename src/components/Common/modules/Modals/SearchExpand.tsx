@@ -14,6 +14,7 @@ import { ImRedo } from "react-icons/im";
 import copy from "copy-to-clipboard";
 import { BiCopy } from "react-icons/bi";
 import createProfilePicture from "../../../../../lib/lens/helpers/createProfilePicture";
+import { setCartAddAnim } from "../../../../../redux/reducers/cartAddAnimSlice";
 
 const SearchExpand: FunctionComponent<SearchExpandProps> = ({
   searchItem,
@@ -23,6 +24,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
   handleSearchSimilar,
   handlePromptChoose,
   router,
+  cartAddAnim
 }): JSX.Element => {
   const profileImage = createProfilePicture(searchItem.uri.profile);
   return (
@@ -233,7 +235,9 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         }
 
                         dispatch(setCart(newCartItems));
+                        dispatch(setCartAddAnim(searchItem?.uri?.image[0]))
                       }}
+                      id={cartAddAnim === searchItem.uri.image[0] ? "cartAddAnim" : ""}
                     >
                       <Image
                         src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}

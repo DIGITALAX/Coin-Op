@@ -177,6 +177,7 @@ export type PreRollProps = {
   imageLoading: boolean;
   setImagesLoading: (e: boolean[]) => void;
   index: number;
+  cartAddAnim: string;
 };
 
 export type PrintTagProps = {
@@ -205,7 +206,7 @@ export type SizingChoiceProps = {
   preRoll: PreRoll;
   left?: boolean;
   right?: boolean;
-  search?: boolean
+  search?: boolean;
 };
 
 export type SearchBoxProps = {
@@ -215,6 +216,7 @@ export type SearchBoxProps = {
   dispatch: Dispatch<AnyAction>;
   handleAddToCart: (e: PreRoll) => void;
   router: NextRouter;
+  cartAddAnim: string
 };
 
 export type RollSearchProps = {
@@ -227,6 +229,7 @@ export type RollSearchProps = {
   dispatch: Dispatch<AnyAction>;
   handleAddToCart: (e: PreRoll) => void;
   router: NextRouter;
+  cartAddAnim: string
 };
 
 export type GeneralProps = {
@@ -440,6 +443,7 @@ export type SearchExpandProps = {
   handleSearchSimilar: (e: PreRoll) => Promise<void>;
   handlePromptChoose: (e: PreRoll) => Promise<void>;
   router: NextRouter;
+  cartAddAnim: string
 };
 
 export type ApiAddProps = {

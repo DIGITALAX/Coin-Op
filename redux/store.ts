@@ -62,7 +62,8 @@ import followerOnlyReducer from "./reducers/followerOnlySlice";
 import channelsReducer from "./reducers/channelsSlice";
 import videoCountReducer from "./reducers/videoCountSlice";
 import hasMoreVideoReducer from "./reducers/hasMoreVideoSlice";
-import prerollsLoading from "./reducers/prerollsLoading";
+import prerollsLoadingReducer from "./reducers/prerollsLoadingSlice";
+import cartAddAnimReducer from "./reducers/cartAddAnimSlice";
 
 const reducer = combineReducers({
   preRollReducer,
@@ -127,7 +128,8 @@ const reducer = combineReducers({
   channelsReducer,
   videoCountReducer,
   hasMoreVideoReducer,
-  prerollsLoading
+  prerollsLoadingReducer,
+  cartAddAnimReducer
 });
 
 export const store = configureStore({

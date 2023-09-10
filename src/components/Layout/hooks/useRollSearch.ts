@@ -14,6 +14,7 @@ import { useAccount, useNetwork } from "wagmi";
 import { setChain } from "../../../../redux/reducers/chainSlice";
 import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
 import { getLitLoginLocalStorage } from "../../../../lib/subgraph/utils";
+import { setCartAddAnim } from "../../../../redux/reducers/cartAddAnimSlice";
 
 const useRollSearch = () => {
   const { scrollRef, synthRef } = useContext(ScrollContext);
@@ -121,6 +122,7 @@ const useRollSearch = () => {
 
     dispatch(setCart(newCartItems));
     setCartAnim(true);
+    dispatch(setCartAddAnim(preRoll?.uri?.image[0]))
   };
 
   const scrollToCheckOut = () => {

@@ -12,6 +12,7 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
   dispatch,
   handleAddToCart,
   router,
+  cartAddAnim
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 flex flex-col justify-start h-fit gap-4 sm:pb-28 order-2">
@@ -48,6 +49,7 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
                   dispatch={dispatch}
                   handleAddToCart={handleAddToCart}
                   router={router}
+                  cartAddAnim={cartAddAnim}
                 />
               );
             })}

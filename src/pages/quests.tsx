@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
 import useQuest from "@/components/Quests/hooks/useQuest";
 import { useRouter } from "next/router";
+import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
 
 const Quests: NextPage = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -34,6 +35,9 @@ const Quests: NextPage = (): JSX.Element => {
   const questInfo = useSelector(
     (state: RootState) => state.app.questInfoReducer.questInfo
   );
+  const cartAddAnim = useSelector(
+    (state: RootState) => state.app.cartAddAnimReducer.value
+  );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const [isClient, setIsClient] = useState(false);
   const { questsLoading, getQuestInformation } = useQuest();
@@ -49,6 +53,13 @@ const Quests: NextPage = (): JSX.Element => {
       }, 3000);
     }
   }, [preRollAnim]);
+  useEffect(() => {
+    if (cartAddAnim) {
+      setTimeout(() => {
+        dispatch(setCartAddAnim(false));
+      }, 3000);
+    }
+  }, [cartAddAnim]);
 
   const renderer = ({
     days,

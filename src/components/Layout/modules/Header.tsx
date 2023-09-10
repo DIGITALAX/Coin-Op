@@ -28,11 +28,14 @@ const Header: FunctionComponent<HeaderProps> = ({
   const rollSearch = useSelector(
     (state: RootState) => state.app.rollSearchReducer.value
   );
+  const cartAddAnim = useSelector(
+    (state: RootState) => state.app.cartAddAnimReducer.value
+  );
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
   const preRollsLoading = useSelector(
-    (state: RootState) => state.app.prerollsLoading.value
+    (state: RootState) => state.app.prerollsLoadingReducer.value
   );
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
@@ -78,6 +81,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         handlePromptChoose={handlePromptChoose}
         handleAddToCart={handleAddToCart}
         router={router}
+        cartAddAnim={cartAddAnim}
       />
       <Hook preRollRef={preRollRef} />
       {/* </div> */}

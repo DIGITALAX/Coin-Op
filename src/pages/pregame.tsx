@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import ActivateSub from "@/components/Subscription/modules/ActivateSub";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../lib/constants";
+import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
 
 const Pregame: NextPage = (): JSX.Element => {
   const preRollAnim = useSelector(
@@ -18,6 +19,9 @@ const Pregame: NextPage = (): JSX.Element => {
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
   );
+  const cartAddAnim = useSelector(
+    (state: RootState) => state.app.cartAddAnimReducer.value
+  );
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -27,6 +31,13 @@ const Pregame: NextPage = (): JSX.Element => {
       }, 3000);
     }
   }, [preRollAnim]);
+  useEffect(() => {
+    if (cartAddAnim) {
+      setTimeout(() => {
+        dispatch(setCartAddAnim(false));
+      }, 3000);
+    }
+  }, [cartAddAnim]);
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>
