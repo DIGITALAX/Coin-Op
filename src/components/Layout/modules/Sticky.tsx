@@ -56,42 +56,8 @@ const Sticky: FunctionComponent<StickyProps> = ({
           </div>
         </div>
       </div>
-      <div className="relative w-auto h-fit items-center justify-center flex sm:hidden">
-        <div
-          className="relative w-20 h-7 px-1 text-white flex items-center justify-center border border-white cursor-pointer row-start-2 md:row-start-1"
-          onClick={
-            !connected && !connectedPKP
-              ? () =>
-                  dispatch(
-                    setLogin({
-                      actionOpen: true,
-                      actionHighlight: undefined,
-                    })
-                  )
-              : connected && chain !== 137
-              ? openChainModal
-              : connected
-              ? openAccountModal
-              : () =>
-                  dispatch(
-                    setLogin({
-                      actionOpen: true,
-                      actionHighlight: undefined,
-                    })
-                  )
-          }
-        >
-          <div className={`relative text-xxs font-mana`}>
-            {!connected && !connectedPKP
-              ? "Connect"
-              : connected && chain !== 137
-              ? "Switch"
-              : "Connected"}
-          </div>
-        </div>
-      </div>
-      <div className="relative w-full sm:w-fit h-fit flex flex-row gap-3 items-center justify-between sm:justify-center md:ml-auto">
-        <div className="relative w-full sm:w-fit h-fit flex flex-row gap-3 items-center justify-center grow">
+      <div className="relative w-full sm:w-fit h-fit flex flex-col md:flex-row gap-3 items-center justify-between sm:justify-center md:ml-auto">
+        <div className="relative w-full sm:w-fit h-fit flex flex-row gap-3 items-center justify-center grow order-2 sm:order-1">
           <Link
             href={"/account"}
             className="relative flex w-12 sm:w-5 h-12 sm:h-5 items-center break-words cursor-pointer row-start-1"
@@ -126,9 +92,9 @@ const Sticky: FunctionComponent<StickyProps> = ({
             />
           </div>
         </div>
-        <div className="relative w-auto h-fit items-center justify-center sm:flex hidden">
+        <div className="relative w-1/2 sm:w-auto h-fit items-center justify-center flex order-1 sm:order-2">
           <div
-            className="relative w-20 h-7 px-1 text-white flex items-center justify-center border border-white cursor-pointer row-start-2 md:row-start-1"
+            className="relative w-full sm:w-20 h-7 px-1 text-white flex items-center justify-center border border-white cursor-pointer row-start-2 md:row-start-1"
             onClick={
               !connected && !connectedPKP
                 ? () =>

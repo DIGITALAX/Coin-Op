@@ -33,4 +33,5 @@ export type StickyProps = {
 export type MobileFotosProps = {
   preRolls: PreRollState;
   dispatch: Dispatch<AnyAction>;
+  preRollsLoading: boolean;
 };

@@ -20,8 +20,10 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
+  const preRollsLoading = useSelector(
+    (state: RootState) => state.app.prerollsLoading.value
+  );
   const {
-    preRollsLoading,
     imagesLoadingLeft,
     setImagesLoadingLeft,
     imagesLoadingRight,

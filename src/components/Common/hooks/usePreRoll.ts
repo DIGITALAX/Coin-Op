@@ -10,6 +10,7 @@ import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
 import { getOneProfile } from "../../../../graphql/lens/queries/getProfile";
 import { DIGITALAX_PROFILE_ID_LENS } from "../../../../lib/constants";
 import { Profile } from "../types/lens.types";
+import { setPreRollLoading } from "../../../../redux/reducers/prerollsLoading";
 
 const usePreRoll = () => {
   const dispatch = useDispatch();
@@ -17,12 +18,11 @@ const usePreRoll = () => {
   const algoila = useSelector(
     (state: RootState) => state.app.algoliaReducer.value
   );
-  const [preRollsLoading, setPreRollsLoading] = useState<boolean>(false);
   const [imagesLoadingLeft, setImagesLoadingLeft] = useState<boolean[]>([]);
   const [imagesLoadingRight, setImagesLoadingRight] = useState<boolean[]>([]);
 
   const getPreRolls = async () => {
-    setPreRollsLoading(true);
+    dispatch(setPreRollLoading(true));
     try {
       const data = await getAllPreRolls();
 
@@ -30,7 +30,7 @@ const usePreRoll = () => {
         data?.data?.collectionCreateds?.length < 1 ||
         !data?.data?.collectionCreateds
       ) {
-        setPreRollsLoading(false);
+        dispatch(setPreRollLoading(false));
         return;
       }
       const profileCache: { [key: string]: Profile } = {};
@@ -127,7 +127,7 @@ const usePreRoll = () => {
     } catch (err: any) {
       console.error(err.message);
     }
-    setPreRollsLoading(false);
+    dispatch(setPreRollLoading(false));
   };
 
   useEffect(() => {
@@ -148,7 +148,6 @@ const usePreRoll = () => {
   }, [preRolls]);
 
   return {
-    preRollsLoading,
     imagesLoadingLeft,
     setImagesLoadingLeft,
     imagesLoadingRight,

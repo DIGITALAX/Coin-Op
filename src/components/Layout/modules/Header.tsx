@@ -31,6 +31,9 @@ const Header: FunctionComponent<HeaderProps> = ({
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
+  const preRollsLoading = useSelector(
+    (state: RootState) => state.app.prerollsLoading.value
+  );
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
@@ -46,7 +49,11 @@ const Header: FunctionComponent<HeaderProps> = ({
   const dispatch = useDispatch();
   return (
     <div className="relative w-full h-fit items-center justify-center flex flex-col gap-20 px-3 pt-2 pb-20">
-      <MobileFotos preRolls={preRolls} dispatch={dispatch} />
+      <MobileFotos
+        preRolls={preRolls}
+        dispatch={dispatch}
+        preRollsLoading={preRollsLoading}
+      />
       <Sticky
         openChainModal={openChainModal}
         openAccountModal={openAccountModal}
