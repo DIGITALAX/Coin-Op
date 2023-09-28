@@ -495,13 +495,16 @@ const useCheckout = () => {
               return accumulator;
             }, []),
             preRollIndexes: cartItems.map((item) =>
-              ["shirt", "hoodie", "sleeve"].includes(item.printType.toLowerCase())
+              ["shirt", "hoodie", "sleeve"].includes(
+                item.printType.toLowerCase()
+              )
                 ? 0
                 : item.sizes.indexOf(item.chosenSize)
             ),
             customIds: [],
             customAmounts: [],
             customIndexes: [],
+            customURIs: [],
             fulfillmentDetails: JSON.stringify(returned?.fulfillerDetails),
             pkpTokenId: "",
             chosenTokenAddress: ACCEPTED_TOKENS.find(
@@ -575,7 +578,9 @@ const useCheckout = () => {
               return accumulator;
             }, []),
             preRollIndexes: cartItems.map((item) =>
-              ["shirt", "hoodie", "sleeve"].includes(item.printType.toLowerCase())
+              ["shirt", "hoodie", "sleeve"].includes(
+                item.printType.toLowerCase()
+              )
                 ? 0
                 : item.sizes.indexOf(item.chosenSize)
             ),
