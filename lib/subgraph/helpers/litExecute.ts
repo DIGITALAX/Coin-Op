@@ -29,8 +29,6 @@ export const litExecute = async (
         publicKey: process.env.PKP_PUBLIC_KEY,
         tx,
         sigName,
-        hashKeyItem: process.env.HASH_KEY_ITEM,
-        multihashDevKey: process.env.MULTI_HASH_DEV_KEY,
       },
     });
 
