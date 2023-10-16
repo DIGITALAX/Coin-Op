@@ -62,7 +62,6 @@ const nextConfig = {
       },
     ];
   },
-  fallback,
 };
 
 module.exports = nextConfig;
