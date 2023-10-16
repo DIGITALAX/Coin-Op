@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-import withPolyfills from "next-polyfill-npm";
+const withPolyfills = require("next-polyfill-npm")
 
 const allowedOrigins = [
   "https://api.lens.dev",
