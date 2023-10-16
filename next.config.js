@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-const withPolyfills = require("next-polyfill-npm")
 
 const allowedOrigins = [
   "https://api.lens.dev",
@@ -12,10 +11,15 @@ const allowedOrigins = [
   `https://${process.env.NEXT_PUBLIC_ALGOLIA_ID}-dsn.algolia.net`,
 ];
 
-const nextConfig = withPolyfills({
+const nextConfig = {
   reactStrictMode: true,
   webpack: (config) => {
-    config.resolve.fallback = { fs: false, net: false, tls: false,  buffer: require.resolve('buffer/') };
+    config.resolve.fallback = {
+      fs: false,
+      net: false,
+      tls: false,
+      buffer: require.resolve("buffer/"),
+    };
     return config;
   },
   images: {
@@ -50,7 +54,7 @@ const nextConfig = withPolyfills({
       },
     ];
   },
-  fallback
-});
+  fallback,
+};
 
 module.exports = nextConfig;
