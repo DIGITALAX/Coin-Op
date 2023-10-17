@@ -1,7 +1,7 @@
 import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import { connectLit } from "./connectLit";
 import { AnyAction, Dispatch } from "redux";
-import { CartItem } from "@/components/Common/types/common.types";
+import { PreRoll } from "@/components/Common/types/common.types";
 
 export const encryptItems = async (
   litClient: LitJsSdk.LitNodeClient | undefined,
@@ -12,7 +12,7 @@ export const encryptItems = async (
     collectionIds: number[];
     collectionAmounts: number[];
   },
-  fulfillerGroups: { [key: string]: CartItem[] },
+  fulfillerGroups: { [key: string]: PreRoll[] },
   fulfillmentDetails: {
     name: string;
     contact: string;
@@ -39,13 +39,6 @@ export const encryptItems = async (
       authSig = authSigFiat;
     }
 
-    const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
-      JSON.stringify({
-        ...fulfillmentDetails,
-        ...information,
-      })
-    );
-
     let fulfillerDetails = [];
 
     for (let fulfillerAddress in fulfillerGroups) {
@@ -69,35 +62,37 @@ export const encryptItems = async (
         });
       });
 
-      const encryptedSymmetricKey = await client!?.saveEncryptionKey({
-        accessControlConditions: [
-          ...fulfillerEditions,
-          {
-            contractAddress: "",
-            standardContractType: "",
-            chain: "polygon",
-            method: "",
-            parameters: [":userAddress"],
-            returnValueTest: {
-              comparator: "=",
-              value: address?.toLowerCase() as string,
+      const { ciphertext, dataToEncryptHash } = await LitJsSdk.encryptString(
+        {
+          accessControlConditions: [
+            ...fulfillerEditions,
+            {
+              contractAddress: "",
+              standardContractType: "",
+              chain: "polygon",
+              method: "",
+              parameters: [":userAddress"],
+              returnValueTest: {
+                comparator: "=",
+                value: address?.toLowerCase() as string,
+              },
             },
-          },
-        ],
-        symmetricKey,
-        authSig,
-        chain: "polygon",
-      });
+          ],
+          authSig: authSig,
+          chain: "polygon",
+          dataToEncrypt: JSON.stringify({
+            ...fulfillmentDetails,
+            ...information,
+          }),
+        },
+        client!
+      );
 
-      const buffer = await encryptedString.arrayBuffer();
       fulfillerDetails.push(
         JSON.stringify({
           fulfillerAddress,
-          encryptedString: JSON.stringify(Array.from(new Uint8Array(buffer))),
-          encryptedSymmetricKey: LitJsSdk.uint8arrayToString(
-            encryptedSymmetricKey,
-            "base16"
-          ),
+          ciphertext: ciphertext,
+          dataToEncryptHash: dataToEncryptHash,
         })
       );
     }

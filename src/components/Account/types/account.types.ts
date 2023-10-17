@@ -10,8 +10,8 @@ export interface Order {
   totalPrice: string;
   transactionHash: string;
   fulfillmentInformation: {
-    encryptedString: number[];
-    encryptedSymmetricKey: string;
+    ciphertext: string;
+    dataToEncryptHash: string;
     decryptedFulfillment:
       | {
           address: string;
@@ -34,8 +34,8 @@ export interface Order {
   subOrderStatuses: string[];
   subOrderIsFulfilled: boolean[];
   message: {
-    encryptedString: number[];
-    encryptedSymmetricKey: string;
+    ciphertext: string;
+    dataToEncryptHash: string;
   }[];
   decryptedMessage: {
     message: string;

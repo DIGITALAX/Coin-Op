@@ -9,7 +9,7 @@ export const connectLit = async (
     const client = new LitJsSdk.LitNodeClient({
       debug: false,
       alertWhenUnauthorized: true,
-      litNetwork: "serrano",
+      litNetwork: "cayenne",
     });
     await client.connect();
     dispatch(setLitClient(client));

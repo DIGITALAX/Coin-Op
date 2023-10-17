@@ -72,7 +72,7 @@ const useLogin = () => {
     },
   });
   const litNodeClient = new LitNodeClient({
-    litNetwork: "serrano",
+    litNetwork: "cayenne",
     debug: false,
   });
   const hasRedirectedRef = useRef<boolean>(false);

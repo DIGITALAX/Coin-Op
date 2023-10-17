@@ -1,4 +1,4 @@
-const webpack = require('webpack');
+const webpack = require("webpack");
 /** @type {import('next').NextConfig} */
 
 const allowedOrigins = [
@@ -24,7 +24,7 @@ const nextConfig = {
 
     config.plugins.push(
       new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'],
+        Buffer: [require.resolve("buffer/"), "Buffer"],
       })
     );
 

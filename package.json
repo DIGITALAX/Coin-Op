@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.16",
-    "@lit-protocol/lit-auth-client": "^2.2.49",
-    "@lit-protocol/lit-node-client": "^2.2.24",
-    "@lit-protocol/pkp-ethers": "^2.2.41",
+    "@lit-protocol/lit-auth-client": "3.0.5",
+    "@lit-protocol/lit-node-client": "3.0.5",
+    "@lit-protocol/pkp-ethers": "3.0.5",
     "@rainbow-me/rainbowkit": "^1.0.3",
     "@reduxjs/toolkit": "^1.9.5",
     "@stripe/react-stripe-js": "^2.1.1",

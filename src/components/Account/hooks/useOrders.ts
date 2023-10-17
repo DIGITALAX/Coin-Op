@@ -13,7 +13,7 @@ import { fetchIpfsJson } from "../../../../lib/algolia/helpers/fetchIpfsJson";
 import { ethers } from "ethers";
 import {
   checkAndSignAuthMessage,
-  decryptString,
+  decryptToString,
 } from "@lit-protocol/lit-node-client";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
@@ -188,15 +188,15 @@ const useOrders = () => {
         idx ===
         allOrders.findIndex(
           (o) =>
-            o.fulfillmentInformation.encryptedSymmetricKey ===
-            order.fulfillmentInformation.encryptedSymmetricKey
+            o.fulfillmentInformation.ciphertext ===
+            order.fulfillmentInformation.ciphertext
         )
           ? true
           : val
       )
     );
     try {
-      const client = new LitNodeClient({ litNetwork: "serrano", debug: false });
+      const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
       await client.connect();
       let authSig;
       if (connectedPKP?.pkpWallet) {
@@ -207,19 +207,6 @@ const useOrders = () => {
         });
       }
       const fulfillerAddress = await getFulfillerAddress();
-      let fulfillerEditions = order.subOrderIds.map((_) => {
-        return {
-          contractAddress: "",
-          standardContractType: "",
-          chain: "polygon",
-          method: "",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: "=",
-            value: fulfillerAddress?.toLowerCase(),
-          },
-        };
-      });
       if (fulfillerAddress) {
         let stringsDecrypted: {
           message: string;
@@ -227,38 +214,21 @@ const useOrders = () => {
         }[] = [];
 
         for (let i = 0; i < order.message.length; i++) {
-          const symmetricKey = await client.getEncryptionKey({
-            accessControlConditions: [
-              ...fulfillerEditions,
-              {
-                contractAddress: "",
-                standardContractType: "",
-                chain: "polygon",
-                method: "",
-                parameters: [":userAddress"],
-                returnValueTest: {
-                  comparator: "=",
-                  value: address
-                    ? address.toLowerCase()
-                    : connectedPKP?.ethAddress.toLowerCase(),
-                },
-              },
-            ],
-            toDecrypt: order?.message[i].encryptedSymmetricKey!,
-            authSig,
-            chain: "polygon",
-          });
-          const uintString = new Uint8Array(order?.message[i].encryptedString!)
-            .buffer;
-          const blob = new Blob([uintString], { type: "text/plain" });
-          const decryptedString = await decryptString(blob, symmetricKey);
+          const decryptedString = await decryptToString(
+            {
+              dataToEncryptHash: order?.message[i].dataToEncryptHash,
+              ciphertext: order?.message[i].ciphertext,
+              chain: "polygon",
+            },
+            client
+          );
           stringsDecrypted.push(JSON.parse(decryptedString));
         }
 
         const updatedOrders = allOrders.map((currentOrder) => {
           if (
-            currentOrder.fulfillmentInformation.encryptedString ===
-            order.fulfillmentInformation.encryptedString
+            currentOrder.fulfillmentInformation.ciphertext ===
+            order.fulfillmentInformation.ciphertext
           ) {
             return {
               ...currentOrder,
@@ -278,8 +248,8 @@ const useOrders = () => {
         idx ===
         allOrders.findIndex(
           (o) =>
-            o.fulfillmentInformation.encryptedSymmetricKey ===
-            order.fulfillmentInformation.encryptedSymmetricKey
+            o.fulfillmentInformation.ciphertext ===
+            order.fulfillmentInformation.ciphertext
         )
           ? false
           : val
@@ -289,8 +259,8 @@ const useOrders = () => {
 
   const handleDecryptFulfillment = async (order: Order): Promise<void> => {
     if (
-      !order?.fulfillmentInformation?.encryptedSymmetricKey ||
-      !order?.fulfillmentInformation?.encryptedString ||
+      !order?.fulfillmentInformation?.ciphertext ||
+      !order?.fulfillmentInformation?.dataToEncryptHash ||
       (!address && !connectedPKP?.pkpWallet)
     ) {
       return;
@@ -300,15 +270,15 @@ const useOrders = () => {
         idx ===
         allOrders.findIndex(
           (o) =>
-            o.fulfillmentInformation?.encryptedSymmetricKey ===
-            order.fulfillmentInformation?.encryptedSymmetricKey
+            o.fulfillmentInformation?.ciphertext ===
+            order.fulfillmentInformation?.ciphertext
         )
           ? true
           : val
       )
     );
     try {
-      const client = new LitNodeClient({ litNetwork: "serrano", debug: false });
+      const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
       await client.connect();
       let authSig;
       if (connectedPKP?.pkpWallet) {
@@ -320,65 +290,28 @@ const useOrders = () => {
       }
 
       const fulfillerAddress = await getFulfillerAddress();
-      let fulfillerEditions: any[] = [];
-
-      order.subOrderIds.forEach((item) => {
-        fulfillerEditions.push({
-          contractAddress: "",
-          standardContractType: "",
-          chain: "polygon",
-          method: "",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: "=",
-            value: fulfillerAddress?.toLowerCase(),
-          },
-        });
-
-        fulfillerEditions.push({
-          operator: "or",
-        });
-      });
 
       if (fulfillerAddress) {
-        const symmetricKey = await client.getEncryptionKey({
-          accessControlConditions: [
-            ...fulfillerEditions,
-            {
-              contractAddress: "",
-              standardContractType: "",
-              chain: "polygon",
-              method: "",
-              parameters: [":userAddress"],
-              returnValueTest: {
-                comparator: "=",
-                value: address
-                  ? address.toLowerCase()
-                  : connectedPKP?.ethAddress.toLowerCase(),
-              },
-            },
-          ],
-          toDecrypt: order?.fulfillmentInformation?.encryptedSymmetricKey!,
-          authSig,
-          chain: "polygon",
-        });
-        const uintString = new Uint8Array(
-          order?.fulfillmentInformation?.encryptedString!
-        ).buffer;
-        const blob = new Blob([uintString], { type: "text/plain" });
-        const decryptedString = await decryptString(blob, symmetricKey);
+        const decryptedString = await decryptToString(
+          {
+            dataToEncryptHash: order?.fulfillmentInformation.dataToEncryptHash,
+            ciphertext: order?.fulfillmentInformation.ciphertext,
+            chain: "polygon",
+          },
+          client
+        );
 
         const updatedOrders = allOrders.map((currentOrder) => {
           if (
-            currentOrder.fulfillmentInformation.encryptedString ===
-            order.fulfillmentInformation.encryptedString
+            currentOrder.fulfillmentInformation.ciphertext ===
+            order.fulfillmentInformation.ciphertext
           ) {
             return {
               ...currentOrder,
               fulfillmentInformation: {
-                encryptedString: order.fulfillmentInformation.encryptedString,
-                encryptedSymmetricKey:
-                  order.fulfillmentInformation.encryptedSymmetricKey,
+                ciphertext: order.fulfillmentInformation.ciphertext,
+                dataToEncryptHash:
+                  order.fulfillmentInformation.dataToEncryptHash,
                 decryptedFulfillment: JSON.parse(decryptedString),
               },
             };
@@ -399,8 +332,8 @@ const useOrders = () => {
         idx ===
         allOrders.findIndex(
           (o) =>
-            o.fulfillmentInformation?.encryptedSymmetricKey ===
-            order.fulfillmentInformation?.encryptedSymmetricKey
+            o.fulfillmentInformation?.ciphertext ===
+            order.fulfillmentInformation?.ciphertext
         )
           ? false
           : val
