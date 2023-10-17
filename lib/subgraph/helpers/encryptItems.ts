@@ -1,7 +1,7 @@
 import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import { connectLit } from "./connectLit";
 import { AnyAction, Dispatch } from "redux";
-import { PreRoll } from "@/components/Common/types/common.types";
+import { CartItem, PreRoll } from "@/components/Common/types/common.types";
 
 export const encryptItems = async (
   litClient: LitJsSdk.LitNodeClient | undefined,
@@ -12,7 +12,7 @@ export const encryptItems = async (
     collectionIds: number[];
     collectionAmounts: number[];
   },
-  fulfillerGroups: { [key: string]: PreRoll[] },
+  fulfillerGroups: { [key: string]: CartItem[] },
   fulfillmentDetails: {
     name: string;
     contact: string;
