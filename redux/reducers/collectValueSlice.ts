@@ -1,15 +1,13 @@
-import { CollectValueType } from "@/components/Common/types/common.types";
+import { SimpleCollectOpenActionModuleInput } from "@/components/Common/types/generated";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CollectValueTypeState {
-  type?: CollectValueType;
+  type?: SimpleCollectOpenActionModuleInput;
 }
 
 const initialCollectValueState: CollectValueTypeState = {
   type: {
-    freeCollectModule: {
-      followerOnly: false,
-    },
+    followerOnly: false,
   },
 };
 
@@ -19,7 +17,7 @@ export const collectValueTypeSlice = createSlice({
   reducers: {
     setCollectValueType: (
       state: CollectValueTypeState,
-      action: PayloadAction<CollectValueType>
+      action: PayloadAction<SimpleCollectOpenActionModuleInput | undefined>
     ) => {
       state.type = action.payload;
     },

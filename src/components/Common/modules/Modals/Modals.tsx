@@ -221,7 +221,6 @@ const Modals = () => {
     collectVideo,
     mirrorVideo,
     likeVideo,
-    authStatus,
     profileId,
     mirrorCommentLoading,
     likeCommentLoading,
@@ -244,8 +243,6 @@ const Modals = () => {
     getMorePostComments,
     commentsLoading,
     hasMoreComments,
-    hasMirrored,
-    hasReacted,
     commentsOpen,
     setCommentsOpen,
   } = useInteractions();
@@ -265,7 +262,7 @@ const Modals = () => {
   } = useWho();
 
   const {
-    followerProfile: profile,
+    profile,
     followProfile,
     followLoading,
     approved,
@@ -275,6 +272,8 @@ const Modals = () => {
     <>
       {fullScreenVideo.open && (
         <FullScreenVideo
+          lensProfile={lensProfile}
+          openConnectModal={openConnectModal}
           formatTime={formatTime}
           dispatch={dispatch}
           mainVideo={mainVideo}
@@ -301,7 +300,6 @@ const Modals = () => {
           likeLoading={likeLoading}
           collectLoading={collectLoading}
           mirrorLoading={mirrorLoading}
-          authStatus={authStatus}
           profileId={profileId}
           progressRef={progressRef}
           handleSeek={handleSeek}
@@ -316,8 +314,6 @@ const Modals = () => {
           mirrorCommentLoading={mirrorCommentLoading}
           likeCommentLoading={likeCommentLoading}
           hasMoreComments={hasMoreComments}
-          hasMirrored={hasMirrored}
-          hasReacted={hasReacted}
           getMorePostComments={getMorePostComments}
           commentsOpen={commentsOpen}
           setCommentsOpen={setCommentsOpen}

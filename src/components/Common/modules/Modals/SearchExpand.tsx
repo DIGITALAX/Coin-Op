@@ -24,9 +24,11 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
   handleSearchSimilar,
   handlePromptChoose,
   router,
-  cartAddAnim
+  cartAddAnim,
 }): JSX.Element => {
-  const profileImage = createProfilePicture(searchItem.uri.profile);
+  const profileImage = createProfilePicture(
+    searchItem.uri.profile?.metadata?.picture
+  );
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm grid grid-flow-col auto-cols-auto w-full h-auto overflow-y-auto">
       <div className="relative w-full lg:w-fit h-fit col-start-1 place-self-center bg-black rounded-lg">
@@ -107,11 +109,9 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
                         onClick={() =>
                           window.open(
-                            `https://www.chromadin.xyz/autograph/${
-                              searchItem?.uri?.profile?.handle?.split(
-                                ".lens"
-                              )[0]
-                            }`
+                            `https://www.chromadin.xyz/autograph/${searchItem?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                              "@"
+                            )[1]}`
                           )
                         }
                       >
@@ -124,7 +124,10 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                           />
                         </div>
                         <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
-                          @{searchItem?.uri?.profile?.handle?.split(".lens")[0]}
+                          {
+                            searchItem?.uri?.profile?.handle?.suggestedFormatted
+                              ?.localName
+                          }
                         </div>
                       </div>
                       {searchItem?.uri?.chromadinCollectionName && (
@@ -133,11 +136,9 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                             className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
                             onClick={() =>
                               window.open(
-                                `https://www.chromadin.xyz/autograph/${
-                                  searchItem?.uri?.profile?.handle?.split(
-                                    ".lens"
-                                  )[0]
-                                }/collection/${searchItem?.uri?.chromadinCollectionName
+                                `https://www.chromadin.xyz/autograph/${searchItem?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                                  "@"
+                                )[1]}/collection/${searchItem?.uri?.chromadinCollectionName
                                   ?.toLowerCase()
                                   ?.replaceAll(" ", "_")}`
                               )
@@ -235,9 +236,13 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         }
 
                         dispatch(setCart(newCartItems));
-                        dispatch(setCartAddAnim(searchItem?.uri?.image[0]))
+                        dispatch(setCartAddAnim(searchItem?.uri?.image[0]));
                       }}
-                      id={cartAddAnim === searchItem.uri.image[0] ? "cartAddAnim" : ""}
+                      id={
+                        cartAddAnim === searchItem.uri.image[0]
+                          ? "cartAddAnim"
+                          : ""
+                      }
                     >
                       <Image
                         src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}

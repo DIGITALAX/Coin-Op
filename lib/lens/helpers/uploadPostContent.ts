@@ -2,6 +2,7 @@ import {
   PostImage,
   UploadedMedia,
 } from "@/components/Common/types/common.types";
+import { PublicationMetadataMainFocusType } from "@/components/Common/types/generated";
 import lodash from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,6 +12,10 @@ const uploadPostContent = async (
   setContentURI: (e: string | undefined) => void,
   contentURI: string | undefined
 ): Promise<string | undefined> => {
+  let $schema: string,
+    mainContentFocus: PublicationMetadataMainFocusType,
+    value;
+
   let newImages: PostImage[] = [];
   postImages?.forEach((image) => {
     newImages.push({
@@ -25,48 +30,55 @@ const uploadPostContent = async (
     });
   });
 
-  const coverImage = lodash.filter(newImages, (image: PostImage) => {
-    if (image.type === "image/png" || image.type === "image/gif") return true;
-  });
   const videos = lodash.filter(newImages, (image: PostImage) => {
     if (image.type === "video/mp4") return true;
   });
 
-  const data = {
-    version: "2.0.0",
-    metadata_id: uuidv4(),
-    description:
-      postDescription.length < 0 || postDescription.trim().length < 0
-        ? null
-        : postDescription,
-    content:
-      postDescription.length < 0 || postDescription.trim().length < 0
-        ? null
-        : postDescription,
-    external_url: "https://www.chromadin.xyz/",
-    image: coverImage.length > 0 ? (coverImage[0] as any).item : null,
-    imageMimeType: "image/png",
-    name: postDescription ? postDescription?.slice(0, 20) : "Chromadin",
-    mainContentFocus:
-      videos?.length > 0
-        ? "VIDEO"
-        : newImages.length > 0
-        ? "IMAGE"
-        : postDescription?.length > 270
-        ? "ARTICLE"
-        : "TEXT_ONLY",
-    contentWarning: null,
-    attributes: [],
-    media: newImages,
-    locale: "en",
-    tags: null,
-    appId: "coinop",
-  };
+  if (postImages && postImages?.length < 1) {
+    if (postDescription?.length > 270) {
+      $schema = "https://json-schemas.lens.dev/publications/text/3.0.0.json";
+      mainContentFocus = PublicationMetadataMainFocusType.TextOnly;
+    } else {
+      $schema = "https://json-schemas.lens.dev/publications/article/3.0.0.json";
+      mainContentFocus = PublicationMetadataMainFocusType.Article;
+    }
+  } else {
+    if (videos?.length > 0) {
+      $schema = "https://json-schemas.lens.dev/publications/video/3.0.0.json";
+      mainContentFocus = PublicationMetadataMainFocusType.Video;
+      value = {
+        image: newImages?.find((item) => item.type !== "video/mp4"),
+        attachments: newImages,
+      };
+    } else {
+      $schema = "https://json-schemas.lens.dev/publications/image/3.0.0.json";
+      mainContentFocus = PublicationMetadataMainFocusType.Image;
+      value = {
+        video: videos[0],
+        attachments: videos,
+      };
+    }
+  }
 
   try {
     const response = await fetch("/api/ipfs", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        $schema,
+        lens: {
+          mainContentFocus,
+          title: postDescription ? postDescription?.slice(0, 20) : "Chromadin",
+          content:
+            postDescription.length < 0 || postDescription.trim().length < 0
+              ? null
+              : postDescription,
+          ...value,
+          appId: "chromadin",
+          id: uuidv4(),
+          hideFromFeed: false,
+          locale: "en",
+        },
+      }),
     });
     if (response.status !== 200) {
     } else {

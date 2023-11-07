@@ -24,7 +24,9 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
   index,
   cartAddAnim,
 }): JSX.Element => {
-  const profileImage = createProfilePicture(preRoll.uri.profile);
+  const profileImage = createProfilePicture(
+    preRoll.uri.profile?.metadata?.picture
+  );
   return (
     <div className="relative w-48 flex flex-col h-fit gap-2">
       <div
@@ -278,9 +280,9 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
           className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
           onClick={() =>
             window.open(
-              `https://www.chromadin.xyz/autograph/${
-                preRoll?.uri?.profile?.handle?.split(".lens")[0]
-              }`
+              `https://www.chromadin.xyz/autograph/${preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                "@"
+              )[1]}`
             )
           }
         >
@@ -294,7 +296,8 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
             />
           </div>
           <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
-            @{preRoll?.uri?.profile?.handle?.split(".lens")[0]}
+            
+            {preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName}
           </div>
         </div>
         {preRoll?.uri?.chromadinCollectionName && (
@@ -303,9 +306,9 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
               className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
               onClick={() =>
                 window.open(
-                  `https://www.chromadin.xyz/autograph/${
-                    preRoll?.uri?.profile?.handle?.split(".lens")[0]
-                  }/collection/${preRoll?.uri?.chromadinCollectionName
+                  `https://www.chromadin.xyz/autograph/${preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                    "@"
+                  )[1]}/collection/${preRoll?.uri?.chromadinCollectionName
                     ?.toLowerCase()
                     ?.replaceAll(" ", "_")}`
                 )

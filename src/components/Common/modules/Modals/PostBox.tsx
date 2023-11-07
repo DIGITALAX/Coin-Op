@@ -18,6 +18,7 @@ import CollectButton from "../Lens/CollectButton";
 import CollectInput from "../Lens/CollectInput";
 import ImageUploads from "../Lens/ImageUploads";
 import { setCollectOpen } from "../../../../../redux/reducers/collectOpenSlice";
+import { Profile } from "../../types/generated";
 
 const PostBox: FunctionComponent<PostBoxProps> = ({
   dispatch,
@@ -318,9 +319,9 @@ const PostBox: FunctionComponent<PostBoxProps> = ({
                             }}
                           >
                             {mentionProfiles?.map(
-                              (user: any, index: number) => {
+                              (user: Profile, index: number) => {
                                 const profileImage: string =
-                                  createProfilePicture(user);
+                                  createProfilePicture(user?.metadata?.picture);
                                 return (
                                   <div
                                     key={index}
@@ -346,7 +347,10 @@ const PostBox: FunctionComponent<PostBoxProps> = ({
                                         )}
                                       </div>
                                       <div className="relative col-start-2 items-center justify-center w-fit h-fit text-xs flex">
-                                        @{user?.handle?.split(".lens")[0]}
+                                        {
+                                          user?.handle?.suggestedFormatted
+                                            ?.localName
+                                        }
                                       </div>
                                     </div>
                                   </div>

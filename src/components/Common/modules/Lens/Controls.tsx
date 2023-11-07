@@ -1,13 +1,12 @@
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { FormEvent, FunctionComponent } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import lodash from "lodash";
-import json from "./../../../../../public/videos/local.json";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
 import { setMainVideo } from "../../../../../redux/reducers/mainVideoSlice";
+import json from "./../../../../../public/videos/local.json";
 import { setVideoSync } from "../../../../../redux/reducers/videoSyncSlice";
 import { ControlsProps } from "../../types/common.types";
-import { setLogin } from "../../../../../redux/reducers/loginSlice";
 
 const Controls: FunctionComponent<ControlsProps> = ({
   formatTime,
@@ -22,7 +21,6 @@ const Controls: FunctionComponent<ControlsProps> = ({
   likeVideo,
   collectVideo,
   mirrorVideo,
-  authStatus,
   profileId,
   likeLoading,
   mirrorLoading,
@@ -38,10 +36,11 @@ const Controls: FunctionComponent<ControlsProps> = ({
   dispatch,
   hasMore,
   fetchMoreVideos,
-  videoLoading,
-  setVideoLoading,
   handleLensSignIn,
   connected,
+  openConnectModal,
+  setVideoLoading,
+  videoLoading,
 }): JSX.Element => {
   const currentIndex = lodash.findIndex(dispatchVideos, { id: mainVideo.id });
   return (
@@ -58,7 +57,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
       </div>
       <div className="relative w-full h-full flex flex-col items-center justify-center">
         <div
-          className="relative w-full h-2 bg-white/40 rounded-sm cursor-pointer"
+          className="relative w-full h-2 bg-white/40 rounded-sm cursor-sewingHS"
           ref={progressRef}
           onClick={(e: any) => handleSeek(e)}
         >
@@ -75,11 +74,11 @@ const Controls: FunctionComponent<ControlsProps> = ({
       >
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
           <div
-            className={`cursor-pointer relative ${
+            className={`cursor-sewingHS relative ${
               likeLoading && "animate-spin"
             }`}
             onClick={
-              profileId && authStatus
+              profileId
                 ? () => {
                     handleHeart();
                     likeVideo();
@@ -113,21 +112,15 @@ const Controls: FunctionComponent<ControlsProps> = ({
         </div>
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
           <div
-            className={`cursor-pointer relative ${
+            className={`cursor-sewingHS relative ${
               collectLoading && "animate-spin"
             }`}
             onClick={
-              profileId && authStatus
+              profileId
                 ? () => collectVideo()
                 : !connected
-                ? () =>
-                    dispatch(
-                      setLogin({
-                        actionOpen: true,
-                        actionHighlight: "crypto",
-                      })
-                    )
-                : connected && !profileId && !authStatus
+                ? openConnectModal
+                : connected && !profileId
                 ? () => handleLensSignIn()
                 : () => {}
             }
@@ -158,21 +151,15 @@ const Controls: FunctionComponent<ControlsProps> = ({
         </div>
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
           <div
-            className={`cursor-pointer relative ${
+            className={`cursor-sewingHS relative ${
               mirrorLoading && "animate-spin"
             }`}
             onClick={
-              profileId && authStatus
+              profileId
                 ? () => mirrorVideo()
                 : !connected
-                ? () =>
-                    dispatch(
-                      setLogin({
-                        actionOpen: true,
-                        actionHighlight: "crypto",
-                      })
-                    )
-                : connected && !profileId && !authStatus
+                ? openConnectModal
+                : connected && !profileId
                 ? () => handleLensSignIn()
                 : () => {}
             }
@@ -202,7 +189,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
           </div>
         </div>
         <div
-          className="relative cursor-pointer rotate-180"
+          className="relative cursor-sewingHS rotate-180"
           onClick={() =>
             dispatch(
               setMainVideo({
@@ -260,7 +247,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
           />
         </div>
         <div
-          className="relative cursor-pointer"
+          className="relative cursor-sewingHS"
           onClick={() =>
             dispatch(
               setVideoSync({
@@ -289,7 +276,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
           />
         </div>
         <div
-          className={`relative cursor-pointer ${
+          className={`relative cursor-sewingHS ${
             videoLoading && "animate-spin"
           }`}
           onClick={
@@ -362,7 +349,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
           )}
         </div>
         <div
-          className="relative cursor-pointer"
+          className="relative cursor-sewingHS"
           onClick={() => setVolumeOpen(!volumeOpen)}
         >
           <Image

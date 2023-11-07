@@ -24,7 +24,6 @@ import { litExecute } from "../../../../lib/subgraph/helpers/litExecute";
 import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
 import { setQuestPoints } from "../../../../redux/reducers/questPointsSlice";
 import { getChromadinBought } from "../../../../graphql/subgraph/queries/getChromadinHistory";
-import getIsFollowing from "../../../../graphql/lens/queries/isFollowing";
 import { setMessagesModal } from "../../../../redux/reducers/messagesModalSlice";
 import {
   getOrders,
@@ -263,15 +262,11 @@ const useQuest = () => {
         }
 
         if (!currentQuestCount.includes(String(6))) {
-          const res = await getDefaultProfile(address);
+          const res = await getDefaultProfile({
+            for: address,
+          });
 
           if (res?.data?.defaultProfile) questsCompletedIds.push(6);
-        }
-
-        if (!currentQuestCount.includes(String(11))) {
-          const res = await getIsFollowing(address);
-          if (res?.data?.doesFollow.every((item: any) => item.follows === true))
-            questsCompletedIds.push(11);
         }
 
         // check for audiovisual

@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import lodash, { isString } from "lodash";
 import { CollectButtonProps } from "../../types/common.types";
-import { Erc20 } from "../../types/lens.types";
+import { Erc20 } from "../../types/generated";
 
 const CollectButton: FunctionComponent<CollectButtonProps> = ({
   values,

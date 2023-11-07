@@ -1,7 +1,6 @@
 import { Template } from "@/components/Walkthrough/Format/types/format.types";
 import {
   ElementInterface,
-  SvgPatternType,
   SynthConfig,
 } from "@/components/Walkthrough/Synth/types/synth.types";
 import { NextRouter } from "next/router";
@@ -14,10 +13,9 @@ import {
   MutableRefObject,
   Ref,
   RefObject,
-  WheelEvent,
 } from "react";
 import { AnyAction, Dispatch, Dispatch as DispatchRedux } from "redux";
-import { Erc20, Profile, Publication } from "./lens.types";
+import { Comment, Erc20, Post, Profile } from "./generated";
 import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
 import { SynthData } from "../../../../redux/reducers/completedSynthsSlice";
 import { MainVideoState } from "../../../../redux/reducers/mainVideoSlice";
@@ -507,7 +505,7 @@ export type ComponentProps = {
   mainVideo: MainVideoState;
   isPlaying: boolean;
   volume: number;
-  dispatchVideos: Publication[];
+  dispatchVideos: Post[];
   videoSync: VideoSyncState;
   dispatch: Dispatch<AnyAction>;
   hasMore: boolean;
@@ -524,7 +522,7 @@ export type PlayerProps = {
   mainVideo: MainVideoState;
   volume: number;
   wrapperRef: Ref<HTMLDivElement>;
-  dispatchVideos: Publication[];
+  dispatchVideos: Post[];
   videoSync: VideoSyncState;
   dispatch: Dispatch<AnyAction>;
   hasMore: boolean;
@@ -541,21 +539,22 @@ export type LoadingProps = {
 };
 
 export type FullScreenVideoProps = {
+  openConnectModal: (() => void) | undefined;
   dispatch: Dispatch<AnyAction>;
   mainVideo: MainVideoState;
   videoRef: Ref<HTMLDivElement>;
   streamRef: Ref<ReactPlayer>;
   wrapperRef: Ref<HTMLDivElement>;
-  dispatchVideos: Publication[];
+  dispatchVideos: Post[];
   videoSync: VideoSyncState;
   mirrorLoading: boolean;
   collectLoading: boolean;
   likeLoading: boolean;
-  authStatus: boolean;
   profileId: string;
+  lensProfile: Profile | undefined;
   hasMore: boolean;
   connected: boolean;
-  commentors: Publication[];
+  commentors: Comment[];
   handleLensSignIn: () => Promise<void>;
   fetchMoreVideos: () => Promise<
     | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
@@ -588,8 +587,6 @@ export type FullScreenVideoProps = {
   mirrorCommentLoading: boolean[];
   likeCommentLoading: boolean[];
   collectCommentLoading: boolean[];
-  hasMirrored: boolean[];
-  hasReacted: boolean[];
   commentId: string;
   commentsOpen: boolean;
   setCommentsOpen: (e: boolean) => void;
@@ -679,14 +676,13 @@ export type ControlsProps = {
   mirrorLoading: boolean;
   collectLoading: boolean;
   likeLoading: boolean;
-  authStatus: boolean;
   profileId: string;
   mainVideo: MainVideoState;
   progressRef: Ref<HTMLDivElement>;
   handleSeek: (
     e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
   ) => void;
-  dispatchVideos: Publication[];
+  dispatchVideos: Post[];
   collectAmount: number[];
   mirrorAmount: number[];
   likeAmount: number[];
@@ -698,11 +694,12 @@ export type ControlsProps = {
   >;
   videoLoading: boolean;
   setVideoLoading: (e: boolean) => void;
+  openConnectModal: (() => void) | undefined;
 };
 
 export type CommentsProps = {
-  commentors: Publication[];
-  video: Publication;
+  commentors: Comment[];
+  video: Post;
   getMorePostComments: () => Promise<void>;
   commentsLoading: boolean;
   hasMoreComments: boolean;
@@ -713,7 +710,6 @@ export type CommentsProps = {
   collectComment: (id?: string) => Promise<void>;
   mirrorComment: (id?: string) => Promise<void>;
   dispatch: Dispatch<AnyAction>;
-  hasMirrored: boolean[];
-  hasReacted: boolean[];
   commentId: string;
+  lensProfile: Profile | undefined;
 };

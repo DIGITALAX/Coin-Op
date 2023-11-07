@@ -4,11 +4,10 @@ import pollUntilIndexed from "../../../graphql/lens/queries/checkIndexed";
 
 const handleIndexCheck = async (
   tx: any,
-  dispatch: Dispatch<AnyAction>,
-  success: boolean
+  dispatch: Dispatch<AnyAction>
 ) => {
   try {
-    const indexedStatus = await pollUntilIndexed(tx, success);
+    const indexedStatus = await pollUntilIndexed(tx);
     if (indexedStatus) {
       dispatch(
         setIndexModal({

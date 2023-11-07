@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useAccount, useSignMessage } from "wagmi";
-import { setProfile } from "../../../../redux/reducers/profileSlice";
-import generateChallenge from "../../../../graphql/lens/queries/generateChallenge";
 import getDefaultProfile from "../../../../graphql/lens/queries/getDefaultProfile";
+import generateChallenge from "../../../../graphql/lens/queries/generateChallenge";
+import authenticate from "../../../../graphql/lens/mutations/authenticate";
 import {
   getAddress,
   getAuthenticationToken,
@@ -13,44 +13,43 @@ import {
   setAddress,
   setAuthenticationToken,
 } from "../../../../lib/lens/utils";
-import authenticate from "../../../../graphql/lens/mutations/authenticate";
+import { setProfile } from "../../../../redux/reducers/profileSlice";
 import { setNoHandle } from "../../../../redux/reducers/noHandleSlice";
+import { Profile } from "../types/generated";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
-import { setAuthStatus } from "../../../../redux/reducers/authStatusSlice";
 
 const useSignIn = () => {
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
 
-  const { signMessageAsync } = useSignMessage({
-    onError() {
-      dispatch(setAuthStatus(false));
-    },
-  });
+  const { signMessageAsync } = useSignMessage();
 
   const handleLensSignIn = async (): Promise<void> => {
     setSignInLoading(true);
     try {
-      const challengeResponse = await generateChallenge(address);
-      const signature = await signMessageAsync({
-        message: challengeResponse.data.challenge.text,
+      const profile = await getDefaultProfile({
+        for: address,
       });
-      const accessTokens = await authenticate(
-        address as string,
-        signature as string
-      );
+      const challengeResponse = await generateChallenge({
+        for: profile.data?.defaultProfile?.id,
+        signedBy: address,
+      });
+      const signature = await signMessageAsync({
+        message: challengeResponse.data?.challenge.text!,
+      });
+      const accessTokens = await authenticate({
+        id: challengeResponse.data?.challenge.id,
+        signature: signature,
+      });
       if (accessTokens) {
-        setAuthenticationToken({ token: accessTokens.data.authenticate });
+        setAuthenticationToken({ token: accessTokens.data?.authenticate! });
         setAddress(address as string);
-        const profile = await getDefaultProfile(address?.toLowerCase());
 
         if (profile?.data?.defaultProfile) {
-          dispatch(setProfile(profile?.data?.defaultProfile));
-          dispatch(setAuthStatus(true));
+          dispatch(setProfile(profile?.data?.defaultProfile as Profile));
         } else {
           dispatch(setNoHandle(true));
-          dispatch(setAuthStatus(false));
         }
       }
     } catch (err: any) {
@@ -61,13 +60,13 @@ const useSignIn = () => {
 
   const handleRefreshProfile = async (): Promise<void> => {
     try {
-      const profile = await getDefaultProfile(address);
-      if (profile?.data?.defaultProfile !== null) {
-        dispatch(setProfile(profile?.data?.defaultProfile));
-        dispatch(setAuthStatus(true));
+      const profile = await getDefaultProfile({
+        for: address,
+      });
+      if (profile?.data?.defaultProfile) {
+        dispatch(setProfile(profile?.data?.defaultProfile as Profile));
       } else {
         removeAuthenticationToken();
-        dispatch(setAuthStatus(false));
       }
     } catch (err: any) {
       console.error(err.message);
@@ -96,7 +95,7 @@ const useSignIn = () => {
               removeAuthenticationToken();
             }
           }
-          await handleRefreshProfile();
+          await handleRefreshProfile(); // await the handleRefreshProfile promise
         }
       } else if (isConnected && address !== newAddress) {
         dispatch(setProfile(undefined));

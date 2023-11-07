@@ -49,14 +49,11 @@ import videoPlayerReducer from "./reducers/videoPlayerSlice";
 import mainVideoReducer from "./reducers/mainVideoSlice";
 import secondaryCommentReducer from "./reducers/secondaryCommentSlice";
 import videoSyncReducer from "./reducers/videoSyncSlice";
-import canCommentReducer from "./reducers/canCommentSlice";
 import reactIdReducer from "./reducers/reactIdSlice";
 import approvalArgsReducer from "./reducers/approvalArgsSlice";
 import seekReducer from "./reducers/seekSlice";
-import dispatcherReducer from "./reducers/dispatcherSlice";
 import postCollectValuesReducer from "./reducers/postCollectValuesSlice";
 import purchaseReducer from "./reducers/purchaseSlice";
-import authStatusReducer from "./reducers/authStatusSlice";
 import reactionStateReducer from "./reducers/reactionStateSlice";
 import followerOnlyReducer from "./reducers/followerOnlySlice";
 import channelsReducer from "./reducers/channelsSlice";
@@ -114,15 +111,12 @@ const reducer = combineReducers({
   videoPlayerReducer,
   mainVideoReducer,
   secondaryCommentReducer,
-  canCommentReducer,
   videoSyncReducer,
   reactIdReducer,
   approvalArgsReducer,
   seekReducer,
-  dispatcherReducer,
   postCollectValuesReducer,
   purchaseReducer,
-  authStatusReducer,
   reactionStateReducer,
   followerOnlyReducer,
   channelsReducer,

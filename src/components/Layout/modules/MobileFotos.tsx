@@ -49,7 +49,9 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
             })
           : [...preRolls?.left, ...preRolls?.right].map(
               (preRoll: PreRoll, index: number) => {
-                const profileImage = createProfilePicture(preRoll.uri.profile);
+                const profileImage = createProfilePicture(
+                  preRoll.uri.profile?.metadata?.picture
+                );
                 return (
                   <SwiperSlide
                     key={index}
@@ -97,7 +99,9 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                         onClick={() =>
                           window.open(
                             `https://www.chromadin.xyz/autograph/${
-                              preRoll?.uri?.profile?.handle?.split(".lens")[0]
+                              preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                                "@"
+                              )[1]
                             }`
                           )
                         }
@@ -112,7 +116,11 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                           />
                         </div>
                         <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
-                          @{preRoll?.uri?.profile?.handle?.split(".lens")[0]}
+                          {
+                            preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                              "@"
+                            )[1]
+                          }
                         </div>
                       </div>
                       {preRoll?.uri?.chromadinCollectionName && (
@@ -122,9 +130,9 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                             onClick={() =>
                               window.open(
                                 `https://www.chromadin.xyz/autograph/${
-                                  preRoll?.uri?.profile?.handle?.split(
-                                    ".lens"
-                                  )[0]
+                                  preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                                    "@"
+                                  )[1]
                                 }/collection/${preRoll?.uri?.chromadinCollectionName
                                   ?.toLowerCase()
                                   ?.replaceAll(" ", "_")}`

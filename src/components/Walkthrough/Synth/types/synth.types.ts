@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent, Ref, WheelEvent } from "react";
+import { FormEvent, MouseEvent, Ref } from "react";
 import { AnyAction, Dispatch } from "redux";
 import { SynthData } from "../../../../../redux/reducers/completedSynthsSlice";
 

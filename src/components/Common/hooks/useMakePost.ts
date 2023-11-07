@@ -13,7 +13,7 @@ import {
 } from "../../../../lib/lens/utils";
 import { splitSignature } from "ethers/lib/utils.js";
 import { MediaType, UploadedMedia } from "../types/common.types";
-import { Profile } from "../types/lens.types";
+import { LimitType, Profile, RelaySuccess } from "../types/generated";
 import useImageUpload from "./useImageUpload";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -27,16 +27,13 @@ import getCaretPos from "../../../../lib/lens/helpers/getCaretPos";
 import { searchProfile } from "../../../../graphql/lens/queries/search";
 import { omit } from "lodash";
 import broadcast from "../../../../graphql/lens/mutations/broadcast";
-import {
-  createDispatcherPostData,
-  createPostTypedData,
-} from "../../../../graphql/lens/mutations/post";
+import { createPostTypedData } from "../../../../graphql/lens/mutations/post";
 import { setIndexModal } from "../../../../redux/reducers/indexModalSlice";
 import handleIndexCheck from "../../../../lib/lens/helpers/handleIndexCheck";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import { setCollectOpen } from "../../../../redux/reducers/collectOpenSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { polygon} from "viem/chains";
+import { polygon } from "viem/chains";
 import { useAccount } from "wagmi";
 
 const useMakePost = () => {
@@ -179,7 +176,7 @@ const useMakePost = () => {
   };
 
   const handlePostDescription = async (e: any): Promise<void> => {
-    let resultElement = document.querySelector("#highlighted-content");
+    let resultElement = document.querySelector("#highlighted-content3");
     const newValue = e.target.value.endsWith("\n")
       ? e.target.value + " "
       : e.target.value;
@@ -207,10 +204,9 @@ const useMakePost = () => {
     ) {
       const allProfiles = await searchProfile({
         query: e.target.value.split(" ")[e.target.value.split(" ")?.length - 1],
-        type: "PROFILE",
-        limit: 50,
+        limit: LimitType.TwentyFive,
       });
-      setMentionProfiles(allProfiles?.data?.search?.items);
+      setMentionProfiles(allProfiles?.data?.searchProfiles?.items as Profile[]);
     } else {
       setProfilesOpen(false);
       setMentionProfiles([]);
@@ -246,7 +242,7 @@ const useMakePost = () => {
       return;
     }
     setPostLoading(true);
-    let result: any;
+
     try {
       const contentURIValue = await uploadPostContent(
         postImages,
@@ -255,95 +251,77 @@ const useMakePost = () => {
         contentURI
       );
 
-      if (profile?.dispatcher?.canUseRelay) {
-        result = await createDispatcherPostData({
-          profileId: profile?.id,
-          contentURI: "ipfs://" + contentURIValue,
-          collectModule: collectModuleType,
-          referenceModule: {
-            followerOnlyReferenceModule: false,
+      const data = await createPostTypedData({
+        contentURI: "ipfs://" + contentURIValue,
+        openActionModules: [
+          {
+            collectOpenAction: {
+              simpleCollectOpenAction: collectModuleType,
+            },
           },
+        ],
+      });
+
+      const typedData = data.data?.createOnchainPostTypedData?.typedData;
+
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      const signature = await clientWallet.signTypedData({
+        domain: omit(typedData?.domain, ["__typename"]),
+        types: omit(typedData?.types, ["__typename"]),
+        primaryType: "Post",
+        message: omit(typedData?.value, ["__typename"]),
+        account: address as `0x${string}`,
+      });
+      const { v, r, s } = splitSignature(signature);
+
+      const broadcastResult = await broadcast({
+        id: data.data?.createOnchainPostTypedData?.id,
+        signature,
+      });
+
+      if (
+        broadcastResult?.data?.broadcastOnchain?.__typename === "RelayError"
+      ) {
+        const { request } = await publicClient.simulateContract({
+          address: LENS_HUB_PROXY_ADDRESS_MATIC,
+          abi: LensHubProxy,
+          functionName: "postWithSig",
+          chain: polygon,
+          args: [
+            {
+              profileId: typedData?.value.profileId,
+              contentURI: typedData?.value.contentURI,
+              actionModules: typedData?.value.actionModules,
+              actionModulesInitDatas: typedData?.value.actionModulesInitDatas,
+              referenceModule: typedData?.value.referenceModule,
+              referenceModuleInitData: typedData?.value.referenceModuleInitData,
+            },
+            {
+              v,
+              r,
+              s,
+              deadline: typedData?.value.deadline,
+              signer: address,
+            },
+          ],
+          account: address,
         });
+        const res = await clientWallet.writeContract(request);
+        clearPost();
+        await publicClient.waitForTransactionReceipt({ hash: res });
+        await handleIndexCheck(res, dispatch);
+      } else {
         clearPost();
         setTimeout(async () => {
           await handleIndexCheck(
-            result?.data?.createPostViaDispatcher?.txHash,
-            dispatch,
-            true
+            (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
+            dispatch
           );
         }, 7000);
-      } else {
-        result = await createPostTypedData({
-          profileId: profile?.id,
-          contentURI: "ipfs://" + contentURIValue,
-          collectModule: collectModuleType,
-          referenceModule: {
-            followerOnlyReferenceModule: false,
-          },
-        });
-
-        const typedData: any = result.data.createPostTypedData.typedData;
-
-        const clientWallet = createWalletClient({
-          chain: polygon,
-          transport: custom((window as any).ethereum),
-        });
-
-        const signature: any = await clientWallet.signTypedData({
-          domain: omit(typedData?.domain, ["__typename"]),
-          types: omit(typedData?.types, ["__typename"]),
-          primaryType: "PostWithSig",
-          message: omit(typedData?.value, ["__typename"]),
-          account: address as `0x${string}`,
-        });
-
-        const broadcastResult: any = await broadcast({
-          id: result?.data?.createPostTypedData?.id,
-          signature,
-        });
-
-        if (broadcastResult?.data?.broadcast?.__typename !== "RelayerResult") {
-          const { v, r, s } = splitSignature(signature);
-
-          const { request } = await publicClient.simulateContract({
-            address: LENS_HUB_PROXY_ADDRESS_MATIC.toLowerCase() as `0x${string}`,
-            abi: LensHubProxy,
-            functionName: "postWithSig",
-            args: [
-              {
-                profileId: typedData.value.profileId,
-                contentURI: typedData.value.contentURI,
-                profileIdPointed: typedData.value.profileIdPointed,
-                pubIdPointed: typedData.value.pubIdPointed,
-                referenceModuleData: typedData.value.referenceModuleData,
-                referenceModule: typedData.value.referenceModule,
-                referenceModuleInitData:
-                  typedData.value.referenceModuleInitData,
-                collectModule: typedData.value.collectModule,
-                collectModuleInitData: typedData.value.collectModuleInitData,
-                sig: {
-                  v,
-                  r,
-                  s,
-                  deadline: typedData.value.deadline,
-                },
-              },
-            ],
-            account: address,
-          });
-          const res = await clientWallet.writeContract(request);
-          await publicClient.waitForTransactionReceipt({ hash: res });
-          await handleIndexCheck(res, dispatch, true);
-        } else {
-          clearPost();
-          setTimeout(async () => {
-            await handleIndexCheck(
-              broadcastResult?.data?.broadcast?.txHash,
-              dispatch,
-              true
-            );
-          }, 7000);
-        }
       }
     } catch (err: any) {
       console.error(err.message);
@@ -351,15 +329,15 @@ const useMakePost = () => {
     setPostLoading(false);
   };
 
-  const handleMentionClick = (user: any) => {
+  const handleMentionClick = (user: Profile) => {
     setProfilesOpen(false);
     let resultElement = document.querySelector("#highlighted-content");
     const newHTMLPost =
       postHTML?.substring(0, postHTML.lastIndexOf("@")) +
-      `@${user?.handle}</span>`;
+      `@${user?.handle?.localName}</span>`;
     const newElementPost =
       postDescription?.substring(0, postDescription.lastIndexOf("@")) +
-      `@${user?.handle}`;
+      `@${user?.handle?.localName}`;
     setPostDescription(newElementPost);
 
     const postStorage = JSON.parse(getPostData() || "{}");

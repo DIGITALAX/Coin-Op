@@ -2,7 +2,7 @@ import { Appearance } from "@stripe/stripe-js";
 
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
 
-export const BASE_URL: string = "https://api.lens.dev";
+export const BASE_URL: string = "https://api-v2.lens.dev";
 
 export const LENS_HUB_PROXY_ADDRESS_MUMBAI: `0x${string}` =
   "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";

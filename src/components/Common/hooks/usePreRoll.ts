@@ -9,7 +9,7 @@ import { initializeAlgolia } from "../../../../lib/algolia/client";
 import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
 import { getOneProfile } from "../../../../graphql/lens/queries/getProfile";
 import { DIGITALAX_PROFILE_ID_LENS } from "../../../../lib/constants";
-import { Profile } from "../types/lens.types";
+import { Profile } from "../types/generated";
 import { setPreRollLoading } from "../../../../redux/reducers/prerollsLoadingSlice";
 
 const usePreRoll = () => {
@@ -35,9 +35,10 @@ const usePreRoll = () => {
       }
       const profileCache: { [key: string]: Profile } = {};
       const digitalaxProfile = await getOneProfile({
-        profileId: DIGITALAX_PROFILE_ID_LENS,
+        forProfileId: DIGITALAX_PROFILE_ID_LENS,
       });
-      profileCache[DIGITALAX_PROFILE_ID_LENS] = digitalaxProfile.data.profile;
+      profileCache[DIGITALAX_PROFILE_ID_LENS] = digitalaxProfile?.data
+        ?.profile as Profile;
 
       const preRollsAddedPromises = data?.data?.collectionCreateds?.map(
         async (obj: PreRoll, index: number) => {
@@ -49,9 +50,9 @@ const usePreRoll = () => {
           if (uri?.profile) {
             if (!profileCache[uri.profile]) {
               const res = await getOneProfile({
-                profileId: uri.profile,
+                forProfileId: uri.profile,
               });
-              profileCache[uri.profile] = res.data.profile;
+              profileCache[uri.profile] = res?.data?.profile as Profile;
             }
             profile = profileCache[uri.profile];
           }
@@ -99,8 +100,6 @@ const usePreRoll = () => {
         }
       );
 
- 
-
       const preRollsAdded = await Promise.all(preRollsAddedPromises);
       preRollsAdded.sort(() => Math.random() - 0.5);
       dispatch(
@@ -125,6 +124,7 @@ const usePreRoll = () => {
 
       // await algoilaIndex!.replaceAllObjects(preRollsAdded, {
       //   autoGenerateObjectIDIfNotExist: true,
+        
       // });
     } catch (err: any) {
       console.error(err.message);

@@ -402,3 +402,16 @@ input[type="range"]::-ms-thumb {
     top: 10rem;
   }
 }
+
+#hozScroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+#hozScroll::-webkit-scrollbar-track:active {
+  background-color: transparent !important;
+}
+
+#hozScroll::-webkit-scrollbar-thumb:active {
+  background-color: transparent !important;
+}

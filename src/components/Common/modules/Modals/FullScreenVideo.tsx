@@ -1,13 +1,13 @@
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import Draggable from "react-draggable";
+import lodash from "lodash";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
 import { setVideoPlayer } from "../../../../../redux/reducers/videoPlayerSlice";
-import { FullScreenVideoProps } from "../../types/common.types";
 import Player from "../Lens/Player";
 import Controls from "../Lens/Controls";
 import Comments from "../Lens/Comments";
-import lodash from "lodash";
+import { FullScreenVideoProps } from "../../types/common.types";
 
 const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
   dispatch,
@@ -21,7 +21,6 @@ const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
   fetchMoreVideos,
   videoLoading,
   setVideoLoading,
-  authStatus,
   profileId,
   likeAmount,
   formatTime,
@@ -50,13 +49,13 @@ const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
   collectCommentLoading,
   mirrorCommentLoading,
   likeCommentLoading,
-  hasMirrored,
-  hasReacted,
   commentId,
   commentsOpen,
   setCommentsOpen,
   handleLensSignIn,
   connected,
+  openConnectModal,
+  lensProfile,
 }): JSX.Element => {
   return (
     <Draggable
@@ -65,7 +64,7 @@ const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
       nodeRef={videoRef as any}
     >
       <div
-        className={`absolute z-20 h-fit cursor-grab active:cursor-grabbing items-center justify-center rounded-lg top-[1000px] sm:top-40 left-0 sm:left-1/3 flex flex-col xl:w-1/3 sm:w-1/2 w-full`}
+        className={`absolute z-20 h-fit cursor-grab active:cursor-grabbing items-center justify-center rounded-lg top-40 left-0 sm:left-1/3 flex flex-col xl:w-1/3 sm:w-1/2 w-full`}
         ref={videoRef as any}
       >
         <div
@@ -127,7 +126,6 @@ const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
               likeVideo={likeVideo}
               collectVideo={collectVideo}
               mirrorVideo={mirrorVideo}
-              authStatus={authStatus}
               profileId={profileId}
               likeLoading={likeLoading}
               mirrorLoading={mirrorLoading}
@@ -146,6 +144,7 @@ const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
               videoLoading={videoLoading}
               setVideoLoading={setVideoLoading}
               handleLensSignIn={handleLensSignIn}
+              openConnectModal={openConnectModal}
             />
           </div>
         </div>
@@ -168,9 +167,8 @@ const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
               mirrorCommentLoading={mirrorCommentLoading}
               collectCommentLoading={collectCommentLoading}
               dispatch={dispatch}
-              hasMirrored={hasMirrored}
-              hasReacted={hasReacted}
               commentId={commentId}
+              lensProfile={lensProfile}
             />
           </div>
         )}

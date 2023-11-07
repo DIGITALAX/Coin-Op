@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.16",
+    "@apollo/client": "^3.8.7",
     "@lit-protocol/lit-auth-client": "3.0.5",
     "@lit-protocol/lit-node-client": "3.0.5",
     "@lit-protocol/pkp-ethers": "3.0.5",
