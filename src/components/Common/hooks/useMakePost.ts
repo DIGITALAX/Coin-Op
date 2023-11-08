@@ -11,7 +11,6 @@ import {
   removePostData,
   setPostData,
 } from "../../../../lib/lens/utils";
-import { splitSignature } from "ethers/lib/utils.js";
 import { MediaType, UploadedMedia } from "../types/common.types";
 import { LimitType, Profile, RelaySuccess } from "../types/generated";
 import useImageUpload from "./useImageUpload";
@@ -276,7 +275,6 @@ const useMakePost = () => {
         message: omit(typedData?.value, ["__typename"]),
         account: address as `0x${string}`,
       });
-      const { v, r, s } = splitSignature(signature);
 
       const broadcastResult = await broadcast({
         id: data.data?.createOnchainPostTypedData?.id,
@@ -289,7 +287,7 @@ const useMakePost = () => {
         const { request } = await publicClient.simulateContract({
           address: LENS_HUB_PROXY_ADDRESS_MATIC,
           abi: LensHubProxy,
-          functionName: "postWithSig",
+          functionName: "post",
           chain: polygon,
           args: [
             {
@@ -299,13 +297,6 @@ const useMakePost = () => {
               actionModulesInitDatas: typedData?.value.actionModulesInitDatas,
               referenceModule: typedData?.value.referenceModule,
               referenceModuleInitData: typedData?.value.referenceModuleInitData,
-            },
-            {
-              v,
-              r,
-              s,
-              deadline: typedData?.value.deadline,
-              signer: address,
             },
           ],
           account: address,

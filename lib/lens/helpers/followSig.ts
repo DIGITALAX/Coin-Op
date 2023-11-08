@@ -2,7 +2,6 @@ import { omit } from "lodash";
 import { AnyAction, Dispatch } from "redux";
 import { PublicClient, WalletClient } from "viem";
 import { polygon } from "viem/chains";
-import { splitSignature } from "ethers/lib/utils";
 import handleIndexCheck from "./handleIndexCheck";
 import { Follow, RelaySuccess } from "@/components/Common/types/generated";
 import LensHubProxy from "./../../../abis/LensHubProxy.json"
@@ -41,24 +40,16 @@ const followSig = async (
     });
 
     if (broadcastResult?.data?.broadcastOnchain?.__typename === "RelayError") {
-      const { v, r, s } = splitSignature(signature);
       const { request } = await publicClient.simulateContract({
         address: LENS_HUB_PROXY_ADDRESS_MATIC,
         abi: LensHubProxy,
-        functionName: "followWithSig",
+        functionName: "follow",
         chain: polygon,
         args: [
           typedData?.value?.followerProfileId,
           typedData?.value?.idsOfProfilesToFollow,
           typedData?.value?.followTokenIds,
           typedData?.value?.datas,
-          {
-            v,
-            r,
-            s,
-            deadline: typedData?.value?.deadline,
-            signer: address,
-          },
         ],
         account: address,
       });
