@@ -1,5 +1,5 @@
 import { FetchResult } from "@apollo/client";
-import { apolloClient, authClient } from"../../../lib/lens/client";
+import { apolloClient, authClient } from "../../../lib/lens/client";
 import {
   PublicationsDocument,
   PublicationsQuery,
@@ -9,14 +9,25 @@ import {
 export const profilePublicationsAuth = async (
   request: PublicationsRequest
 ): Promise<FetchResult<PublicationsQuery>> => {
-  return await apolloClient.query({
-    query: PublicationsDocument,
-    variables: {
-      request,
-    },
-    fetchPolicy: "no-cache",
-    errorPolicy: "all",
-  });
+  try {
+    return await apolloClient.query({
+      query: PublicationsDocument,
+      variables: {
+        request,
+      },
+      fetchPolicy: "no-cache",
+      errorPolicy: "all",
+    });
+  } catch (err) {
+    return await authClient.query({
+      query: PublicationsDocument,
+      variables: {
+        request,
+      },
+      fetchPolicy: "no-cache",
+      errorPolicy: "all",
+    });
+  }
 };
 
 export const profilePublications = async (
