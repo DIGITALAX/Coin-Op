@@ -303,8 +303,13 @@ const useMakePost = () => {
         });
         const res = await clientWallet.writeContract(request);
         clearPost();
-        await publicClient.waitForTransactionReceipt({ hash: res });
-        await handleIndexCheck(res, dispatch);
+        const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+        await handleIndexCheck(
+          {
+            forTxHash: tx.transactionHash,
+          },
+          dispatch
+        );
       } else {
         clearPost();
         setTimeout(async () => {

@@ -1,12 +1,12 @@
 import { FetchResult } from "@apollo/client";
+import { apolloClient } from "../../../lib/lens/client";
 import {
+  LensTransactionStatusRequest,
+  LensTransactionStatusType,
   LensTransactionFailureType,
   LensTransactionStatusDocument,
   LensTransactionStatusQuery,
-  LensTransactionStatusRequest,
-  LensTransactionStatusType,
-} from "./../../../src/components/Common/types/generated";
-import { apolloClient } from "../../../lib/lens/client";
+} from "@/components/Common/types/generated";
 
 const getIndexed = async (
   request: LensTransactionStatusRequest
@@ -25,25 +25,23 @@ const pollUntilIndexed = async (
 ): Promise<boolean | LensTransactionFailureType> => {
   let count = 0;
   while (count < 5) {
-    try {
-      const { data } = await getIndexed(request);
-      if (data && data.lensTransactionStatus) {
-        switch (data.lensTransactionStatus.status) {
-          case LensTransactionStatusType.Failed:
-            return data.lensTransactionStatus.reason!;
-          case LensTransactionStatusType.Complete:
-            return true;
-          case LensTransactionStatusType.Processing:
-          case LensTransactionStatusType.OptimisticallyUpdated:
-            count += 1;
-            await new Promise((resolve) => setTimeout(resolve, 6000));
-            break;
-          default:
-            throw new Error("Unexpected status");
-        }
+    const { data } = await getIndexed(request);
+    if (data && data.lensTransactionStatus) {
+      switch (data.lensTransactionStatus.status) {
+        case LensTransactionStatusType.Failed:
+          return data.lensTransactionStatus.reason!;
+        case LensTransactionStatusType.Complete:
+          return true;
+        case LensTransactionStatusType.Processing:
+        case LensTransactionStatusType.OptimisticallyUpdated:
+          count += 1;
+          await new Promise((resolve) => setTimeout(resolve, 6000));
+          break;
+        default:
+          throw new Error("Unexpected status");
       }
-    } catch (err: any) {
-      console.error(err.message);
+    } else {
+      return false;
     }
   }
   return false;
