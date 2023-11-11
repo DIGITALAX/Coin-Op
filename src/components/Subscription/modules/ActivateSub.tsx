@@ -14,6 +14,8 @@ const ActivateSub: FunctionComponent<ActivateSub> = ({
   dispatch,
   connectedPKP,
   subscriptionInfo,
+  router,
+  client,
 }): JSX.Element => {
   const options = {
     clientSecret: undefined,
@@ -37,7 +39,10 @@ const ActivateSub: FunctionComponent<ActivateSub> = ({
           </div>
           <Subscribe
             dispatch={dispatch}
-            connectedPKP={connectedPKP?.ethAddress}
+            connectedPKP={connectedPKP}
+            router={router}
+            subscriptionInfo={subscriptionInfo.email}
+            client={client}
           />
         </div>
       </Elements>

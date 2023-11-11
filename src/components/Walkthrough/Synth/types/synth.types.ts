@@ -15,7 +15,7 @@ export type SynthProps = {
   handleDownloadImage: (image: string) => void;
   selectedElement: ElementInterface | null;
   newLayersLoading: boolean;
-  synthLayerSelected: {
+  layerToSynth: {
     id: number;
     layer: string | undefined;
   };
@@ -91,7 +91,7 @@ export type GridProps = {
   controlType: number;
   setControlType: (e: number) => void;
   setItemClicked: (e: boolean) => void;
-  synthLayerSelected: {
+  layerToSynth: {
     id: number;
     layer: string | undefined;
   };
@@ -349,7 +349,7 @@ export type CompleteImagesProps = {
   completeImages: Map<string, SynthData>;
   handleDownloadImage: (image: string) => void;
   dispatch: Dispatch<AnyAction>;
-  synthLayerSelected: {
+  layerToSynth: {
     id: number;
     layer: string | undefined;
   };

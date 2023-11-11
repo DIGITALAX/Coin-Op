@@ -26,9 +26,17 @@ const CARD_ELEMENT_OPTIONS = {
 const Subscribe: FunctionComponent<SubscribeProps> = ({
   dispatch,
   connectedPKP,
+  client,
+  router,
+  subscriptionInfo
 }): JSX.Element => {
-  const { subscriptionAddLoading, handleCreateSubscription } =
-    useSubscription();
+  const { subscriptionAddLoading, handleCreateSubscription } = useSubscription(
+    client,
+    dispatch,
+    router,
+    subscriptionInfo,
+    connectedPKP
+  );
   return (
     <div className="relative w-full h-fit flex flex-col gap-3 items-center justify-center">
       <CardElement
@@ -62,7 +70,7 @@ const Subscribe: FunctionComponent<SubscribeProps> = ({
         >
           {subscriptionAddLoading ? (
             <AiOutlineLoading size={15} color={"white"} />
-          ) : !connectedPKP ? (
+          ) : !connectedPKP?.publicKey ? (
             "CONNECT"
           ) : (
             "PREGAME"

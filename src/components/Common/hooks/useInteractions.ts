@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { FetchResult } from "@apollo/client";
-import { RootState } from "../../../../redux/store";
 import {
   getPublications,
   getPublicationsAuth,
@@ -11,32 +9,29 @@ import {
   Comment,
   CommentRankingFilterType,
   LimitType,
+  Profile,
 } from "../types/generated";
+import { MainVideoState } from "../../../../redux/reducers/mainVideoSlice";
+import { IndexModalState } from "../../../../redux/reducers/indexModalSlice";
 
-const useInteractions = () => {
+const useInteractions = (
+  profile: Profile | undefined,
+  mainVideo: MainVideoState,
+  commentId: string | undefined,
+  index: IndexModalState
+) => {
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [paginated, setPaginated] = useState<any>();
   const [commentors, setCommentors] = useState<Comment[]>([]);
   const [hasMoreComments, setHasMoreComments] = useState<boolean>(true);
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
-  const dispatch = useDispatch();
-  const profileId = useSelector(
-    (state: RootState) => state.app.profileReducer.profile?.id
-  );
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
-  );
-  const commentId = useSelector(
-    (state: RootState) => state.app.secondaryCommentReducer.value
-  );
-  const index = useSelector((state: RootState) => state.app.indexModalReducer);
 
   const getPostComments = async (): Promise<void> => {
     setCommentsLoading(true);
     try {
       let comments: FetchResult<PublicationsQuery>;
 
-      if (profileId) {
+      if (profile?.id) {
         comments = await getPublicationsAuth({
           where: {
             commentOn: {
@@ -89,7 +84,7 @@ const useInteractions = () => {
         return;
       }
       let comments: FetchResult<PublicationsQuery>;
-      if (profileId) {
+      if (profile?.id) {
         comments = await getPublicationsAuth({
           where: {
             commentOn: {
@@ -143,7 +138,7 @@ const useInteractions = () => {
     if (mainVideo.id) {
       getPostComments();
     }
-  }, [mainVideo.id, profileId, commentId]);
+  }, [mainVideo.id, profile?.id, commentId]);
   useEffect(() => {
     if (index.message === "Successfully Indexed") {
       getPostComments();

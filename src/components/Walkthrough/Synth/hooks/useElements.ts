@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { setElements } from "../../../../../redux/reducers/setElementsSlice";
 import lodash from "lodash";
+import { AnyAction, Dispatch } from "redux";
 
 type UseElementsReturnType = {
   history: Map<string, any[]>;
@@ -17,8 +17,7 @@ type UseElementsReturnType = {
   redo: (patternId: string) => void;
 };
 
-const useElements = (): UseElementsReturnType => {
-  const dispatch = useDispatch();
+const useElements = (dispatch: Dispatch<AnyAction>, ): UseElementsReturnType => {
   const [index, setIndex] = useState(new Map<string, number>());
   const [history, setHistory] = useState(new Map<string, any[]>());
   const [redoStack, setRedoStack] = useState(new Map<string, any[]>());

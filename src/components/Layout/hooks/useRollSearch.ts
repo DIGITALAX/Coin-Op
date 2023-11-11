@@ -1,7 +1,5 @@
 import { CartItem, PreRoll } from "@/components/Common/types/common.types";
 import { useContext, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { setRollSearch } from "../../../../redux/reducers/rollSearchSlice";
 import { initializeAlgolia } from "../../../../lib/algolia/client";
 import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
@@ -10,25 +8,29 @@ import { setSynthConfig } from "../../../../redux/reducers/synthConfigSlice";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
-import { useAccount, useNetwork } from "wagmi";
+import { Chain } from "wagmi";
 import { setChain } from "../../../../redux/reducers/chainSlice";
 import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
 import { getLitLoginLocalStorage } from "../../../../lib/subgraph/utils";
 import { setCartAddAnim } from "../../../../redux/reducers/cartAddAnimSlice";
+import { AnyAction, Dispatch } from "redux";
+import { SearchIndex } from "algoliasearch";
 
-const useRollSearch = () => {
+const useRollSearch = (
+  dispatch: Dispatch<AnyAction>,
+  isConnected: boolean,
+  address: `0x${string}` | undefined,
+  chainNetwork:
+    | (Chain & {
+        unsupported?: boolean | undefined;
+      })
+    | undefined,
+  algolia: SearchIndex | undefined,
+  cartItems: CartItem[]
+) => {
   const { scrollRef, synthRef } = useContext(ScrollContext);
-  const { isConnected, address } = useAccount();
-  const { chain: chainNetwork } = useNetwork();
-  const dispatch = useDispatch();
   const [prompt, setPrompt] = useState<string>("");
   const [cartAnim, setCartAnim] = useState<boolean>(false);
-  const algolia = useSelector(
-    (state: RootState) => state.app.algoliaReducer.value
-  );
-  const cartItems = useSelector(
-    (state: RootState) => state.app.cartReducer.value
-  );
 
   const handleRollSearch = async () => {
     try {
@@ -122,7 +124,7 @@ const useRollSearch = () => {
 
     dispatch(setCart(newCartItems));
     setCartAnim(true);
-    dispatch(setCartAddAnim(preRoll?.uri?.image[0]))
+    dispatch(setCartAddAnim(preRoll?.uri?.image[0]));
   };
 
   const scrollToCheckOut = () => {

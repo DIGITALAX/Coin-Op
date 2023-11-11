@@ -1,7 +1,8 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../../redux/store";
 import { useEffect, useRef, useState } from "react";
-import { setCompletedSynths } from "../../../../../redux/reducers/completedSynthsSlice";
+import {
+  SynthData,
+  setCompletedSynths,
+} from "../../../../../redux/reducers/completedSynthsSlice";
 import { setSynthLoading } from "../../../../../redux/reducers/synthLoadingSlice";
 import {
   ElementInterface,
@@ -14,30 +15,32 @@ import { setSynthProgress } from "../../../../../redux/reducers/synthProgressSli
 import drawElement from "../../../../../lib/canvas/helpers/drawElement";
 import drawPatternElement from "../../../../../lib/canvas/helpers/drawPatternElement";
 import { getRegionOfInterest } from "../../../../../lib/canvas/helpers/getRegionOfInterest";
-import { setApiAdd } from "../../../../../redux/reducers/apiAddSlice";
+import {
+  ApiAddState,
+  setApiAdd,
+} from "../../../../../redux/reducers/apiAddSlice";
+import { AnyAction, Dispatch } from "redux";
+import { SynthConfigState } from "../../../../../redux/reducers/synthConfigSlice";
 
-const useSynth = () => {
-  const dispatch = useDispatch();
+const useSynth = (
+  dispatch: Dispatch<AnyAction>,
+  synthConfig: SynthConfigState,
+  apiKey: ApiAddState,
+  elements: any[],
+  layerToSynth: {
+    id: number;
+    layer: string | undefined;
+  },
+  completedSynths: Map<string, SynthData>,
+  synthLoading: boolean,
+  canvasSize: {
+    oldWidth: number;
+    oldHeight: number;
+    width: number;
+    height: number;
+  }
+) => {
   const compositeRef = useRef<HTMLDivElement>(null);
-  const synthConfig = useSelector(
-    (state: RootState) => state.app.synthConfigReducer
-  );
-  const apiKey = useSelector((state: RootState) => state.app.apiAddReducer);
-  const elements = useSelector(
-    (state: RootState) => state.app.setElementsReducer.value
-  );
-  const layerToSynth = useSelector(
-    (state: RootState) => state.app.layerToSynthReducer.value
-  );
-  const completedSynths = useSelector(
-    (state: RootState) => state.app.completedSynthsReducer.value
-  );
-  const synthLoading = useSelector(
-    (state: RootState) => state.app.synthLoadingReducer.value
-  );
-  const canvasSize = useSelector(
-    (state: RootState) => state.app.synthAreaReducer.value
-  );
   const [controlType, setControlType] = useState<number>(0.7);
   const presets: string[] = [
     "abstract",

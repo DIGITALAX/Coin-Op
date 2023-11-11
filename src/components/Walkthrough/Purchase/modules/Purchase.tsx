@@ -21,8 +21,9 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   openConnectModal,
   chain,
   openChainModal,
+  client,
+  publicClient,
 }): JSX.Element => {
-  const { options } = useStripe();
   const clientSecret = useSelector(
     (state: RootState) => state.app.clientSecretReducer.value
   );
@@ -30,8 +31,19 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
     (state: RootState) => state.app.fulfillmentDetailsReducer.value
   );
   const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value?.pkpWallet
+    (state: RootState) => state.app.currentPKPReducer.value
   );
+  const encryptedInformation = useSelector(
+    (state: RootState) => state.app.encryptedInformationReducer.information
+  );
+  const { options } = useStripe(
+    dispatch,
+    cartItems,
+    connectedPKP,
+    encryptedInformation,
+    clientSecret
+  );
+
   return (
     <div className="relative w-full h-fit flex flex-col">
       {clientSecret && cartItems?.length > 0 ? (
@@ -44,9 +56,11 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
             openConnectModal={openConnectModal}
             signInLoading={signInLoading}
             fulfillmentDetails={fulfillmentDetails}
-            connectedPKP={connectedPKP}
+            connectedPKP={connectedPKP?.pkpWallet}
             chain={chain}
             openChainModal={openChainModal}
+            client={client}
+            publicClient={publicClient}
           />
         </Elements>
       ) : (
@@ -58,9 +72,11 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
           openConnectModal={openConnectModal}
           signInLoading={signInLoading}
           fulfillmentDetails={fulfillmentDetails}
-          connectedPKP={connectedPKP}
+          connectedPKP={connectedPKP?.pkpWallet}
           chain={chain}
           openChainModal={openChainModal}
+          publicClient={publicClient}
+          client={client}
         />
       )}
     </div>

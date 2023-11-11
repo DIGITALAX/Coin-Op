@@ -16,7 +16,6 @@ import RouterChange from "@/components/Common/modules/RouterChange";
 import { createContext, useRef } from "react";
 import Modals from "@/components/Common/modules/Modals/Modals";
 import PreRolls from "@/components/Common/modules/PreRolls";
-import Sticky from "@/components/Layout/modules/Sticky";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [polygon],
@@ -52,6 +51,12 @@ export const ScrollContext = createContext<{
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
+  const authClient = new LitAuthClient({
+    litRelayConfig: {
+      relayApiKey: `${process.env.LIT_RELAY_KEY}`,
+    },
+  });
   const scrollRef = useRef<HTMLDivElement>(null);
   const synthRef = useRef<HTMLDivElement>(null);
   const preRollRef = useRef<HTMLDivElement>(null);
@@ -105,14 +110,14 @@ export default function App({ Component, pageProps }: AppProps) {
         <RainbowKitProvider chains={chains}>
           <ScrollContext.Provider value={{ scrollRef, synthRef, preRollRef }}>
             <div className="relative overflow-x-hidden w-full h-fit flex flex-col selection:bg-oscurazul selection:text-white gap-5">
-              <Header preRollRef={preRollRef} />
+              <Header router={router} preRollRef={preRollRef} />
               <div className="relative overflow-hidden w-full h-fit xl:h-[60rem] flex flex-col xl:flex-row px-2 preG:px-6 gap-10">
                 <PreRolls left={true} />
-                <Component {...pageProps} />
+                <Component {...pageProps} client={client} router={router} />
                 <PreRolls right={true} />
               </div>
               <Footer />
-              <Modals />
+              <Modals router={router} client={client} authClient={authClient} />
             </div>
           </ScrollContext.Provider>
         </RainbowKitProvider>

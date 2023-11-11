@@ -1,5 +1,8 @@
 import { Profile } from "@/components/Common/types/generated";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { AnyAction, Dispatch } from "redux";
+import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
+import { NextRouter } from "next/router";
 
 export interface Order {
   orderId: string;
@@ -83,17 +86,11 @@ export type AllOrdersProps = {
   handleDecryptMessage: (order: Order) => Promise<void>;
   chain: number | undefined;
   openChainModal: (() => void) | undefined;
-  connectedPKP:
-    | {
-        ethAddress: string;
-        publicKey: string;
-        tokenId: {
-          hex: string;
-          type: string;
-        };
-      }
-    | undefined;
+  connectedPKP: PKPSig | undefined;
   subscriptionsLoading: boolean;
+  router: NextRouter;
+  client: LitNodeClient;
+  subscriptionInfo: string | undefined;
 };
 
 export type OrderProps = {
@@ -139,4 +136,9 @@ export interface Subscription {
 
 export type SubscribedProps = {
   subscription: Subscription;
+  client: LitNodeClient;
+  currentPKP: PKPSig | undefined;
+  subscriptionInfo: string | undefined;
+  dispatch: Dispatch<AnyAction>;
+  router: NextRouter;
 };

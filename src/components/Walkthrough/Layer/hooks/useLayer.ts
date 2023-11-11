@@ -1,19 +1,15 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../../redux/store";
+import { useContext, useEffect, useState } from "react";
 import { getTemplatesByPrintType } from "../../../../../graphql/subgraph/queries/getTemplates";
 import { setPrintTypeLayers } from "../../../../../redux/reducers/printTypeLayersSlice";
 import { setLayerToSynth } from "../../../../../redux/reducers/layerToSynthSlice";
 import { Layer } from "../types/layer.types";
 import { setSynthLayer } from "../../../../../redux/reducers/synthLayerSlice";
 import { ScrollContext } from "@/pages/_app";
+import { AnyAction, Dispatch } from "redux";
+import { Template } from "../../Format/types/format.types";
 
-const useLayer = () => {
-  const dispatch = useDispatch();
+const useLayer = (dispatch: Dispatch<AnyAction>, template: Template) => {
   const { preRollRef } = useContext(ScrollContext);
-  const template = useSelector(
-    (state: RootState) => state.app.templateReducer.value
-  );
   const [layersLoading, setLayersLoading] = useState<boolean>(false);
 
   const getLayers = async () => {

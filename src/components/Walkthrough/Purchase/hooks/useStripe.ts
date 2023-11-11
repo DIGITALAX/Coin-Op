@@ -1,24 +1,18 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../../redux/store";
 import { setClientSecret } from "../../../../../redux/reducers/clientSecretSlice";
 import { APPEARANCE } from "../../../../../lib/constants";
 import { chunkString } from "../../../../../lib/subgraph/helpers/chunkString";
+import { AnyAction, Dispatch } from "redux";
+import { CartItem } from "@/components/Common/types/common.types";
+import { PKPSig } from "../../../../../redux/reducers/currentPKPSlice";
 
-const useStripe = () => {
-  const dispatch = useDispatch();
-  const cartItems = useSelector(
-    (state: RootState) => state.app.cartReducer.value
-  );
-  const currentPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
-  const encryptedInformationReducer = useSelector(
-    (state: RootState) => state.app.encryptedInformationReducer
-  );
-  const clientSecret = useSelector(
-    (state: RootState) => state.app.clientSecretReducer.value
-  );
+const useStripe = (
+  dispatch: Dispatch<AnyAction>,
+  cartItems: CartItem[],
+  currentPKP: PKPSig | undefined,
+  encryptedInformation: string[] | undefined,
+  clientSecret: string | undefined
+) => {
   const options = {
     clientSecret,
     appearance: APPEARANCE,
@@ -32,12 +26,8 @@ const useStripe = () => {
         0
       );
       let metadataChunks: { [key: string]: string } = {};
-      if (
-        encryptedInformationReducer.information &&
-        encryptedInformationReducer.information.length
-      ) {
-        const flattenedString =
-          encryptedInformationReducer.information.join("");
+      if (encryptedInformation && encryptedInformation.length) {
+        const flattenedString = encryptedInformation.join("");
 
         const chunks = chunkString(flattenedString, 490);
 
@@ -76,7 +66,7 @@ const useStripe = () => {
     if (cartItems.length > 0) {
       createPayment();
     }
-  }, [cartItems, encryptedInformationReducer.information]);
+  }, [cartItems, encryptedInformation]);
 
   return {
     options,

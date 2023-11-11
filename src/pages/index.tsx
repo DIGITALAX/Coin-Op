@@ -12,14 +12,77 @@ import useSignIn from "@/components/Common/hooks/useSignIn";
 import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
 import useCanvas from "@/components/Walkthrough/Synth/hooks/useCanvas";
 import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
-
-export default function Home(): JSX.Element {
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { createPublicClient, http } from "viem";
+import { polygon } from "viem/chains";
+export default function Home({
+  client,
+}: {
+  client: LitNodeClient;
+}): JSX.Element {
   const { scrollRef, synthRef } = useContext(ScrollContext);
   const dispatch = useDispatch();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { openChainModal } = useChainModal();
-  const { handleLensSignIn, signInLoading } = useSignIn();
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
+
+  const profile = useSelector(
+    (state: RootState) => state.app.profileReducer.profile
+  );
+  const apiKey = useSelector((state: RootState) => state.app.apiAddReducer);
+  const canvasExpand = useSelector(
+    (state: RootState) => state.app.expandCanvasReducer.value
+  );
+  const synthProgress = useSelector(
+    (state: RootState) => state.app.synthProgressReducer.value
+  );
+  const canvasSize = useSelector(
+    (state: RootState) => state.app.canvasSizeReducer.value
+  );
+  const synthLoading = useSelector(
+    (state: RootState) => state.app.synthLoadingReducer.value
+  );
+  const cartItems = useSelector(
+    (state: RootState) => state.app.cartReducer.value
+  );
+  const completedSynths = useSelector(
+    (state: RootState) => state.app.completedSynthsReducer.value
+  );
+  const synthLayer = useSelector(
+    (state: RootState) => state.app.synthLayerReducer.value
+  );
+  const elements = useSelector(
+    (state: RootState) => state.app.setElementsReducer.value
+  );
+  const template = useSelector(
+    (state: RootState) => state.app.templateReducer.value
+  );
+  const layerToSynth = useSelector(
+    (state: RootState) => state.app.layerToSynthReducer.value
+  );
+  const printTypeLayers = useSelector(
+    (state: RootState) => state.app.printTypeLayersReducer.value
+  );
+  const synthConfig = useSelector(
+    (state: RootState) => state.app.synthConfigReducer
+  );
+  const preRollAnim = useSelector(
+    (state: RootState) => state.app.preRollAnimReducer.value
+  );
+  const cartAddAnim = useSelector(
+    (state: RootState) => state.app.cartAddAnimReducer.value
+  );
+  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
+
+  const { handleLensSignIn, signInLoading } = useSignIn(
+    dispatch,
+    address,
+    isConnected
+  );
   const { setShareSet, shareSet, models } = useComposite();
   const {
     handleSynth,
@@ -29,7 +92,16 @@ export default function Home(): JSX.Element {
     handleDownloadImage,
     controlType,
     setControlType,
-  } = useSynth();
+  } = useSynth(
+    dispatch,
+    synthConfig,
+    apiKey,
+    elements,
+    layerToSynth,
+    completedSynths,
+    synthLoading,
+    canvasSize
+  );
   const {
     canvasRef,
     handleMouseDown,
@@ -66,49 +138,18 @@ export default function Home(): JSX.Element {
     setMaterialOpen,
     itemClicked,
     setItemClicked,
-  } = useCanvas();
+  } = useCanvas(
+    dispatch,
+    layerToSynth,
+    synthLayer,
+    synthLoading,
+    completedSynths,
+    synthProgress,
+    canvasSize,
+    canvasExpand
+  );
 
-  const { layersLoading, scrollToPreRoll } = useLayer();
-
-  const profile = useSelector(
-    (state: RootState) => state.app.profileReducer.profile
-  );
-  const apiKey = useSelector((state: RootState) => state.app.apiAddReducer);
-  const canvasExpand = useSelector(
-    (state: RootState) => state.app.expandCanvasReducer.value
-  );
-  const synthLoading = useSelector(
-    (state: RootState) => state.app.synthLoadingReducer.value
-  );
-  const cartItems = useSelector(
-    (state: RootState) => state.app.cartReducer.value
-  );
-  const completedSynths = useSelector(
-    (state: RootState) => state.app.completedSynthsReducer.value
-  );
-  const synthLayer = useSelector(
-    (state: RootState) => state.app.synthLayerReducer.value
-  );
-  const template = useSelector(
-    (state: RootState) => state.app.templateReducer.value
-  );
-  const synthLayerSelected = useSelector(
-    (state: RootState) => state.app.layerToSynthReducer.value
-  );
-  const printTypeLayers = useSelector(
-    (state: RootState) => state.app.printTypeLayersReducer.value
-  );
-  const synthConfig = useSelector(
-    (state: RootState) => state.app.synthConfigReducer
-  );
-  const preRollAnim = useSelector(
-    (state: RootState) => state.app.preRollAnimReducer.value
-  );
-  const cartAddAnim = useSelector(
-    (state: RootState) => state.app.cartAddAnimReducer.value
-  );
-  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
-
+  const { layersLoading, scrollToPreRoll } = useLayer(dispatch, template);
   useEffect(() => {
     if (preRollAnim) {
       setTimeout(() => {
@@ -131,6 +172,8 @@ export default function Home(): JSX.Element {
       setControlType={setControlType}
       template={template}
       tool={tool}
+      client={client}
+      publicClient={publicClient}
       scrollToPreRoll={scrollToPreRoll}
       dispatch={dispatch}
       isDragging={isDragging}
@@ -143,7 +186,7 @@ export default function Home(): JSX.Element {
       redo={redo}
       canvasExpand={canvasExpand}
       handleReset={handleReset}
-      synthLayerSelected={synthLayerSelected}
+      layerToSynth={layerToSynth}
       setShareSet={setShareSet}
       shareSet={shareSet}
       scrollRef={scrollRef}

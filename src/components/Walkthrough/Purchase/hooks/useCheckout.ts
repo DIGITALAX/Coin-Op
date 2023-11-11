@@ -1,9 +1,8 @@
 import { CartItem } from "@/components/Common/types/common.types";
 import { useEffect, useState } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { setMessagesModal } from "../../../../../redux/reducers/messagesModalSlice";
-import { useAccount } from "wagmi";
 import {
   ACCEPTED_TOKENS,
   // ACCEPTED_TOKENS_MUMBAI,
@@ -14,13 +13,12 @@ import { ethers } from "ethers";
 import CoinOpMarketABI from "../../../../../abis/CoinOpMarket.json";
 import { RootState } from "../../../../../redux/store";
 import { setCart } from "../../../../../redux/reducers/cartSlice";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import { encryptItems } from "../../../../../lib/subgraph/helpers/encryptItems";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 import { setLogin } from "../../../../../redux/reducers/loginSlice";
 import { setEncryptedInfo } from "../../../../../redux/reducers/encryptedInformationSlice";
-import { setLitClient } from "../../../../../redux/reducers/litClientSlice";
 import { setFulfillmentDetails } from "../../../../../redux/reducers/fulfillmentDetailsSlice";
 import {
   removeCartItemsLocalStorage,
@@ -28,14 +26,15 @@ import {
 } from "../../../../../lib/subgraph/utils";
 import { createTxData } from "../../../../../lib/subgraph/helpers/createTxData";
 import { litExecute } from "../../../../../lib/subgraph/helpers/litExecute";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { AnyAction, Dispatch } from "redux";
 
-const useCheckout = () => {
-  const dispatch = useDispatch();
-  const { address } = useAccount();
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
+const useCheckout = (
+  client: LitNodeClient,
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  publicClient: PublicClient
+) => {
   const fulfillmentDetails = useSelector(
     (state: RootState) => state.app.fulfillmentDetailsReducer.value
   );
@@ -44,9 +43,6 @@ const useCheckout = () => {
   );
   const encrypted = useSelector(
     (state: RootState) => state.app.encryptedInformationReducer
-  );
-  const litClient = useSelector(
-    (state: RootState) => state.app.litClientReducer.value
   );
   const currentPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
@@ -211,8 +207,7 @@ const useCheckout = () => {
       }
 
       const returned = await encryptItems(
-        litClient,
-        dispatch,
+        client,
         {
           sizes: cartItems?.reduce((accumulator: string[], item) => {
             accumulator.push(String(item.chosenSize));
@@ -241,7 +236,6 @@ const useCheckout = () => {
       );
 
       dispatch(setEncryptedInfo(returned?.fulfillerDetails));
-      dispatch(setLitClient(returned?.client));
     } catch (err: any) {
       dispatch(setEncryptedInfo(undefined));
       console.error(err.message);
@@ -452,8 +446,7 @@ const useCheckout = () => {
       }
 
       const returned = await encryptItems(
-        litClient,
-        dispatch,
+        client,
         {
           sizes: cartItems?.reduce((accumulator: string[], item) => {
             accumulator.push(String(item.chosenSize));
@@ -597,9 +590,8 @@ const useCheckout = () => {
       );
 
       await litExecute(
+        client,
         provider,
-        dispatch,
-        litClient,
         tx,
         "coinOpBuyTokens",
         currentPKP?.authSig

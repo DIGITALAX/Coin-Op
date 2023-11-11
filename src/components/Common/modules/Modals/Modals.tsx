@@ -13,7 +13,7 @@ import Messages from "./Messages";
 import SearchExpand from "./SearchExpand";
 import useRollSearch from "@/components/Layout/hooks/useRollSearch";
 import ApiAdd from "./ApiAdd";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import Login from "./Login";
 import useLogin from "@/components/Layout/hooks/useLogin";
@@ -24,17 +24,34 @@ import useControls from "../../hooks/useControls";
 import Purchase from "./Purchase";
 import Who from "./Who";
 import FollowerOnly from "./FollowerOnly";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import useSignIn from "../../hooks/useSignIn";
 import useWho from "../../hooks/useWho";
 import useFollowers from "../../hooks/useFollowers";
 import useChannels from "../../hooks/useChannels";
 import useInteractions from "../../hooks/useInteractions";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { createPublicClient, http } from "viem";
+import { polygon } from "viem/chains";
+import { LitAuthClient } from "@lit-protocol/lit-auth-client";
 
-const Modals = () => {
+const Modals = ({
+  router,
+  client,
+  authClient,
+}: {
+  router: NextRouter;
+  client: LitNodeClient;
+  authClient: LitAuthClient;
+}) => {
   const videoRef = useRef<HTMLDivElement>(null);
+  const { address, isConnected } = useAccount();
+  const { chain: chainNetwork } = useNetwork();
   const dispatch = useDispatch();
-  const router = useRouter();
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
   const imageLoading = useSelector(
     (state: RootState) => state.app.imageLoadingReducer.value
   );
@@ -43,6 +60,12 @@ const Modals = () => {
   );
   const isSubscribed = useSelector(
     (state: RootState) => state.app.allSubscriptionsReducer.value?.isSubscribed
+  );
+  const questPoints = useSelector(
+    (state: RootState) => state.app.questPointsReducer.value
+  );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
   );
   const videoSync = useSelector(
     (state: RootState) => state.app.videoSyncReducer
@@ -68,6 +91,9 @@ const Modals = () => {
   const currentPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
   );
+  const approvalArgs = useSelector(
+    (state: RootState) => state.app.approvalArgsReducer.args
+  );
   const searchExpand = useSelector(
     (state: RootState) => state.app.searchExpandReducer
   );
@@ -88,14 +114,21 @@ const Modals = () => {
   const collectOpen = useSelector(
     (state: RootState) => state.app.collectOpenReducer.value
   );
+  const seek = useSelector((state: RootState) => state.app.seekReducer.seek);
   const imageModal = useSelector(
     (state: RootState) => state.app.imageViewerReducer
+  );
+  const algolia = useSelector(
+    (state: RootState) => state.app.algoliaReducer.value
   );
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
   const collectModuleValues = useSelector(
     (state: RootState) => state.app.postCollectValuesReducer
+  );
+  const collectModuleType = useSelector(
+    (state: RootState) => state?.app?.collectValueReducer.type
   );
   const reaction = useSelector(
     (state: RootState) => state.app.reactionStateReducer
@@ -118,6 +151,9 @@ const Modals = () => {
   );
   const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
   const noHandle = useSelector((state: RootState) => state.app.noHandleReducer);
+  const reactId = useSelector(
+    (state: RootState) => state.app.reactIdReducer.value
+  );
   const postImagesDispatched = useSelector(
     (state: RootState) => state.app.postImagesReducer.value
   );
@@ -138,17 +174,22 @@ const Modals = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  const { address } = useAccount();
-  const { handleLensSignIn } = useSignIn();
+  const { handleLensSignIn } = useSignIn(dispatch, address, isConnected);
   const {
     videoLoading,
     uploadImage,
     uploadVideo,
     handleRemoveImage,
     mappedFeaturedFiles,
-  } = useImageUpload();
-  const { loginWithWeb2Auth, loginLoading } = useLogin();
+  } = useImageUpload(dispatch, lensPost.value, postImagesDispatched);
+  const { loginWithWeb2Auth, loginLoading } = useLogin(
+    client,
+    publicClient,
+    address,
+    router,
+    dispatch,
+    authClient
+  );
   const {
     postDescription,
     postLoading,
@@ -168,8 +209,24 @@ const Modals = () => {
     handlePost,
     preElement,
     handleImagePaste,
-  } = useMakePost();
-  const { questSignUpLoading, signUpForQuest } = useQuest();
+  } = useMakePost(
+    dispatch,
+    address,
+    publicClient,
+    collectOpen,
+    postImagesDispatched,
+    collectModuleType,
+    lensPost.value
+  );
+  const { questSignUpLoading, signUpForQuest } = useQuest(
+    client,
+    dispatch,
+    address,
+    publicClient,
+    connectedPKP,
+    questPoints,
+    isSubscribed
+  );
   const {
     collectNotif,
     referral,
@@ -204,8 +261,15 @@ const Modals = () => {
     setEnabledCurrency,
     value,
     setValue,
-  } = useCollectOptions();
-  const { handlePromptChoose, handleSearchSimilar } = useRollSearch();
+  } = useCollectOptions(dispatch, lensProfile, collectOpen);
+  const { handlePromptChoose, handleSearchSimilar } = useRollSearch(
+    dispatch,
+    isConnected,
+    address,
+    chainNetwork,
+    algolia,
+    cartItems
+  );
   const { openConnectModal } = useConnectModal();
   const { openChainModal } = useChainModal();
   const {
@@ -221,7 +285,6 @@ const Modals = () => {
     collectVideo,
     mirrorVideo,
     likeVideo,
-    profileId,
     mirrorCommentLoading,
     likeCommentLoading,
     collectCommentLoading,
@@ -232,12 +295,34 @@ const Modals = () => {
     progressRef,
     handleSeek,
     fullVideoRef,
-  } = useControls();
+  } = useControls(
+    publicClient,
+    dispatch,
+    address,
+    lensProfile,
+    mainVideo,
+    purchaseModal,
+    approvalArgs,
+    fullScreenVideo,
+    videoSync,
+    seek,
+    commentId,
+    indexModal
+  );
   const {
     fetchMoreVideos,
     videoLoading: channelVideoLoading,
     setVideoLoading,
-  } = useChannels();
+  } = useChannels(
+    dispatch,
+    mainVideo,
+    lensProfile,
+    dispatchVideos,
+    indexModal.message,
+    reactId,
+    videoSync,
+    reactions
+  );
   const {
     commentors,
     getMorePostComments,
@@ -245,7 +330,7 @@ const Modals = () => {
     hasMoreComments,
     commentsOpen,
     setCommentsOpen,
-  } = useInteractions();
+  } = useInteractions(lensProfile, mainVideo, commentId, indexModal);
   const {
     reacters,
     mirrorers,
@@ -260,14 +345,20 @@ const Modals = () => {
     hasMoreCollect,
     hasMoreMirror,
   } = useWho();
-
   const {
     profile,
     followProfile,
     followLoading,
     approved,
     approveCurrency: approveFollowCurrency,
-  } = useFollowers();
+  } = useFollowers(
+    dispatch,
+    publicClient,
+    address,
+    lensProfile,
+    followersModal,
+    approvalArgs
+  );
   return (
     <>
       {fullScreenVideo.open && (
@@ -300,7 +391,7 @@ const Modals = () => {
           likeLoading={likeLoading}
           collectLoading={collectLoading}
           mirrorLoading={mirrorLoading}
-          profileId={profileId}
+          profileId={lensProfile?.id}
           progressRef={progressRef}
           handleSeek={handleSeek}
           collectAmount={reactions.collect}

@@ -37,6 +37,9 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
   openChainModal,
   subscriptionsLoading,
   allSubscriptions,
+  router,
+  client,
+  subscriptionInfo,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col items-center gap-16 overflow-y-scroll justify-start overflow-x-hidden">
@@ -44,7 +47,7 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
         <div className="font-monu text-2xl text-left w-fit h-fit flex justify-start items-center">
           All Orders.
         </div>
-        {!connected && !connectedPKP ? (
+        {!connected && !connectedPKP?.publicKey ? (
           <div
             className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
             onClick={() =>
@@ -120,7 +123,8 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
               ></div>
             );
           })
-        ) : (!subscriptionsLoading && !allSubscriptions) || !connectedPKP ? (
+        ) : (!subscriptionsLoading && !allSubscriptions) ||
+          !connectedPKP?.publicKey ? (
           <Link
             className="relative w-full h-fit justify-center text-left items-center justify-center cursor-pointer text-white font-mana text-base"
             href={"/pregame"}
@@ -131,7 +135,14 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
           </Link>
         ) : (
           <Elements stripe={stripePromise} options={options}>
-            <Subscribed subscription={allSubscriptions!} />
+            <Subscribed
+              subscription={allSubscriptions!}
+              router={router}
+              dispatch={dispatch}
+              currentPKP={connectedPKP}
+              subscriptionInfo={subscriptionInfo}
+              client={client}
+            />
           </Elements>
         )}
       </div>

@@ -7,13 +7,18 @@ import { AiOutlineLoading } from "react-icons/ai";
 
 const Subscribed: FunctionComponent<SubscribedProps> = ({
   subscription,
+  client,
+  dispatch,
+  router, 
+  subscriptionInfo,
+  currentPKP
 }): JSX.Element => {
   const {
     handleCancelSubscription,
     handleReactivateSubscription,
     subscriptionCancelLoading,
     subscriptionReactivateLoading,
-  } = useSubscription();
+  } = useSubscription(client, dispatch, router, subscriptionInfo, currentPKP);
   return (
     <div className={`relative w-full border border-white bg-smo/10 p-2 h-fit`}>
       <div className="relative w-full h-28 sm:h-16 sm:gap-0 gap-3 inline-flex flex-wrap justify-between items-center text-white font-herm text-sm">

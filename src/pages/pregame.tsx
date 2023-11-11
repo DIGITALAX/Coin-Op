@@ -8,8 +8,13 @@ import ActivateSub from "@/components/Subscription/modules/ActivateSub";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../lib/constants";
 import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { NextRouter } from "next/router";
 
-const Pregame: NextPage = (): JSX.Element => {
+const Pregame: NextPage<{ client: LitNodeClient; router: NextRouter }> = ({
+  router,
+  client,
+}): JSX.Element => {
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
@@ -166,6 +171,8 @@ const Pregame: NextPage = (): JSX.Element => {
         dispatch={dispatch}
         subscriptionInfo={subscriptionInfo}
         connectedPKP={connectedPKP}
+        client={client}
+        router={router}
       />
     </div>
   );

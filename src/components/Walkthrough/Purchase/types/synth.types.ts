@@ -1,9 +1,12 @@
 import { CartItem } from "@/components/Common/types/common.types";
-import { Dispatch, MutableRefObject, SetStateAction } from "react";
-import { AnyAction, Dispatch as DispatchRedux } from "redux";
+import { MutableRefObject } from "react";
+import { AnyAction, Dispatch } from "redux";
+import { Details } from "../../../../../redux/reducers/fulfillmentDetailsSlice";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { PublicClient } from "viem";
 
 export type PurchaseProps = {
-  dispatch: DispatchRedux<AnyAction>;
+  dispatch: Dispatch<AnyAction>;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   cartItems: CartItem[];
   signInLoading: boolean;
@@ -11,24 +14,20 @@ export type PurchaseProps = {
   address: `0x${string}` | undefined;
   chain: number | undefined;
   openChainModal: (() => void) | undefined;
+  client: LitNodeClient;
+  publicClient: PublicClient;
 };
 
 export type GridProps = {
   dispatch: Dispatch<AnyAction>;
+  client: LitNodeClient;
+  publicClient: PublicClient;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   cartItems: CartItem[];
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  fulfillmentDetails: Details;
   connectedPKP: any;
   chain: number | undefined;
   openChainModal: (() => void) | undefined;
@@ -51,15 +50,7 @@ export type CheckoutProps = {
   dispatch: Dispatch<AnyAction>;
   setCheckoutCurrency: (e: string) => void;
   checkoutCurrency: string;
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  fulfillmentDetails: Details;
   approved: boolean;
   handleApproveSpend: () => Promise<void>;
   oracleValue: number;
@@ -104,14 +95,6 @@ export type ItemsProps = {
 };
 
 export type ShippingInfoProps = {
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  fulfillmentDetails: Details;
   dispatch: Dispatch<AnyAction>;
 };

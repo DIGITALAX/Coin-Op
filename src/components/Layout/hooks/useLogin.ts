@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "@lit-protocol/lit-auth-client";
 import { ProviderType } from "@lit-protocol/constants";
-import { isSignInRedirect } from "@lit-protocol/lit-auth-client";
+import { LitAuthClient, isSignInRedirect } from "@lit-protocol/lit-auth-client";
 import { COIN_OP_PKPS, REDIRECT_URL } from "../../../../lib/constants";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
 import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
 import { ethers } from "ethers";
-import { createPublicClient, http } from "viem";
 import { Chain } from "viem/chains";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { setLogin } from "../../../../redux/reducers/loginSlice";
 import PKPAbi from "./../../../../abis/PKP.json";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
@@ -31,7 +30,9 @@ import { createTxData } from "../../../../lib/subgraph/helpers/createTxData";
 import { encryptToken } from "../../../../lib/subgraph/helpers/encryptTokenId";
 import { getSessionSig } from "../../../../lib/subgraph/helpers/getSessionSig";
 import { setQuestInfo } from "../../../../redux/reducers/questInfoSlice";
-import { useAccount } from "wagmi";
+import { PublicClient } from "wagmi";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { AnyAction, Dispatch } from "redux";
 
 export const chronicle: Chain = {
   id: 175177,
@@ -58,23 +59,14 @@ export const chronicle: Chain = {
   },
 } as const;
 
-const useLogin = () => {
-  const publicClient = createPublicClient({
-    chain: chronicle,
-    transport: http(),
-  });
-  const { address } = useAccount();
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const litAuthClient = new LitAuthClient({
-    litRelayConfig: {
-      relayApiKey: `${process.env.LIT_RELAY_KEY}`,
-    },
-  });
-  const litNodeClient = new LitNodeClient({
-    litNetwork: "cayenne",
-    debug: false,
-  });
+const useLogin = (
+  client: LitNodeClient,
+  publicClient: PublicClient,
+  address: `0x${string}` | undefined,
+  router: NextRouter,
+  dispatch: Dispatch<AnyAction>,
+  authClient: LitAuthClient
+) => {
   const hasRedirectedRef = useRef<boolean>(false);
   const hasFetchedMintedRef = useRef<boolean>(false);
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
@@ -87,20 +79,17 @@ const useLogin = () => {
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
   );
-  const litClient = useSelector(
-    (state: RootState) => state.app.litClientReducer.value
-  );
 
   const loginWithWeb2Auth = async () => {
     try {
-      const provider = litAuthClient.initProvider(ProviderType.Google, {
+      const provider = authClient.initProvider(ProviderType.Google, {
         redirectUri: `${REDIRECT_URL}${router.asPath}`,
       });
 
       setFulfillmentDetailsLocalStorage(JSON.stringify(fulfillmentDetails));
       setCartItemsLocalStorage(JSON.stringify(cartItems));
 
-      await provider.signIn();
+      await (provider as any).signIn();
     } catch (err: any) {
       console.error(err.message);
       dispatch(
@@ -134,9 +123,9 @@ const useLogin = () => {
       );
 
       await litExecute(
+        client,
         provider,
-        dispatch,
-        litClient,
+
         tx,
         "createUserPKPAccount",
         authSig
@@ -163,7 +152,7 @@ const useLogin = () => {
     fulfillmentLocal && dispatch(setFulfillmentDetails(fulfillmentLocal));
 
     try {
-      const provider = litAuthClient.initProvider(ProviderType.Google, {
+      const provider = authClient.initProvider(ProviderType.Google, {
         redirectUri: `${REDIRECT_URL}${router.asPath}`,
       });
 
@@ -218,7 +207,7 @@ const useLogin = () => {
         authMethod,
         res,
         provider,
-        litNodeClient
+        client
       );
       const pkpWallet = new PKPEthersWallet({
         controllerSessionSigs: sessionSigs,
@@ -245,8 +234,7 @@ const useLogin = () => {
       }
 
       const encryptedToken = await encryptToken(
-        litClient,
-        dispatch,
+        client,
         res.ethAddress,
         authSig,
         BigInt(res.tokenId.hex).toString()

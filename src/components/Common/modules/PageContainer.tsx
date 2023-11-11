@@ -12,7 +12,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   dispatch,
   template,
   synthLayer,
-  synthLayerSelected,
+  layerToSynth,
   shareSet,
   setShareSet,
   scrollRef,
@@ -76,6 +76,8 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   chain,
   openChainModal,
   apiKey,
+  client,
+  publicClient,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -109,7 +111,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           tool={tool}
           dispatch={dispatch}
           canvasExpand={canvasExpand}
-          synthLayerSelected={synthLayerSelected}
+          layerToSynth={layerToSynth}
           synthLayer={synthLayer}
           synthConfig={synthConfig}
           handleSynth={handleSynth}
@@ -157,6 +159,8 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
         />
         <Purchase
           chain={chain}
+          client={client}
+          publicClient={publicClient}
           openChainModal={openChainModal}
           dispatch={dispatch}
           scrollRef={scrollRef}

@@ -3,19 +3,17 @@ import {
   getOrders,
   getOrdersPKP,
 } from "../../../../graphql/subgraph/queries/getOrders";
-import { useAccount } from "wagmi";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { getPreRollId } from "../../../../graphql/subgraph/queries/getPreRolls";
 import CoinOpMarketABI from "../../../../abis/CoinOpMarket.json";
 import { setAllOrders } from "../../../../redux/reducers/allOrdersSlice";
 import { fetchIpfsJson } from "../../../../lib/algolia/helpers/fetchIpfsJson";
 import { ethers } from "ethers";
 import {
+  LitNodeClient,
   checkAndSignAuthMessage,
   decryptToString,
 } from "@lit-protocol/lit-node-client";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import { COIN_OP_FULFILLMENT, COIN_OP_MARKET } from "../../../../lib/constants";
 import { InformationType, Order } from "../types/account.types";
@@ -25,23 +23,17 @@ import { litExecute } from "../../../../lib/subgraph/helpers/litExecute";
 import { createTxData } from "../../../../lib/subgraph/helpers/createTxData";
 import { setAllSubscriptions } from "../../../../redux/reducers/allSubscriptionsSlice";
 import { getSubscriptionsPKP } from "../../../../graphql/subgraph/queries/getSubscription";
+import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
+import { AnyAction, Dispatch } from "redux";
 
-const useOrders = () => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
-  const { address } = useAccount();
-  const dispatch = useDispatch();
-  const allOrders = useSelector(
-    (state: RootState) => state.app.allOrdersReducer.value
-  );
-  const litClient = useSelector(
-    (state: RootState) => state.app.litClientReducer.value
-  );
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
+const useOrders = (
+  client: LitNodeClient,
+  publicClient: PublicClient,
+  address: `0x${string}` | undefined,
+  dispatch: Dispatch<AnyAction>,
+  allOrders: Order[],
+  connectedPKP: PKPSig | undefined
+) => {
   const [subscriptionsLoading, setSubscriptionsLoading] =
     useState<boolean>(false);
   const [ordersLoading, setOrdersLoading] = useState<boolean>(false);
@@ -196,7 +188,6 @@ const useOrders = () => {
       )
     );
     try {
-      const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
       await client.connect();
       let authSig;
       if (connectedPKP?.pkpWallet) {
@@ -278,7 +269,6 @@ const useOrders = () => {
       )
     );
     try {
-      const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
       await client.connect();
       let authSig;
       if (connectedPKP?.pkpWallet) {
@@ -384,14 +374,7 @@ const useOrders = () => {
         [allOrders[index].orderId, JSON.stringify(fulfillerDetails)]
       );
 
-      await litExecute(
-        provider,
-        dispatch,
-        client,
-        tx,
-        "coinOpUpdateOrderInfo",
-        authSig
-      );
+      await litExecute(client, provider, tx, "coinOpUpdateOrderInfo", authSig);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -426,8 +409,7 @@ const useOrders = () => {
       }
 
       const returned = await encryptItems(
-        litClient,
-        dispatch,
+        client,
         {
           sizes:
             allOrders[index].fulfillmentInformation.decryptedFulfillment

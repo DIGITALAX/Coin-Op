@@ -21,7 +21,6 @@ import collectOpenReducer from "./reducers/collectOpenSlice";
 import imageViewerReducer from "./reducers/imageViewerSlice";
 import printTypeLayersReducer from "./reducers/printTypeLayersSlice";
 import messagesModalReducer from "./reducers/messagesModalSlice";
-import litClientReducer from "./reducers/litClientSlice";
 import synthLoadingReducer from "./reducers/synthLoadingSlice";
 import expandCanvasReducer from "./reducers/expandCanvasSlice";
 import canvasSizeReducer from "./reducers/canvasSizeSlice";
@@ -84,7 +83,6 @@ const reducer = combineReducers({
   imageViewerReducer,
   printTypeLayersReducer,
   messagesModalReducer,
-  litClientReducer,
   synthLoadingReducer,
   expandCanvasReducer,
   canvasSizeReducer,

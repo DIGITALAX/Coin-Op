@@ -3,7 +3,7 @@ import { setQuestPrelude } from "../../../../redux/reducers/questPreludeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
 import { RootState } from "../../../../redux/store";
-import { createPublicClient, http } from "viem";
+import { PublicClient, createPublicClient, http } from "viem";
 import { ethers } from "ethers";
 import { polygon } from "viem/chains";
 import {
@@ -21,7 +21,10 @@ import CoinOpSubscriptionAbi from "./../../../../abis/CoinOpSubscription.json";
 import QuestPreludeABI from "./../../../../abis/QuestPreludeABI.json";
 import { createTxData } from "../../../../lib/subgraph/helpers/createTxData";
 import { litExecute } from "../../../../lib/subgraph/helpers/litExecute";
-import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
+import {
+  LitNodeClient,
+  checkAndSignAuthMessage,
+} from "@lit-protocol/lit-node-client";
 import { setQuestPoints } from "../../../../redux/reducers/questPointsSlice";
 import { getChromadinBought } from "../../../../graphql/subgraph/queries/getChromadinHistory";
 import { setMessagesModal } from "../../../../redux/reducers/messagesModalSlice";
@@ -33,26 +36,18 @@ import { getPreRollId } from "../../../../graphql/subgraph/queries/getPreRolls";
 import getDefaultProfile from "../../../../graphql/lens/queries/getDefaultProfile";
 import { setAllSubscriptions } from "../../../../redux/reducers/allSubscriptionsSlice";
 import { getSubscriptionsPKP } from "../../../../graphql/subgraph/queries/getSubscription";
+import { AnyAction, Dispatch } from "redux";
+import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
 
-const useQuest = () => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
-  const dispatch = useDispatch();
-  const { address } = useAccount();
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
-  const litClient = useSelector(
-    (state: RootState) => state.app.litClientReducer.value
-  );
-  const questPoints = useSelector(
-    (state: RootState) => state.app.questPointsReducer.value
-  );
-  const subscribed = useSelector(
-    (state: RootState) => state.app.allSubscriptionsReducer.value?.isSubscribed
-  );
+const useQuest = (
+  client: LitNodeClient,
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  publicClient: PublicClient,
+  connectedPKP: PKPSig | undefined,
+  questPoints: number[],
+  subscribed: boolean | undefined
+) => {
   const [questSignUpLoading, setQuestSignUpLoading] = useState<boolean>(false);
   const [questsLoading, setQuestsLoading] = useState<boolean>(false);
 
@@ -169,14 +164,7 @@ const useQuest = () => {
         });
       }
 
-      await litExecute(
-        provider,
-        dispatch,
-        litClient,
-        tx,
-        "questSignUp",
-        authSig
-      );
+      await litExecute(client, provider, tx, "questSignUp", authSig);
 
       return true;
     } catch (err: any) {
@@ -425,14 +413,7 @@ const useQuest = () => {
         });
       }
 
-      await litExecute(
-        provider,
-        dispatch,
-        litClient,
-        tx,
-        "updateQuestReference",
-        authSig
-      );
+      await litExecute(client, provider, tx, "updateQuestReference", authSig);
     } catch (err: any) {
       console.error(err.message);
     }

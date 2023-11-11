@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { getAllPreRolls } from "../../../../graphql/subgraph/queries/getPreRolls";
-import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
+import {
+  PreRollState,
+  setPreRoll,
+} from "../../../../redux/reducers/preRollSlice";
 import { PreRoll } from "../types/common.types";
 import { fetchIpfsJson } from "../../../../lib/algolia/helpers/fetchIpfsJson";
 import { initializeAlgolia } from "../../../../lib/algolia/client";
@@ -11,13 +12,14 @@ import { getOneProfile } from "../../../../graphql/lens/queries/getProfile";
 import { DIGITALAX_PROFILE_ID_LENS } from "../../../../lib/constants";
 import { Profile } from "../types/generated";
 import { setPreRollLoading } from "../../../../redux/reducers/prerollsLoadingSlice";
+import { AnyAction, Dispatch } from "redux";
+import { SearchIndex } from "algoliasearch";
 
-const usePreRoll = () => {
-  const dispatch = useDispatch();
-  const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
-  const algoila = useSelector(
-    (state: RootState) => state.app.algoliaReducer.value
-  );
+const usePreRoll = (
+  dispatch: Dispatch<AnyAction>,
+  preRolls: PreRollState,
+  algolia: SearchIndex | undefined
+) => {
   const [imagesLoadingLeft, setImagesLoadingLeft] = useState<boolean[]>([]);
   const [imagesLoadingRight, setImagesLoadingRight] = useState<boolean[]>([]);
 
@@ -114,17 +116,17 @@ const usePreRoll = () => {
         })
       );
 
-      // let algoilaIndex = algoila;
+      // let algoliaIndex = algolia;
 
-      if (!algoila) {
+      if (!algolia) {
         const index = initializeAlgolia();
         dispatch(setAlgolia(index));
-        // algoilaIndex = index;
+        // algoliaIndex = index;
       }
 
-      // await algoilaIndex!.replaceAllObjects(preRollsAdded, {
+      // await algoliaIndex!.replaceAllObjects(preRollsAdded, {
       //   autoGenerateObjectIDIfNotExist: true,
-        
+
       // });
     } catch (err: any) {
       console.error(err.message);

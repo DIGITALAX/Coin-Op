@@ -4,25 +4,19 @@ import { FunctionComponent } from "react";
 import useRollSearch from "../hooks/useRollSearch";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { useRouter } from "next/router";
 import { HeaderProps } from "@/components/Common/types/common.types";
 import { useAccountModal, useChainModal } from "@rainbow-me/rainbowkit";
 import Sticky from "./Sticky";
 import MobileFotos from "./MobileFotos";
+import { useAccount, useNetwork } from "wagmi";
 
 const Header: FunctionComponent<HeaderProps> = ({
   preRollRef,
+  router,
 }): JSX.Element => {
-  const {
-    handleRollSearch,
-    prompt,
-    setPrompt,
-    handlePromptChoose,
-    scrollToCheckOut,
-    handleSearchSimilar,
-    handleAddToCart,
-    cartAnim,
-  } = useRollSearch();
+  const dispatch = useDispatch();
+  const { isConnected, address } = useAccount();
+  const { chain: chainNetwork } = useNetwork();
   const { openAccountModal } = useAccountModal();
   const { openChainModal } = useChainModal();
   const rollSearch = useSelector(
@@ -47,9 +41,27 @@ const Header: FunctionComponent<HeaderProps> = ({
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
   );
+  const algolia = useSelector(
+    (state: RootState) => state.app.algoliaReducer.value
+  );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
-  const router = useRouter();
-  const dispatch = useDispatch();
+  const {
+    handleRollSearch,
+    prompt,
+    setPrompt,
+    handlePromptChoose,
+    scrollToCheckOut,
+    handleSearchSimilar,
+    handleAddToCart,
+    cartAnim,
+  } = useRollSearch(
+    dispatch,
+    isConnected,
+    address,
+    chainNetwork,
+    algolia,
+    cartItems
+  );
   return (
     <div className="relative w-full h-fit items-center justify-center flex flex-col gap-20 px-3 pt-2 pb-20">
       <MobileFotos

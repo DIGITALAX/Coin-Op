@@ -13,18 +13,32 @@ import { setLogin } from "../../redux/reducers/loginSlice";
 import { useEffect, useState } from "react";
 import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
 import useQuest from "@/components/Quests/hooks/useQuest";
-import { useRouter } from "next/router";
 import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
+import { createPublicClient, http } from "viem";
+import { polygon } from "viem/chains";
+import { useAccount } from "wagmi";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { NextRouter } from "next/router";
 
-const Quests: NextPage = (): JSX.Element => {
+const Quests: NextPage<{
+  client: LitNodeClient;
+  router: NextRouter;
+}> = ({ client, router }): JSX.Element => {
   const dispatch = useDispatch();
-  const router = useRouter();
   const { openChainModal } = useChainModal();
+  const { address } = useAccount();
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
   const questPoints = useSelector(
     (state: RootState) => state.app.questPointsReducer.value
+  );
+  const subscribed = useSelector(
+    (state: RootState) => state.app.allSubscriptionsReducer.value?.isSubscribed
   );
   const connectedPKP = useSelector(
     (state: RootState) => state.app.currentPKPReducer.value
@@ -40,7 +54,15 @@ const Quests: NextPage = (): JSX.Element => {
   );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const [isClient, setIsClient] = useState(false);
-  const { questsLoading, getQuestInformation } = useQuest();
+  const { questsLoading, getQuestInformation } = useQuest(
+    client,
+    dispatch,
+    address,
+    publicClient,
+    connectedPKP,
+    questPoints,
+    subscribed
+  );
 
   useEffect(() => {
     setIsClient(true);
@@ -241,7 +263,10 @@ const Quests: NextPage = (): JSX.Element => {
               </div>
               <div className="relative w-full h-fit flex items-center justify-center">
                 {isClient && (
-                  <Countdown date={new Date(2023, 8, 15)} renderer={renderer} />
+                  <Countdown
+                    date={new Date(2023, 12, 15)}
+                    renderer={renderer}
+                  />
                 )}
               </div>
               <div className="relative w-full h-fit items-center justify-center flex flex-row justify-between gap-1.5 font-vcr text-xxs text-white">

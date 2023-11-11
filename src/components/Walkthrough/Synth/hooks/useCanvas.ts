@@ -9,8 +9,6 @@ import {
 } from "react";
 import { throttle } from "lodash";
 import { ElementInterface, SvgPatternType } from "../types/synth.types";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../../redux/store";
 import addRashToCanvas from "../../../../../lib/canvas/helpers/addRashToCanvas";
 import useElements from "./useElements";
 import lodash from "lodash";
@@ -22,31 +20,38 @@ import updateElement from "../../../../../lib/canvas/helpers/updateElement";
 import { isPointInPattern } from "../../../../../lib/canvas/helpers/isPointInPattern";
 import { setCanvasSize } from "../../../../../redux/reducers/canvasSizeSlice";
 import { getRegionOfInterest } from "../../../../../lib/canvas/helpers/getRegionOfInterest";
+import { AnyAction, Dispatch } from "redux";
+import { SynthData } from "../../../../../redux/reducers/completedSynthsSlice";
 
-const useCanvas = () => {
-  const dispatch = useDispatch();
+const useCanvas = (
+  dispatch: Dispatch<AnyAction>,
+  layerToSynth: {
+    id: number;
+    layer: string | undefined;
+  },
+  synthLayer:
+    | {
+        parentURI: string;
+        childTokenURIs: string[];
+        parentPrice: string;
+        childPrice: string;
+        childPosterURI: string;
+        parentId: number;
+        childId: number;
+      }
+    | undefined,
+  synthLoading: boolean,
+  completedSynths: Map<string, SynthData>,
+  synthProgress: number,
+  canvasSize: {
+    oldWidth: number;
+    oldHeight: number;
+    width: number;
+    height: number;
+  },
+  canvasOpen: boolean
+) => {
   let animationFrameId: number | null = null;
-  const layerToSynth = useSelector(
-    (state: RootState) => state.app.layerToSynthReducer.value
-  );
-  const synthLayerSelected = useSelector(
-    (state: RootState) => state.app.synthLayerReducer.value
-  );
-  const synthLoading = useSelector(
-    (state: RootState) => state.app.synthLoadingReducer.value
-  );
-  const completedSynths = useSelector(
-    (state: RootState) => state.app.completedSynthsReducer.value
-  );
-  const synthProgress = useSelector(
-    (state: RootState) => state.app.synthProgressReducer.value
-  );
-  const canvasSize = useSelector(
-    (state: RootState) => state.app.canvasSizeReducer.value
-  );
-  const canvasOpen = useSelector(
-    (state: RootState) => state.app.expandCanvasReducer.value
-  );
   const frameId = useRef<number | null>();
   const [canvas, setCanvas] = useState<any>(null);
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
@@ -54,7 +59,13 @@ const useCanvas = () => {
   }, []);
   const writingRef = useRef<HTMLTextAreaElement>(null);
   const ctx = canvas?.getContext("2d") as any;
-  const { history, index, setState: setElements, undo, redo } = useElements();
+  const {
+    history,
+    index,
+    setState: setElements,
+    undo,
+    redo,
+  } = useElements(dispatch);
   const [zoom, setZoom] = useState<number>(1);
   const [font, setFont] = useState<string>("Manaspace");
   const [fontOpen, setFontOpen] = useState<boolean>(false);
@@ -622,7 +633,7 @@ const useCanvas = () => {
     ) {
       synthLayerSwitch();
     }
-  }, [layerToSynth, synthLayerSelected, canvasSize]);
+  }, [layerToSynth, synthLayer, canvasSize]);
 
   useEffect(() => {
     if (ctx) {

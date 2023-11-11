@@ -1,21 +1,26 @@
 import { useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { setMessagesModal } from "../../../../redux/reducers/messagesModalSlice";
-import { RootState } from "../../../../redux/store";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import { setSubscriptionInfo } from "../../../../redux/reducers/subscriptionInfoSlice";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { COIN_OP_SUBSCRIPTION } from "../../../../lib/constants";
 import { ethers } from "ethers";
 import CoinOpSubscriptionABI from "../../../../abis/CoinOpSubscription.json";
 import { createTxData } from "../../../../lib/subgraph/helpers/createTxData";
 import { litExecute } from "../../../../lib/subgraph/helpers/litExecute";
 import { chunkString } from "../../../../lib/subgraph/helpers/chunkString";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { AnyAction, Dispatch } from "redux";
+import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
 
-const useSubscription = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
+const useSubscription = (
+  client: LitNodeClient,
+  dispatch: Dispatch<AnyAction>,
+  router: NextRouter,
+  subscriptionInfo: string | undefined,
+  currentPKP: PKPSig | undefined
+) => {
   const stripe = useStripe();
   const elements = useElements();
   const [subscriptionAddLoading, setSubscriptionAddLoading] =
@@ -24,15 +29,6 @@ const useSubscription = () => {
     useState<boolean>(false);
   const [subscriptionReactivateLoading, setSubscriptionReactivateLoading] =
     useState<boolean>(false);
-  const subscriptionInfo = useSelector(
-    (state: RootState) => state.app.subscriptionInfoReducer.email
-  );
-  const litClient = useSelector(
-    (state: RootState) => state.app.litClientReducer.value
-  );
-  const currentPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
 
   const handleCreateSubscription = async (): Promise<void> => {
     setSubscriptionAddLoading(true);
@@ -141,9 +137,8 @@ const useSubscription = () => {
       );
 
       await litExecute(
+        client,
         provider,
-        dispatch,
-        litClient,
         tx,
         "addSubscription",
         currentPKP?.authSig
@@ -215,9 +210,8 @@ const useSubscription = () => {
       );
 
       await litExecute(
+        client,
         provider,
-        dispatch,
-        litClient,
         tx,
         "cancelSubscription",
         currentPKP?.authSig
@@ -242,9 +236,8 @@ const useSubscription = () => {
       );
 
       await litExecute(
+        client,
         provider,
-        dispatch,
-        litClient,
         tx,
         "reactivateSubscription",
         currentPKP?.authSig

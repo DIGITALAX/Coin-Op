@@ -1,19 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
-import { RootState } from "../../../../redux/store";
-import { Erc20 } from "../types/generated";
+import { Erc20, Profile } from "../types/generated";
 import handleSetCollectValues from "../../../../lib/lens/helpers/handleSetCollectValues";
 import availableCurrencies from "../../../../graphql/lens/queries/availableCurrencies";
+import { AnyAction, Dispatch } from "redux";
 
-const useCollectOptions = () => {
-  const dispatch = useDispatch();
-  const profileId = useSelector(
-    (state: RootState) => state.app.profileReducer.profile?.id
-  );
-  const collectOpen = useSelector(
-    (state: RootState) => state.app.collectOpenReducer.value
-  );
+const useCollectOptions = (
+  dispatch: Dispatch<AnyAction>,
+  profile: Profile | undefined,
+  collectOpen: boolean
+) => {
   const [enabledCurrencies, setEnabledCurrencies] = useState<Erc20[]>([]);
   const [audienceType, setAudienceType] = useState<string>("everyone");
   const [enabledCurrency, setEnabledCurrency] = useState<string>();
@@ -76,7 +72,7 @@ const useCollectOptions = () => {
   };
 
   useEffect(() => {
-    if (address && profileId) {
+    if (address && profile?.id) {
       handleCollectValues();
     }
   }, [

@@ -1,24 +1,16 @@
 import { joinSignature } from "@ethersproject/bytes";
 import { serialize } from "@ethersproject/transactions";
-import { connectLit } from "./connectLit";
-import { AnyAction, Dispatch } from "redux";
 import { ethers } from "ethers";
-import { COIN_OP_MARKET } from "../../constants";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
 
 export const litExecute = async (
+  client: LitNodeClient,
   provider: ethers.providers.JsonRpcProvider,
-  dispatch: Dispatch<AnyAction>,
-  litClient: any,
   tx: any,
   sigName: string,
   authSig: any,
   retryCount: number = 0
 ) => {
-  let client = litClient;
-  if (!client) {
-    client = await connectLit(dispatch);
-  }
-
   const maxRetries = 5;
 
   try {
@@ -66,9 +58,8 @@ export const litExecute = async (
     ) {
       console.warn(`Retry attempt ${retryCount + 1} after timeout error.`);
       await litExecute(
+        client,
         provider,
-        dispatch,
-        litClient,
         tx,
         sigName,
         authSig,

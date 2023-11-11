@@ -20,6 +20,9 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
   const preRollAnim = useSelector(
     (state: RootState) => state.app.preRollAnimReducer.value
   );
+  const algolia = useSelector(
+    (state: RootState) => state.app.algoliaReducer.value
+  );
   const preRollsLoading = useSelector(
     (state: RootState) => state.app.prerollsLoadingReducer.value
   );
@@ -31,7 +34,7 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
     setImagesLoadingLeft,
     imagesLoadingRight,
     setImagesLoadingRight,
-  } = usePreRoll();
+  } = usePreRoll(dispatch, preRolls, algolia);
   return (
     <div className="relative w-full xl:min-w-80 xl:w-80 h-fit xl:h-full flex overflow-x-scroll xl:overflow-x-hidden xl:overflow-y-scroll">
       <div className="relative w-fit xl:w-full h-fit flex xl:flex-col flex-row justify-start items-center gap-10">

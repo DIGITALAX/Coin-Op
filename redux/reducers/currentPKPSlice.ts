@@ -1,20 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export interface PKPSig {
+  ethAddress: string;
+  publicKey: string;
+  tokenId: {
+    hex: string;
+    type: string;
+  };
+  sessionSig: any;
+  pkpWallet: any;
+  authSig: any;
+  encryptedToken: string;
+}
+
 export interface CurrentPKPState {
-  value:
-    | {
-        ethAddress: string;
-        publicKey: string;
-        tokenId: {
-          hex: string;
-          type: string;
-        };
-        sessionSig: any;
-        pkpWallet: any;
-        authSig: any;
-        encryptedToken: string;
-      }
-    | undefined;
+  value: PKPSig | undefined;
 }
 
 const initialCurrentPKPState: CurrentPKPState = {

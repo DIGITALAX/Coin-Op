@@ -1,49 +1,43 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import lodash from "lodash";
 import { FetchResult } from "@apollo/client";
 import json from "./../../../../public/videos/local.json";
-import { RootState } from "../../../../redux/store";
 import { setVideoSync } from "../../../../redux/reducers/videoSyncSlice";
 import { setHasMoreVideosRedux } from "../../../../redux/reducers/hasMoreVideoSlice";
 import {
   LimitType,
   Post,
+  Profile,
   PublicationType,
   PublicationsQuery,
 } from "../types/generated";
 import { setChannelsRedux } from "../../../../redux/reducers/channelsSlice";
-import { setVideoCount } from "../../../../redux/reducers/videoCountSlice";
-import { setMainVideo } from "../../../../redux/reducers/mainVideoSlice";
+import {
+  VideoCountState,
+  setVideoCount,
+} from "../../../../redux/reducers/videoCountSlice";
+import {
+  MainVideoState,
+  setMainVideo,
+} from "../../../../redux/reducers/mainVideoSlice";
 import {
   getPublications,
   getPublicationsAuth,
 } from "../../../../graphql/lens/queries/getPublications";
 import { setReactId } from "../../../../redux/reducers/reactIdSlice";
+import { AnyAction, Dispatch } from "redux";
+import { VideoSyncState } from "../types/common.types";
 
-const useChannels = () => {
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
-  );
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.profileReducer.profile?.id
-  );
-  const channelsDispatched = useSelector(
-    (state: RootState) => state.app.channelsReducer.value
-  );
-  const indexer = useSelector(
-    (state: RootState) => state.app.indexModalReducer.message
-  );
-  const reactId = useSelector(
-    (state: RootState) => state.app.reactIdReducer.value
-  );
-  const videoSync = useSelector(
-    (state: RootState) => state.app.videoSyncReducer
-  );
-  const videoCount = useSelector(
-    (state: RootState) => state.app.videoCountReducer
-  );
-  const dispatch = useDispatch();
+const useChannels = (
+  dispatch: Dispatch<AnyAction>,
+  mainVideo: MainVideoState,
+  lensProfile: Profile | undefined,
+  channelsDispatched: Post[],
+  indexer: string | undefined,
+  reactId: string | undefined,
+  videoSync: VideoSyncState,
+  videoCount: VideoCountState
+) => {
   const [paginated, setPaginated] = useState<any>();
   const [videoLoading, setVideoLoading] = useState<boolean>(false);
 

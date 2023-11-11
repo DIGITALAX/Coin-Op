@@ -8,8 +8,22 @@ import useOrders from "@/components/Account/hooks/useOrders";
 import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
 import { useEffect } from "react";
 import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
-
-const Account: NextPage = (): JSX.Element => {
+import { useAccount } from "wagmi";
+import { createPublicClient, http } from "viem";
+import { polygon } from "viem/chains";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { NextRouter } from "next/router";
+const Account: NextPage<{ client: LitNodeClient; router: NextRouter }> = ({
+  client,
+  router,
+}): JSX.Element => {
+  const { address } = useAccount();
+  const { openChainModal } = useChainModal();
+  const dispatch = useDispatch();
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
   const allOrders = useSelector(
     (state: RootState) => state.app.allOrdersReducer.value
   );
@@ -18,6 +32,9 @@ const Account: NextPage = (): JSX.Element => {
   );
   const allSubscriptions = useSelector(
     (state: RootState) => state.app.allSubscriptionsReducer.value
+  );
+  const subscriptionInfo = useSelector(
+    (state: RootState) => state.app.subscriptionInfoReducer.email
   );
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
@@ -29,8 +46,6 @@ const Account: NextPage = (): JSX.Element => {
     (state: RootState) => state.app.cartAddAnimReducer.value
   );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
-  const dispatch = useDispatch();
-  const { openChainModal } = useChainModal();
   const {
     ordersLoading,
     handleDecryptFulfillment,
@@ -44,7 +59,14 @@ const Account: NextPage = (): JSX.Element => {
     decryptMessageLoading,
     handleDecryptMessage,
     subscriptionsLoading,
-  } = useOrders();
+  } = useOrders(
+    client,
+    publicClient,
+    address,
+    dispatch,
+    allOrders,
+    connectedPKP
+  );
 
   useEffect(() => {
     if (preRollAnim) {
@@ -153,6 +175,9 @@ const Account: NextPage = (): JSX.Element => {
         />
       </Head>
       <AllOrders
+        router={router}
+        subscriptionInfo={subscriptionInfo}
+        client={client}
         allSubscriptions={allSubscriptions}
         subscriptionsLoading={subscriptionsLoading}
         connected={connected}

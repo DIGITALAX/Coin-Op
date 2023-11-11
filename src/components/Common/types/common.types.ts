@@ -22,6 +22,8 @@ import { MainVideoState } from "../../../../redux/reducers/mainVideoSlice";
 import ReactPlayer from "react-player";
 import { FollowerOnlyState } from "../../../../redux/reducers/followerOnlySlice";
 import { PostCollectValuesState } from "../../../../redux/reducers/postCollectValuesSlice";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { PublicClient } from "viem";
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
@@ -30,6 +32,8 @@ export type PageContainerProps = {
   isDragging: boolean;
   apiKey: string | undefined;
   openChainModal: (() => void) | undefined;
+  client: LitNodeClient;
+  publicClient: PublicClient;
   chain: number | undefined;
   scrollToPreRoll: () => void;
   synthRef: Ref<HTMLDivElement>;
@@ -57,7 +61,7 @@ export type PageContainerProps = {
   handleMouseDown: (e: MouseEvent) => void;
   handleMouseMove: (e: MouseEvent) => void;
   handleMouseUp: (e: MouseEvent) => void;
-  synthLayerSelected: {
+  layerToSynth: {
     id: number;
     layer: string | undefined;
   };
@@ -454,6 +458,7 @@ export type HookProps = {
 
 export type HeaderProps = {
   preRollRef: Ref<HTMLDivElement>;
+  router: NextRouter
 };
 
 export type LoginProps = {

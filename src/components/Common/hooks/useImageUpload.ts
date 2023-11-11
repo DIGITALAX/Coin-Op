@@ -1,24 +1,20 @@
 import { FormEvent, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import lodash from "lodash";
-import { RootState } from "../../../../redux/store";
 import { MediaType, UploadedMedia } from "../types/common.types";
 import { getPostData, setPostData } from "../../../../lib/lens/utils";
 import { setImageLoading } from "../../../../redux/reducers/imageLoadingSlice";
 import { setPostImages } from "../../../../redux/reducers/postImagesSlice";
+import { AnyAction, Dispatch } from "redux";
 
-const useImageUpload = () => {
-  const postOpen = useSelector(
-    (state: RootState) => state.app.lensPostBoxReducer.value
-  );
+const useImageUpload = (
+  dispatch: Dispatch<AnyAction>,
+  postOpen: boolean,
+  imagesUploaded: UploadedMedia[]
+) => {
   const [videoLoading, setVideoLoading] = useState<boolean>(false);
   const [mappedFeaturedFiles, setMappedFeaturedFiles] = useState<
     UploadedMedia[]
   >(JSON.parse(getPostData() || "{}").images || []);
-  const dispatch = useDispatch();
-  const imagesUploaded = useSelector(
-    (state: RootState) => state.app.postImagesReducer.value
-  );
 
   const uploadImage = async (
     e: FormEvent | File[],

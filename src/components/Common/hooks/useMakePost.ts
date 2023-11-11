@@ -12,10 +12,13 @@ import {
   setPostData,
 } from "../../../../lib/lens/utils";
 import { MediaType, UploadedMedia } from "../types/common.types";
-import { LimitType, Profile, RelaySuccess } from "../types/generated";
+import {
+  LimitType,
+  Profile,
+  RelaySuccess,
+  SimpleCollectOpenActionModuleInput,
+} from "../types/generated";
 import useImageUpload from "./useImageUpload";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { setLensPostBox } from "../../../../redux/reducers/lensPostBoxSlice";
 import { setPostImages } from "../../../../redux/reducers/postImagesSlice";
 import { setImageLoading } from "../../../../redux/reducers/imageLoadingSlice";
@@ -31,15 +34,20 @@ import { setIndexModal } from "../../../../redux/reducers/indexModalSlice";
 import handleIndexCheck from "../../../../lib/lens/helpers/handleIndexCheck";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import { setCollectOpen } from "../../../../redux/reducers/collectOpenSlice";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
-import { useAccount } from "wagmi";
+import { AnyAction, Dispatch } from "redux";
+import cleanCollect from "../../../../lib/lens/helpers/cleanCollect";
 
-const useMakePost = () => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
+const useMakePost = (
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  publicClient: PublicClient,
+  collectOpen: boolean,
+  postImages: UploadedMedia[],
+  collectModuleInput: SimpleCollectOpenActionModuleInput | undefined,
+  postOpen: boolean
+) => {
   const [postLoading, setPostLoading] = useState<boolean>(false);
   const [postDescription, setPostDescription] = useState<string>("");
   const [caretCoord, setCaretCoord] = useState<{ x: number; y: number }>({
@@ -58,21 +66,7 @@ const useMakePost = () => {
   const [searchGif, setSearchGif] = useState<string>("");
   const [postHTML, setPostHTML] = useState<string>("");
   const [contentURI, setContentURI] = useState<string>();
-  const dispatch = useDispatch();
-  const { address } = useAccount();
-  const { uploadImage } = useImageUpload();
-  const profile = useSelector(
-    (state: RootState) => state.app.profileReducer.profile
-  );
-  const collectOpen = useSelector(
-    (state: RootState) => state.app.collectOpenReducer.value
-  );
-  const postImages = useSelector(
-    (state: RootState) => state?.app?.postImagesReducer?.value
-  );
-  const collectModuleType = useSelector(
-    (state: RootState) => state?.app?.collectValueReducer?.type
-  );
+  const { uploadImage } = useImageUpload(dispatch, postOpen, postImages);
 
   const handleGif = (e: FormEvent): void => {
     setSearchGif((e.target as HTMLFormElement).value);
@@ -249,13 +243,18 @@ const useMakePost = () => {
         setContentURI,
         contentURI
       );
+      let collectInput;
+
+      if (collectModuleInput) {
+        collectInput = cleanCollect(collectModuleInput);
+      }
 
       const data = await createPostTypedData({
         contentURI: "ipfs://" + contentURIValue,
         openActionModules: [
           {
             collectOpenAction: {
-              simpleCollectOpenAction: collectModuleType,
+              simpleCollectOpenAction: collectInput,
             },
           },
         ],

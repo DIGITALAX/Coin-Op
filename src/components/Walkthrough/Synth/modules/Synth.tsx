@@ -4,7 +4,7 @@ import Grid from "./Grid";
 
 const Synth: FunctionComponent<SynthProps> = ({
   dispatch,
-  synthLayerSelected,
+  layerToSynth,
   synthLayer,
   synthConfig,
   handleSynth,
@@ -66,7 +66,7 @@ const Synth: FunctionComponent<SynthProps> = ({
         handleBlur={handleBlur}
         writingRef={writingRef}
         dispatch={dispatch}
-        synthLayerSelected={synthLayerSelected}
+        layerToSynth={layerToSynth}
         synthLayer={synthLayer}
         synthConfig={synthConfig}
         handleSynth={handleSynth}

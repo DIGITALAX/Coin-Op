@@ -20,6 +20,8 @@ const Grid: FunctionComponent<GridProps> = ({
   connectedPKP,
   chain,
   openChainModal,
+  client,
+  publicClient,
 }): JSX.Element => {
   const {
     cartItem,
@@ -36,7 +38,7 @@ const Grid: FunctionComponent<GridProps> = ({
     handleApproveSpend,
     oracleValue,
     encryptFulfillerInformation,
-  } = useCheckout();
+  } = useCheckout(client, dispatch, address, publicClient);
   const paymentType = useSelector(
     (state: RootState) => state.app.paymentTypeReducer.value
   );

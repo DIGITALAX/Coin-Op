@@ -10,7 +10,7 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
   canvasExpand,
   completeImages,
   dispatch,
-  synthLayerSelected,
+  layerToSynth,
   handleDownloadImage,
   synthLoading,
   itemClicked,
@@ -24,26 +24,24 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
     >
       <div className="relative w-full h-full flex items-center justify-start">
         <div className="relative w-fit h-full items-center justify-start flex flex-row gap-3">
-          {((completeImages.get(String(synthLayerSelected.id))?.synths || [])
-            .length < 4
-            ? completeImages.get(String(synthLayerSelected.id))?.synths || []
+          {((completeImages.get(String(layerToSynth.id))?.synths || []).length <
+          4
+            ? completeImages.get(String(layerToSynth.id))?.synths || []
             : Array(3)
                 .fill(null)
                 .map(
                   (_, index) =>
-                    (completeImages.get(String(synthLayerSelected.id))
-                      ?.synths || [])[
+                    (completeImages.get(String(layerToSynth.id))?.synths || [])[
                       ((
-                        completeImages.get(String(synthLayerSelected.id))
-                          ?.synths || []
+                        completeImages.get(String(layerToSynth.id))?.synths ||
+                        []
                       ).indexOf(
-                        completeImages.get(String(synthLayerSelected.id))
-                          ?.chosen!
+                        completeImages.get(String(layerToSynth.id))?.chosen!
                       ) +
                         index) %
                         (
-                          completeImages.get(String(synthLayerSelected.id))
-                            ?.synths || []
+                          completeImages.get(String(layerToSynth.id))?.synths ||
+                          []
                         ).length
                     ]
                 )
@@ -51,8 +49,7 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
             return (
               <div
                 className={`relative w-20 h-full flex flex-row items-center justify-center gap-2 border rounded-lg ${
-                  completeImages.get(String(synthLayerSelected.id))?.chosen ===
-                  image
+                  completeImages.get(String(layerToSynth.id))?.chosen === image
                     ? "border-white"
                     : "border-ama"
                 } ${!synthLoading && "cursor-pointer"}`}
@@ -60,10 +57,9 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
                 onClick={() => {
                   if (synthLoading) return;
                   let newCompletedSynths = new Map(completeImages);
-                  newCompletedSynths.set(String(synthLayerSelected.id), {
+                  newCompletedSynths.set(String(layerToSynth.id), {
                     synths:
-                      completeImages.get(String(synthLayerSelected.id))
-                        ?.synths || [],
+                      completeImages.get(String(layerToSynth.id))?.synths || [],
                     chosen: image,
                   });
                   setItemClicked(!itemClicked);
@@ -104,10 +100,9 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
                     e.stopPropagation();
                     let newCompletedSynths = new Map(completeImages);
                     const newArray = (
-                      completeImages.get(String(synthLayerSelected.id))
-                        ?.synths || []
+                      completeImages.get(String(layerToSynth.id))?.synths || []
                     ).filter((item) => image !== item);
-                    newCompletedSynths.set(String(synthLayerSelected.id), {
+                    newCompletedSynths.set(String(layerToSynth.id), {
                       synths: newArray,
                       chosen: newArray?.length > 0 ? newArray[0] : "",
                     });
@@ -138,27 +133,21 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
             onClick={() => {
               if (synthLoading) return;
               let newCompletedSynths = new Map(completeImages);
-              newCompletedSynths.set(String(synthLayerSelected.id), {
+              newCompletedSynths.set(String(layerToSynth.id), {
                 synths:
-                  completeImages.get(String(synthLayerSelected.id))?.synths ||
-                  [],
-                chosen: (completeImages.get(String(synthLayerSelected.id))
-                  ?.synths || [])?.[
+                  completeImages.get(String(layerToSynth.id))?.synths || [],
+                chosen: (completeImages.get(String(layerToSynth.id))?.synths ||
+                  [])?.[
                   ((
-                    completeImages.get(String(synthLayerSelected.id))?.synths ||
-                    []
+                    completeImages.get(String(layerToSynth.id))?.synths || []
                   )?.indexOf(
-                    completeImages.get(String(synthLayerSelected.id))?.chosen!
+                    completeImages.get(String(layerToSynth.id))?.chosen!
                   ) -
                     1 +
-                    (
-                      completeImages.get(String(synthLayerSelected.id))
-                        ?.synths || []
-                    )?.length) %
-                    (
-                      completeImages.get(String(synthLayerSelected.id))
-                        ?.synths || []
-                    )?.length
+                    (completeImages.get(String(layerToSynth.id))?.synths || [])
+                      ?.length) %
+                    (completeImages.get(String(layerToSynth.id))?.synths || [])
+                      ?.length
                 ]!,
               });
               dispatch(setCompletedSynths(newCompletedSynths));
@@ -177,23 +166,19 @@ const CompleteImages: FunctionComponent<CompleteImagesProps> = ({
             onClick={() => {
               if (synthLoading) return;
               let newCompletedSynths = new Map(completeImages);
-              newCompletedSynths.set(String(synthLayerSelected.id), {
+              newCompletedSynths.set(String(layerToSynth.id), {
                 synths:
-                  completeImages.get(String(synthLayerSelected.id))?.synths ||
-                  [],
-                chosen: (completeImages.get(String(synthLayerSelected.id))
-                  ?.synths || [])?.[
+                  completeImages.get(String(layerToSynth.id))?.synths || [],
+                chosen: (completeImages.get(String(layerToSynth.id))?.synths ||
+                  [])?.[
                   ((
-                    completeImages.get(String(synthLayerSelected.id))?.synths ||
-                    []
+                    completeImages.get(String(layerToSynth.id))?.synths || []
                   )?.indexOf(
-                    completeImages.get(String(synthLayerSelected.id))?.chosen!
+                    completeImages.get(String(layerToSynth.id))?.chosen!
                   ) +
                     1) %
-                    (
-                      completeImages.get(String(synthLayerSelected.id))
-                        ?.synths || []
-                    )?.length
+                    (completeImages.get(String(layerToSynth.id))?.synths || [])
+                      ?.length
                 ]!,
               });
               dispatch(setCompletedSynths(newCompletedSynths));
