@@ -16,6 +16,7 @@ import RouterChange from "@/components/Common/modules/RouterChange";
 import { createContext, useRef } from "react";
 import Modals from "@/components/Common/modules/Modals/Modals";
 import PreRolls from "@/components/Common/modules/PreRolls";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [polygon],
@@ -79,6 +80,10 @@ export default function App({ Component, pageProps }: AppProps) {
                                                                                                                                                      
  
     `);
+
+    async () => {
+      await (client as LitNodeClient).connect();
+    };
   }, []);
 
   useEffect(() => {
