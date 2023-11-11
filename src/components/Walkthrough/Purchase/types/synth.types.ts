@@ -4,11 +4,13 @@ import { AnyAction, Dispatch } from "redux";
 import { Details } from "../../../../../redux/reducers/fulfillmentDetailsSlice";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { PublicClient } from "viem";
+import { PKPSig } from "../../../../../redux/reducers/currentPKPSlice";
 
 export type PurchaseProps = {
   dispatch: Dispatch<AnyAction>;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   cartItems: CartItem[];
+  clientSecret: string | undefined;
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
@@ -16,6 +18,10 @@ export type PurchaseProps = {
   openChainModal: (() => void) | undefined;
   client: LitNodeClient;
   publicClient: PublicClient;
+  paymentType: string;
+  encryptedInformation: string[] | undefined;
+  connectedPKP: PKPSig | undefined;
+  fulfillmentDetails: Details;
 };
 
 export type GridProps = {
@@ -31,6 +37,8 @@ export type GridProps = {
   connectedPKP: any;
   chain: number | undefined;
   openChainModal: (() => void) | undefined;
+  paymentType: string;
+  encryptedInformation: string[] | undefined;
 };
 
 export type CheckoutProps = {

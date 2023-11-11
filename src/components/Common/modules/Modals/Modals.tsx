@@ -142,6 +142,9 @@ const Modals = ({
   const purchaseModal = useSelector(
     (state: RootState) => state.app.purchaseReducer
   );
+  const fulfillmentDetails = useSelector(
+    (state: RootState) => state.app.fulfillmentDetailsReducer.value
+  );
   const hasMore = useSelector(
     (state: RootState) => state.app.hasMoreVideoReducer.value
   );
@@ -188,7 +191,10 @@ const Modals = ({
     address,
     router,
     dispatch,
-    authClient
+    authClient,
+    fulfillmentDetails,
+    connectedPKP,
+    cartItems
   );
   const {
     postDescription,
@@ -344,7 +350,7 @@ const Modals = ({
     hasMoreReact,
     hasMoreCollect,
     hasMoreMirror,
-  } = useWho();
+  } = useWho(reaction);
   const {
     profile,
     followProfile,

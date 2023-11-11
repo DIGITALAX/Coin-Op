@@ -78,6 +78,11 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   apiKey,
   client,
   publicClient,
+  fulfillmentDetails,
+  encryptedInformation,
+  connectedPKP,
+  paymentType,
+  clientSecret,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -168,6 +173,11 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           signInLoading={signInLoading}
           address={address}
           openConnectModal={openConnectModal}
+          encryptedInformation={encryptedInformation}
+          fulfillmentDetails={fulfillmentDetails}
+          connectedPKP={connectedPKP}
+          paymentType={paymentType}
+          clientSecret={clientSecret}
         />
       </div>
     </div>

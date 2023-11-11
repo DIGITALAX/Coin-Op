@@ -6,8 +6,6 @@ import { CartItem } from "@/components/Common/types/common.types";
 import { setImageViewer } from "../../../../../redux/reducers/imageViewerSlice";
 import Checkout from "./Checkout";
 import useCheckout from "../hooks/useCheckout";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../redux/store";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -22,6 +20,8 @@ const Grid: FunctionComponent<GridProps> = ({
   openChainModal,
   client,
   publicClient,
+  paymentType,
+  encryptedInformation,
 }): JSX.Element => {
   const {
     cartItem,
@@ -39,12 +39,6 @@ const Grid: FunctionComponent<GridProps> = ({
     oracleValue,
     encryptFulfillerInformation,
   } = useCheckout(client, dispatch, address, publicClient);
-  const paymentType = useSelector(
-    (state: RootState) => state.app.paymentTypeReducer.value
-  );
-  const encryptedInformation = useSelector(
-    (state: RootState) => state.app.encryptedInformationReducer.information
-  );
   return (
     <div
       className="relative w-full h-120 synth:h-100 flex flex-col gap-2"

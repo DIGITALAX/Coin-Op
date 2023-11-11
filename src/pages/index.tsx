@@ -77,6 +77,21 @@ export default function Home({
     (state: RootState) => state.app.cartAddAnimReducer.value
   );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
+  const clientSecret = useSelector(
+    (state: RootState) => state.app.clientSecretReducer.value
+  );
+  const fulfillmentDetails = useSelector(
+    (state: RootState) => state.app.fulfillmentDetailsReducer.value
+  );
+  const connectedPKP = useSelector(
+    (state: RootState) => state.app.currentPKPReducer.value
+  );
+  const paymentType = useSelector(
+    (state: RootState) => state.app.paymentTypeReducer.value
+  );
+  const encryptedInformation = useSelector(
+    (state: RootState) => state.app.encryptedInformationReducer.information
+  );
 
   const { handleLensSignIn, signInLoading } = useSignIn(
     dispatch,
@@ -237,6 +252,11 @@ export default function Home({
       chain={chain}
       openChainModal={openChainModal}
       apiKey={apiKey.key}
+      paymentType={paymentType}
+      connectedPKP={connectedPKP}
+      encryptedInformation={encryptedInformation}
+      fulfillmentDetails={fulfillmentDetails}
+      clientSecret={clientSecret}
     />
   );
 }

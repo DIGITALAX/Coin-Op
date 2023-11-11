@@ -24,13 +24,20 @@ import { FollowerOnlyState } from "../../../../redux/reducers/followerOnlySlice"
 import { PostCollectValuesState } from "../../../../redux/reducers/postCollectValuesSlice";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { PublicClient } from "viem";
+import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
+import { Details } from "../../../../redux/reducers/fulfillmentDetailsSlice";
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
   scrollToComposite: () => void;
+  clientSecret: string | undefined;
   newLayersLoading: boolean;
   isDragging: boolean;
   apiKey: string | undefined;
+  connectedPKP: PKPSig | undefined;
+  paymentType: string;
+  encryptedInformation: string[] | undefined;
+  fulfillmentDetails: Details;
   openChainModal: (() => void) | undefined;
   client: LitNodeClient;
   publicClient: PublicClient;
@@ -458,7 +465,7 @@ export type HookProps = {
 
 export type HeaderProps = {
   preRollRef: Ref<HTMLDivElement>;
-  router: NextRouter
+  router: NextRouter;
 };
 
 export type LoginProps = {

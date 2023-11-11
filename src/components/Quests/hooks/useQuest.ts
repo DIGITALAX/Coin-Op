@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { setQuestPrelude } from "../../../../redux/reducers/questPreludeSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
-import { RootState } from "../../../../redux/store";
-import { PublicClient, createPublicClient, http } from "viem";
+import { PublicClient } from "viem";
 import { ethers } from "ethers";
-import { polygon } from "viem/chains";
 import {
   getAllQuestsPoints,
   getQuestByAddress,

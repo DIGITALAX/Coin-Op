@@ -3,8 +3,6 @@ import Grid from "./Grid";
 import { PurchaseProps } from "../types/synth.types";
 import useStripe from "../hooks/useStripe";
 import { Elements } from "@stripe/react-stripe-js";
-import { RootState } from "../../../../../redux/store";
-import { useSelector } from "react-redux";
 import { loadStripe } from "@stripe/stripe-js";
 import PlainGrid from "./PlainGrid";
 
@@ -23,19 +21,12 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   openChainModal,
   client,
   publicClient,
+  clientSecret,
+  fulfillmentDetails,
+  connectedPKP,
+  encryptedInformation,
+  paymentType,
 }): JSX.Element => {
-  const clientSecret = useSelector(
-    (state: RootState) => state.app.clientSecretReducer.value
-  );
-  const fulfillmentDetails = useSelector(
-    (state: RootState) => state.app.fulfillmentDetailsReducer.value
-  );
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
-  const encryptedInformation = useSelector(
-    (state: RootState) => state.app.encryptedInformationReducer.information
-  );
   const { options } = useStripe(
     dispatch,
     cartItems,
@@ -61,6 +52,8 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
             openChainModal={openChainModal}
             client={client}
             publicClient={publicClient}
+            encryptedInformation={encryptedInformation}
+            paymentType={paymentType}
           />
         </Elements>
       ) : (
@@ -77,6 +70,8 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
           openChainModal={openChainModal}
           publicClient={publicClient}
           client={client}
+          encryptedInformation={encryptedInformation}
+          paymentType={paymentType}
         />
       )}
     </div>

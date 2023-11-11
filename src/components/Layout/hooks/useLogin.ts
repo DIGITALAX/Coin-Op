@@ -4,11 +4,13 @@ import { ProviderType } from "@lit-protocol/constants";
 import { LitAuthClient, isSignInRedirect } from "@lit-protocol/lit-auth-client";
 import { COIN_OP_PKPS, REDIRECT_URL } from "../../../../lib/constants";
 import { NextRouter } from "next/router";
-import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
+import {
+  PKPSig,
+  setCurrentPKP,
+} from "../../../../redux/reducers/currentPKPSlice";
 import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
 import { ethers } from "ethers";
 import { Chain } from "viem/chains";
-import { useSelector } from "react-redux";
 import { setLogin } from "../../../../redux/reducers/loginSlice";
 import PKPAbi from "./../../../../abis/PKP.json";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
@@ -19,9 +21,11 @@ import {
   setFulfillmentDetailsLocalStorage,
   setLitLoginLocalStorage,
 } from "../../../../lib/subgraph/utils";
-import { RootState } from "../../../../redux/store";
 import { setCart } from "../../../../redux/reducers/cartSlice";
-import { setFulfillmentDetails } from "../../../../redux/reducers/fulfillmentDetailsSlice";
+import {
+  Details,
+  setFulfillmentDetails,
+} from "../../../../redux/reducers/fulfillmentDetailsSlice";
 import { getPKPs } from "../../../../graphql/subgraph/queries/getOrders";
 import { generateAuthSignature } from "../../../../lib/subgraph/helpers/generateAuthSignature";
 import CoinOpPKPsABI from "../../../../abis/CoinOpPKPs.json";
@@ -33,6 +37,7 @@ import { setQuestInfo } from "../../../../redux/reducers/questInfoSlice";
 import { PublicClient } from "wagmi";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { AnyAction, Dispatch } from "redux";
+import { CartItem } from "@/components/Common/types/common.types";
 
 export const chronicle: Chain = {
   id: 175177,
@@ -65,20 +70,14 @@ const useLogin = (
   address: `0x${string}` | undefined,
   router: NextRouter,
   dispatch: Dispatch<AnyAction>,
-  authClient: LitAuthClient
+  authClient: LitAuthClient,
+  fulfillmentDetails: Details,
+  connectedPKP: PKPSig | undefined,
+  cartItems: CartItem[]
 ) => {
   const hasRedirectedRef = useRef<boolean>(false);
   const hasFetchedMintedRef = useRef<boolean>(false);
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
-  const fulfillmentDetails = useSelector(
-    (state: RootState) => state.app.fulfillmentDetailsReducer.value
-  );
-  const cartItems = useSelector(
-    (state: RootState) => state.app.cartReducer.value
-  );
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
 
   const loginWithWeb2Auth = async () => {
     try {
