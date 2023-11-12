@@ -10,6 +10,7 @@ const allowedOrigins = [
   "https://youtube.com",
   "https://vimeo.com",
   `https://${process.env.NEXT_PUBLIC_ALGOLIA_ID}-dsn.algolia.net`,
+  "https://api-v2.lens.dev/",
 ];
 
 const nextConfig = {
