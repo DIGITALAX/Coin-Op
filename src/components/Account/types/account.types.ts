@@ -3,6 +3,7 @@ import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { AnyAction, Dispatch } from "redux";
 import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
 import { NextRouter } from "next/router";
+import { AccessControlConditions } from "@lit-protocol/types";
 
 export interface Order {
   orderId: string;
@@ -15,6 +16,7 @@ export interface Order {
   fulfillmentInformation: {
     ciphertext: string;
     dataToEncryptHash: string;
+    accessControlConditions: AccessControlConditions | undefined;
     decryptedFulfillment:
       | {
           address: string;
@@ -39,6 +41,7 @@ export interface Order {
   message: {
     ciphertext: string;
     dataToEncryptHash: string;
+    accessControlConditions: AccessControlConditions | undefined;
   }[];
   decryptedMessage: {
     message: string;

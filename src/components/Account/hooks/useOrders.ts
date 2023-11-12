@@ -188,7 +188,6 @@ const useOrders = (
       )
     );
     try {
-      await client.connect();
       let authSig;
       if (connectedPKP?.pkpWallet) {
         authSig = connectedPKP?.authSig;
@@ -207,6 +206,9 @@ const useOrders = (
         for (let i = 0; i < order.message.length; i++) {
           const decryptedString = await decryptToString(
             {
+              authSig,
+              accessControlConditions:
+                order?.message[i].accessControlConditions,
               dataToEncryptHash: order?.message[i].dataToEncryptHash,
               ciphertext: order?.message[i].ciphertext,
               chain: "polygon",
@@ -269,7 +271,6 @@ const useOrders = (
       )
     );
     try {
-      await client.connect();
       let authSig;
       if (connectedPKP?.pkpWallet) {
         authSig = connectedPKP?.authSig;
@@ -284,8 +285,11 @@ const useOrders = (
       if (fulfillerAddress) {
         const decryptedString = await decryptToString(
           {
-            dataToEncryptHash: order?.fulfillmentInformation.dataToEncryptHash,
+            authSig,
+            accessControlConditions:
+              order?.fulfillmentInformation?.accessControlConditions,
             ciphertext: order?.fulfillmentInformation.ciphertext,
+            dataToEncryptHash: order?.fulfillmentInformation.dataToEncryptHash,
             chain: "polygon",
           },
           client
@@ -303,6 +307,8 @@ const useOrders = (
                 dataToEncryptHash:
                   order.fulfillmentInformation.dataToEncryptHash,
                 decryptedFulfillment: JSON.parse(decryptedString),
+                accessControlConditions:
+                  order?.fulfillmentInformation?.accessControlConditions,
               },
             };
           }
