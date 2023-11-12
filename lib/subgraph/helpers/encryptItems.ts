@@ -1,6 +1,7 @@
 import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import { CartItem } from "@/components/Common/types/common.types";
 import { Details } from "../../../redux/reducers/fulfillmentDetailsSlice";
+import { AuthSig } from "@lit-protocol/types";
 
 export const encryptItems = async (
   client: LitJsSdk.LitNodeClient,
@@ -13,10 +14,10 @@ export const encryptItems = async (
   fulfillerGroups: { [key: string]: CartItem[] },
   fulfillmentDetails: Details,
   address: `0x${string}`,
-  authSigFiat?: any
+  authSigFiat?: AuthSig
 ): Promise<{ client: any; fulfillerDetails: string[] } | undefined> => {
   try {
-    let authSig;
+    let authSig: AuthSig;
     if (!authSigFiat) {
       authSig = await LitJsSdk.checkAndSignAuthMessage({
         chain: "polygon",
@@ -78,7 +79,6 @@ export const encryptItems = async (
 
       fulfillerDetails.push(
         JSON.stringify({
-          fulfillerAddress,
           ciphertext,
           dataToEncryptHash,
           accessControlConditions,

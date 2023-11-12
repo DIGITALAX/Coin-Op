@@ -3,6 +3,7 @@ import { SubscriptionInfoState } from "../../../../redux/reducers/subscriptionIn
 import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { NextRouter } from "next/router";
+import { AuthSig, SessionSig } from "@lit-protocol/types";
 
 export type SubscribeProps = {
   dispatch: Dispatch<AnyAction>;
@@ -24,9 +25,9 @@ export type ActivateSub = {
           hex: string;
           type: string;
         };
-        sessionSig: any;
+        sessionSig: SessionSig;
         pkpWallet: any;
-        authSig: any;
+        authSig: AuthSig;
         encryptedToken: string;
       }
     | undefined;

@@ -2,6 +2,7 @@ import { CartItem, PreRoll } from "@/components/Common/types/common.types";
 import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
 import { PreRollState } from "../../../../redux/reducers/preRollSlice";
+import { AuthSig, SessionSig } from "@lit-protocol/types";
 
 export type StickyProps = {
   router: NextRouter;
@@ -20,9 +21,9 @@ export type StickyProps = {
           hex: string;
           type: string;
         };
-        sessionSig: any;
+        sessionSig: SessionSig;
         pkpWallet: any;
-        authSig: any;
+        authSig: AuthSig;
         encryptedToken: string;
       }
     | undefined;

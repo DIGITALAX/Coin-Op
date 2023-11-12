@@ -5,7 +5,6 @@ import {
   setPreRoll,
 } from "../../../../redux/reducers/preRollSlice";
 import { PreRoll } from "../types/common.types";
-import { fetchIpfsJson } from "../../../../lib/algolia/helpers/fetchIpfsJson";
 import { initializeAlgolia } from "../../../../lib/algolia/client";
 import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
 import { getOneProfile } from "../../../../graphql/lens/queries/getProfile";
@@ -14,6 +13,7 @@ import { Profile } from "../types/generated";
 import { setPreRollLoading } from "../../../../redux/reducers/prerollsLoadingSlice";
 import { AnyAction, Dispatch } from "redux";
 import { SearchIndex } from "algoliasearch";
+import fetchIPFSJSON from "../../../../lib/algolia/helpers/fetchIpfsJson";
 
 const usePreRoll = (
   dispatch: Dispatch<AnyAction>,
@@ -44,9 +44,7 @@ const usePreRoll = (
 
       const preRollsAddedPromises = data?.data?.collectionCreateds?.map(
         async (obj: PreRoll, index: number) => {
-          const uri = await fetchIpfsJson(
-            (obj.uri as any)?.split("ipfs://")[1]
-          );
+          const uri = await fetchIPFSJSON(obj.uri as any);
           let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
 
           if (uri?.profile) {

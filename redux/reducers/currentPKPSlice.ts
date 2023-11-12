@@ -1,3 +1,4 @@
+import { AuthSig, SessionSig } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface PKPSig {
@@ -7,9 +8,9 @@ export interface PKPSig {
     hex: string;
     type: string;
   };
-  sessionSig: any;
+  sessionSig: SessionSig;
   pkpWallet: any;
-  authSig: any;
+  authSig: AuthSig;
   encryptedToken: string;
 }
 
@@ -35,9 +36,9 @@ export const currentPKPSlice = createSlice({
               hex: string;
               type: string;
             };
-            sessionSig: any;
+            sessionSig: SessionSig;
             pkpWallet: any;
-            authSig: any;
+            authSig: AuthSig;
             encryptedToken: string;
           }
         | undefined

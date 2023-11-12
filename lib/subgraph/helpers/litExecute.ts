@@ -2,13 +2,14 @@ import { joinSignature } from "@ethersproject/bytes";
 import { serialize } from "@ethersproject/transactions";
 import { ethers } from "ethers";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { AuthSig } from "@lit-protocol/types";
 
 export const litExecute = async (
   client: LitNodeClient,
   provider: ethers.providers.JsonRpcProvider,
   tx: any,
   sigName: string,
-  authSig: any,
+  authSig: AuthSig,
   retryCount: number = 0
 ) => {
   const maxRetries = 5;

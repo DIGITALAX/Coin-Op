@@ -1,9 +1,10 @@
 import * as LitJsSdk from "@lit-protocol/lit-node-client";
+import { AuthSig } from "@lit-protocol/types";
 
 export const encryptToken = async (
   client: LitJsSdk.LitNodeClient | undefined,
   address: `0x${string}`,
-  authSig: any,
+  authSig: AuthSig,
   currentPKP: string
 ): Promise<string | undefined> => {
   try {
@@ -24,7 +25,7 @@ export const encryptToken = async (
             },
           },
         ],
-        authSig: authSig,
+        authSig,
         chain: "polygon",
         dataToEncrypt: currentPKP,
       },

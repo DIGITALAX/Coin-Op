@@ -95,7 +95,6 @@ const useSubscription = (
           paymentMethodId,
         }),
       });
-      const json = await res.json();
       if (res.status === 200) {
         await createPKPSubscription();
         setSubscriptionAddLoading(false);
@@ -168,8 +167,6 @@ const useSubscription = (
           encryptedTokenId: tokenIdChunks,
         }),
       });
-      const json = await res.json();
-
       if (res.status === 200) {
         await cancelPKPSubscription();
         setSubscriptionCancelLoading(false);

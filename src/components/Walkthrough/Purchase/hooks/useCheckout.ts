@@ -473,6 +473,12 @@ const useCheckout = (
         address!
       );
 
+      const response = await fetch("/api/ipfs", {
+        method: "POST",
+        body: JSON.stringify(returned?.fulfillerDetails),
+      });
+      let cid = await response.json();
+
       const { request } = await publicClient.simulateContract({
         address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
         abi: CoinOpMarketABI,
@@ -498,7 +504,7 @@ const useCheckout = (
             customAmounts: [],
             customIndexes: [],
             customURIs: [],
-            fulfillmentDetails: JSON.stringify(returned?.fulfillerDetails),
+            fulfillmentDetails: "ipfs://" + cid?.cid,
             pkpTokenId: "",
             chosenTokenAddress: ACCEPTED_TOKENS.find(
               ([_, token]) => token === checkoutCurrency
@@ -594,7 +600,7 @@ const useCheckout = (
         provider,
         tx,
         "coinOpBuyTokens",
-        currentPKP?.authSig
+        currentPKP?.authSig!
       );
     } catch (err: any) {
       setFiatCheckoutLoading(false);

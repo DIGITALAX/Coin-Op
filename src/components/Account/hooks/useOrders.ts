@@ -6,7 +6,6 @@ import {
 import { getPreRollId } from "../../../../graphql/subgraph/queries/getPreRolls";
 import CoinOpMarketABI from "../../../../abis/CoinOpMarket.json";
 import { setAllOrders } from "../../../../redux/reducers/allOrdersSlice";
-import { fetchIpfsJson } from "../../../../lib/algolia/helpers/fetchIpfsJson";
 import { ethers } from "ethers";
 import {
   LitNodeClient,
@@ -16,6 +15,7 @@ import {
 import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import { COIN_OP_FULFILLMENT, COIN_OP_MARKET } from "../../../../lib/constants";
+import { AuthSig } from "@lit-protocol/types";
 import { InformationType, Order } from "../types/account.types";
 import { encryptItems } from "../../../../lib/subgraph/helpers/encryptItems";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
@@ -25,6 +25,7 @@ import { setAllSubscriptions } from "../../../../redux/reducers/allSubscriptions
 import { getSubscriptionsPKP } from "../../../../graphql/subgraph/queries/getSubscription";
 import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
 import { AnyAction, Dispatch } from "redux";
+import fetchIPFSJSON from "../../../../lib/algolia/helpers/fetchIpfsJson";
 
 const useOrders = (
   client: LitNodeClient,
@@ -79,11 +80,11 @@ const useOrders = (
       }
       let allOrders = [];
       for (let i = 0; i < res?.data?.orderCreateds?.length; i++) {
-        const parsedInfo = JSON.parse(
-          JSON.parse(
-            res?.data?.orderCreateds[i].fulfillmentInformation
-          )[0].replaceAll("'", '"')
+        const fetchDetails = await fetchIPFSJSON(
+          res?.data?.orderCreateds[i].fulfillmentInformation
         );
+
+        const parsedInfo = JSON.parse(JSON.parse(fetchDetails)[0]);
         let collectionDetails = [];
         for (
           let j = 0;
@@ -93,8 +94,8 @@ const useOrders = (
           const coll = await getPreRollId(
             res?.data?.orderCreateds[i].collectionIds[j]
           );
-          const uri = await fetchIpfsJson(
-            coll?.data?.collectionCreateds[0]?.uri?.split("ipfs://")[1]
+          const uri = await fetchIPFSJSON(
+            coll?.data?.collectionCreateds[0]?.uri
           );
           collectionDetails.push({
             ...coll?.data?.collectionCreateds[0],
@@ -188,7 +189,7 @@ const useOrders = (
       )
     );
     try {
-      let authSig;
+      let authSig: AuthSig;
       if (connectedPKP?.pkpWallet) {
         authSig = connectedPKP?.authSig;
       } else {
@@ -315,8 +316,10 @@ const useOrders = (
           return currentOrder;
         });
         setUpdatedInformation(((prev: any) =>
-          prev.map((val: InformationType, idx: number) =>
-            idx === allOrders.indexOf(order) ? JSON.parse(decryptedString) : val
+          prev.map(async (val: InformationType, idx: number) =>
+            idx === allOrders.indexOf(order)
+              ? await JSON.parse(decryptedString)
+              : val
           )) as any);
         dispatch(setAllOrders(updatedOrders));
       }
@@ -338,7 +341,7 @@ const useOrders = (
   };
 
   const cryptoUpdateOrderInfo = async (
-    fulfillerDetails: string[],
+    fulfillerDetails: string,
     index: number
   ) => {
     try {
@@ -346,7 +349,7 @@ const useOrders = (
         address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
         abi: CoinOpMarketABI,
         functionName: "setOrderDetails",
-        args: [allOrders[index].orderId, JSON.stringify(fulfillerDetails)],
+        args: [allOrders[index].orderId, fulfillerDetails],
         account: address?.toLowerCase() as `0x${string}`,
       });
       const clientWallet = createWalletClient({
@@ -362,9 +365,9 @@ const useOrders = (
 
   const fiatUpdateOrderInfo = async (
     index: number,
-    fulfillerDetails: string[],
-    client: any,
-    authSig: any
+    fulfillerDetails: string,
+    client: LitNodeClient,
+    authSig: AuthSig
   ) => {
     try {
       const provider = new ethers.providers.JsonRpcProvider(
@@ -377,7 +380,7 @@ const useOrders = (
         CoinOpMarketABI,
         COIN_OP_MARKET,
         "setOrderDetails",
-        [allOrders[index].orderId, JSON.stringify(fulfillerDetails)]
+        [allOrders[index].orderId, fulfillerDetails]
       );
 
       await litExecute(client, provider, tx, "coinOpUpdateOrderInfo", authSig);
@@ -409,11 +412,6 @@ const useOrders = (
         }
       }
 
-      let authSig = undefined;
-      if (connectedPKP?.pkpWallet) {
-        authSig = connectedPKP?.authSig;
-      }
-
       const returned = await encryptItems(
         client,
         {
@@ -441,18 +439,24 @@ const useOrders = (
         connectedPKP?.pkpWallet
           ? (connectedPKP?.ethAddress as `0x${string}`)
           : (address! as `0x${string}`),
-        authSig
+        connectedPKP?.authSig
       );
+
+      const response = await fetch("/api/ipfs", {
+        method: "POST",
+        body: JSON.stringify(returned?.fulfillerDetails),
+      });
+      let cid = await response.json();
 
       if (connectedPKP?.pkpWallet) {
         await fiatUpdateOrderInfo(
           index,
-          returned?.fulfillerDetails!,
+          "ipfs://" + cid?.cid,
           returned?.client,
-          authSig
+          connectedPKP?.authSig
         );
       } else {
-        await cryptoUpdateOrderInfo(returned?.fulfillerDetails!, index);
+        await cryptoUpdateOrderInfo("ipfs://" + cid?.cid, index);
       }
     } catch (err: any) {
       console.error(err.message);

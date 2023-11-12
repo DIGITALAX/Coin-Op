@@ -38,6 +38,7 @@ import { PublicClient } from "wagmi";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { AnyAction, Dispatch } from "redux";
 import { CartItem } from "@/components/Common/types/common.types";
+import { AuthSig } from "@lit-protocol/types";
 
 export const chronicle: Chain = {
   id: 175177,
@@ -106,7 +107,7 @@ const useLogin = (
     }
   };
 
-  const storeAuthOnChain = async (authSig: any, currentPKP: any) => {
+  const storeAuthOnChain = async (authSig: AuthSig, currentPKP: any) => {
     try {
       const provider = new ethers.providers.JsonRpcProvider(
         `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
@@ -229,13 +230,13 @@ const useLogin = (
       }
 
       if (!doesExist) {
-        await storeAuthOnChain(authSig, res);
+        await storeAuthOnChain(authSig as AuthSig, res);
       }
 
       const encryptedToken = await encryptToken(
         client,
         res.ethAddress,
-        authSig,
+        authSig as AuthSig,
         BigInt(res.tokenId.hex).toString()
       );
 
