@@ -1,34 +1,53 @@
+import { NftImage, ProfilePicture } from "@/components/Common/types/generated";
+import { Maybe } from "graphql/jsutils/Maybe";
 import { INFURA_GATEWAY } from "../../constants";
-import {
-  NftImage,
-  ProfilePicture,
-  Maybe,
-} from "@/components/Common/types/generated";
 
 const createProfilePicture = (
   publication: Maybe<ProfilePicture> | undefined
-): string => {
-  let profileImage: string;
+): string | undefined => {
+  let profileImage: string | undefined = undefined;
 
   if (!publication) {
-    return "";
+    return undefined;
   }
 
   if (publication?.__typename === "ImageSet") {
     if (publication?.raw?.uri) {
-      profileImage = `${INFURA_GATEWAY}/ipfs/${
-        publication?.raw?.uri?.split("ipfs://")[1]
-      }`;
-    } else {
-      profileImage = publication?.optimized?.uri;
+      if (publication?.raw?.uri?.includes("ipfs://")) {
+        profileImage = `${INFURA_GATEWAY}/ipfs/${
+          publication?.raw?.uri?.split("ipfs://")[1]
+        }`;
+      } else {
+        profileImage = publication?.raw?.uri;
+      }
+    } else if (publication?.optimized?.uri) {
+      if (publication?.optimized?.uri?.includes("ipfs://")) {
+        profileImage = `${INFURA_GATEWAY}/ipfs/${
+          publication?.optimized?.uri?.split("ipfs://")[1]
+        }`;
+      } else {
+        profileImage = publication?.optimized?.uri;
+      }
     }
   } else {
     if ((publication as NftImage)?.image?.raw?.uri) {
-      profileImage = `${INFURA_GATEWAY}/ipfs/${
-        (publication as NftImage)?.image?.raw?.uri?.split("ipfs://")[1]
-      }`;
-    } else {
-      profileImage = (publication as NftImage)?.image?.optimized?.uri;
+      if ((publication as NftImage)?.image?.raw?.uri?.includes("ipfs://")) {
+        profileImage = `${INFURA_GATEWAY}/ipfs/${
+          (publication as NftImage)?.image?.raw?.uri?.split("ipfs://")[1]
+        }`;
+      } else {
+        profileImage = (publication as NftImage)?.image?.raw?.uri;
+      }
+    } else if ((publication as NftImage)?.image?.optimized?.uri) {
+      if (
+        (publication as NftImage)?.image?.optimized?.uri?.includes("ipfs://")
+      ) {
+        profileImage = `${INFURA_GATEWAY}/ipfs/${
+          (publication as NftImage)?.image?.optimized?.uri?.split("ipfs://")[1]
+        }`;
+      } else {
+        profileImage = (publication as NftImage)?.image?.optimized?.uri;
+      }
     }
   }
 

@@ -107,13 +107,15 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                         }
                       >
                         <div className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center">
-                          <Image
-                            className="rounded-full"
-                            src={profileImage}
-                            layout="fill"
-                            objectFit="cover"
-                            draggable={false}
-                          />
+                          {profileImage && (
+                            <Image
+                              className="rounded-full"
+                              src={profileImage}
+                              layout="fill"
+                              objectFit="cover"
+                              draggable={false}
+                            />
+                          )}
                         </div>
                         <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
                           {

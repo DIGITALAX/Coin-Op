@@ -109,19 +109,23 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
                         onClick={() =>
                           window.open(
-                            `https://www.chromadin.xyz/autograph/${searchItem?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
-                              "@"
-                            )[1]}`
+                            `https://www.chromadin.xyz/autograph/${
+                              searchItem?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                                "@"
+                              )[1]
+                            }`
                           )
                         }
                       >
                         <div className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center">
-                          <Image
-                            className="rounded-full"
-                            src={profileImage}
-                            layout="fill"
-                            objectFit="cover"
-                          />
+                          {profileImage && (
+                            <Image
+                              className="rounded-full"
+                              src={profileImage}
+                              layout="fill"
+                              objectFit="cover"
+                            />
+                          )}
                         </div>
                         <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
                           {
@@ -136,9 +140,11 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                             className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
                             onClick={() =>
                               window.open(
-                                `https://www.chromadin.xyz/autograph/${searchItem?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
-                                  "@"
-                                )[1]}/collection/${searchItem?.uri?.chromadinCollectionName
+                                `https://www.chromadin.xyz/autograph/${
+                                  searchItem?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                                    "@"
+                                  )[1]
+                                }/collection/${searchItem?.uri?.chromadinCollectionName
                                   ?.toLowerCase()
                                   ?.replaceAll(" ", "_")}`
                               )

@@ -140,7 +140,7 @@ const useSubscription = (
         provider,
         tx,
         "addSubscription",
-        currentPKP?.authSig
+        currentPKP?.authSig!
       );
     } catch (err: any) {
       console.error(err.message);
@@ -211,7 +211,7 @@ const useSubscription = (
         provider,
         tx,
         "cancelSubscription",
-        currentPKP?.authSig
+        currentPKP?.authSig!
       );
     } catch (err: any) {
       console.error(err.message);
@@ -237,7 +237,7 @@ const useSubscription = (
         provider,
         tx,
         "reactivateSubscription",
-        currentPKP?.authSig
+        currentPKP?.authSig!
       );
     } catch (err: any) {
       console.error(err.message);

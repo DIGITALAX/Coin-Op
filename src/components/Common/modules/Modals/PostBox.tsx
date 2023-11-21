@@ -320,7 +320,7 @@ const PostBox: FunctionComponent<PostBoxProps> = ({
                           >
                             {mentionProfiles?.map(
                               (user: Profile, index: number) => {
-                                const profileImage: string =
+                                const profileImage =
                                   createProfilePicture(user?.metadata?.picture);
                                 return (
                                   <div
@@ -335,7 +335,7 @@ const PostBox: FunctionComponent<PostBoxProps> = ({
                                         className={`relative rounded-full flex bg-white w-3 h-3 items-center justify-center col-start-1`}
                                         id="crt"
                                       >
-                                        {profileImage !== "" && (
+                                        {profileImage && (
                                           <Image
                                             src={profileImage}
                                             objectFit="cover"

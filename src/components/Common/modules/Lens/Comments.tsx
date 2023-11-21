@@ -127,7 +127,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                           className="relative w-6 h-6 border border-white"
                           id="crt"
                         >
-                          {profileImage !== "" && (
+                          {profileImage && (
                             <Image
                               objectFit="cover"
                               alt="pfp"
