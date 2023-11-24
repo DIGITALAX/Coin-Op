@@ -29,7 +29,9 @@ const Quests: NextPage<{
   const { address } = useAccount();
   const publicClient = createPublicClient({
     chain: polygon,
-    transport: http(),
+    transport: http(
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+    ),
   });
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
