@@ -43,6 +43,14 @@ const Pregame: NextPage<{ client: LitNodeClient; router: NextRouter }> = ({
       }, 3000);
     }
   }, [cartAddAnim]);
+
+  useEffect(() => {
+    if (client) {
+      async () => {
+        await client.connect();
+      };
+    }
+  }, [client]);
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>

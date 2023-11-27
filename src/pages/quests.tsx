@@ -67,6 +67,14 @@ const Quests: NextPage<{
   );
 
   useEffect(() => {
+    if (client) {
+      async () => {
+        await client.connect();
+      };
+    }
+  }, [client]);
+
+  useEffect(() => {
     setIsClient(true);
   }, []);
 

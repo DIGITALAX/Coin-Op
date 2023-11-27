@@ -204,6 +204,8 @@ const useOrders = (
           date: string;
         }[] = [];
 
+        
+
         for (let i = 0; i < order.message.length; i++) {
           const decryptedString = await decryptToString(
             {
@@ -280,6 +282,8 @@ const useOrders = (
           chain: "polygon",
         });
       }
+
+      
 
       const fulfillerAddress = await getFulfillerAddress();
 
@@ -370,6 +374,8 @@ const useOrders = (
     authSig: AuthSig
   ) => {
     try {
+      
+
       const provider = new ethers.providers.JsonRpcProvider(
         `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
         137
@@ -395,6 +401,7 @@ const useOrders = (
     );
     try {
       let fulfillerGroups: { [key: string]: any[] } = {};
+      
 
       for (let i = 0; i < allOrders[index].collectionDetails.length; i++) {
         if (

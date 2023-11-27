@@ -122,14 +122,7 @@ const useLogin = (
         [BigInt(currentPKP?.tokenId.hex!).toString()]
       );
 
-      await litExecute(
-        client,
-        provider,
-
-        tx,
-        "createUserPKPAccount",
-        authSig
-      );
+      await litExecute(client, provider, tx, "createUserPKPAccount", authSig);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -144,6 +137,8 @@ const useLogin = (
         actionHighlight: undefined,
       })
     );
+
+    
 
     const cartItemsLocal = getCartItemsLocalStorage();
     const fulfillmentLocal = getFulfillmentDetailsLocalStorage();

@@ -15,6 +15,8 @@ export const litExecute = async (
   const maxRetries = 5;
 
   try {
+    
+
     const results = await client.executeJs({
       ipfsId: process.env.IPFS_CID_PKP,
       authSig,

@@ -183,6 +183,14 @@ export default function Home({
     }
   }, [cartAddAnim]);
 
+  useEffect(() => {
+    if (client) {
+      async () => {
+        await client.connect();
+      };
+    }
+  }, [client]);
+
   return (
     <PageContainer
       controlType={controlType}

@@ -80,10 +80,6 @@ export default function App({ Component, pageProps }: AppProps) {
                                                                                                                                                      
  
     `);
-
-    async () => {
-      await (client as LitNodeClient).connect();
-    };
   }, []);
 
   useEffect(() => {

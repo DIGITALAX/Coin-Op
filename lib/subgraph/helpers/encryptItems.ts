@@ -26,6 +26,8 @@ export const encryptItems = async (
       authSig = authSigFiat;
     }
 
+    
+
     let fulfillerDetails = [];
 
     for (let fulfillerAddress in fulfillerGroups) {

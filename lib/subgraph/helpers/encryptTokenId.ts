@@ -9,6 +9,8 @@ export const encryptToken = async (
 ): Promise<string | undefined> => {
   try {
     let encryptedTokenId: string | undefined;
+
+    await client?.connect();
    
     const { ciphertext, dataToEncryptHash } = await LitJsSdk.encryptString(
       {
