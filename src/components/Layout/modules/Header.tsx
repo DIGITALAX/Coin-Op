@@ -5,19 +5,25 @@ import useRollSearch from "../hooks/useRollSearch";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { HeaderProps } from "@/components/Common/types/common.types";
-import { useAccountModal, useChainModal } from "@rainbow-me/rainbowkit";
+import {
+  useAccountModal,
+  useChainModal,
+  useConnectModal,
+} from "@rainbow-me/rainbowkit";
 import Sticky from "./Sticky";
 import MobileFotos from "./MobileFotos";
 import { useAccount, useNetwork } from "wagmi";
+import useSignIn from "@/components/Common/hooks/useSignIn";
 
 const Header: FunctionComponent<HeaderProps> = ({
-  preRollRef,
+  prerollRef,
   router,
 }): JSX.Element => {
   const dispatch = useDispatch();
   const { isConnected, address } = useAccount();
   const { chain: chainNetwork } = useNetwork();
   const { openAccountModal } = useAccountModal();
+  const { openConnectModal } = useConnectModal();
   const { openChainModal } = useChainModal();
   const rollSearch = useSelector(
     (state: RootState) => state.app.rollSearchReducer.value
@@ -25,10 +31,13 @@ const Header: FunctionComponent<HeaderProps> = ({
   const cartAddAnim = useSelector(
     (state: RootState) => state.app.cartAddAnimReducer.value
   );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
-  const preRollsLoading = useSelector(
+  const prerollsLoading = useSelector(
     (state: RootState) => state.app.prerollsLoadingReducer.value
   );
   const connected = useSelector(
@@ -37,13 +46,10 @@ const Header: FunctionComponent<HeaderProps> = ({
   const videoPlayer = useSelector(
     (state: RootState) => state.app.videoPlayerReducer.open
   );
-  const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
+  const profile = useSelector(
+    (state: RootState) => state.app.profileReducer?.profile
   );
-  const algolia = useSelector(
-    (state: RootState) => state.app.algoliaReducer.value
-  );
+  const prerolls = useSelector((state: RootState) => state.app.prerollReducer);
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
   const {
     handleRollSearch,
@@ -59,28 +65,39 @@ const Header: FunctionComponent<HeaderProps> = ({
     isConnected,
     address,
     chainNetwork,
-    algolia,
-    cartItems
+    cartItems,
+    profile
+  );
+  const { handleLensSignIn, signInLoading, handleLogout } = useSignIn(
+    dispatch,
+    address,
+    isConnected,
+    openAccountModal,
+    oracleData,
+    profile
   );
   return (
     <div className="relative w-full h-fit items-center justify-center flex flex-col gap-20 px-3 pt-2 pb-20">
       <MobileFotos
-        preRolls={preRolls}
+        prerolls={prerolls}
         dispatch={dispatch}
-        preRollsLoading={preRollsLoading}
+        prerollsLoading={prerollsLoading}
       />
       <Sticky
+        openConnectModal={openConnectModal}
         openChainModal={openChainModal}
-        openAccountModal={openAccountModal}
+        handleLogout={handleLogout}
         cartAnim={cartAnim}
         cartItems={cartItems}
         connected={connected}
         scrollToCheckOut={scrollToCheckOut}
-        connectedPKP={connectedPKP}
         chain={chain}
         router={router}
         dispatch={dispatch}
         videoPlayer={videoPlayer}
+        handleLensSignIn={handleLensSignIn}
+        profile={profile}
+        signInLoading={signInLoading}
       />
       {/* <div className="relative flex flex-col items-center justify-center w-full h-fit gap-28"> */}
       <RollSearch
@@ -95,7 +112,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         router={router}
         cartAddAnim={cartAddAnim}
       />
-      <Hook preRollRef={preRollRef} />
+      <Hook prerollRef={prerollRef} />
       {/* </div> */}
     </div>
   );

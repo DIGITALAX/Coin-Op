@@ -4,7 +4,7 @@ import {
   AuthenticateDocument,
   AuthenticateMutation,
   SignedAuthChallenge,
-} from "./../../../src/components/Common/types/generated";
+} from "@/components/Common/types/generated";
 
 const authenticate = async (
   request: SignedAuthChallenge
@@ -12,7 +12,7 @@ const authenticate = async (
   return await authClient.mutate({
     mutation: AuthenticateDocument,
     variables: {
-      request,
+      request: request,
     },
   });
 };

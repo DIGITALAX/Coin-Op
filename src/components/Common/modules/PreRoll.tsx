@@ -1,268 +1,323 @@
 import { FunctionComponent } from "react";
-import { CartItem, PreRollProps } from "../types/common.types";
+import { CartItem, PrerollProps } from "../types/common.types";
 import Image from "next/legacy/image";
-import { INFURA_GATEWAY } from "../../../../lib/constants";
+import { INFURA_GATEWAY, printTypeToString } from "../../../../lib/constants";
 import PrintTag from "./PrintTag";
 import ColorChoice from "./ColorChoice";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setImageViewer } from "../../../../redux/reducers/imageViewerSlice";
 import SizingChoice from "./SizingChoice";
-import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
+import { setPreroll } from "../../../../redux/reducers/prerollSlice";
 import createProfilePicture from "../../../../lib/lens/helpers/createProfilePicture";
 import { setCartAddAnim } from "../../../../redux/reducers/cartAddAnimSlice";
+import InteractBar from "./Lens/InteractBar";
+import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 
-const PreRoll: FunctionComponent<PreRollProps> = ({
-  preRoll,
+const Preroll: FunctionComponent<PrerollProps> = ({
+  preroll,
   dispatch,
   cartItems,
-  preRolls,
+  prerolls,
   left,
   right,
-  preRollAnim,
+  prerollAnim,
   imageLoading,
   setImagesLoading,
   index,
   cartAddAnim,
+  interactionsLoading,
+  mirror,
+  like,
+  openMirrorChoice,
+  setOpenMirrorChoice,
 }): JSX.Element => {
   const profileImage = createProfilePicture(
-    preRoll.uri.profile?.metadata?.picture
+    preroll?.profile?.metadata?.picture
   );
   return (
     <div className="relative w-48 flex flex-col h-fit gap-2">
       <div
         className={`relative w-48 xl:w-full h-fit flex flex-col rounded-sm border border-white p-3 gap-5 ${
-          preRoll.newDrop &&
+          preroll.newDrop &&
           "bg-[radial-gradient(at_center_bottom,_#00abfe,_#00cdc2,_#86a4b3,_#00CDC2)]"
         }`}
-        id={preRollAnim ? "anim" : ""}
+        id={prerollAnim ? "anim" : ""}
       >
-        <div className="relative w-full h-60 xl:h-80 flex flex-col object-cover bg-cross bg-cover bg-center cursor-pointer">
-          {preRoll?.uri?.image?.length > 0 &&
-            (imageLoading ? (
-              <div className="relative w-full h-full items-center justify-center flex flex-col"></div>
-            ) : (
-              <Image
-                src={`${INFURA_GATEWAY}/ipfs/${
-                  preRoll?.uri?.image?.[preRoll?.currentIndex]?.split(
-                    "ipfs://"
-                  )[1]
-                }`}
-                decoding="async"
-                layout="fill"
-                objectFit="cover"
-                draggable={false}
-                alt="preRoll"
-                priority
-                onClick={() =>
-                  dispatch(
-                    setImageViewer({
-                      actionValue: true,
-                      actionImage:
-                        preRoll?.uri?.image?.[preRoll?.currentIndex]?.split(
-                          "ipfs://"
-                        )[1],
-                    })
-                  )
-                }
-                onLoad={() =>
-                  setImagesLoading(((prevStates: boolean[]) => {
-                    const newStates = [...prevStates];
-                    newStates[index] = false;
-                    return newStates;
-                  }) as any)
-                }
-              />
-            ))}
-          <div
-            className={`absolute top-2 right-2 w-fit h-fit flex flex-row gap-1.5`}
-          >
-            <div
-              className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setImagesLoading(((prevStates: boolean[]) => {
-                  const newStates = [...prevStates];
-                  newStates[index] = true;
-                  return newStates;
-                }) as any);
-                const updated = {
-                  left: left
-                    ? preRolls.left.map((obj) =>
-                        obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                          ? {
-                              ...obj,
-                              currentIndex:
-                                preRoll.currentIndex > 0
-                                  ? preRoll.currentIndex - 1
-                                  : preRoll?.uri?.image?.length - 1,
-                            }
-                          : obj
-                      )
-                    : preRolls.left,
-                  right: right
-                    ? preRolls.right.map((obj) =>
-                        obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                          ? {
-                              ...obj,
-                              currentIndex:
-                                preRoll?.currentIndex > 0
-                                  ? preRoll?.currentIndex - 1
-                                  : preRoll?.uri?.image?.length - 1,
-                            }
-                          : obj
-                      )
-                    : preRolls.right,
-                };
-
-                dispatch(
-                  setPreRoll({
-                    actionLeft: updated.left,
-                    actionRight: updated.right,
-                  })
-                );
-              }}
-            >
-              <Image
-                src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
-                layout="fill"
-                draggable={false}
-              />
-            </div>
-            <div
-              className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setImagesLoading(((prevStates: boolean[]) => {
-                  const newStates = [...prevStates];
-                  newStates[index] = true;
-                  return newStates;
-                }) as any);
-                const updated = {
-                  left: left
-                    ? preRolls.left.map((obj) =>
-                        obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                          ? {
-                              ...obj,
-                              currentIndex:
-                                preRoll.currentIndex <
-                                preRoll?.uri?.image?.length - 1
-                                  ? preRoll.currentIndex + 1
-                                  : 0,
-                            }
-                          : obj
-                      )
-                    : preRolls.left,
-                  right: right
-                    ? preRolls.right.map((obj) =>
-                        obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                          ? {
-                              ...obj,
-                              currentIndex:
-                                preRoll.currentIndex <
-                                preRoll?.uri?.image?.length - 1
-                                  ? preRoll.currentIndex + 1
-                                  : 0,
-                            }
-                          : obj
-                      )
-                    : preRolls.right,
-                };
-
-                dispatch(
-                  setPreRoll({
-                    actionLeft: updated.left,
-                    actionRight: updated.right,
-                  })
-                );
-              }}
-            >
-              <Image
-                src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
-                layout="fill"
-                draggable={false}
-              />
-            </div>
+        <div className="relative flex flex-col gap-2 w-full h-fit">
+          <div className="relative w-full h-fit flex items-end justify-end font-monu text-xxs text-white">
+            <div className="relative w-fit h-fit ml-0 flex items-center justify-center">{`${Number(
+              preroll?.soldTokens || 0
+            )} / ${Number(preroll?.amount)}`}</div>
           </div>
-          {preRoll.newDrop && (
-            <div className="absolute bottom-2 right-2 bg-ama flex w-fit text-xxs h-fit px-2 py-1 text-black font-monu">
-              🔥 new drop 🔥
-            </div>
-          )}
+          <div className="relative w-full h-60 xl:h-80 flex flex-col object-cover bg-cross bg-cover bg-center cursor-pointer">
+            {preroll?.collectionMetadata?.images?.length > 0 &&
+              (imageLoading ? (
+                <div className="relative w-full h-full items-center justify-center flex flex-col"></div>
+              ) : (
+                <Image
+                  src={`${INFURA_GATEWAY}/ipfs/${
+                    preroll?.collectionMetadata?.images?.[
+                      preroll?.currentIndex
+                    ]?.split("ipfs://")[1]
+                  }`}
+                  decoding="async"
+                  layout="fill"
+                  objectFit="cover"
+                  draggable={false}
+                  alt="preroll"
+                  priority
+                  onClick={() =>
+                    dispatch(
+                      setImageViewer({
+                        actionValue: true,
+                        actionImage:
+                          preroll?.collectionMetadata?.images?.[
+                            preroll?.currentIndex
+                          ]?.split("ipfs://")[1],
+                      })
+                    )
+                  }
+                  onLoad={() =>
+                    setImagesLoading(((prevStates: boolean[]) => {
+                      const newStates = [...prevStates];
+                      newStates[index] = false;
+                      return newStates;
+                    }) as any)
+                  }
+                />
+              ))}
+            {preroll?.collectionMetadata?.images?.length > 1 && (
+              <div
+                className={`absolute top-2 right-2 w-fit h-fit flex flex-row gap-1.5`}
+              >
+                <div
+                  className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setImagesLoading(((prevStates: boolean[]) => {
+                      const newStates = [...prevStates];
+                      newStates[index] = true;
+                      return newStates;
+                    }) as any);
+                    const updated = {
+                      left: left
+                        ? prerolls.left.map((obj) =>
+                            obj.collectionMetadata.images?.[0] ===
+                            preroll?.collectionMetadata?.images?.[0]
+                              ? {
+                                  ...obj,
+                                  currentIndex:
+                                    preroll.currentIndex > 0
+                                      ? preroll.currentIndex - 1
+                                      : preroll?.collectionMetadata?.images
+                                          ?.length - 1,
+                                }
+                              : obj
+                          )
+                        : prerolls.left,
+                      right: right
+                        ? prerolls.right.map((obj) =>
+                            obj.collectionMetadata.images?.[0] ===
+                            preroll?.collectionMetadata?.images?.[0]
+                              ? {
+                                  ...obj,
+                                  currentIndex:
+                                    preroll?.currentIndex > 0
+                                      ? preroll?.currentIndex - 1
+                                      : preroll?.collectionMetadata?.images
+                                          ?.length - 1,
+                                }
+                              : obj
+                          )
+                        : prerolls.right,
+                    };
+
+                    dispatch(
+                      setPreroll({
+                        actionLeft: updated.left,
+                        actionRight: updated.right,
+                      })
+                    );
+                  }}
+                >
+                  <Image
+                    src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
+                    layout="fill"
+                    draggable={false}
+                  />
+                </div>
+                <div
+                  className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setImagesLoading(((prevStates: boolean[]) => {
+                      const newStates = [...prevStates];
+                      newStates[index] = true;
+                      return newStates;
+                    }) as any);
+                    const updated = {
+                      left: left
+                        ? prerolls.left.map((obj) =>
+                            obj.collectionMetadata.images?.[0] ===
+                            preroll?.collectionMetadata?.images?.[0]
+                              ? {
+                                  ...obj,
+                                  currentIndex:
+                                    preroll.currentIndex <
+                                    preroll?.collectionMetadata?.images
+                                      ?.length -
+                                      1
+                                      ? preroll.currentIndex + 1
+                                      : 0,
+                                }
+                              : obj
+                          )
+                        : prerolls.left,
+                      right: right
+                        ? prerolls.right.map((obj) =>
+                            obj.collectionMetadata.images?.[0] ===
+                            preroll?.collectionMetadata?.images?.[0]
+                              ? {
+                                  ...obj,
+                                  currentIndex:
+                                    preroll.currentIndex <
+                                    preroll?.collectionMetadata?.images
+                                      ?.length -
+                                      1
+                                      ? preroll.currentIndex + 1
+                                      : 0,
+                                }
+                              : obj
+                          )
+                        : prerolls.right,
+                    };
+
+                    dispatch(
+                      setPreroll({
+                        actionLeft: updated.left,
+                        actionRight: updated.right,
+                      })
+                    );
+                  }}
+                >
+                  <Image
+                    src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
+                    layout="fill"
+                    draggable={false}
+                  />
+                </div>
+              </div>
+            )}
+
+            {preroll.newDrop && (
+              <div className="absolute bottom-2 right-2 bg-ama flex w-fit text-xxs h-fit px-2 py-1 text-black font-monu">
+                🔥 new drop 🔥
+              </div>
+            )}
+          </div>
         </div>
         <div className="relative flex flex-row gap-2 w-full h-fit justify-between">
           <PrintTag
-            backgroundColor={preRoll.bgColor}
-            type={preRoll.printType}
+            backgroundColor={preroll.bgColor}
+            type={printTypeToString[Number(preroll.printType)]}
           />
           <ColorChoice
             dispatch={dispatch}
-            preRolls={preRolls}
-            preRoll={preRoll}
+            prerolls={prerolls}
+            preroll={preroll}
             left={left}
             right={right}
           />
         </div>
         <SizingChoice
           dispatch={dispatch}
-          preRolls={preRolls}
-          preRoll={preRoll}
+          prerolls={prerolls}
+          preroll={preroll}
           left={left}
           right={right}
         />
         <div className="relative flex flex-row gap-2 w-full h-fit items-center">
           <div className="relative text-xl text-white font-aqua flex justify-start items-start w-fit h-fit">
             $
-            {(preRoll?.printType === "shirt" ||
-            preRoll?.printType === "hoodie" ||
-            preRoll?.printType === "sleeve"
-              ? preRoll.price?.[0]
-              : preRoll.price?.[preRoll.sizes.indexOf(preRoll.chosenSize)]) /
-              10 ** 18}
+            {preroll?.printType !== "0" && preroll?.printType !== "1"
+              ? Number(preroll.prices?.[0])
+              : Number(
+                  preroll?.prices?.[
+                    preroll?.collectionMetadata?.sizes?.indexOf(
+                      preroll?.chosenSize
+                    )
+                  ]
+                )}
           </div>
           <div
             className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
-            id={cartAddAnim === preRoll.uri.image[0] ? "cartAddAnim" : ""}
+            id={
+              cartAddAnim === preroll?.collectionMetadata?.images[0]
+                ? "cartAddAnim"
+                : ""
+            }
             onClick={() => {
-              let { colors, bgColor, ...newObj } = preRoll;
               const existing = [...cartItems].findIndex(
                 (item) =>
-                  item.collectionId === newObj.collectionId &&
-                  item.chosenSize === newObj.chosenSize &&
-                  item.chosenColor === newObj.chosenColor
+                  item?.item?.collectionId === preroll.collectionId &&
+                  item.chosenSize === preroll.chosenSize &&
+                  item.chosenColor === preroll.chosenColor
               );
 
               let newCartItems: CartItem[] = [...cartItems];
+
+              if (
+                cartItems
+                  ?.filter(
+                    (item) =>
+                      item?.item?.pubId == newCartItems?.[existing]?.item?.pubId
+                  )
+                  ?.reduce(
+                    (accumulator, currentItem) =>
+                      accumulator + currentItem.chosenAmount,
+                    0
+                  ) +
+                  1 >
+                  Number(newCartItems?.[existing]?.item?.amount) ||
+                Number(newCartItems?.[existing]?.item?.amount) ==
+                  Number(newCartItems?.[existing]?.item?.soldTokens)
+              ) {
+                dispatch(
+                  setModalOpen({
+                    actionOpen: true,
+                    actionMessage:
+                      "We know you're eager, but you've reached this prints' collect limit!",
+                  })
+                );
+                return;
+              }
 
               if (existing !== -1) {
                 newCartItems = [
                   ...newCartItems.slice(0, existing),
                   {
                     ...newCartItems[existing],
-                    amount: newCartItems[existing].amount + 1,
+                    chosenAmount: newCartItems[existing].chosenAmount + 1,
                   },
                   ...newCartItems.slice(existing + 1),
                 ];
               } else {
                 newCartItems.push({
-                  ...newObj,
-                  amount: 1,
-                  uri: {
-                    ...preRoll?.uri,
-                    image: preRoll?.uri?.image?.[0],
-                  },
-                  price:
-                    preRoll?.printType === "shirt" ||
-                    preRoll?.printType === "hoodie" ||
-                    preRoll?.printType === "sleeve"
-                      ? preRoll.price?.[0]
-                      : preRoll.price?.[
-                          preRoll.sizes?.indexOf(preRoll.chosenSize)
-                        ],
+                  item: preroll,
+                  chosenColor: preroll?.chosenColor,
+                  chosenSize: preroll.chosenSize,
+                  chosenAmount: 1,
+                  chosenIndex:
+                    preroll?.printType !== "0" && preroll?.printType !== "1"
+                      ? 0
+                      : preroll?.collectionMetadata?.sizes?.indexOf(
+                          preroll.chosenSize
+                        ),
                 });
               }
 
               dispatch(setCart(newCartItems));
-              dispatch(setCartAddAnim(preRoll.uri.image[0]));
+              dispatch(setCartAddAnim(preroll?.collectionMetadata?.images[0]));
             }}
           >
             <Image
@@ -270,18 +325,29 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
               layout="fill"
               objectFit="cover"
               draggable={false}
-              alt="preRoll"
+              alt="preroll"
             />
           </div>
         </div>
       </div>
+      <InteractBar
+        dispatch={dispatch}
+        openMirrorChoice={openMirrorChoice}
+        setOpenMirrorChoice={setOpenMirrorChoice}
+        like={like}
+        mirror={mirror}
+        publication={preroll}
+        index={index}
+        interactionsLoading={interactionsLoading}
+        cartItems={cartItems}
+      />
       <div className="relative w-full h-10 flex flex-row border border-white p-1.5 items-center justify-between gap-3">
         <div
           className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
           onClick={() =>
             window.open(
-              `https://www.chromadin.xyz/autograph/${
-                preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+              `https://cypher.digitalax.xyz/autograph/${
+                preroll?.profile?.handle?.suggestedFormatted?.localName?.split(
                   "@"
                 )[1]
               }`
@@ -300,22 +366,19 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
             )}
           </div>
           <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
-            {preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName}
+            {preroll?.profile?.handle?.suggestedFormatted?.localName}
           </div>
         </div>
-        {preRoll?.uri?.chromadinCollectionName && (
+        {preroll?.collectionMetadata?.title && (
           <div className="relative w-fit h-fit flex items-center justify-center">
             <div
               className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
               onClick={() =>
                 window.open(
-                  `https://www.chromadin.xyz/autograph/${
-                    preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
-                      "@"
-                    )[1]
-                  }/collection/${preRoll?.uri?.chromadinCollectionName
+                  `https://cypher.digitalax.xyz/item/chromadin/${preroll?.collectionMetadata?.title
                     ?.toLowerCase()
-                    ?.replaceAll(" ", "_")}`
+                    ?.replaceAll(" ", "_")
+                    ?.replaceAll("_(print)", "")}`
                 )
               }
               title="nft art"
@@ -337,4 +400,4 @@ const PreRoll: FunctionComponent<PreRollProps> = ({
   );
 };
 
-export default PreRoll;
+export default Preroll;

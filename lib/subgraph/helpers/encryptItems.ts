@@ -1,94 +1,116 @@
-import * as LitJsSdk from "@lit-protocol/lit-node-client";
-import { CartItem } from "@/components/Common/types/common.types";
-import { Details } from "../../../redux/reducers/fulfillmentDetailsSlice";
-import { AuthSig } from "@lit-protocol/types";
+import { CartItem, Details } from "@/components/Common/types/common.types";
+import { LitNodeClient, encryptString } from "@lit-protocol/lit-node-client";
+import { AuthSig, AccessControlConditions } from "@lit-protocol/types";
+import { DIGITALAX_ADDRESS } from "../../constants";
 
 export const encryptItems = async (
-  client: LitJsSdk.LitNodeClient,
-  information: {
-    sizes: string[];
-    colors: string[];
-    collectionIds: number[];
-    collectionAmounts: number[];
-  },
-  fulfillerGroups: { [key: string]: CartItem[] },
+  client: LitNodeClient,
   fulfillmentDetails: Details,
   address: `0x${string}`,
-  authSigFiat?: AuthSig
-): Promise<{ client: any; fulfillerDetails: string[] } | undefined> => {
+  authSig: AuthSig,
+  cartItems: CartItem[]
+): Promise<
+  | {
+      pubId: string;
+      data: string;
+    }[]
+  | undefined
+> => {
   try {
-    let authSig: AuthSig;
-    if (!authSigFiat) {
-      authSig = await LitJsSdk.checkAndSignAuthMessage({
+    let encryptedItems: {
+      pubId: string;
+      data: string;
+    }[] = [];
+
+    let groupedItems: {
+      [key: string]: {
+        colors: string[];
+        sizes: string[];
+        amounts: number[];
+        collectionIds: string[];
+        types: string[];
+        prices: number[];
+      };
+    } = {};
+
+    cartItems?.forEach((item: CartItem) => {
+      const pubId = item?.item?.pubId;
+      if (!groupedItems[pubId]) {
+        groupedItems[pubId] = {
+          colors: [],
+          sizes: [],
+          amounts: [],
+          collectionIds: [],
+          types: [],
+          prices: [],
+        };
+      }
+
+      groupedItems[pubId].colors.push(item?.chosenColor);
+      groupedItems[pubId].sizes.push(item?.chosenSize);
+      groupedItems[pubId].types.push("coinop");
+      groupedItems[pubId].amounts.push(item?.chosenAmount);
+      groupedItems[pubId].collectionIds.push(item?.item?.collectionId);
+      groupedItems[pubId].prices.push(
+        Number(item?.item?.prices?.[item?.chosenIndex!])
+      );
+    });
+
+    const accessControlConditions = [
+      {
+        contractAddress: "",
+        standardContractType: "",
         chain: "polygon",
-      });
-    } else {
-      authSig = authSigFiat;
-    }
-
-    
-
-    let fulfillerDetails = [];
-
-    for (let fulfillerAddress in fulfillerGroups) {
-      let fulfillerEditions: any[] = [];
-
-      fulfillerGroups[fulfillerAddress].forEach((item) => {
-        fulfillerEditions.push({
-          contractAddress: "",
-          standardContractType: "",
-          chain: "polygon",
-          method: "",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: "=",
-            value: item.fulfillerAddress.toLowerCase(),
-          },
-        });
-
-        fulfillerEditions.push({
-          operator: "or",
-        });
-      });
-
-      const accessControlConditions = [
-        ...fulfillerEditions,
-        {
-          contractAddress: "",
-          standardContractType: "",
-          chain: "polygon",
-          method: "",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: "=",
-            value: address?.toLowerCase() as string,
-          },
+        method: "",
+        parameters: [":userAddress"],
+        returnValueTest: {
+          comparator: "=",
+          value: address.toLowerCase(),
         },
-      ];
+      },
+      {
+        operator: "or",
+      },
+      {
+        contractAddress: "",
+        standardContractType: "",
+        chain: "polygon",
+        method: "",
+        parameters: [":userAddress"],
+        returnValueTest: {
+          comparator: "=",
+          value: address?.toLowerCase() as string,
+        },
+      },
+    ] as AccessControlConditions;
 
-      const { ciphertext, dataToEncryptHash } = await LitJsSdk.encryptString(
+    for (const [pubId, item] of Object.entries(groupedItems)) {
+      const { ciphertext, dataToEncryptHash } = await encryptString(
         {
           accessControlConditions,
           authSig,
           chain: "polygon",
           dataToEncrypt: JSON.stringify({
             ...fulfillmentDetails,
-            ...information,
+            ...item,
+            origin: "0",
+            fulfillerAddress: [DIGITALAX_ADDRESS],
           }),
         },
         client!
       );
 
-      fulfillerDetails.push(
-        JSON.stringify({
+      encryptedItems.push({
+        pubId,
+        data: JSON.stringify({
           ciphertext,
           dataToEncryptHash,
           accessControlConditions,
-        })
-      );
+        }),
+      });
     }
 
-    return { fulfillerDetails, client };
+    return encryptedItems;
   } catch (err: any) {
     console.error(err.message);
   }

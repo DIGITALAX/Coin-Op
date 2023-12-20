@@ -1,21 +1,7 @@
 import { FunctionComponent } from "react";
 import { AllOrdersProps, Order as OrderType } from "../types/account.types";
 import Order from "./Order";
-import { setPreRollAnim } from "../../../../redux/reducers/preRollAnimSlice";
-import { setLogin } from "../../../../redux/reducers/loginSlice";
-import Link from "next/link";
-import Subscribed from "./Subscribed";
-import { loadStripe } from "@stripe/stripe-js";
-import { APPEARANCE } from "../../../../lib/constants";
-import { Elements } from "@stripe/react-stripe-js";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
-);
-const options = {
-  clientSecret: undefined,
-  appearance: APPEARANCE,
-};
+import { setPrerollAnim } from "../../../../redux/reducers/prerollAnimSlice";
 
 const AllOrders: FunctionComponent<AllOrdersProps> = ({
   allOrders,
@@ -26,20 +12,9 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
   decryptLoading,
   handleDecryptFulfillment,
   dispatch,
-  updateFulfillmentInformation,
-  updateLoading,
-  updatedInformation,
-  setUpdatedInformation,
-  decryptMessageLoading,
-  handleDecryptMessage,
-  connectedPKP,
   chain,
   openChainModal,
-  subscriptionsLoading,
-  allSubscriptions,
-  router,
-  client,
-  subscriptionInfo,
+  openConnectModal,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col items-center gap-16 overflow-y-scroll justify-start overflow-x-hidden">
@@ -47,16 +22,13 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
         <div className="font-monu text-2xl text-left w-fit h-fit flex justify-start items-center">
           All Orders.
         </div>
-        {!connected && !connectedPKP?.publicKey ? (
+        {!connected ? (
           <div
             className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
             onClick={() =>
-              dispatch(
-                setLogin({
-                  actionOpen: true,
-                  actionHighlight: undefined,
-                })
-              )
+              !connected
+                ? openConnectModal
+                : connected && chain !== 137 && openChainModal
             }
           >
             Connect to View Your Orders.
@@ -74,7 +46,7 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
         ) : !ordersLoading && allOrders?.length < 1 ? (
           <div
             className="relative w-full h-fit justify-center text-left items-center cursor-pointer text-white font-mana text-base"
-            onClick={() => dispatch(setPreRollAnim(true))}
+            onClick={() => dispatch(setPrerollAnim(true))}
           >
             No Orders Yet. Shop Prerolls? <br />
             <br />
@@ -93,57 +65,12 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
                 index={index}
                 handleDecryptFulfillment={handleDecryptFulfillment}
                 decryptLoading={decryptLoading}
-                updateFulfillmentInformation={updateFulfillmentInformation}
-                updatedInformation={updatedInformation}
-                updateLoading={updateLoading}
-                setUpdatedInformation={setUpdatedInformation}
-                decryptMessageLoading={decryptMessageLoading}
-                handleDecryptMessage={handleDecryptMessage}
                 openChainModal={openChainModal}
                 chain={chain}
                 connected={connected}
               />
             );
           })
-        )}
-      </div>
-      <div className="relative w-full h-full flex flex-col text-white gap-4">
-        <div className="font-monu text-2xl text-left w-fit h-fit flex justify-start items-center">
-          {!allSubscriptions
-            ? `We've All Been There.`
-            : "Level Up or Lose It Plan."}
-        </div>
-        {subscriptionsLoading ? (
-          Array.from({ length: 1 }).map((_, index: number) => {
-            return (
-              <div
-                key={index}
-                className="relative h-20 border border-white w-full"
-                id="staticLoad"
-              ></div>
-            );
-          })
-        ) : (!subscriptionsLoading && !allSubscriptions) ||
-          !connectedPKP?.publicKey ? (
-          <Link
-            className="relative w-full h-fit justify-center text-left items-center justify-center cursor-pointer text-white font-mana text-base"
-            href={"/pregame"}
-          >
-            The new language machines challenge humans to a dance off. New
-            players all start at Level 0. Level up or lose it to random rival
-            collectors.
-          </Link>
-        ) : (
-          <Elements stripe={stripePromise} options={options}>
-            <Subscribed
-              subscription={allSubscriptions!}
-              router={router}
-              dispatch={dispatch}
-              currentPKP={connectedPKP}
-              subscriptionInfo={subscriptionInfo}
-              client={client}
-            />
-          </Elements>
         )}
       </div>
       <div className="relative w-full h-fit flex flex-col text-white gap-4 mt-auto">
@@ -163,10 +90,8 @@ const AllOrders: FunctionComponent<AllOrdersProps> = ({
           refund. Please reach out through Lens XMTP secure on-chain messaging
           to initiate the process. Once received, we will inspect the items and
           process your refund within 4-5 business days. Refunds are issued to
-          your original payment method - either to your crypto wallet for crypto
-          purchases or back to the card used at checkout for fiat purchases. If
-          you experience any problems with your order, feel free to reach out
-          via our social media channels for assistance.
+          your wallet. If you experience any problems with your order, feel free
+          to reach out via our social media channels for assistance.
         </div>
       </div>
     </div>

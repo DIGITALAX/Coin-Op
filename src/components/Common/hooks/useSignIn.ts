@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSignMessage } from "wagmi";
-import getDefaultProfile from "../../../../graphql/lens/queries/getDefaultProfile";
-import generateChallenge from "../../../../graphql/lens/queries/generateChallenge";
 import authenticate from "../../../../graphql/lens/mutations/authenticate";
 import {
   getAddress,
@@ -17,11 +15,19 @@ import { setNoHandle } from "../../../../redux/reducers/noHandleSlice";
 import { Profile } from "../types/generated";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
 import { AnyAction, Dispatch } from "redux";
+import { OracleData } from "../types/common.types";
+import { getOracleData } from "../../../../graphql/subgraph/queries/getOracleData";
+import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
+import generateChallenge from "../../../../graphql/lens/queries/challenge";
+import getDefaultProfile from "../../../../graphql/lens/queries/default";
 
 const useSignIn = (
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
-  isConnected: boolean
+  isConnected: boolean,
+  openAccountModal: (() => void) | undefined,
+  oracleData: OracleData[],
+  lensConnected: Profile | undefined
 ) => {
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
   const { signMessageAsync } = useSignMessage();
@@ -29,9 +35,12 @@ const useSignIn = (
   const handleLensSignIn = async (): Promise<void> => {
     setSignInLoading(true);
     try {
-      const profile = await getDefaultProfile({
-        for: address,
-      });
+      const profile = await getDefaultProfile(
+        {
+          for: address,
+        },
+        lensConnected?.id
+      );
       const challengeResponse = await generateChallenge({
         for: profile.data?.defaultProfile?.id,
         signedBy: address,
@@ -61,9 +70,12 @@ const useSignIn = (
 
   const handleRefreshProfile = async (): Promise<void> => {
     try {
-      const profile = await getDefaultProfile({
-        for: address,
-      });
+      const profile = await getDefaultProfile(
+        {
+          for: address,
+        },
+        lensConnected?.id
+      );
       if (profile?.data?.defaultProfile) {
         dispatch(setProfile(profile?.data?.defaultProfile as Profile));
       } else {
@@ -73,6 +85,30 @@ const useSignIn = (
       console.error(err.message);
     }
   };
+
+  const handleLogout = () => {
+    if (openAccountModal) {
+      openAccountModal();
+    }
+    dispatch(setProfile(undefined));
+    removeAuthenticationToken();
+  };
+
+  const handleOracles = async (): Promise<void> => {
+    try {
+      const data = await getOracleData();
+
+      dispatch(setOracleData(data?.data?.currencyAddeds));
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!oracleData || oracleData?.length < 1) {
+      handleOracles();
+    }
+  }, []);
 
   useEffect(() => {
     const handleAuthentication = async () => {
@@ -109,8 +145,8 @@ const useSignIn = (
 
   return {
     handleLensSignIn,
-    handleRefreshProfile,
     signInLoading,
+    handleLogout,
   };
 };
 

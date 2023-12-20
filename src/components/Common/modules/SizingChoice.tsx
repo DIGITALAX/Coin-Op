@@ -1,12 +1,12 @@
 import { FunctionComponent } from "react";
 import { SizingChoiceProps } from "../types/common.types";
-import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
+import { setPreroll } from "../../../../redux/reducers/prerollSlice";
 import { setSearchExpand } from "../../../../redux/reducers/searchExpandSlice";
 
 const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
   dispatch,
-  preRolls,
-  preRoll,
+  prerolls,
+  preroll,
   left,
   right,
   search,
@@ -17,54 +17,56 @@ const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
         className="relative w-fit h-fit flex flex-row gap-1.5 justify-start overflow-x-scroll"
         id="xScroll"
       >
-        {preRoll.sizes?.map((size: string, index: number) => {
-          return (
-            <div
-              key={index}
-              className={`relative border rounded-full cursor-pointer flex items-center justify-center text-xs h-6 uppercase font-mana ${
-                preRoll.chosenSize === size
-                  ? "border-fresa bg-white text-black"
-                  : "border-white text-white"
-              } ${
-                preRoll.printType === "shirt" ||
-                preRoll.printType === "hoodie" ||
-                preRoll?.printType === "sleeve"
-                  ? "w-6"
-                  : "w-fit px-1.5"
-              }`}
-              onClick={() => {
-                if (search) {
-                  dispatch(setSearchExpand({ ...preRoll, chosenSize: size }));
-                } else {
-                  const updated = {
-                    left: left
-                      ? preRolls.left.map((obj) =>
-                          obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                            ? { ...obj, chosenSize: size }
-                            : obj
-                        )
-                      : preRolls.left,
-                    right: right
-                      ? preRolls.right.map((obj) =>
-                          obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                            ? { ...obj, chosenSize: size }
-                            : obj
-                        )
-                      : preRolls.right,
-                  };
-                  dispatch(
-                    setPreRoll({
-                      actionLeft: updated.left,
-                      actionRight: updated.right,
-                    })
-                  );
-                }
-              }}
-            >
-              {size}
-            </div>
-          );
-        })}
+        {preroll.collectionMetadata?.sizes?.map(
+          (size: string, index: number) => {
+            return (
+              <div
+                key={index}
+                className={`relative border rounded-full cursor-pointer flex items-center justify-center text-xxs h-6 uppercase font-mana ${
+                  preroll.chosenSize === size
+                    ? "border-fresa bg-white text-black"
+                    : "border-white text-white"
+                } ${
+                  preroll.printType !== "0" && preroll.printType !== "1"
+                    ? "w-6"
+                    : "w-fit px-1.5"
+                }`}
+                onClick={() => {
+                  if (search) {
+                    dispatch(setSearchExpand({ ...preroll, chosenSize: size }));
+                  } else {
+                    const updated = {
+                      left: left
+                        ? prerolls.left.map((obj) =>
+                            obj?.collectionMetadata?.images?.[0] ===
+                            preroll?.collectionMetadata?.images?.[0]
+                              ? { ...obj, chosenSize: size }
+                              : obj
+                          )
+                        : prerolls.left,
+                      right: right
+                        ? prerolls.right.map((obj) =>
+                            obj?.collectionMetadata?.images?.[0] ===
+                            preroll?.collectionMetadata?.images?.[0]
+                              ? { ...obj, chosenSize: size }
+                              : obj
+                          )
+                        : prerolls.right,
+                    };
+                    dispatch(
+                      setPreroll({
+                        actionLeft: updated.left,
+                        actionRight: updated.right,
+                      })
+                    );
+                  }
+                }}
+              >
+                {size}
+              </div>
+            );
+          }
+        )}
       </div>
     </div>
   );

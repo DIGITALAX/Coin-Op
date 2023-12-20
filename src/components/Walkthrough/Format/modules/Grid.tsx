@@ -90,7 +90,7 @@ const Grid: FunctionComponent<GridProps> = ({
       </div>
       <div className="flex flex-col absolute w-fit h-fit gap-1.5 bottom-40 px-5 preG:px-0 preG:right-auto preG:-bottom-2 sm:-bottom-5 synth:-bottom-3">
         <div
-          className="relative text-base sm:text-2xl 900:text-4xl uppercase font-mana flex text-white"
+          className="relative text-base sm:text-2xl tablet:text-4xl uppercase font-mana flex text-white"
           draggable={false}
         >
           choose format

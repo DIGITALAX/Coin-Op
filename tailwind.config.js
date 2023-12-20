@@ -39,6 +39,7 @@ module.exports = {
       },
       height: {
         98: "28rem",
+        99: "30rem",
         100: "36rem",
         110: "38rem",
         120: "50rem",
@@ -67,7 +68,7 @@ module.exports = {
         preG: "480px",
         synth: "1450px",
         before: "1050px",
-        900: "900px",
+        tablet: "900px",
       },
     },
   },

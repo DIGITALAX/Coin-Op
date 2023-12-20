@@ -1,50 +1,30 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface ReactionStateState {
+export interface ReactBoxState {
   open: boolean;
-  type?: string;
-  value?: any;
-  mirror?: boolean;
-  react?: boolean;
-  follower?: boolean;
+  id?: string;
+  type?: "Mirrors" | "Likes" | "Followers" | "Following" | "Acts" | "Comments";
 }
 
-const initialReactionStateState: ReactionStateState = {
+const initialReactBoxState: ReactBoxState = {
   open: false,
-  type: undefined,
-  value: undefined,
-  mirror: undefined,
-  react: undefined,
-  follower: undefined,
 };
 
-export const reactionStateSlice = createSlice({
-  name: "reactionState",
-  initialState: initialReactionStateState,
+export const reactBoxSlice = createSlice({
+  name: "reactBox",
+  initialState: initialReactBoxState,
   reducers: {
-    setReactionState: (
-      state: ReactionStateState,
-      {
-        payload: {
-          actionOpen,
-          actionType,
-          actionValue,
-          actionResponseMirror,
-          actionResponseReact,
-          actionFollower,
-        },
-      }
+    setReactBox: (
+      state: ReactBoxState,
+      { payload: { actionOpen, actionType, actionId } }
     ) => {
       state.open = actionOpen;
       state.type = actionType;
-      state.value = actionValue;
-      state.mirror = actionResponseMirror;
-      state.react = actionResponseReact;
-      state.follower = actionFollower;
+      state.id = actionId;
     },
   },
 });
 
-export const { setReactionState } = reactionStateSlice.actions;
+export const { setReactBox } = reactBoxSlice.actions;
 
-export default reactionStateSlice.reducer;
+export default reactBoxSlice.reducer;

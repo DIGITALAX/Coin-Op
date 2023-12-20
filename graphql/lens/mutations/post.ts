@@ -1,12 +1,12 @@
 import { FetchResult } from "@apollo/client";
+import { apolloClient } from "../../../lib/lens/client";
 import {
   CreateOnchainPostTypedDataDocument,
   CreateOnchainPostTypedDataMutation,
   OnchainPostRequest,
-} from "./../../../src/components/Common/types/generated";
-import { apolloClient } from "../../../lib/lens/client";
+} from "@/components/Common/types/generated";
 
-export const createPostTypedData = async (
+const postOnChain = async (
   request: OnchainPostRequest
 ): Promise<FetchResult<CreateOnchainPostTypedDataMutation>> => {
   return await apolloClient.mutate({
@@ -16,3 +16,4 @@ export const createPostTypedData = async (
     },
   });
 };
+export default postOnChain;

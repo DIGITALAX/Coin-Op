@@ -14,14 +14,14 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
   handlePromptChoose,
   handleAddToCart,
   router,
-  cartAddAnim
+  cartAddAnim,
 }): JSX.Element => {
   return (
     <div className="relative w-40 h-40 rounded-md border border-white/70 p-3">
       <div className="relative w-full h-full object-cover">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${
-            promptSearch?.uri?.image[0]?.split("ipfs://")[1]
+            promptSearch?.collectionMetadata?.images[0]?.split("ipfs://")[1]
           }`}
           layout="fill"
           objectFit="cover"
@@ -46,27 +46,13 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
                 title="use prompt"
                 onClick={async (e) => {
                   e.stopPropagation();
-                  if (
-                    router.asPath.includes("account") ||
-                    router.asPath.includes("pregame") ||
-                    router.asPath.includes("quests")
-                  ) {
+                  if (router.asPath.includes("account")) {
                     await router.push("/");
                   }
                   handlePromptChoose(promptSearch);
                 }}
               >
                 <AiOutlineCode color="white" size={16} />
-              </div>
-              <div
-                className="relative flex cursor-pointer active:scale-95 hover:opacity-50 items-center justify-center"
-                title="add to search"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSearchSimilar(promptSearch);
-                }}
-              >
-                <ImRedo color="white" size={12} />
               </div>
             </div>
             <div
@@ -76,14 +62,18 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
                 e.stopPropagation();
                 handleAddToCart(promptSearch);
               }}
-              id={cartAddAnim === promptSearch.uri.image[0] ? "cartAddAnim" : ""}
+              id={
+                cartAddAnim === promptSearch?.collectionMetadata?.images[0]
+                  ? "cartAddAnim"
+                  : ""
+              }
             >
               <Image
                 src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}
                 layout="fill"
                 objectFit="cover"
                 draggable={false}
-                alt="preRoll"
+                alt="preroll"
                 className="flex items-center justify-center"
               />
             </div>

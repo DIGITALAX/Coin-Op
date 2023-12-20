@@ -1,36 +1,17 @@
-const webpack = require("webpack");
 /** @type {import('next').NextConfig} */
 
 const allowedOrigins = [
-  "https://api.lens.dev",
-  "https://chromadin.infura-ipfs.io",
-  "https://tenor.googleapis.com",
-  "https://api.studio.thegraph.com",
-  "https://api.thegraph.com",
-  "https://youtube.com",
-  "https://vimeo.com",
-  `https://${process.env.NEXT_PUBLIC_ALGOLIA_ID}-dsn.algolia.net`,
+  "https://api-v2-mumbai.lens.dev/",
   "https://api-v2.lens.dev/",
+  "https://chromadin.infura-ipfs.io",
+  "https://api.thegraph.com",
+  "https://arweave.net/",
+  "https://gw.ipfs-lens.dev",
+  "https://hey.xyz",
 ];
 
 const nextConfig = {
   reactStrictMode: true,
-  webpack: (config) => {
-    config.resolve.fallback = {
-      fs: false,
-      net: false,
-      tls: false,
-      buffer: require.resolve("buffer/"),
-    };
-
-    config.plugins.push(
-      new webpack.ProvidePlugin({
-        Buffer: [require.resolve("buffer/"), "Buffer"],
-      })
-    );
-
-    return config;
-  },
   images: {
     remotePatterns: [
       {

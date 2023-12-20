@@ -1,19 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface PreRollLoadingState {
+export interface PrerollLoadingState {
   value: boolean;
 }
 
-const initialPreRollLoadingState: PreRollLoadingState = {
+const initialPrerollLoadingState: PrerollLoadingState = {
   value: false,
 };
 
-export const preRollLoadingSlice = createSlice({
-  name: "preRollLoading",
-  initialState: initialPreRollLoadingState,
+export const prerollLoadingSlice = createSlice({
+  name: "prerollLoading",
+  initialState: initialPrerollLoadingState,
   reducers: {
-    setPreRollLoading: (
-      state: PreRollLoadingState,
+    setPrerollLoading: (
+      state: PrerollLoadingState,
       action: PayloadAction<boolean>
     ) => {
       state.value = action.payload;
@@ -21,6 +21,6 @@ export const preRollLoadingSlice = createSlice({
   },
 });
 
-export const { setPreRollLoading } = preRollLoadingSlice.actions;
+export const { setPrerollLoading } = prerollLoadingSlice.actions;
 
-export default preRollLoadingSlice.reducer;
+export default prerollLoadingSlice.reducer;

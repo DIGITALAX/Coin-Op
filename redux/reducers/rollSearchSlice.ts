@@ -1,8 +1,8 @@
-import { PreRoll } from "@/components/Common/types/common.types";
+import { Preroll } from "@/components/Common/types/common.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface RollSearchState {
-  value: PreRoll[];
+  value: Preroll[];
 }
 
 const initialRollSearchState: RollSearchState = {
@@ -15,7 +15,7 @@ export const rollSearchSlice = createSlice({
   reducers: {
     setRollSearch: (
       state: RollSearchState,
-      action: PayloadAction<PreRoll[]>
+      action: PayloadAction<Preroll[]>
     ) => {
       state.value = action.payload;
     },

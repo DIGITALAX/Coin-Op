@@ -63,6 +63,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   canvasExpand,
   materialBackground,
   materialOpen,
+  setEncrypted,
   setMaterialBackground,
   setMaterialOpen,
   completedSynths,
@@ -72,17 +73,27 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   controlType,
   setControlType,
   synthRef,
-  scrollToPreRoll,
+  scrollToPreroll,
   chain,
   openChainModal,
   apiKey,
-  client,
-  publicClient,
+  handleApproveSpend,
+  handleCheckoutCrypto,
+  approved,
+  cryptoCheckoutLoading,
   fulfillmentDetails,
-  encryptedInformation,
-  connectedPKP,
-  paymentType,
-  clientSecret,
+  oracleValue,
+  setCartItem,
+  setCheckoutCurrency,
+  encryptFulfillment,
+  cartItem,
+  checkoutCurrency,
+  setOpenCountryDropDown,
+  openCountryDropDown,
+  encrypted,
+  setFulfillmentDetails,
+  startIndex,
+  setStartIndex,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
@@ -94,7 +105,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           dispatch={dispatch}
           synthLayer={synthLayer}
           layersLoading={layersLoading}
-          scrollToPreRoll={scrollToPreRoll}
+          scrollToPreroll={scrollToPreroll}
         />
         <Synth
           itemClicked={itemClicked}
@@ -164,8 +175,22 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
         />
         <Purchase
           chain={chain}
-          client={client}
-          publicClient={publicClient}
+          setEncrypted={setEncrypted}
+          lensConnected={profile}
+          handleLensSignIn={handleLensSignIn}
+          setStartIndex={setStartIndex}
+          startIndex={startIndex}
+          setFulfillmentDetails={setFulfillmentDetails}
+          setCartItem={setCartItem}
+          setCheckoutCurrency={setCheckoutCurrency}
+          cartItem={cartItem}
+          checkoutCurrency={checkoutCurrency}
+          oracleValue={oracleValue}
+          encryptFulfillment={encryptFulfillment}
+          handleApproveSpend={handleApproveSpend}
+          handleCheckoutCrypto={handleCheckoutCrypto}
+          cryptoCheckoutLoading={cryptoCheckoutLoading}
+          approved={approved}
           openChainModal={openChainModal}
           dispatch={dispatch}
           scrollRef={scrollRef}
@@ -173,11 +198,10 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           signInLoading={signInLoading}
           address={address}
           openConnectModal={openConnectModal}
-          encryptedInformation={encryptedInformation}
           fulfillmentDetails={fulfillmentDetails}
-          connectedPKP={connectedPKP}
-          paymentType={paymentType}
-          clientSecret={clientSecret}
+          encrypted={encrypted}
+          setOpenCountryDropDown={setOpenCountryDropDown}
+          openCountryDropDown={openCountryDropDown}
         />
       </div>
     </div>

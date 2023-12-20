@@ -11,8 +11,8 @@ const General: FunctionComponent<GeneralProps> = ({
   dispatch,
 }): JSX.Element => {
   return (
-    <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
-      <div className="relative w-full sm:w-[50vw] lg:w-[30vw] h-fit col-start-1 place-self-center bg-black rounded-lg">
+    <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
+      <div className="relative w-[90vw] sm:w-[70vw] tablet:w-[40vw] h-fit max-h-[90vh] place-self-center bg-offBlack rounded-lg border border-white rounded-sm overflow-y-scroll">
         <div className="relative w-full row-start-2 h-fit rounded-xl grid grid-flow-col auto-cols-auto">
           <div className="relative w-full h-full col-start-1 rounded-xl place-self-center">
             <div className="relative w-full h-full grid grid-flow-row auto-rows-auto gap-4 pb-8">
@@ -36,7 +36,7 @@ const General: FunctionComponent<GeneralProps> = ({
                 </div>
                 <div className="relative w-1/2 h-36 preG:h-52 lg:h-40 xl:h-52 justify-center items-center rounded-lg border border-white bg-cross">
                   <Image
-                    src={`${INFURA_GATEWAY}/ipfs/QmT3m9nRWQTXYuwvyTSFmZixrAxBojAjJa8jPqyKsPHxZX`}
+                    src={`${INFURA_GATEWAY}/ipfs/QmNceKihkEktmp9sTutC9ixf2UV1RsE1sCfsQyDxpPiuSr`}
                     layout="fill"
                     objectFit="cover"
                     className="rounded-lg"

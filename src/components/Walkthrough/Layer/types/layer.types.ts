@@ -13,7 +13,7 @@ export interface Layer {
 
 export type LayerProps = {
   layers: Layer[];
-  scrollToPreRoll: () => void;
+  scrollToPreroll: () => void;
   dispatch: Dispatch<AnyAction>;
   synthLayer:
     | {
@@ -44,7 +44,7 @@ export type GridProps = {
       }
     | undefined;
   layersLoading: boolean;
-  scrollToPreRoll: () => void;
+  scrollToPreroll: () => void;
 };
 
 export type SetProps = {

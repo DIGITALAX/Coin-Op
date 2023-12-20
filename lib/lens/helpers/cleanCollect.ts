@@ -1,21 +1,46 @@
-import { SimpleCollectOpenActionModuleInput } from "@/components/Common/types/generated";
+import { OpenActionModuleInput } from "@/components/Common/types/generated";
 
 const cleanCollect = (
-  collectModuleInput: SimpleCollectOpenActionModuleInput
-): SimpleCollectOpenActionModuleInput => {
-  if (!collectModuleInput?.hasOwnProperty("followerOnly"))
-    collectModuleInput.followerOnly = false;
+  openActionModules: OpenActionModuleInput[]
+): OpenActionModuleInput[] => {
+  if (openActionModules && openActionModules.length > 0) {
+    const firstModule = openActionModules[0];
 
-  if (
-    collectModuleInput.hasOwnProperty("amount") &&
-    (!collectModuleInput?.amount?.hasOwnProperty("value") ||
-      !collectModuleInput?.amount?.hasOwnProperty("currency")) &&
-    parseFloat(collectModuleInput?.amount?.value || "") <= 0
-  ) {
-    delete collectModuleInput?.amount;
+    if (
+      !firstModule.collectOpenAction?.simpleCollectOpenAction?.hasOwnProperty(
+        "followerOnly"
+      )
+    ) {
+      const newSimpleCollectOpenAction = {
+        ...firstModule.collectOpenAction?.simpleCollectOpenAction,
+        followerOnly: false,
+      };
+      firstModule.collectOpenAction!.simpleCollectOpenAction =
+        newSimpleCollectOpenAction;
+    }
+
+    if (
+      firstModule.collectOpenAction?.simpleCollectOpenAction?.hasOwnProperty(
+        "amount"
+      ) &&
+      (!firstModule.collectOpenAction.simpleCollectOpenAction.amount?.hasOwnProperty(
+        "value"
+      ) ||
+        !firstModule.collectOpenAction?.simpleCollectOpenAction?.amount?.hasOwnProperty(
+          "currency"
+        )) &&
+      parseFloat(
+        firstModule.collectOpenAction?.simpleCollectOpenAction?.amount?.value ||
+          ""
+      ) <= 0
+    ) {
+      delete firstModule.collectOpenAction?.simpleCollectOpenAction?.amount;
+    }
+
+    openActionModules[0] = firstModule;
   }
 
-  return collectModuleInput;
+  return openActionModules;
 };
 
 export default cleanCollect;

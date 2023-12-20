@@ -1,44 +1,98 @@
-import { CartItem } from "@/components/Common/types/common.types";
-import { MutableRefObject } from "react";
+import {
+  CartItem,
+  Details,
+  OracleData,
+} from "@/components/Common/types/common.types";
+import { Profile } from "@/components/Common/types/generated";
+import { MutableRefObject, SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
-import { Details } from "../../../../../redux/reducers/fulfillmentDetailsSlice";
-import { LitNodeClient } from "@lit-protocol/lit-node-client";
-import { PublicClient } from "viem";
-import { PKPSig } from "../../../../../redux/reducers/currentPKPSlice";
 
 export type PurchaseProps = {
   dispatch: Dispatch<AnyAction>;
+  lensConnected: Profile | undefined;
+  handleLensSignIn: () => Promise<void>;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   cartItems: CartItem[];
-  clientSecret: string | undefined;
+  setEncrypted: (
+    e: SetStateAction<
+      | {
+          pubId: string;
+          data: string;
+        }[]
+      | undefined
+    >
+  ) => void;
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
   chain: number | undefined;
   openChainModal: (() => void) | undefined;
-  client: LitNodeClient;
-  publicClient: PublicClient;
-  paymentType: string;
-  encryptedInformation: string[] | undefined;
-  connectedPKP: PKPSig | undefined;
   fulfillmentDetails: Details;
+  openCountryDropDown: boolean;
+  setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
+  encrypted:
+    | {
+        pubId: string;
+        data: string;
+      }[]
+    | undefined;
+  handleCheckoutCrypto: () => Promise<void>;
+  cryptoCheckoutLoading: boolean;
+  approved: boolean;
+  handleApproveSpend: () => Promise<void>;
+  setCheckoutCurrency: (e: string) => void;
+  checkoutCurrency: string;
+  oracleValue: OracleData[];
+  cartItem: CartItem | undefined;
+  setCartItem: (e: CartItem) => void;
+  setFulfillmentDetails: (e: SetStateAction<Details>) => void;
+  encryptFulfillment: () => Promise<void>;
+  startIndex: number;
+  setStartIndex: (e: SetStateAction<number>) => void;
 };
 
 export type GridProps = {
   dispatch: Dispatch<AnyAction>;
-  client: LitNodeClient;
-  publicClient: PublicClient;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   cartItems: CartItem[];
+  setEncrypted: (
+    e: SetStateAction<
+      | {
+          pubId: string;
+          data: string;
+        }[]
+      | undefined
+    >
+  ) => void;
+  lensConnected: Profile | undefined;
+  handleLensSignIn: () => Promise<void>;
   signInLoading: boolean;
   openConnectModal: (() => void) | undefined;
+  startIndex: number;
+  setStartIndex: (e: SetStateAction<number>) => void;
   address: `0x${string}` | undefined;
+  openCountryDropDown: boolean;
+  setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
+  encrypted:
+    | {
+        pubId: string;
+        data: string;
+      }[]
+    | undefined;
   fulfillmentDetails: Details;
-  connectedPKP: any;
   chain: number | undefined;
   openChainModal: (() => void) | undefined;
-  paymentType: string;
-  encryptedInformation: string[] | undefined;
+  handleCheckoutCrypto: () => Promise<void>;
+  cryptoCheckoutLoading: boolean;
+  approved: boolean;
+  handleApproveSpend: () => Promise<void>;
+  setCheckoutCurrency: (e: string) => void;
+  checkoutCurrency: string;
+  encryptFulfillment: () => Promise<void>;
+  oracleValue: OracleData[];
+  cartItem: CartItem | undefined;
+  setCartItem: (e: CartItem) => void;
+  setFulfillmentDetails: (e: SetStateAction<Details>) => void;
 };
 
 export type CheckoutProps = {
@@ -47,62 +101,99 @@ export type CheckoutProps = {
   chain: number | undefined;
   openChainModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
-  paymentType: string;
   cartItems: CartItem[];
   setCartItem: (e: CartItem) => void;
   cartItem: CartItem | undefined;
   handleCheckoutCrypto: () => Promise<void>;
-  handleCheckoutFiat: () => Promise<void>;
   cryptoCheckoutLoading: boolean;
-  fiatCheckoutLoading: boolean;
   dispatch: Dispatch<AnyAction>;
   setCheckoutCurrency: (e: string) => void;
   checkoutCurrency: string;
   fulfillmentDetails: Details;
   approved: boolean;
   handleApproveSpend: () => Promise<void>;
-  oracleValue: number;
-  encryptFulfillerInformation: () => Promise<void>;
-  encryptedInformation: string[] | undefined;
-  connectedPKP: any;
+  oracleValue: OracleData[];
+  openCountryDropDown: boolean;
+  setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
+  encrypted:
+    | {
+        pubId: string;
+        data: string;
+      }[]
+    | undefined;
+  setFulfillmentDetails: (e: SetStateAction<Details>) => void;
+  encryptFulfillment: () => Promise<void>;
+  lensConnected: Profile | undefined;
+  handleLensSignIn: () => Promise<void>;
+  setEncrypted: (
+    e: SetStateAction<
+      | {
+          pubId: string;
+          data: string;
+        }[]
+      | undefined
+    >
+  ) => void;
 };
 
 export type CryptoProps = {
   signInLoading: boolean;
+  encrypted:
+    | {
+        pubId: string;
+        data: string;
+      }[]
+    | undefined;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
   handleCheckoutCrypto?: () => Promise<void>;
   cryptoCheckoutLoading?: boolean;
+  encryptFulfillment: () => Promise<void>;
   approved?: boolean;
   handleApproveSpend?: () => Promise<void>;
   cartItems: CartItem[];
-  dispatch: Dispatch<AnyAction>;
-  connectedPKP: any;
   chain: number | undefined;
   openChainModal: (() => void) | undefined;
-};
-
-export type FiatProps = {
-  handleCheckoutFiat: () => Promise<void>;
-  fiatCheckoutLoading: boolean;
-  cartItems: CartItem[];
-  encryptFulfillerInformation: () => Promise<void>;
-  encryptedInformation: string[] | undefined;
-  connectedPKP: any;
-  dispatch: Dispatch<AnyAction>;
+  lensConnected: Profile | undefined;
+  handleLensSignIn: () => Promise<void>;
 };
 
 export type ItemsProps = {
   cartItems: CartItem[];
   cartItem: CartItem | undefined;
-  paymentType: string;
   dispatch: Dispatch<AnyAction>;
   checkoutCurrency: string;
   setCartItem: (e: CartItem) => void;
-  oracleValue: number;
+  oracleValue: OracleData[];
+  setEncrypted: (
+    e: SetStateAction<
+      | {
+          pubId: string;
+          data: string;
+        }[]
+      | undefined
+    >
+  ) => void;
 };
 
 export type ShippingInfoProps = {
   fulfillmentDetails: Details;
-  dispatch: Dispatch<AnyAction>;
+  setFulfillmentDetails: (e: SetStateAction<Details>) => void;
+  openCountryDropDown: boolean;
+  setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
+  setEncrypted: (
+    e: SetStateAction<
+      | {
+          pubId: string;
+          data: string;
+        }[]
+      | undefined
+    >
+  ) => void;
+  encrypted:
+    | {
+        pubId: string;
+        data: string;
+      }[]
+    | undefined;
 };

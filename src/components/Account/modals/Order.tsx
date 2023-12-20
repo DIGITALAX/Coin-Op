@@ -1,14 +1,11 @@
 import { FunctionComponent } from "react";
-import { InformationType, OrderProps } from "../types/account.types";
-import {
-  ACCEPTED_TOKENS,
-  // ACCEPTED_TOKENS_MUMBAI,
-  INFURA_GATEWAY,
-} from "../../../../lib/constants";
+import { InformationType, OrderProps, Sub } from "../types/account.types";
+import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../lib/constants";
 import Link from "next/link";
 import { convertDate } from "../../../../lib/subgraph/helpers/convertDate";
 import { AiOutlineLoading } from "react-icons/ai";
 import Image from "next/legacy/image";
+import { Details } from "@/components/Common/types/common.types";
 
 const Order: FunctionComponent<OrderProps> = ({
   order,
@@ -17,12 +14,6 @@ const Order: FunctionComponent<OrderProps> = ({
   index,
   handleDecryptFulfillment,
   decryptLoading,
-  updateFulfillmentInformation,
-  updateLoading,
-  updatedInformation,
-  setUpdatedInformation,
-  decryptMessageLoading,
-  handleDecryptMessage,
   chain,
   openChainModal,
   connected,
@@ -48,23 +39,13 @@ const Order: FunctionComponent<OrderProps> = ({
             Total Order Price
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
-            {order?.sinPKP
-              ? `${
-                  ACCEPTED_TOKENS.find(
-                    (subArray) =>
-                      subArray[2].toLowerCase() ===
-                      order.chosenAddress.toLowerCase()
-                  )?.[1] || ""
-                } `
-              : "$"}{" "}
-            {Number(order.totalPrice) /
-              ((ACCEPTED_TOKENS.find(
-                ([_, token]) =>
-                  token.toLowerCase() === order.chosenAddress.toLowerCase()
-              )?.[2] as `0x${string}`) ===
-              "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
-                ? 10 ** 6
-                : 10 ** 18)}
+            {`${
+              ACCEPTED_TOKENS.find(
+                (subArray) =>
+                  subArray[2].toLowerCase() === order?.currency?.toLowerCase()
+              )?.[1] || ""
+            } `}{" "}
+            {Number(order.totalPrice)}
           </div>
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
@@ -72,13 +53,7 @@ const Order: FunctionComponent<OrderProps> = ({
             Order Status
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat text-sol">
-            {order?.subOrderStatuses?.every((item) => item === "Fulfilled")
-              ? "Fulfilled"
-              : order?.subOrderStatuses?.every(
-                  (item) => item === "Fulfilled" || item === "Shipped"
-                )
-              ? "Shipped"
-              : "Ordered"}
+            {order?.subOrders[0]?.isFulfilled ? "Fulfilled" : "Ordered"}
           </div>
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
@@ -86,7 +61,7 @@ const Order: FunctionComponent<OrderProps> = ({
             Is Fulfilled?
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
-            {order?.subOrderIsFulfilled?.every(Boolean) ? "Yes" : "No"}
+            {order?.subOrders[0]?.isFulfilled ? "Yes" : "No"}
           </div>
         </div>
       </div>
@@ -133,76 +108,13 @@ const Order: FunctionComponent<OrderProps> = ({
                 <div className="relative w-fit h-fit flex items-center justify-center font-satB text-base break-all">
                   Messages
                 </div>
-                {order?.decryptedMessage ? (
-                  <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all text-sm text-white">
-                    {order?.decryptedMessage?.length > 0 ? (
-                      <div className="relative w-full h-fit flex flex-col gap-1.5 items-start">
-                        {order.decryptedMessage?.map(
-                          (
-                            item: {
-                              message: string;
-                              date: string;
-                            },
-                            index: number
-                          ) => {
-                            return (
-                              <div
-                                key={index}
-                                className="relative w-full h-fit flex  flex-row items-center justify-between break-all gap-3"
-                              >
-                                <div className="relative w-fit h-fit flex justify-start items-center break-all">
-                                  {item.message}
-                                </div>
-                                <div className="relative w-fit h-fit flex items-center justify-start items-center break-all">
-                                  {item.date}
-                                </div>
-                              </div>
-                            );
-                          }
-                        )}
-                      </div>
-                    ) : (
-                      <div className="relative w-fit h-fit flex items-center justify-center break-all">
-                        No messages yet.
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div
-                    className={`relative w-40 h-8 justify-center flex items-center flex-col text-base text-black font-monu border border-black bg-sol ${
-                      !decryptMessageLoading[index] &&
-                      "cursor-pointer hover:opacity-70"
-                    }`}
-                    onClick={
-                      connected && chain !== 137
-                        ? openChainModal
-                        : (e) => {
-                            e.stopPropagation();
-                            !decryptMessageLoading[index] &&
-                              handleDecryptMessage(order);
-                          }
-                    }
-                  >
-                    <div
-                      className={`relative flex w-fit h-fit items-center justify-center text-center text-xxs  ${
-                        decryptMessageLoading[index] && "animate-spin"
-                      }`}
-                    >
-                      {decryptMessageLoading[index] ? (
-                        <AiOutlineLoading size={12} color="black" />
-                      ) : (
-                        "Decrypt Messages"
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
               <div className="relative w-full h-fit flex flex-col gap-3 p-2 bg-sol/20">
                 <div className="relative w-full h-fit justify-between inline-flex">
                   <div className="relative w-full h-fit justify-start flex items-center text-base font-monu">
                     Fulfillment Information
                   </div>
-                  {!order.fulfillmentInformation.decryptedFulfillment?.name && (
+                  {!order.decrypted && (
                     <div
                       className={`relative w-40 h-8 justify-center flex items-center flex-col text-base text-black font-monu border border-black bg-sol ${
                         !decryptLoading[index] &&
@@ -237,31 +149,15 @@ const Order: FunctionComponent<OrderProps> = ({
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
                       Name
                     </div>
-                    {!order.fulfillmentInformation.decryptedFulfillment
-                      ?.name ? (
+                    {!order.decrypted ? (
                       <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                         {"@#$!(*A5Le3t"}
                       </div>
                     ) : (
                       <input
                         className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
-                        onChange={(e) =>
-                          setUpdatedInformation(((prev: any) =>
-                            prev.map((val: InformationType, idx: number) =>
-                              idx === index
-                                ? { ...val, name: e.target.value }
-                                : val
-                            )) as any)
-                        }
-                        placeholder={
-                          order.fulfillmentInformation.decryptedFulfillment
-                            ?.name
-                        }
-                        value={
-                          updatedInformation[index]?.name ||
-                          order.fulfillmentInformation.decryptedFulfillment
-                            ?.name
-                        }
+                        disabled
+                        value={(order.details as Details)?.name}
                       />
                     )}
                   </div>
@@ -269,31 +165,15 @@ const Order: FunctionComponent<OrderProps> = ({
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
                       Contact
                     </div>
-                    {!order.fulfillmentInformation.decryptedFulfillment
-                      ?.contact ? (
+                    {!order.decrypted ? (
                       <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                         {"@#$!(*A5Le3t"}
                       </div>
                     ) : (
                       <input
                         className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
-                        onChange={(e) =>
-                          setUpdatedInformation(((prev: any) =>
-                            prev.map((val: InformationType, idx: number) =>
-                              idx === index
-                                ? { ...val, contact: e.target.value }
-                                : val
-                            )) as any)
-                        }
-                        placeholder={
-                          order.fulfillmentInformation.decryptedFulfillment
-                            ?.contact
-                        }
-                        value={
-                          updatedInformation[index]?.contact ||
-                          order.fulfillmentInformation.decryptedFulfillment
-                            ?.contact
-                        }
+                        disabled
+                        value={(order.details as Details)?.contact}
                       />
                     )}
                   </div>
@@ -302,31 +182,15 @@ const Order: FunctionComponent<OrderProps> = ({
                       Address
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {!order.fulfillmentInformation.decryptedFulfillment
-                        ?.address ? (
+                      {!order.decrypted ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
                         </div>
                       ) : (
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
-                          onChange={(e) =>
-                            setUpdatedInformation(((prev: any) =>
-                              prev.map((val: InformationType, idx: number) =>
-                                idx === index
-                                  ? { ...val, address: e.target.value }
-                                  : val
-                              )) as any)
-                          }
-                          placeholder={
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.address
-                          }
-                          value={
-                            updatedInformation[index]?.address ||
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.address
-                          }
+                          disabled
+                          value={(order.details as Details)?.address}
                         />
                       )}
                     </div>
@@ -336,31 +200,15 @@ const Order: FunctionComponent<OrderProps> = ({
                       City
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {!order.fulfillmentInformation.decryptedFulfillment
-                        ?.city ? (
+                      {!order.decrypted ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
                         </div>
                       ) : (
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
-                          onChange={(e) =>
-                            setUpdatedInformation(((prev: any) =>
-                              prev.map((val: InformationType, idx: number) =>
-                                idx === index
-                                  ? { ...val, city: e.target.value }
-                                  : val
-                              )) as any)
-                          }
-                          placeholder={
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.city
-                          }
-                          value={
-                            updatedInformation[index]?.city ||
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.city
-                          }
+                          disabled
+                          value={(order.details as Details)?.city}
                         />
                       )}
                     </div>
@@ -370,31 +218,15 @@ const Order: FunctionComponent<OrderProps> = ({
                       State
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {!order.fulfillmentInformation.decryptedFulfillment
-                        ?.state ? (
+                      {!order.decrypted ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
                         </div>
                       ) : (
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
-                          onChange={(e) =>
-                            setUpdatedInformation(((prev: any) =>
-                              prev.map((val: InformationType, idx: number) =>
-                                idx === index
-                                  ? { ...val, state: e.target.value }
-                                  : val
-                              )) as any)
-                          }
-                          placeholder={
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.state
-                          }
-                          value={
-                            updatedInformation[index]?.state ||
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.state
-                          }
+                          disabled
+                          value={(order.details as Details)?.state}
                         />
                       )}
                     </div>
@@ -404,31 +236,15 @@ const Order: FunctionComponent<OrderProps> = ({
                       Zip
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {!order.fulfillmentInformation.decryptedFulfillment
-                        ?.zip ? (
+                      {!order.decrypted ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
                         </div>
                       ) : (
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
-                          onChange={(e) =>
-                            setUpdatedInformation(((prev: any) =>
-                              prev.map((val: InformationType, idx: number) =>
-                                idx === index
-                                  ? { ...val, zip: e.target.value }
-                                  : val
-                              )) as any)
-                          }
-                          placeholder={
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.zip
-                          }
-                          value={
-                            updatedInformation[index]?.zip ||
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.zip
-                          }
+                          disabled
+                          value={(order.details as Details)?.zip}
                         />
                       )}
                     </div>
@@ -438,64 +254,20 @@ const Order: FunctionComponent<OrderProps> = ({
                       Country
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
-                      {!order.fulfillmentInformation.decryptedFulfillment
-                        ?.country ? (
+                      {!order.decrypted ? (
                         <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                           {"@#$!(*A5Le3t"}
                         </div>
                       ) : (
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
-                          onChange={(e) =>
-                            setUpdatedInformation(((prev: any) =>
-                              prev.map((val: InformationType, idx: number) =>
-                                idx === index
-                                  ? { ...val, country: e.target.value }
-                                  : val
-                              )) as any)
-                          }
-                          placeholder={
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.country
-                          }
-                          value={
-                            updatedInformation[index]?.country ||
-                            order.fulfillmentInformation.decryptedFulfillment
-                              ?.country
-                          }
+                          disabled
+                          value={(order.details as Details)?.country}
                         />
                       )}
                     </div>
                   </div>
                 </div>
-                {order.fulfillmentInformation.decryptedFulfillment?.country && (
-                  <div
-                    className={`relative w-24 h-8 justify-center flex items-center flex-col text-base text-black font-monu border border-black bg-sol ${
-                      !updateLoading[index] && "cursor-pointer hover:opacity-70"
-                    }`}
-                    onClick={
-                      connected && chain !== 137
-                        ? openChainModal
-                        : (e) => {
-                            e.stopPropagation();
-                            !updateLoading[index] &&
-                              updateFulfillmentInformation(index);
-                          }
-                    }
-                  >
-                    <div
-                      className={`relative flex w-fit h-fit items-center justify-center text-center text-xxs  ${
-                        updateLoading[index] && "animate-spin"
-                      }`}
-                    >
-                      {updateLoading[index] ? (
-                        <AiOutlineLoading size={12} color="black" />
-                      ) : (
-                        "Update Info"
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
               <div className="relative w-full h-fit flex flex-col gap-3  pb-2 pt-4">
                 <div className="relative w-full h-fit justify-between inline-flex">
@@ -504,7 +276,7 @@ const Order: FunctionComponent<OrderProps> = ({
                   </div>
                 </div>
                 <div className="relative w-full h-fit flex flex-col gap-2">
-                  {order.collectionDetails?.map((collection, index: number) => {
+                  {order.subOrders?.map((collection: Sub, index: number) => {
                     return (
                       <div
                         key={index}
@@ -513,7 +285,7 @@ const Order: FunctionComponent<OrderProps> = ({
                         <div className="relative w-10 h-10 rounded-md">
                           <Image
                             src={`${INFURA_GATEWAY}/ipfs/${
-                              collection.uri.image[0]?.split("ipfs://")[1]
+                              order?.images?.[0]?.split("ipfs://")[1]
                             }`}
                             className="rounded-md"
                             layout="fill"
@@ -526,8 +298,9 @@ const Order: FunctionComponent<OrderProps> = ({
                             Amount
                           </div>
                           <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all text-xs">
-                            {order?.fulfillmentInformation?.decryptedFulfillment
-                              ?.collectionAmounts?.[index] || "#$%"}
+                            {!order?.decrypted
+                              ? "#$%"
+                              : collection?.amount}
                           </div>
                         </div>
                         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-1">
@@ -535,8 +308,9 @@ const Order: FunctionComponent<OrderProps> = ({
                             Size
                           </div>
                           <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all text-xs">
-                            {order?.fulfillmentInformation?.decryptedFulfillment
-                              ?.sizes?.[index] || "#$%"}
+                            {!order?.decrypted
+                              ? "#$%"
+                              : collection?.size || "?"}
                           </div>
                         </div>
                         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-1">
@@ -546,13 +320,10 @@ const Order: FunctionComponent<OrderProps> = ({
                           <div
                             className="relative w-4 h-4 rounded-full border border-white flex items-center justify-center font-sat break-all text-xxs"
                             style={{
-                              backgroundColor:
-                                order?.fulfillmentInformation
-                                  ?.decryptedFulfillment?.colors?.[index],
+                              backgroundColor: collection?.color,
                             }}
                           >
-                            {!order?.fulfillmentInformation
-                              ?.decryptedFulfillment?.colors?.[index] && "?"}
+                            {!order?.decrypted && "?"}
                           </div>
                         </div>
                       </div>

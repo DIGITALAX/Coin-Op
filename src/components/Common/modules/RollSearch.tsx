@@ -1,5 +1,5 @@
 import { ChangeEvent, FunctionComponent } from "react";
-import { PreRoll, RollSearchProps } from "../types/common.types";
+import { Preroll, RollSearchProps } from "../types/common.types";
 import SearchBox from "./SearchBox";
 
 const RollSearch: FunctionComponent<RollSearchProps> = ({
@@ -39,7 +39,7 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
       <div className={`relative flex flex-col w-full h-48 justify-start items-start overflow-y-scroll ${rollSearch?.length > 0 ? "flex" : "hidden sm:flex"}`}>
         {rollSearch?.length > 0 && (
           <div className="relative inline-flex flex-wrap gap-6 pt-6 justify-start items-center">
-            {rollSearch?.map((roll: PreRoll, index: number) => {
+            {rollSearch?.map((roll: Preroll, index: number) => {
               return (
                 <SearchBox
                   key={index}

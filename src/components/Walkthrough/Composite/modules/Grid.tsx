@@ -12,7 +12,6 @@ import {
 import { BiLogoTwitter } from "react-icons/bi";
 import { FaPinterestP, FaTelegramPlane } from "react-icons/fa";
 import { IoLogoReddit, IoLogoTumblr } from "react-icons/io";
-import { setLensPostBox } from "../../../../../redux/reducers/lensPostBoxSlice";
 import ModelSelect from "./ModelSelect";
 import { AiOutlineLoading } from "react-icons/ai";
 import { setApiAdd } from "../../../../../redux/reducers/apiAddSlice";
@@ -85,10 +84,7 @@ const Grid: FunctionComponent<GridProps> = ({
                 ? openConnectModal
                 : chain !== 137
                 ? openChainModal
-                : () =>
-                    address && !profile
-                      ? handleLensSignIn()
-                      : dispatch(setLensPostBox(true))
+                : () => (address && !profile ? handleLensSignIn() : {})
             }
           >
             {signInLoading ? (
@@ -208,7 +204,7 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="relative w-full preG:w-fit flex justify-center preG:absolute text-white font-mana text-sm sm:text-xl 900:text-3xl uppercase preG:bottom-4 preG:order-3 order-2 preG:pt-0 pt-3"
+        className="relative w-full preG:w-fit flex justify-center preG:absolute text-white font-mana text-sm sm:text-xl tablet:text-3xl uppercase preG:bottom-4 preG:order-3 order-2 preG:pt-0 pt-3"
         draggable={false}
       >
         edit for composite

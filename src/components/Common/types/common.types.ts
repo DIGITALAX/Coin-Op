@@ -5,44 +5,173 @@ import {
 } from "@/components/Walkthrough/Synth/types/synth.types";
 import { NextRouter } from "next/router";
 import {
-  ClipboardEvent,
+  ChangeEvent,
   FormEvent,
-  KeyboardEvent,
   LegacyRef,
   MouseEvent,
   MutableRefObject,
   Ref,
-  RefObject,
+  SetStateAction,
 } from "react";
 import { AnyAction, Dispatch, Dispatch as DispatchRedux } from "redux";
-import { Comment, Erc20, Post, Profile } from "./generated";
+import {
+  ArticleMetadataV3,
+  AudioMetadataV3,
+  Comment,
+  Erc20,
+  ImageMetadataV3,
+  Mirror,
+  Post,
+  PrimaryPublication,
+  Profile,
+  Quote,
+  SimpleCollectOpenActionModuleInput,
+  StoryMetadataV3,
+  TextOnlyMetadataV3,
+  VideoMetadataV3,
+} from "./generated";
 import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
 import { SynthData } from "../../../../redux/reducers/completedSynthsSlice";
 import { MainVideoState } from "../../../../redux/reducers/mainVideoSlice";
 import ReactPlayer from "react-player";
-import { FollowerOnlyState } from "../../../../redux/reducers/followerOnlySlice";
-import { PostCollectValuesState } from "../../../../redux/reducers/postCollectValuesSlice";
-import { LitNodeClient } from "@lit-protocol/lit-node-client";
-import { PublicClient } from "viem";
-import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
-import { Details } from "../../../../redux/reducers/fulfillmentDetailsSlice";
+import { PostCollectState } from "../../../../redux/reducers/postCollectSlice";
+
+export interface Details {
+  name: string;
+  contact: string;
+  address: string;
+  zip: string;
+  city: string;
+  state: string;
+  country: string;
+}
+
+export type PublicationProps = {
+  item: Post | Comment | Quote | Mirror;
+  index: number;
+  disabled: boolean;
+  mirror: (id: string) => Promise<void>;
+  like: (id: string, hasReacted: boolean) => Promise<void>;
+  simpleCollect: (id: string, type: string) => Promise<void>;
+  interactionsLoading: {
+    like: boolean;
+    mirror: boolean;
+    collect: boolean;
+  }[];
+  setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
+  openMirrorChoice: boolean[];
+  router: NextRouter;
+  dispatch: Dispatch<AnyAction>;
+};
+
+export interface MakePostComment {
+  content: string | undefined;
+}
+
+export type PostCommentProps = {
+  makePostComment: MakePostComment;
+  caretCoord: {
+    x: number;
+    y: number;
+  };
+  postCollect: PostCollectState;
+  setCaretCoord: (
+    e: SetStateAction<{
+      x: number;
+      y: number;
+    }>
+  ) => void;
+  dispatch: Dispatch<AnyAction>;
+  router: NextRouter;
+  mentionProfiles: Profile[];
+  profilesOpen: boolean;
+  setMentionProfiles: (e: SetStateAction<Profile[]>) => void;
+  setProfilesOpen: (e: SetStateAction<boolean[]>) => void;
+  lensConnected: Profile | undefined;
+  setMakePostComment: (e: SetStateAction<MakePostComment[]>) => void;
+  main?: boolean | undefined;
+  itemId: string | undefined;
+  commentPost:
+    | ((id: string) => Promise<void>)
+    | (() => Promise<void>)
+    | ((id: string, main: boolean) => Promise<void>);
+  commentPostLoading: boolean;
+  id: string;
+  height: string;
+  index: number;
+};
+
+export type PostQuoteProps = {
+  quote: PrimaryPublication;
+  dispatch: Dispatch<AnyAction>;
+  router: NextRouter;
+  pink?: boolean;
+  disabled: boolean | undefined;
+};
+
+export type PostSwitchProps = {
+  dispatch: Dispatch<AnyAction>;
+  item: Post | Comment | Quote | Mirror;
+  disabled: boolean | undefined;
+};
+
+export type QuoteBoxProps = {
+  dispatch: Dispatch<AnyAction>;
+  postCollect: PostCollectState;
+  quote: PrimaryPublication | undefined;
+  makePost: MakePostComment[];
+  post: () => Promise<void>;
+  lensConnected: Profile | undefined;
+  caretCoord: {
+    x: number;
+    y: number;
+  };
+  setCaretCoord: (
+    e: SetStateAction<{
+      x: number;
+      y: number;
+    }>
+  ) => void;
+  type: string;
+  profilesOpen: boolean[];
+  mentionProfiles: Profile[];
+  setMentionProfiles: (e: SetStateAction<Profile[]>) => void;
+  setProfilesOpen: (e: SetStateAction<boolean[]>) => void;
+  setMakePost: (e: SetStateAction<MakePostComment[]>) => void;
+  postLoading: boolean[];
+  router: NextRouter;
+};
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
   scrollToComposite: () => void;
-  clientSecret: string | undefined;
   newLayersLoading: boolean;
   isDragging: boolean;
   apiKey: string | undefined;
-  connectedPKP: PKPSig | undefined;
-  paymentType: string;
-  encryptedInformation: string[] | undefined;
   fulfillmentDetails: Details;
   openChainModal: (() => void) | undefined;
-  client: LitNodeClient;
-  publicClient: PublicClient;
+  setCheckoutCurrency: (e: string) => void;
+  openCountryDropDown: boolean;
+  setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
+  encrypted:
+    | {
+        pubId: string;
+        data: string;
+      }[]
+    | undefined;
+  startIndex: number;
+  setStartIndex: (e: SetStateAction<number>) => void;
+  setFulfillmentDetails: (e: SetStateAction<Details>) => void;
+  checkoutCurrency: string;
+  oracleValue: OracleData[];
+  cartItem: CartItem | undefined;
+  setCartItem: (e: CartItem) => void;
+  handleCheckoutCrypto: () => Promise<void>;
+  cryptoCheckoutLoading: boolean;
+  approved: boolean;
+  handleApproveSpend: () => Promise<void>;
   chain: number | undefined;
-  scrollToPreRoll: () => void;
+  scrollToPreroll: () => void;
   synthRef: Ref<HTMLDivElement>;
   materialBackground: string;
   itemClicked: boolean;
@@ -56,6 +185,15 @@ export type PageContainerProps = {
   completedSynths: Map<string, SynthData>;
   compositeRef: LegacyRef<HTMLDivElement> | undefined;
   template: Template;
+  setEncrypted: (
+    e: SetStateAction<
+      | {
+          pubId: string;
+          data: string;
+        }[]
+      | undefined
+    >
+  ) => void;
   canvasExpand: boolean;
   undo: (patternId: string) => void;
   redo: (patternId: string) => void;
@@ -115,6 +253,7 @@ export type PageContainerProps = {
   setFont: (e: string) => void;
   setFontOpen: (e: boolean) => void;
   fontOpen: boolean;
+  encryptFulfillment: () => Promise<void>;
 };
 
 export enum PrintType {
@@ -125,68 +264,127 @@ export enum PrintType {
   Sleeve = "sleeve",
 }
 
-export interface PreRoll {
-  collectionId: number;
-  uri: {
-    image: string[];
-    prompt: string;
+export interface Preroll {
+  collectionId: string;
+  amount: string;
+  pubId: string;
+  uri: string;
+  profileId: string;
+  printType: string;
+  prices: string[];
+  acceptedTokens: string[];
+  owner: string;
+  soldTokens: string;
+  fulfillerPercent: string;
+  fulfillerBase: string;
+  fulfiller: string;
+  designerPercent: string;
+  dropId: string;
+  dropCollectionIds: string[];
+  unlimited: boolean;
+  origin: string;
+  profile: Profile;
+  publication: Post | undefined;
+  blockTimestamp: string;
+  dropMetadata: {
+    dropTitle: string;
+    dropCover: string;
+  };
+  bgColor: string;
+  collectionMetadata: {
+    access: string[];
+    visibility: string;
+    colors: string[];
+    sizes: string[];
+    mediaCover: string;
+    description: string;
+    communities: string[];
+    title: string;
     tags: string[];
-    category: string;
-    profile: Profile;
-    chromadinCollectionName?: string;
+    prompt: string;
+    mediaTypes: string[];
+    profileHandle: string;
+    microbrandCover: string;
+    microbrand: string;
+    images: string[];
+    video: string;
+    audio: string;
+    onChromadin: string;
+    sex: string;
+    style: string;
   };
   currentIndex: number;
-  amount: number;
-  colors: string[];
-  sizes: string[];
-  price: number[];
-  printType: string;
-  bgColor: string;
   chosenColor: string;
   chosenSize: string;
-  fulfillerAddress: string;
   newDrop: boolean;
 }
 
-export interface CartItem {
-  collectionId: number;
-  uri: {
-    image: string;
-    prompt: string;
-    tags: string[];
-    category: string;
-    profile: Profile;
-    chromadinCollectionName?: string;
-  };
-  sizes: string[];
-  price: number;
-  printType: string;
+export type TextProps = {
+  metadata: ArticleMetadataV3 | StoryMetadataV3 | TextOnlyMetadataV3;
+};
+
+export type ImageProps = {
+  disabled: boolean | undefined;
+  dispatch: Dispatch<AnyAction>;
+  metadata: ImageMetadataV3 | VideoMetadataV3 | AudioMetadataV3;
+};
+
+export type MediaProps = {
+  type: string;
+  srcUrl: string;
+  srcCover?: string;
+  classNameVideo?: string;
+  classNameImage?: string;
+  classNameAudio?: string;
+  objectFit?: string;
+  hidden?: boolean;
+};
+
+export type WaveFormProps = {
+  keyValue: string;
+  audio: string;
+  video: string;
+  type: string;
+  upload?: boolean;
+  handleMedia?: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
+};
+
+export type CartItem = {
+  item: Preroll;
   chosenColor: string;
   chosenSize: string;
-  amount: number;
-  fulfillerAddress: string;
-}
+  chosenIndex?: number;
+  chosenAmount: number;
+};
 
-export type PreRollsProps = {
+export type PrerollsProps = {
   left?: boolean;
   right?: boolean;
 };
 
-export type PreRollProps = {
-  preRoll: PreRoll;
+export type PrerollProps = {
+  preroll: Preroll;
   dispatch: DispatchRedux<AnyAction>;
   cartItems: CartItem[];
-  preRolls: {
-    left: PreRoll[];
-    right: PreRoll[];
+  prerolls: {
+    left: Preroll[];
+    right: Preroll[];
   };
   left?: boolean;
   right?: boolean;
-  preRollAnim: boolean;
+  prerollAnim: boolean;
   imageLoading: boolean;
   setImagesLoading: (e: boolean[]) => void;
   index: number;
   cartAddAnim: string;
+  mirror: (id: string) => Promise<void>;
+  like: (id: string, hasReacted: boolean) => Promise<void>;
+  openMirrorChoice: boolean[];
+  setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
+  interactionsLoading: {
+    mirror: boolean;
+    like: boolean;
+  }[];
 };
 
 export type PrintTagProps = {
@@ -196,11 +394,11 @@ export type PrintTagProps = {
 
 export type ColorChoiceProps = {
   dispatch: DispatchRedux<AnyAction>;
-  preRolls: {
-    left: PreRoll[];
-    right: PreRoll[];
+  prerolls: {
+    left: Preroll[];
+    right: Preroll[];
   };
-  preRoll: PreRoll;
+  preroll: Preroll;
   left?: boolean;
   right?: boolean;
   search?: boolean;
@@ -208,35 +406,35 @@ export type ColorChoiceProps = {
 
 export type SizingChoiceProps = {
   dispatch: DispatchRedux<AnyAction>;
-  preRolls: {
-    left: PreRoll[];
-    right: PreRoll[];
+  prerolls: {
+    left: Preroll[];
+    right: Preroll[];
   };
-  preRoll: PreRoll;
+  preroll: Preroll;
   left?: boolean;
   right?: boolean;
   search?: boolean;
 };
 
 export type SearchBoxProps = {
-  promptSearch: PreRoll;
-  handlePromptChoose: (e: PreRoll) => Promise<void>;
-  handleSearchSimilar: (e: PreRoll) => Promise<void>;
+  promptSearch: Preroll;
+  handlePromptChoose: (e: Preroll) => Promise<void>;
+  handleSearchSimilar: (e: Preroll) => Promise<void>;
   dispatch: Dispatch<AnyAction>;
-  handleAddToCart: (e: PreRoll) => void;
+  handleAddToCart: (e: Preroll) => void;
   router: NextRouter;
   cartAddAnim: string;
 };
 
 export type RollSearchProps = {
-  rollSearch: PreRoll[];
+  rollSearch: Preroll[];
   handleRollSearch: () => Promise<void>;
   prompt: string;
   setPrompt: (e: string) => void;
-  handlePromptChoose: (e: PreRoll) => Promise<void>;
-  handleSearchSimilar: (e: PreRoll) => Promise<void>;
+  handlePromptChoose: (e: Preroll) => Promise<void>;
+  handleSearchSimilar: (e: Preroll) => Promise<void>;
   dispatch: Dispatch<AnyAction>;
-  handleAddToCart: (e: PreRoll) => void;
+  handleAddToCart: (e: Preroll) => void;
   router: NextRouter;
   cartAddAnim: string;
 };
@@ -260,72 +458,6 @@ export interface UploadedMedia {
   cid: string;
   type: MediaType;
 }
-
-export type PostBoxProps = {
-  dispatch: DispatchRedux<AnyAction>;
-  postLoading: boolean;
-  handlePostDescription: (e: FormEvent<Element>) => Promise<void>;
-  mentionProfiles: Profile[];
-  profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
-  gifOpen: boolean;
-  handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
-  handleGifSubmit: () => Promise<void>;
-  handleGif: (e: FormEvent) => void;
-  results: any[];
-  handleSetGif: (result: any) => void;
-  setGifOpen: (e: boolean) => void;
-  videoLoading: boolean;
-  imageLoading: boolean;
-  uploadImages: (e: FormEvent) => Promise<void>;
-  uploadVideo: (e: FormEvent) => Promise<void>;
-  handleRemoveImage: (e: UploadedMedia) => void;
-  postImagesDispatched: UploadedMedia[];
-  mappedFeaturedFiles: UploadedMedia[];
-  collectOpen: boolean;
-  enabledCurrencies: Erc20[];
-  audienceTypes: string[];
-  setAudienceType: (e: string) => void;
-  audienceType: string;
-  setEnabledCurrency: (e: string) => void;
-  enabledCurrency: string | undefined;
-  setChargeCollectDropDown: (e: boolean) => void;
-  setAudienceDropDown: (e: boolean) => void;
-  setCurrencyDropDown: (e: boolean) => void;
-  chargeCollectDropDown: boolean;
-  audienceDropDown: boolean;
-  currencyDropDown: boolean;
-  referral: number;
-  setReferral: (e: number) => void;
-  limit: number;
-  setLimit: (e: number) => void;
-  value: number;
-  setValue: (e: number) => void;
-  collectibleDropDown: boolean;
-  setCollectibleDropDown: (e: boolean) => void;
-  collectible: string;
-  setCollectible: (e: string) => void;
-  chargeCollect: string;
-  setChargeCollect: (e: string) => void;
-  limitedDropDown: boolean;
-  setLimitedDropDown: (e: boolean) => void;
-  limitedEdition: string;
-  setLimitedEdition: (e: string) => void;
-  setTimeLimit: (e: string) => void;
-  timeLimit: string;
-  timeLimitDropDown: boolean;
-  setTimeLimitDropDown: (e: boolean) => void;
-  collectNotif: string;
-  handlePost: () => Promise<void>;
-  postDescription: string;
-  textElement: RefObject<HTMLTextAreaElement>;
-  preElement: RefObject<HTMLPreElement>;
-  caretCoord: {
-    x: number;
-    y: number;
-  };
-  handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
-};
 
 export type OptionsCommentProps = {
   videoLoading: boolean;
@@ -428,7 +560,6 @@ export interface CollectValueType {
 
 export type IndexProps = {
   message: string | undefined;
-  distanceFromBottom: number;
 };
 
 export type ImageLargeProps = {
@@ -442,15 +573,15 @@ export type MessagesProps = {
 };
 
 export type SearchExpandProps = {
-  searchItem: PreRoll;
+  searchItem: Preroll;
   dispatch: DispatchRedux<AnyAction>;
   cartItems: CartItem[];
-  preRolls: {
-    right: PreRoll[];
-    left: PreRoll[];
+  prerolls: {
+    right: Preroll[];
+    left: Preroll[];
   };
-  handleSearchSimilar: (e: PreRoll) => Promise<void>;
-  handlePromptChoose: (e: PreRoll) => Promise<void>;
+  handleSearchSimilar: (e: Preroll) => Promise<void>;
+  handlePromptChoose: (e: Preroll) => Promise<void>;
   router: NextRouter;
   cartAddAnim: string;
 };
@@ -460,45 +591,12 @@ export type ApiAddProps = {
 };
 
 export type HookProps = {
-  preRollRef: Ref<HTMLDivElement>;
+  prerollRef: Ref<HTMLDivElement>;
 };
 
 export type HeaderProps = {
-  preRollRef: Ref<HTMLDivElement>;
+  prerollRef: Ref<HTMLDivElement>;
   router: NextRouter;
-};
-
-export type LoginProps = {
-  dispatch: DispatchRedux<AnyAction>;
-  openConnectModal: (() => void) | undefined;
-  loginWithWeb2Auth: () => Promise<void>;
-  loginLoading: boolean;
-  currentPKP:
-    | {
-        ethAddress: string;
-        publicKey: string;
-        tokenId: {
-          hex: string;
-          type: string;
-        };
-      }
-    | undefined;
-  highlight: string | undefined;
-};
-
-export type FiatProps = {
-  dispatch: DispatchRedux<AnyAction>;
-};
-
-export type QuestPreludeProps = {
-  dispatch: DispatchRedux<AnyAction>;
-  signUpForQuest: () => Promise<void>;
-  questSignUpLoading: boolean;
-  connected: boolean;
-  chain: number | undefined;
-  openChainModal: (() => void) | undefined;
-  isSubscribed: boolean | undefined;
-  connectedPKP: string | undefined;
 };
 
 export interface VideoSyncState {
@@ -567,6 +665,8 @@ export type FullScreenVideoProps = {
   hasMore: boolean;
   connected: boolean;
   commentors: Comment[];
+  commentsOpen: boolean;
+  setCommentsOpen: (e: boolean) => void;
   handleLensSignIn: () => Promise<void>;
   fetchMoreVideos: () => Promise<
     | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
@@ -600,8 +700,6 @@ export type FullScreenVideoProps = {
   likeCommentLoading: boolean[];
   collectCommentLoading: boolean[];
   commentId: string;
-  commentsOpen: boolean;
-  setCommentsOpen: (e: boolean) => void;
 };
 
 export interface ApprovalArgs {
@@ -615,58 +713,50 @@ export type CollectModalProps = {
   dispatch: Dispatch<AnyAction>;
 };
 
-export type FollowerOnlyProps = {
-  profile: Profile | undefined;
-  followProfile: () => Promise<void>;
-  followLoading: boolean;
-  approved: boolean;
-  approveCurrency: () => Promise<void>;
+export type WhoSwitchProps = {
+  type: string;
   dispatch: Dispatch<AnyAction>;
-  followDetails: FollowerOnlyState;
-};
-
-export type CollectInfoProps = {
-  buttonText: string;
-  symbol?: string;
-  value?: string;
-  limit?: string;
-  time?: string;
-  totalCollected?: number;
-  canClick?: boolean;
-  isApproved?: boolean;
-  approveCurrency?: () => Promise<void>;
-  handleCollect?: (id?: string) => Promise<void>;
-  collectLoading: boolean;
-  approvalLoading?: boolean;
-  handleLensSignIn: () => Promise<void>;
-  commentId: string;
-  openConnectModal: (() => void) | undefined;
-  lensProfile: string | undefined;
-  address: `0x${string}` | undefined;
-};
-
-export type PurchaseProps = {
-  collectInfoLoading: boolean;
-  approvalLoading: boolean;
-  address: `0x${string}` | undefined;
-  collectModuleValues: PostCollectValuesState;
-  lensProfile: string;
-  collectComment: (id?: any) => Promise<void>;
-  collectLoading: boolean;
-  approveCurrency: () => Promise<void>;
-  handleLensSignIn: () => Promise<void>;
-  commentId: string;
-  dispatch: Dispatch<AnyAction>;
-  openConnectModal: (() => void) | undefined;
+  router: NextRouter;
+  reactors: any[];
+  quoters: Quote[];
+  hasMore: boolean;
+  hasMoreQuote: boolean;
+  mirrorQuote: boolean;
+  showMore: () => void;
+  mirror: (id: string) => Promise<void>;
+  like: (id: string, hasReacted: boolean) => Promise<void>;
+  simpleCollect: (id: string, type: string) => Promise<void>;
+  interactionsLoading: {
+    like: boolean;
+    mirror: boolean;
+    collect: boolean;
+  }[];
+  setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
+  openMirrorChoice: boolean[];
 };
 
 export type WhoProps = {
-  accounts: any[];
-  fetchMore: () => Promise<void>;
-  loading: boolean;
-  dispatch: Dispatch<AnyAction>;
+  dataLoading: boolean;
+  reactors: any[];
+  quoters: Quote[];
   hasMore: boolean;
-  type: number;
+  hasMoreQuote: boolean;
+  showMore: () => void;
+  mirrorQuote: boolean;
+  setMirrorQuote: (e: SetStateAction<boolean>) => void;
+  type: string;
+  router: NextRouter;
+  dispatch: Dispatch<AnyAction>;
+  mirror: (id: string) => Promise<void>;
+  like: (id: string, hasReacted: boolean) => Promise<void>;
+  simpleCollect: (id: string, type: string) => Promise<void>;
+  interactionsLoading: {
+    like: boolean;
+    mirror: boolean;
+    collect: boolean;
+  }[];
+  setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
+  openMirrorChoice: boolean[];
 };
 
 export type ControlsProps = {
@@ -724,4 +814,89 @@ export type CommentsProps = {
   dispatch: Dispatch<AnyAction>;
   commentId: string;
   lensProfile: Profile | undefined;
+};
+
+export interface OracleData {
+  currency: string;
+  rate: string;
+  wei: string;
+}
+
+export type InsufficientBalanceProps = {
+  dispatch: Dispatch<AnyAction>;
+  message: string;
+};
+
+export type InteractBarProps = {
+  publication: Preroll;
+  mirror: (id: string) => Promise<void>;
+  like: (id: string, hasReacted: boolean) => Promise<void>;
+  openMirrorChoice: boolean[];
+  setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
+  interactionsLoading: {
+    mirror: boolean;
+    like: boolean;
+  }[];
+  index: number;
+  cartItems: CartItem[];
+  dispatch: Dispatch<AnyAction>;
+};
+
+export type PostCollectProps = {
+  dispatch: Dispatch<AnyAction>;
+  id: string;
+  setCollects: (
+    e: SetStateAction<SimpleCollectOpenActionModuleInput | undefined>
+  ) => void;
+  collects: SimpleCollectOpenActionModuleInput | undefined;
+  openMeasure: {
+    collectibleOpen: boolean;
+    collectible: string;
+    award: string;
+    whoCollectsOpen: boolean;
+    creatorAwardOpen: boolean;
+    currencyOpen: boolean;
+    editionOpen: boolean;
+    edition: string;
+    timeOpen: boolean;
+    time: string;
+  };
+  setOpenMeasure: (
+    e: SetStateAction<{
+      collectibleOpen: boolean;
+      collectible: string;
+      award: string;
+      whoCollectsOpen: boolean;
+      creatorAwardOpen: boolean;
+      currencyOpen: boolean;
+      editionOpen: boolean;
+      edition: string;
+      timeOpen: boolean;
+      time: string;
+    }>
+  ) => void;
+  availableCurrencies: Erc20[];
+  collectTypes:
+    | {
+        [key: string]: SimpleCollectOpenActionModuleInput | undefined;
+      }
+    | undefined;
+};
+
+export type PostBarProps = {
+  index: number;
+  like: (id: string, hasReacted: boolean) => Promise<void>;
+  mirror: (id: string) => Promise<void>;
+  dispatch: Dispatch<AnyAction>;
+  simpleCollect: (id: string, type: string) => Promise<void>;
+  interactionsLoading: {
+    mirror: boolean;
+    like: boolean;
+    collect: boolean;
+  }[];
+  item: Post | Comment | Quote;
+  setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
+  openMirrorChoice: boolean[];
+  router: NextRouter;
+  disabled: boolean;
 };

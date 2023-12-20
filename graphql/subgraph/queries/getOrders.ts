@@ -1,67 +1,74 @@
-import { gql } from "@apollo/client";
-import { graphClient } from "../../../lib/subgraph/client";
+import { FetchResult, gql } from "@apollo/client";
+import { graphPrintClient } from "../../../lib/subgraph/client";
 
 const ORDERS = `
-  query($buyerAddress: String) {
-    orderCreateds(where: {buyer: $buyerAddress},orderBy: blockTimestamp, orderDirection: desc) {
-      transactionHash
-      totalPrice
-      subOrderStatuses
-      subOrderIsFulfilled
-      subOrderIds
-      sinPKP
-      prices
+query($buyer: String!) {
+  orderCreateds(where: {buyer: $buyer}) {
       orderId
-      message
-      fulfillmentInformation
-      fulfillerIds
-      collectionIds
-      pkpTokenId
-      chosenAddress
+      totalPrice
+      currency
+      pubId
+      blockNumber
+      profileId
       buyer
       blockTimestamp
-      blockNumber
-    }
+      transactionHash
+      images
+      names
+      messages
+      details
+      subOrderPrice
+      subOrderStatus
+      subOrderCollectionIds
+      subOrderIsFulfilled
+      subOrderAmount
   }
+}
 `;
 
-const ORDERS_PKP = `
-  query($pkpTokenId: String) {
-    orderCreateds(where: {pkpTokenId: $pkpTokenId},orderBy: blockTimestamp, orderDirection: desc) {
-      transactionHash
-      totalPrice
-      subOrderStatuses
-      subOrderIsFulfilled
-      subOrderIds
-      sinPKP
-      pkpTokenId
-      prices
+const ORDERS_ID = `
+  query($buyer: String, $transactionHash: String) {
+    orderCreateds(where: {buyer: $buyer, transactionHash: $transactionHash},orderBy: blockTimestamp, orderDirection: desc) {
       orderId
-      message
-      fulfillmentInformation
-      fulfillerIds
-      collectionIds
-      chosenAddress
+      totalPrice
+      currency
+      pubId
+      blockNumber
+      profileId
       buyer
       blockTimestamp
-      blockNumber
+      transactionHash
+      images
+      names
+      messages
+      details
+      subOrderPrice
+      subOrderStatus
+      subOrderCollectionIds
+      subOrderIsFulfilled
+      subOrderAmount
     }
   }
 `;
 
-const PKP_SORT = `
-  query {
-    orderCreateds(where: {sinPKP: false},orderBy: blockTimestamp, orderDirection: desc) {
-      pkpTokenId
+const COLLECTION_ORDER = `
+  query($collectionId: String!) {
+    collectionCreateds(where: {collectionId: $collectionId}, first: 1) {
+      origin
+      pubId
+      collectionMetadata {
+        title
+        images
+      }
     }
   }
 `;
 
-export const getOrders = async (buyerAddress: string): Promise<any> => {
-  const queryPromise = graphClient.query({
+export const getOrders = async (buyer: string): Promise<any> => {
+  const queryPromise = graphPrintClient.query({
     query: gql(ORDERS),
     variables: {
-      buyerAddress,
+      buyer,
     },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
@@ -81,58 +88,15 @@ export const getOrders = async (buyerAddress: string): Promise<any> => {
   }
 };
 
-export const getOrdersPKP = async (pkpTokenId: string): Promise<any> => {
-  const queryPromise = graphClient.query({
-    query: gql(ORDERS_PKP),
-    variables: {
-      pkpTokenId,
-    },
-    fetchPolicy: "no-cache",
-    errorPolicy: "all",
-  });
-
-  const timeoutPromise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ timedOut: true });
-    }, 60000); // 1 minute timeout
-  });
-
-  const result: any = await Promise.race([queryPromise, timeoutPromise]);
-  if (result.timedOut) {
-    return;
-  } else {
-    return result;
-  }
-};
-
-
-export const getPKPs = async (): Promise<any> => {
-  const queryPromise = graphClient.query({
-    query: gql(PKP_SORT),
-    fetchPolicy: "no-cache",
-    errorPolicy: "all",
-  });
-
-  const timeoutPromise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ timedOut: true });
-    }, 60000); // 1 minute timeout
-  });
-
-  const result: any = await Promise.race([queryPromise, timeoutPromise]);
-  if (result.timedOut) {
-    return;
-  } else {
-    return result;
-  }
-};
-
-
-export const getOrderPrintAddress = async (buyerAddress: string): Promise<any> => {
-  const queryPromise = graphClient.query({
-    query: gql(ORDERS),
+export const getOrderInformation = async (
+  buyerAddress: string,
+  transactionHash: string
+): Promise<any> => {
+  const queryPromise = graphPrintClient.query({
+    query: gql(ORDERS_ID),
     variables: {
       buyerAddress,
+      transactionHash,
     },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
@@ -145,6 +109,34 @@ export const getOrderPrintAddress = async (buyerAddress: string): Promise<any> =
   });
 
   const result: any = await Promise.race([queryPromise, timeoutPromise]);
+  if (result.timedOut) {
+    return;
+  } else {
+    return result;
+  }
+};
+
+export const getCollectionOrder = async (
+  collectionId: string
+): Promise<FetchResult | void> => {
+  let timeoutId: NodeJS.Timeout | undefined;
+  const queryPromise = graphPrintClient.query({
+    query: gql(COLLECTION_ORDER),
+    variables: {
+      collectionId,
+    },
+    fetchPolicy: "no-cache",
+    errorPolicy: "all",
+  });
+
+  const timeoutPromise = new Promise((resolve) => {
+    timeoutId = setTimeout(() => {
+      resolve({ timedOut: true });
+    }, 60000); // 1 minute timeout
+  });
+
+  const result: any = await Promise.race([queryPromise, timeoutPromise]);
+  timeoutId && clearTimeout(timeoutId);
   if (result.timedOut) {
     return;
   } else {

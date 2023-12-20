@@ -1,7 +1,10 @@
 import { FunctionComponent } from "react";
 import { CartItem, SearchExpandProps } from "../../types/common.types";
 import Image from "next/legacy/image";
-import { INFURA_GATEWAY } from "../../../../../lib/constants";
+import {
+  INFURA_GATEWAY,
+  printTypeToString,
+} from "../../../../../lib/constants";
 import { ImCross } from "react-icons/im";
 import { setSearchExpand } from "../../../../../redux/reducers/searchExpandSlice";
 import { setCart } from "../../../../../redux/reducers/cartSlice";
@@ -15,19 +18,20 @@ import copy from "copy-to-clipboard";
 import { BiCopy } from "react-icons/bi";
 import createProfilePicture from "../../../../../lib/lens/helpers/createProfilePicture";
 import { setCartAddAnim } from "../../../../../redux/reducers/cartAddAnimSlice";
+import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 
 const SearchExpand: FunctionComponent<SearchExpandProps> = ({
   searchItem,
   dispatch,
   cartItems,
-  preRolls,
+  prerolls,
   handleSearchSimilar,
   handlePromptChoose,
   router,
   cartAddAnim,
 }): JSX.Element => {
   const profileImage = createProfilePicture(
-    searchItem.uri.profile?.metadata?.picture
+    searchItem?.profile?.metadata?.picture
   );
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm grid grid-flow-col auto-cols-auto w-full h-auto overflow-y-auto">
@@ -52,14 +56,18 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                           setImageViewer({
                             actionValue: true,
                             actionImage:
-                              searchItem?.uri?.image?.[0]?.split("ipfs://")[1],
+                              searchItem?.collectionMetadata?.images?.[0]?.split(
+                                "ipfs://"
+                              )[1],
                           })
                         )
                       }
                     >
                       <Image
                         src={`${INFURA_GATEWAY}/ipfs/${
-                          searchItem?.uri?.image?.[0]?.split("ipfs://")[1]
+                          searchItem?.collectionMetadata?.images?.[0]?.split(
+                            "ipfs://"
+                          )[1]
                         }`}
                         layout="fill"
                         objectFit="cover"
@@ -76,11 +84,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         title="use prompt"
                         onClick={async (e) => {
                           e.stopPropagation();
-                          if (
-                            router.asPath.includes("account") ||
-                            router.asPath.includes("pregame") ||
-                            router.asPath.includes("quests")
-                          ) {
+                          if (router.asPath.includes("account")) {
                             await router.push("/");
                           }
                           handlePromptChoose(searchItem);
@@ -89,28 +93,14 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                       >
                         <AiOutlineCode color="white" size={16} />
                       </div>
-                      <div
-                        className="relative flex cursor-pointer active:scale-95 hover:opacity-50 items-center justify-center"
-                        title="add to search"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSearchSimilar(searchItem);
-                          dispatch(setSearchExpand(undefined));
-                        }}
-                      >
-                        <ImRedo color="white" size={12} />
-                      </div>
-                    </div>
-                    <div className="relative w-fit h-fit flex font-herm text-3xl">
-                      {searchItem.uri.category}
                     </div>
                     <div className="relative w-fit h-fit flex flex-row items-center justify-between gap-3">
                       <div
                         className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
                         onClick={() =>
                           window.open(
-                            `https://www.chromadin.xyz/autograph/${
-                              searchItem?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                            `https://cypher.digitalax.xyz/autograph/${
+                              searchItem?.profile?.handle?.suggestedFormatted?.localName?.split(
                                 "@"
                               )[1]
                             }`
@@ -129,24 +119,21 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         </div>
                         <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
                           {
-                            searchItem?.uri?.profile?.handle?.suggestedFormatted
+                            searchItem?.profile?.handle?.suggestedFormatted
                               ?.localName
                           }
                         </div>
                       </div>
-                      {searchItem?.uri?.chromadinCollectionName && (
+                      {searchItem?.collectionMetadata?.title && (
                         <div className="relative w-fit h-fit flex items-center justify-center">
                           <div
                             className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
                             onClick={() =>
                               window.open(
-                                `https://www.chromadin.xyz/autograph/${
-                                  searchItem?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
-                                    "@"
-                                  )[1]
-                                }/collection/${searchItem?.uri?.chromadinCollectionName
+                                `https://cypher.digitalax.xyz/item/chromadin/${searchItem?.collectionMetadata?.title
                                   ?.toLowerCase()
-                                  ?.replaceAll(" ", "_")}`
+                                  ?.replaceAll(" ", "_")
+                                  ?.replaceAll("_(print)", "")}`
                               )
                             }
                             title="nft art"
@@ -165,87 +152,117 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                     </div>
                     <PrintTag
                       backgroundColor={searchItem.bgColor}
-                      type={searchItem.printType}
+                      type={printTypeToString[Number(searchItem.printType)]}
                     />
                     <ColorChoice
                       dispatch={dispatch}
-                      preRolls={preRolls}
-                      preRoll={searchItem}
-                      left={preRolls.left?.indexOf(searchItem) ? true : false}
-                      right={preRolls.right?.indexOf(searchItem) ? true : false}
+                      prerolls={prerolls}
+                      preroll={searchItem}
+                      left={prerolls.left?.indexOf(searchItem) ? true : false}
+                      right={prerolls.right?.indexOf(searchItem) ? true : false}
                       search
                     />
                     <div className="relative justify-end items-end w-fit h-fit flex">
                       <SizingChoice
                         dispatch={dispatch}
-                        preRolls={preRolls}
-                        preRoll={searchItem}
-                        left={preRolls.left?.indexOf(searchItem) ? true : false}
+                        prerolls={prerolls}
+                        preroll={searchItem}
+                        left={prerolls.left?.indexOf(searchItem) ? true : false}
                         right={
-                          preRolls.right?.indexOf(searchItem) ? true : false
+                          prerolls.right?.indexOf(searchItem) ? true : false
                         }
                         search
                       />
                     </div>
                     <div className="relative text-xl text-white font-aqua flex justify-end items-end w-fit h-fit">
                       $
-                      {(searchItem?.printType === "shirt" ||
-                      searchItem?.printType === "hoodie" ||
-                      searchItem?.printType === "sleeve"
-                        ? searchItem.price?.[0]
-                        : searchItem.price?.[
-                            searchItem.sizes.indexOf(searchItem.chosenSize)
-                          ]) /
-                        10 ** 18}
+                      {searchItem?.printType !== "0" &&
+                      searchItem?.printType !== "1"
+                        ? Number(searchItem.prices?.[0])
+                        : Number(
+                            searchItem.prices?.[
+                              searchItem?.collectionMetadata?.sizes.indexOf(
+                                searchItem.chosenSize
+                              )
+                            ]
+                          )}
                     </div>
                     <div
                       className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
                       onClick={() => {
-                        let { colors, bgColor, ...newObj } = searchItem;
                         const existing = [...cartItems].findIndex(
                           (item) =>
-                            item.collectionId === newObj.collectionId &&
-                            item.chosenSize === newObj.chosenSize &&
-                            item.chosenColor === newObj.chosenColor
+                            item.item?.collectionId ===
+                              searchItem.collectionId &&
+                            item.chosenSize === searchItem.chosenSize &&
+                            item.chosenColor === searchItem.chosenColor
                         );
 
                         let newCartItems: CartItem[] = [...cartItems];
+
+                        if (
+                          cartItems
+                            ?.filter(
+                              (item) =>
+                                item?.item?.pubId ==
+                                newCartItems?.[existing]?.item?.pubId
+                            )
+                            ?.reduce(
+                              (accumulator, currentItem) =>
+                                accumulator + currentItem.chosenAmount,
+                              0
+                            ) +
+                            1 >
+                            Number(newCartItems?.[existing]?.item?.amount) ||
+                          Number(newCartItems?.[existing]?.item?.amount) ==
+                            Number(newCartItems?.[existing]?.item?.soldTokens)
+                        ) {
+                          dispatch(
+                            setModalOpen({
+                              actionOpen: true,
+                              actionMessage:
+                                "We know you're eager, but you've reached this prints' collect limit!",
+                            })
+                          );
+                          return;
+                        }
 
                         if (existing !== -1) {
                           newCartItems = [
                             ...newCartItems.slice(0, existing),
                             {
                               ...newCartItems[existing],
-                              amount: newCartItems[existing].amount + 1,
+                              chosenAmount:
+                                newCartItems[existing].chosenAmount + 1,
                             },
                             ...newCartItems.slice(existing + 1),
                           ];
                         } else {
                           newCartItems.push({
-                            ...newObj,
-                            amount: 1,
-                            uri: {
-                              ...searchItem?.uri,
-                              image: searchItem?.uri?.image?.[0],
-                            },
-                            price:
-                              searchItem?.printType === "shirt" ||
-                              searchItem?.printType === "hoodie" ||
-                              searchItem?.printType === "sleeve"
-                                ? searchItem.price?.[0]
-                                : searchItem.price?.[
-                                    searchItem.sizes?.indexOf(
-                                      searchItem.chosenSize
-                                    )
-                                  ],
+                            item: searchItem,
+                            chosenColor: searchItem?.chosenColor,
+                            chosenSize: searchItem?.chosenSize,
+                            chosenAmount: 1,
+                            chosenIndex:
+                              searchItem?.printType !== "0" &&
+                              searchItem?.printType !== "1"
+                                ? 0
+                                : searchItem?.collectionMetadata?.sizes?.indexOf(
+                                    searchItem?.chosenSize
+                                  ),
                           });
                         }
 
                         dispatch(setCart(newCartItems));
-                        dispatch(setCartAddAnim(searchItem?.uri?.image[0]));
+                        dispatch(
+                          setCartAddAnim(
+                            searchItem?.collectionMetadata?.images[0]
+                          )
+                        );
                       }}
                       id={
-                        cartAddAnim === searchItem.uri.image[0]
+                        cartAddAnim ===
+                        searchItem?.collectionMetadata?.images[0]
                           ? "cartAddAnim"
                           : ""
                       }
@@ -255,25 +272,29 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                         layout="fill"
                         objectFit="cover"
                         draggable={false}
-                        alt="preRoll"
+                        alt="preroll"
                       />
                     </div>
                   </div>
                 </div>
-                <div className="relative w-full h-52 items-start justify-center flex flex-col gap-1.5 border border-white rounded-md">
-                  <textarea
-                    disabled={true}
-                    className="bg-black w-full relative flex h-full p-3 text-center font-mana text-white text-xs rounded-md break-words"
-                    placeholder={searchItem?.uri?.prompt}
-                    style={{ resize: "none" }}
-                  ></textarea>
-                  <div
-                    className="relative w-fit h-fit flex items-center ml-auto cursor-pointer active:scale-95 bottom-2 right-2"
-                    onClick={() => copy(searchItem?.uri?.prompt)}
-                  >
-                    <BiCopy size={15} color="white" />
+                {searchItem?.collectionMetadata?.prompt && (
+                  <div className="relative w-full h-52 items-start justify-center flex flex-col gap-1.5 border border-white rounded-md">
+                    <textarea
+                      disabled={true}
+                      className="bg-black w-full relative flex h-full p-3 text-center font-mana text-white text-xs rounded-md break-words"
+                      placeholder={searchItem?.collectionMetadata?.prompt}
+                      style={{ resize: "none" }}
+                    ></textarea>
+                    <div
+                      className="relative w-fit h-fit flex items-center ml-auto cursor-pointer active:scale-95 bottom-2 right-2"
+                      onClick={() =>
+                        copy(searchItem?.collectionMetadata?.prompt)
+                      }
+                    >
+                      <BiCopy size={15} color="white" />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

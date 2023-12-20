@@ -1,7 +1,6 @@
 import { FunctionComponent } from "react";
 import { CryptoProps } from "../types/synth.types";
 import { AiOutlineLoading } from "react-icons/ai";
-import { setLogin } from "../../../../../redux/reducers/loginSlice";
 
 const Crypto: FunctionComponent<CryptoProps> = ({
   address,
@@ -11,10 +10,13 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   approved,
   handleApproveSpend,
   cartItems,
-  dispatch,
-  connectedPKP,
   chain,
   openChainModal,
+  openConnectModal,
+  encryptFulfillment,
+  encrypted,
+  lensConnected,
+  handleLensSignIn,
 }): JSX.Element => {
   return (
     <div
@@ -24,37 +26,19 @@ const Crypto: FunctionComponent<CryptoProps> = ({
           : "opacity-70"
       } `}
       onClick={
-        !signInLoading &&
-        !cryptoCheckoutLoading &&
-        ((cartItems.length > 0 && !address) ||
-          (cartItems.length < 1 && !connectedPKP))
-          ? () =>
-              dispatch(
-                setLogin({
-                  actionOpen: true,
-                  actionHighlight:
-                    cartItems.length < 1 && !address && !connectedPKP
-                      ? undefined
-                      : cartItems.length > 0 && !address
-                      ? "crypto"
-                      : "card",
-                })
-              )
-          : cartItems.length < 1 && connectedPKP
-          ? () => {}
-          : chain !== 137
-          ? openChainModal
-          : approved
-          ? () =>
-              !signInLoading &&
-              !cryptoCheckoutLoading &&
-              cartItems?.length > 0 &&
-              handleCheckoutCrypto!()
-          : () =>
-              !signInLoading &&
-              !cryptoCheckoutLoading &&
-              cartItems?.length > 0 &&
-              handleApproveSpend!()
+        !signInLoading && !cryptoCheckoutLoading
+          ? !address
+            ? openConnectModal
+            : chain !== 137
+            ? openChainModal
+            : !lensConnected?.id
+            ? () => handleLensSignIn()
+            : !encrypted
+            ? () => cartItems?.length > 0 && encryptFulfillment()
+            : !approved
+            ? () => cartItems?.length > 0 && handleApproveSpend!()
+            : () => cartItems?.length > 0 && handleCheckoutCrypto!()
+          : () => {}
       }
     >
       <div
@@ -64,10 +48,14 @@ const Crypto: FunctionComponent<CryptoProps> = ({
       >
         {signInLoading || cryptoCheckoutLoading ? (
           <AiOutlineLoading size={15} color={"white"} />
-        ) : cartItems.length < 1 && connectedPKP ? (
+        ) : cartItems.length < 1 ? (
           "ADD TO CART"
-        ) : !address || (!connectedPKP && cartItems.length < 1) ? (
+        ) : !address ? (
           "CONNECT"
+        ) : !lensConnected?.id ? (
+          "LENS"
+        ) : !encrypted ? (
+          "ENCRYPT DETAILS"
         ) : !approved ? (
           "APPROVE SPEND"
         ) : (

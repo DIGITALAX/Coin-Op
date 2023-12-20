@@ -1,22 +1,22 @@
-import { PreRoll } from "@/components/Common/types/common.types";
+import { Preroll } from "@/components/Common/types/common.types";
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface PreRollState {
-  left: PreRoll[];
-  right: PreRoll[];
+export interface PrerollState {
+  left: Preroll[];
+  right: Preroll[];
 }
 
-const initialPreRollState: PreRollState = {
+const initialPrerollState: PrerollState = {
   left: [],
   right: [],
 };
 
-export const preRollSlice = createSlice({
-  name: "preRoll",
-  initialState: initialPreRollState,
+export const prerollSlice = createSlice({
+  name: "preroll",
+  initialState: initialPrerollState,
   reducers: {
-    setPreRoll: (
-      state: PreRollState,
+    setPreroll: (
+      state: PrerollState,
       { payload: { actionLeft, actionRight } }
     ) => {
       state.left = actionLeft;
@@ -24,7 +24,7 @@ export const preRollSlice = createSlice({
     },
   },
 });
+ 
+export const { setPreroll } = prerollSlice.actions;
 
-export const { setPreRoll } = preRollSlice.actions;
-
-export default preRollSlice.reducer;
+export default prerollSlice.reducer;

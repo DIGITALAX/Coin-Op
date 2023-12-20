@@ -4,11 +4,11 @@ import { PublicClient, WalletClient } from "viem";
 import { polygon } from "viem/chains";
 import { setIndexModal } from "../../../redux/reducers/indexModalSlice";
 import LensHubProxy from "./../../../abis/LensHubProxy.json";
-import { mirror } from "../../../graphql/lens/mutations/mirror";
 import broadcast from "../../../graphql/lens/mutations/broadcast";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../../constants";
 import { RelaySuccess } from "@/components/Common/types/generated";
 import handleIndexCheck from "./handleIndexCheck";
+import mirrorPost from "../../../graphql/lens/mutations/mirror";
 
 const mirrorSig = async (
   mirrorOn: string,
@@ -18,11 +18,11 @@ const mirrorSig = async (
   dispatch: Dispatch<AnyAction>
 ) => {
   try {
-    const mirrorPost = await mirror({
+    const mirror = await mirrorPost({
       mirrorOn,
     });
 
-    const typedData = mirrorPost?.data?.createOnchainMirrorTypedData.typedData;
+    const typedData = mirror?.data?.createOnchainMirrorTypedData.typedData;
 
     const signature = await clientWallet.signTypedData({
       domain: omit(typedData?.domain, ["__typename"]),
@@ -33,7 +33,7 @@ const mirrorSig = async (
     });
 
     const broadcastResult = await broadcast({
-      id: mirrorPost?.data?.createOnchainMirrorTypedData?.id,
+      id: mirror?.data?.createOnchainMirrorTypedData?.id,
       signature,
     });
 
@@ -64,9 +64,12 @@ const mirrorSig = async (
           actionMessage: "Indexing Interaction",
         })
       );
-      await handleIndexCheck({
-        forTxHash: tx.transactionHash
-      }, dispatch);
+      await handleIndexCheck(
+        {
+          forTxHash: tx.transactionHash,
+        },
+        dispatch
+      );
     } else {
       dispatch(
         setIndexModal({

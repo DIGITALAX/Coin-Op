@@ -3,16 +3,12 @@ import { PublicClient } from "wagmi";
 import ReactPlayer from "react-player";
 import { createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
-import useInteractions from "./useInteractions";
+import useInteractionsPlayer from "./useInteractionsPlayer";
 import { FetchResult } from "@apollo/client";
 import {
   AddReactionMutation,
-  ApprovalAllowance,
-  Post,
   Profile,
-  PublicationQuery,
   PublicationReactionType,
-  SimpleCollectOpenActionSettings,
 } from "../types/generated";
 import { setReactId } from "../../../../redux/reducers/reactIdSlice";
 import {
@@ -20,40 +16,34 @@ import {
   setIndexModal,
 } from "../../../../redux/reducers/indexModalSlice";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
-import { setPostCollectValues } from "../../../../redux/reducers/postCollectValuesSlice";
-import pollUntilIndexed from "../../../../graphql/lens/queries/checkIndexed";
 import { setVideoSync } from "../../../../redux/reducers/videoSyncSlice";
 import { setSeek } from "../../../../redux/reducers/seekSlice";
-import {
-  getPublication,
-  getPublicationAuth,
-} from "../../../../graphql/lens/queries/getPublication";
-import addReaction from "../../../../graphql/lens/mutations/react";
-import checkApproved from "../../../../lib/lens/helpers/checkApproved";
 import mirrorSig from "../../../../lib/lens/helpers/mirrorSig";
 import actSig from "../../../../lib/lens/helpers/actSig";
 import { AnyAction, Dispatch } from "redux";
-import { ApprovalArgs, VideoSyncState } from "../types/common.types";
-import { PurchaseState } from "../../../../redux/reducers/purchaseSlice";
+import {  VideoSyncState } from "../types/common.types";
 import { MainVideoState } from "../../../../redux/reducers/mainVideoSlice";
 import { VideoPlayerState } from "../../../../redux/reducers/videoPlayerSlice";
+import likePost from "../../../../graphql/lens/mutations/like";
 
 const useControls = (
   publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
   profile: Profile | undefined,
-  mainVideo: MainVideoState,
-  purchase: PurchaseState,
-  approvalArgs: ApprovalArgs | undefined,
-  fullScreenVideo: VideoPlayerState,
+  mainVideo: MainVideoState,  fullScreenVideo: VideoPlayerState,
   videoSync: VideoSyncState,
   seek: number,
   commentId: string,
   index: IndexModalState
 ) => {
   const streamRef = useRef<ReactPlayer>(null);
-  const { commentors } = useInteractions(profile, mainVideo, commentId, index);
+  const { commentors } = useInteractionsPlayer(
+    profile,
+    mainVideo,
+    commentId,
+    index
+  );
   const wrapperRef = useRef<HTMLDivElement>(null);
   const fullVideoRef = useRef<ReactPlayer>(null);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -62,8 +52,6 @@ const useControls = (
   const [likeLoading, setLikeLoading] = useState<boolean>(false);
   const [collectLoading, setCollectLoading] = useState<boolean>(false);
   const [mirrorLoading, setMirrorLoading] = useState<boolean>(false);
-  const [approvalLoading, setApprovalLoading] = useState<boolean>(false);
-  const [collectInfoLoading, setCollectInfoLoading] = useState<boolean>(false);
   const [mirrorCommentLoading, setMirrorCommentLoading] = useState<boolean[]>(
     Array.from({ length: commentors?.length }, () => false)
   );
@@ -143,7 +131,7 @@ const useControls = (
       return;
     }
     try {
-      react = await addReaction({
+      react = await likePost({
         for: id ? id : mainVideo?.id,
         reaction: PublicationReactionType.Upvote,
       });
@@ -299,98 +287,6 @@ const useControls = (
     }
   };
 
-  const getCollectInfo = async (): Promise<void> => {
-    setCollectInfoLoading(true);
-    try {
-      let pubData: PublicationQuery;
-      if (profile?.id) {
-        const { data } = await getPublicationAuth({
-          forId: purchase.id,
-        });
-        pubData = data!;
-      } else {
-        const { data } = await getPublication({
-          forId: purchase.id,
-        });
-        pubData = data!;
-      }
-      const collectModule = (pubData?.publication as Post)
-        ?.openActionModules?.[0] as SimpleCollectOpenActionSettings;
-
-      const approvalData: ApprovalAllowance | void = await checkApproved(
-        collectModule?.amount?.asset?.contract.address,
-        collectModule?.type,
-        null,
-        null,
-        collectModule?.amount?.value,
-        dispatch,
-        address,
-        profile?.id
-      );
-      const isApproved = parseInt(approvalData?.allowance?.value as string, 16);
-      dispatch(
-        setPostCollectValues({
-          actionType: collectModule?.type,
-          actionLimit: collectModule?.collectLimit,
-          actionRecipient: collectModule?.recipient,
-          actionReferralFee: collectModule?.referralFee,
-          actionEndTime: collectModule?.endsAt,
-          actionValue: collectModule?.amount.value,
-          actionFollowerOnly: collectModule?.followerOnly,
-          actionAmount: {
-            asset: {
-              address: collectModule?.amount?.asset?.contract,
-              decimals: collectModule?.amount?.asset?.decimals,
-              name: collectModule?.amount?.asset?.name,
-              symbol: collectModule?.amount?.asset?.symbol,
-            },
-            value: collectModule?.amount?.value,
-          },
-          actionCanCollect: true,
-          actionApproved: isApproved,
-          actionTotalCollects: (pubData?.publication as Post)?.stats
-            ?.countOpenActions,
-        })
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setCollectInfoLoading(false);
-  };
-
-  const callApprovalSign = async (): Promise<void> => {
-    try {
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      const res = await clientWallet.sendTransaction({
-        to: approvalArgs?.to as `0x${string}`,
-        account: approvalArgs?.from as `0x${string}`,
-        value: BigInt(approvalArgs?.data as string),
-      });
-      await publicClient.waitForTransactionReceipt({ hash: res });
-      await pollUntilIndexed({
-        forTxHash: res,
-      });
-      await getCollectInfo();
-    } catch (err: any) {
-      setApprovalLoading(false);
-      console.error(err.message);
-    }
-  };
-
-  const approveCurrency = async (): Promise<void> => {
-    setApprovalLoading(true);
-    try {
-      await callApprovalSign();
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setApprovalLoading(false);
-  };
-
   const handleSeek = (
     e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
   ) => {
@@ -440,12 +336,6 @@ const useControls = (
     }
   }, [fullScreenVideo.open]);
 
-  useEffect(() => {
-    if (purchase.open) {
-      getCollectInfo();
-    }
-  }, [purchase.open]);
-
   return {
     formatTime,
     volume,
@@ -461,9 +351,6 @@ const useControls = (
     mirrorCommentLoading,
     likeCommentLoading,
     collectCommentLoading,
-    approvalLoading,
-    collectInfoLoading,
-    approveCurrency,
     handleVolumeChange,
     wrapperRef,
     progressRef,

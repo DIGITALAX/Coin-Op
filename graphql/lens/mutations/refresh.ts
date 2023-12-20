@@ -1,6 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { RefreshDocument, RefreshMutation, RefreshRequest } from "./../../../src/components/Common/types/generated";
-import { authClient } from"../../../lib/lens/client";
+import { authClient } from "../../../lib/lens/client";
+import {
+  RefreshDocument,
+  RefreshMutation,
+  RefreshRequest,
+} from "@/components/Common/types/generated";
 
 const refresh = async (
   request: RefreshRequest
@@ -8,7 +12,7 @@ const refresh = async (
   return await authClient.mutate({
     mutation: RefreshDocument,
     variables: {
-      request,
+      request: request,
     },
   });
 };

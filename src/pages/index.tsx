@@ -4,10 +4,14 @@ import PageContainer from "../components/Common/modules/PageContainer";
 import useComposite from "@/components/Walkthrough/Composite/hooks/useComposite";
 import { useContext, useEffect } from "react";
 import { ScrollContext } from "./_app";
-import { setPreRollAnim } from "../../redux/reducers/preRollAnimSlice";
+import { setPrerollAnim } from "../../redux/reducers/prerollAnimSlice";
 import useSynth from "@/components/Walkthrough/Synth/hooks/useSynth";
 import { useAccount } from "wagmi";
-import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
+import {
+  useAccountModal,
+  useChainModal,
+  useConnectModal,
+} from "@rainbow-me/rainbowkit";
 import useSignIn from "@/components/Common/hooks/useSignIn";
 import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
 import useCanvas from "@/components/Walkthrough/Synth/hooks/useCanvas";
@@ -15,15 +19,21 @@ import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
+import useCheckout from "@/components/Walkthrough/Purchase/hooks/useCheckout";
+import { NextRouter } from "next/router";
+
 export default function Home({
   client,
+  router,
 }: {
   client: LitNodeClient;
+  router: NextRouter;
 }): JSX.Element {
   const { scrollRef, synthRef } = useContext(ScrollContext);
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const { openAccountModal } = useAccountModal();
   const { openChainModal } = useChainModal();
   const publicClient = createPublicClient({
     chain: polygon,
@@ -34,6 +44,9 @@ export default function Home({
 
   const profile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
+  );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
   );
   const apiKey = useSelector((state: RootState) => state.app.apiAddReducer);
   const canvasExpand = useSelector(
@@ -72,33 +85,21 @@ export default function Home({
   const synthConfig = useSelector(
     (state: RootState) => state.app.synthConfigReducer
   );
-  const preRollAnim = useSelector(
-    (state: RootState) => state.app.preRollAnimReducer.value
+  const prerollAnim = useSelector(
+    (state: RootState) => state.app.prerollAnimReducer.value
   );
   const cartAddAnim = useSelector(
     (state: RootState) => state.app.cartAddAnimReducer.value
   );
   const chain = useSelector((state: RootState) => state.app.chainReducer.value);
-  const clientSecret = useSelector(
-    (state: RootState) => state.app.clientSecretReducer.value
-  );
-  const fulfillmentDetails = useSelector(
-    (state: RootState) => state.app.fulfillmentDetailsReducer.value
-  );
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
-  const paymentType = useSelector(
-    (state: RootState) => state.app.paymentTypeReducer.value
-  );
-  const encryptedInformation = useSelector(
-    (state: RootState) => state.app.encryptedInformationReducer.information
-  );
 
   const { handleLensSignIn, signInLoading } = useSignIn(
     dispatch,
     address,
-    isConnected
+    isConnected,
+    openAccountModal,
+    oracleData,
+    profile
   );
   const { setShareSet, shareSet, models } = useComposite();
   const {
@@ -165,15 +166,43 @@ export default function Home({
     canvasSize,
     canvasExpand
   );
+  const {
+    chooseCartItem,
+    collectItem,
+    collectPostLoading,
+    checkoutCurrency,
+    setCheckoutCurrency,
+    setFulfillmentDetails,
+    fulfillmentDetails,
+    encryptFulfillment,
+    encrypted,
+    setEncrypted,
+    approveSpend,
+    openCountryDropdown,
+    setOpenCountryDropdown,
+    setChooseCartItem,
+    isApprovedSpend,
+    startIndex,
+    setStartIndex,
+  } = useCheckout(
+    publicClient,
+    dispatch,
+    address,
+    profile,
+    client,
+    oracleData,
+    cartItems,
+    router
+  );
 
-  const { layersLoading, scrollToPreRoll } = useLayer(dispatch, template);
+  const { layersLoading, scrollToPreroll } = useLayer(dispatch, template);
   useEffect(() => {
-    if (preRollAnim) {
+    if (prerollAnim) {
       setTimeout(() => {
-        dispatch(setPreRollAnim(false));
+        dispatch(setPrerollAnim(false));
       }, 3000);
     }
-  }, [preRollAnim]);
+  }, [prerollAnim]);
 
   useEffect(() => {
     if (cartAddAnim) {
@@ -183,28 +212,35 @@ export default function Home({
     }
   }, [cartAddAnim]);
 
-  useEffect(() => {
-    if (client) {
-      async () => {
-        await client.connect();
-      };
-    }
-  }, [client]);
-
   return (
     <PageContainer
+      setStartIndex={setStartIndex}
+      startIndex={startIndex}
+      encrypted={encrypted}
+      setEncrypted={setEncrypted}
+      setOpenCountryDropDown={setOpenCountryDropdown}
+      openCountryDropDown={openCountryDropdown}
       controlType={controlType}
       setControlType={setControlType}
       template={template}
       tool={tool}
-      client={client}
-      publicClient={publicClient}
-      scrollToPreRoll={scrollToPreRoll}
+      setFulfillmentDetails={setFulfillmentDetails}
+      cartItem={chooseCartItem}
+      setCartItem={setChooseCartItem}
+      setCheckoutCurrency={setCheckoutCurrency}
+      checkoutCurrency={checkoutCurrency}
+      oracleValue={oracleData}
+      handleApproveSpend={approveSpend}
+      handleCheckoutCrypto={collectItem}
+      approved={isApprovedSpend}
+      cryptoCheckoutLoading={collectPostLoading}
+      scrollToPreroll={scrollToPreroll}
       dispatch={dispatch}
       isDragging={isDragging}
       synthLayer={synthLayer}
       undo={undo}
       font={font}
+      encryptFulfillment={encryptFulfillment}
       setFont={setFont}
       fontOpen={fontOpen}
       setFontOpen={setFontOpen}
@@ -262,11 +298,8 @@ export default function Home({
       chain={chain}
       openChainModal={openChainModal}
       apiKey={apiKey.key}
-      paymentType={paymentType}
-      connectedPKP={connectedPKP}
-      encryptedInformation={encryptedInformation}
       fulfillmentDetails={fulfillmentDetails}
-      clientSecret={clientSecret}
+   
     />
   );
 }

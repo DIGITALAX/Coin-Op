@@ -1,19 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface PreRollAnimState {
+export interface PrerollAnimState {
   value: boolean;
 }
 
-const initialPreRollAnimState: PreRollAnimState = {
+const initialPrerollAnimState: PrerollAnimState = {
   value: false,
 };
 
-export const preRollAnimSlice = createSlice({
-  name: "preRollAnim",
-  initialState: initialPreRollAnimState,
+export const prerollAnimSlice = createSlice({
+  name: "prerollAnim",
+  initialState: initialPrerollAnimState,
   reducers: {
-    setPreRollAnim: (
-      state: PreRollAnimState,
+    setPrerollAnim: (
+      state: PrerollAnimState,
       action: PayloadAction<boolean>
     ) => {
       state.value = action.payload;
@@ -21,6 +21,6 @@ export const preRollAnimSlice = createSlice({
   },
 });
 
-export const { setPreRollAnim } = preRollAnimSlice.actions;
+export const { setPrerollAnim } = prerollAnimSlice.actions;
 
-export default preRollAnimSlice.reducer;
+export default prerollAnimSlice.reducer;

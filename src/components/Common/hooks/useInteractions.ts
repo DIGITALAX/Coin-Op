@@ -1,157 +1,236 @@
 import { useEffect, useState } from "react";
-import { FetchResult } from "@apollo/client";
+import { Profile, PublicationStats } from "../types/generated";
 import {
-  getPublications,
-  getPublicationsAuth,
-} from "../../../../graphql/lens/queries/getPublications";
-import {
-  PublicationsQuery,
-  Comment,
-  CommentRankingFilterType,
-  LimitType,
-  Profile,
-} from "../types/generated";
-import { MainVideoState } from "../../../../redux/reducers/mainVideoSlice";
-import { IndexModalState } from "../../../../redux/reducers/indexModalSlice";
+  PrerollState,
+  setPreroll,
+} from "../../../../redux/reducers/prerollSlice";
+import errorChoice from "../../../../lib/lens/helpers/errorChoice";
+import { Dispatch } from "redux";
+import lensLike from "../../../../lib/lens/helpers/lensLike";
+import lensMirror from "../../../../lib/lens/helpers/lensMirror";
+import { PublicClient, WalletClient, createWalletClient, custom } from "viem";
+import { polygon } from "viem/chains";
 
 const useInteractions = (
-  profile: Profile | undefined,
-  mainVideo: MainVideoState,
-  commentId: string | undefined,
-  index: IndexModalState
+  prerolls: PrerollState,
+  lensConnected: Profile | undefined,
+  dispatch: Dispatch,
+  publicClient: PublicClient,
+  address: `0x${string}` | undefined
 ) => {
-  const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
-  const [paginated, setPaginated] = useState<any>();
-  const [commentors, setCommentors] = useState<Comment[]>([]);
-  const [hasMoreComments, setHasMoreComments] = useState<boolean>(true);
-  const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
+  const [interactionsLoading, setInteractionsLoading] = useState<
+    {
+      mirror: boolean;
+      like: boolean;
+    }[]
+  >([]);
+  const [openMirrorChoice, setOpenMirrorChoice] = useState<boolean[]>([]);
 
-  const getPostComments = async (): Promise<void> => {
-    setCommentsLoading(true);
-    try {
-      let comments: FetchResult<PublicationsQuery>;
+  const like = async (id: string, hasReacted: boolean) => {
+    if (!lensConnected?.id) return;
 
-      if (profile?.id) {
-        comments = await getPublicationsAuth({
-          where: {
-            commentOn: {
-              id: commentId !== "" ? commentId : mainVideo.id,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-          limit: LimitType.TwentyFive,
-        });
-      } else {
-        comments = await getPublications({
-          where: {
-            commentOn: {
-              id: commentId !== "" ? commentId : mainVideo.id,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-          limit: LimitType.TwentyFive,
-        });
-      }
-      if (!comments || !comments?.data || !comments?.data?.publications) {
-        setCommentsLoading(false);
-        return;
-      }
-      const sortedArr: Comment[] = [
-        ...comments?.data?.publications?.items,
-      ] as Comment[];
-      if (sortedArr?.length < 25) {
-        setHasMoreComments(false);
-      } else {
-        setHasMoreComments(true);
-      }
-      setCommentors(sortedArr);
-      setPaginated(comments?.data?.publications?.pageInfo);
-    } catch (err: any) {
-      console.error(err.message);
+    const leftIndex = prerolls?.left?.findIndex(
+      (item) => item?.publication?.id == id
+    );
+    const rightIndex = prerolls?.right?.findIndex(
+      (item) => item?.publication?.id == id
+    );
+
+    if (rightIndex < 0 && leftIndex < 0) {
+      return;
     }
-    setCommentsLoading(false);
+
+    setInteractionsLoading((prev) => {
+      const arr = [...prev];
+      arr[rightIndex !== -1 ? rightIndex : leftIndex] = {
+        ...arr[rightIndex !== -1 ? rightIndex : leftIndex],
+        like: true,
+      };
+      return arr;
+    });
+
+    try {
+      await lensLike(id, dispatch, hasReacted);
+      updateInteractions(
+        id,
+        {
+          hasReacted: hasReacted ? false : true,
+        },
+        "reactions",
+        hasReacted ? false : true
+      );
+    } catch (err: any) {
+      errorChoice(
+        err,
+        () =>
+          updateInteractions(
+            id,
+            {
+              hasReacted: hasReacted ? false : true,
+            },
+            "reactions",
+            hasReacted ? false : true
+          ),
+        dispatch
+      );
+    }
+
+    setInteractionsLoading((prev) => {
+      const arr = [...prev];
+      arr[rightIndex !== -1 ? rightIndex : leftIndex] = {
+        ...arr[rightIndex !== -1 ? rightIndex : leftIndex],
+        like: false,
+      };
+      return arr;
+    });
   };
 
-  const getMorePostComments = async (): Promise<void> => {
-    try {
-      if (!paginated?.next) {
-        // fix apollo duplications on null next
-        setHasMoreComments(false);
-        return;
-      }
-      let comments: FetchResult<PublicationsQuery>;
-      if (profile?.id) {
-        comments = await getPublicationsAuth({
-          where: {
-            commentOn: {
-              id: commentId !== "" ? commentId : mainVideo.id,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-          limit: LimitType.TwentyFive,
-          cursor: paginated?.next,
-        });
-      } else {
-        comments = await getPublications({
-          where: {
-            commentOn: {
-              id: commentId !== "" ? commentId : mainVideo.id,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-          limit: LimitType.TwentyFive,
-          cursor: paginated?.next,
-        });
-      }
-      if (
-        !comments ||
-        !comments?.data ||
-        !comments?.data?.publications ||
-        comments?.data?.publications?.items?.length < 1
-      ) {
-        setHasMoreComments(false);
-        setCommentsLoading(false);
-        return;
-      }
-      const sortedArr: Comment[] = [
-        ...comments?.data?.publications?.items,
-      ] as Comment[];
-      if (sortedArr?.length < 25) {
-        setHasMoreComments(false);
-      }
-      setCommentors([...commentors, ...sortedArr]);
-      setPaginated(comments?.data?.publications?.pageInfo);
-    } catch (err: any) {
-      console.error(err.message);
+  const mirror = async (id: string) => {
+    if (!lensConnected?.id) return;
+
+    const leftIndex = prerolls?.left?.findIndex(
+      (item) => item?.publication?.id == id
+    );
+    const rightIndex = prerolls?.right?.findIndex(
+      (item) => item?.publication?.id == id
+    );
+
+    if (rightIndex < 0 && leftIndex < 0) {
+      return;
     }
+
+    setInteractionsLoading((prev) => {
+      const arr = [...prev];
+      arr[rightIndex !== -1 ? rightIndex : leftIndex] = {
+        ...arr[rightIndex !== -1 ? rightIndex : leftIndex],
+        mirror: true,
+      };
+      return arr;
+    });
+
+    try {
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      await lensMirror(id, dispatch, address!, clientWallet, publicClient);
+      updateInteractions(
+        id,
+        {
+          hasMirrored: true,
+        },
+        "mirrors",
+        true
+      );
+    } catch (err: any) {
+      errorChoice(
+        err,
+        () =>
+          updateInteractions(
+            id,
+            {
+              hasMirrored: true,
+            },
+            "mirrors",
+            true
+          ),
+        dispatch
+      );
+    }
+
+    setInteractionsLoading((prev) => {
+      const arr = [...prev];
+      arr[rightIndex !== -1 ? rightIndex : leftIndex] = {
+        ...arr[rightIndex !== -1 ? rightIndex : leftIndex],
+        mirror: false,
+      };
+      return arr;
+    });
   };
 
   useEffect(() => {
-    if (mainVideo.id) {
-      getPostComments();
+    if ((prerolls?.left?.length | prerolls?.right?.length) > 0) {
+      setInteractionsLoading(
+        Array.from(
+          { length: prerolls?.left?.length + prerolls?.right?.length },
+          () => ({
+            mirror: false,
+            like: false,
+          })
+        )
+      );
+      setOpenMirrorChoice(
+        Array.from(
+          { length: prerolls?.left?.length + prerolls?.right?.length },
+          () => false
+        )
+      );
     }
-  }, [mainVideo.id, profile?.id, commentId]);
-  useEffect(() => {
-    if (index.message === "Successfully Indexed") {
-      getPostComments();
-    }
-  }, [index.message]);
+  }, [prerolls?.left?.length, prerolls?.right?.length]);
+
+  const updateInteractions = (
+    id: string,
+    valueToUpdate: Object,
+    statToUpdate: string,
+    increase: boolean
+  ) => {
+    const newItems = {
+      left: [...prerolls?.left],
+      right: [...prerolls?.right],
+    };
+
+    const left = newItems?.left?.findIndex(
+      (item) => item?.publication?.id == id
+    );
+    const right = newItems?.right?.findIndex(
+      (item) => item?.publication?.id == id
+    );
+
+    const newArray = [
+      ...newItems?.[left !== -1 ? "left" : ("right" as keyof PrerollState)],
+    ];
+
+
+    newArray[left !== -1 ? left : right] = {
+      ...newArray[left !== -1 ? left : right],
+      publication: {
+        ...newArray[left !== -1 ? left : right]?.publication!,
+        operations: {
+          ...newArray[left !== -1 ? left : right]?.publication!?.operations,
+          ...valueToUpdate,
+        },
+        stats: {
+          ...newArray[left !== -1 ? left : right]?.publication?.stats!,
+          [statToUpdate]:
+            newArray[left !== -1 ? left : right]?.publication?.stats?.[
+              statToUpdate as keyof PublicationStats
+            ] + (increase ? 1 : -1),
+        },
+      },
+    };
+    
+    dispatch(
+      setPreroll(
+        left !== -1
+          ? {
+              actionLeft: newArray,
+              actionRight: [...newItems?.right],
+            }
+          : {
+              actionRight: newArray,
+              actionLeft: [...newItems?.left],
+            }
+      )
+    );
+  };
 
   return {
-    commentors,
-    getMorePostComments,
-    commentsLoading,
-    hasMoreComments,
-    commentsOpen,
-    setCommentsOpen,
+    interactionsLoading,
+    mirror,
+    like,
+    openMirrorChoice,
+    setOpenMirrorChoice,
   };
 };
 

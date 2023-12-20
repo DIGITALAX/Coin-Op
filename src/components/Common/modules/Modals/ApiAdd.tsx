@@ -28,20 +28,9 @@ const ApiAdd: FunctionComponent<ApiAddProps> = ({ dispatch }): JSX.Element => {
                 />
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
-                <Link
-                  className="relative w-3/4 h-fit justify-center items-center text-white font-mana text-sm text-center cursor-pointer active:scale-95"
-                  href={"/quests"}
-                  onClick={() =>
-                    dispatch(
-                      setApiAdd({
-                        actionOpen: false,
-                        actionKey: undefined,
-                      })
-                    )
-                  }
-                >
+                <div className="relative w-3/4 h-fit justify-center items-center text-white font-mana text-sm text-center cursor-pointer active:scale-95">
                   Set your api key to synth {`>`}
-                </Link>
+                </div>
                 <div className="relative w-1/2 h-36 preG:h-52 lg:h-40 xl:h-52 justify-center items-center rounded-lg border border-white bg-cross">
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/QmXHbhAtBoW7UJL1uiHuavanFM8wd7dxqyWhZkjV9NVaFi`}

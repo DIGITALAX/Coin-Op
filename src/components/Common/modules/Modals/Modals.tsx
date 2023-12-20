@@ -1,52 +1,35 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import General from "./General";
-import PostBox from "./PostBox";
 import NoHandle from "./NoHandle";
-import useImageUpload from "../../hooks/useImageUpload";
-import useCollectOptions from "../../hooks/useCollectOptions";
-import useMakePost from "../../hooks/useMakePost";
 import Index from "./Index";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import ImageLarge from "./ImageLarge";
-import Messages from "./Messages";
 import SearchExpand from "./SearchExpand";
 import useRollSearch from "@/components/Layout/hooks/useRollSearch";
 import ApiAdd from "./ApiAdd";
 import { NextRouter } from "next/router";
-import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
-import Login from "./Login";
-import useLogin from "@/components/Layout/hooks/useLogin";
-import QuestPrelude from "./QuestPrelude";
-import useQuest from "@/components/Quests/hooks/useQuest";
+import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import FullScreenVideo from "./FullScreenVideo";
 import useControls from "../../hooks/useControls";
-import Purchase from "./Purchase";
 import Who from "./Who";
-import FollowerOnly from "./FollowerOnly";
 import { useAccount, useNetwork } from "wagmi";
 import useSignIn from "../../hooks/useSignIn";
 import useWho from "../../hooks/useWho";
-import useFollowers from "../../hooks/useFollowers";
 import useChannels from "../../hooks/useChannels";
-import useInteractions from "../../hooks/useInteractions";
-import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import useInteractionsPlayer from "../../hooks/useInteractionsPlayer";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
-import { LitAuthClient } from "@lit-protocol/lit-auth-client";
+import InsufficientBalance from "./InsufficientBalance";
+import QuoteBox from "./QuoteBox";
+import useQuote from "../../hooks/useQuote";
+import PostCollect from "./PostCollect";
 
-const Modals = ({
-  router,
-  client,
-  authClient,
-}: {
-  router: NextRouter;
-  client: LitNodeClient;
-  authClient: LitAuthClient;
-}) => {
+const Modals = ({ router }: { router: NextRouter }) => {
   const videoRef = useRef<HTMLDivElement>(null);
   const { address, isConnected } = useAccount();
   const { chain: chainNetwork } = useNetwork();
+  const { openAccountModal } = useAccountModal();
   const dispatch = useDispatch();
   const publicClient = createPublicClient({
     chain: polygon,
@@ -54,20 +37,8 @@ const Modals = ({
       `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
     ),
   });
-  const imageLoading = useSelector(
-    (state: RootState) => state.app.imageLoadingReducer.value
-  );
   const generalModal = useSelector(
     (state: RootState) => state.app.modalOpenReducer
-  );
-  const isSubscribed = useSelector(
-    (state: RootState) => state.app.allSubscriptionsReducer.value?.isSubscribed
-  );
-  const questPoints = useSelector(
-    (state: RootState) => state.app.questPointsReducer.value
-  );
-  const connectedPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
   );
   const videoSync = useSelector(
     (state: RootState) => state.app.videoSyncReducer
@@ -81,20 +52,8 @@ const Modals = ({
   const fullScreenVideo = useSelector(
     (state: RootState) => state.app.videoPlayerReducer
   );
-  const questPrelude = useSelector(
-    (state: RootState) => state.app.questPreludeReducer
-  );
-  const messageModal = useSelector(
-    (state: RootState) => state.app.messagesModalReducer
-  );
   const mainVideo = useSelector(
     (state: RootState) => state.app.mainVideoReducer
-  );
-  const currentPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
-  const approvalArgs = useSelector(
-    (state: RootState) => state.app.approvalArgsReducer.args
   );
   const searchExpand = useSelector(
     (state: RootState) => state.app.searchExpandReducer
@@ -105,183 +64,66 @@ const Modals = ({
   const cartAddAnim = useSelector(
     (state: RootState) => state.app.cartAddAnimReducer.value
   );
-  const chain = useSelector((state: RootState) => state.app.chainReducer.value);
-  const login = useSelector((state: RootState) => state.app.loginReducer);
-  const lensPost = useSelector(
-    (state: RootState) => state.app.lensPostBoxReducer
+  const insufficientBalance = useSelector(
+    (state: RootState) => state.app.insufficientBalanceReducer
   );
   const indexModal = useSelector(
     (state: RootState) => state.app.indexModalReducer
-  );
-  const collectOpen = useSelector(
-    (state: RootState) => state.app.collectOpenReducer.value
   );
   const seek = useSelector((state: RootState) => state.app.seekReducer.seek);
   const imageModal = useSelector(
     (state: RootState) => state.app.imageViewerReducer
   );
-  const algolia = useSelector(
-    (state: RootState) => state.app.algoliaReducer.value
-  );
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
-  const collectModuleValues = useSelector(
-    (state: RootState) => state.app.postCollectValuesReducer
-  );
-  const collectModuleType = useSelector(
-    (state: RootState) => state?.app?.collectValueReducer.type
-  );
-  const reaction = useSelector(
+  const reactBox = useSelector(
     (state: RootState) => state.app.reactionStateReducer
+  );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
   );
   const reactions = useSelector(
     (state: RootState) => state.app.videoCountReducer
   );
-  const followersModal = useSelector(
-    (state: RootState) => state.app.followerOnlyReducer
+  const availableCurrencies = useSelector(
+    (state: RootState) => state.app.availableCurrenciesReducer?.currencies
   );
-  const purchaseModal = useSelector(
-    (state: RootState) => state.app.purchaseReducer
-  );
-  const fulfillmentDetails = useSelector(
-    (state: RootState) => state.app.fulfillmentDetailsReducer.value
+  const postCollect = useSelector(
+    (state: RootState) => state.app.postCollectReducer
   );
   const hasMore = useSelector(
     (state: RootState) => state.app.hasMoreVideoReducer.value
   );
+  const quoteBox = useSelector((state: RootState) => state.app.quoteBoxReducer);
   const apiAdd = useSelector((state: RootState) => state.app.apiAddReducer);
   const commentId = useSelector(
     (state: RootState) => state.app.secondaryCommentReducer.value
   );
-  const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
+  const prerolls = useSelector((state: RootState) => state.app.prerollReducer);
   const noHandle = useSelector((state: RootState) => state.app.noHandleReducer);
   const reactId = useSelector(
     (state: RootState) => state.app.reactIdReducer.value
   );
-  const postImagesDispatched = useSelector(
-    (state: RootState) => state.app.postImagesReducer.value
-  );
-  const [distanceFromBottom, setDistanceFromBottom] = useState<number>(10);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const distance =
-        document.documentElement.scrollHeight -
-        window.scrollY -
-        window.innerHeight;
-      setDistanceFromBottom(distance + 10);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-  const { handleLensSignIn } = useSignIn(dispatch, address, isConnected);
-  const {
-    videoLoading,
-    uploadImage,
-    uploadVideo,
-    handleRemoveImage,
-    mappedFeaturedFiles,
-  } = useImageUpload(dispatch, lensPost.value, postImagesDispatched);
-  const { loginWithWeb2Auth, loginLoading } = useLogin(
-    client,
-    publicClient,
-    address,
-    router,
-    dispatch,
-    authClient,
-    fulfillmentDetails,
-    connectedPKP,
-    cartItems
-  );
-  const {
-    postDescription,
-    postLoading,
-    handlePostDescription,
-    textElement,
-    caretCoord,
-    mentionProfiles,
-    profilesOpen,
-    handleMentionClick,
-    handleGif,
-    handleGifSubmit,
-    handleSetGif,
-    results,
-    setGifOpen,
-    gifOpen,
-    handleKeyDownDelete,
-    handlePost,
-    preElement,
-    handleImagePaste,
-  } = useMakePost(
+  const { handleLensSignIn } = useSignIn(
     dispatch,
     address,
-    publicClient,
-    collectOpen,
-    postImagesDispatched,
-    collectModuleType,
-    lensPost.value
+    isConnected,
+    openAccountModal,
+    oracleData,
+    lensProfile
   );
-  const { questSignUpLoading, signUpForQuest } = useQuest(
-    client,
-    dispatch,
-    address,
-    publicClient,
-    connectedPKP,
-    questPoints,
-    isSubscribed
-  );
-  const {
-    collectNotif,
-    referral,
-    setCollectible,
-    collectibleDropDown,
-    setCollectibleDropDown,
-    collectible,
-    setAudienceDropDown,
-    audienceType,
-    audienceTypes,
-    chargeCollect,
-    limit,
-    limitedEdition,
-    audienceDropDown,
-    setAudienceType,
-    setTimeLimit,
-    timeLimit,
-    timeLimitDropDown,
-    setTimeLimitDropDown,
-    setLimitedEdition,
-    limitedDropDown,
-    setLimitedDropDown,
-    setReferral,
-    setLimit,
-    setChargeCollect,
-    setCurrencyDropDown,
-    chargeCollectDropDown,
-    setChargeCollectDropDown,
-    enabledCurrencies,
-    enabledCurrency,
-    currencyDropDown,
-    setEnabledCurrency,
-    value,
-    setValue,
-  } = useCollectOptions(dispatch, lensProfile, collectOpen);
   const { handlePromptChoose, handleSearchSimilar } = useRollSearch(
     dispatch,
     isConnected,
     address,
     chainNetwork,
-    algolia,
-    cartItems
+    cartItems,
+    lensProfile
   );
   const { openConnectModal } = useConnectModal();
-  const { openChainModal } = useChainModal();
   const {
-    collectInfoLoading: controlsCollectInfoLoading,
     formatTime,
     volume,
     volumeOpen,
@@ -296,8 +138,6 @@ const Modals = ({
     mirrorCommentLoading,
     likeCommentLoading,
     collectCommentLoading,
-    approvalLoading,
-    approveCurrency,
     handleVolumeChange,
     wrapperRef,
     progressRef,
@@ -309,19 +149,13 @@ const Modals = ({
     address,
     lensProfile,
     mainVideo,
-    purchaseModal,
-    approvalArgs,
     fullScreenVideo,
     videoSync,
     seek,
     commentId,
     indexModal
   );
-  const {
-    fetchMoreVideos,
-    videoLoading: channelVideoLoading,
-    setVideoLoading,
-  } = useChannels(
+  const { fetchMoreVideos, videoLoading, setVideoLoading } = useChannels(
     dispatch,
     mainVideo,
     lensProfile,
@@ -338,34 +172,46 @@ const Modals = ({
     hasMoreComments,
     commentsOpen,
     setCommentsOpen,
-  } = useInteractions(lensProfile, mainVideo, commentId, indexModal);
+  } = useInteractionsPlayer(lensProfile, mainVideo, commentId, indexModal);
   const {
-    reacters,
-    mirrorers,
-    collectors,
-    getMorePostCollects,
-    getMorePostMirrors,
-    getMorePostReactions,
-    mirrorInfoLoading,
-    reactInfoLoading,
-    collectInfoLoading,
-    hasMoreReact,
-    hasMoreCollect,
-    hasMoreMirror,
-  } = useWho(reaction);
+    dataLoading,
+    reactors,
+    quoters,
+    hasMore: hasMoreWho,
+    hasMoreQuote,
+    showMore,
+    mirrorQuote,
+    setMirrorQuote,
+    like,
+    mirror,
+    openMirrorChoice,
+    setOpenMirrorChoice,
+    simpleCollect,
+    interactionsLoading,
+  } = useWho(lensProfile, reactBox, dispatch, address, publicClient);
+
   const {
-    profile,
-    followProfile,
-    followLoading,
-    approved,
-    approveCurrency: approveFollowCurrency,
-  } = useFollowers(
+    quote,
+    quoteLoading,
+    setMakeQuote,
+    makeQuote,
+    collects,
+    setCollects,
+    openMeasure,
+    setOpenMeasure,
+    mentionProfiles,
+    setMentionProfiles,
+    caretCoord,
+    setCaretCoord,
+    setProfilesOpen,
+    profilesOpen,
+  } = useQuote(
+    availableCurrencies,
+    postCollect,
     dispatch,
     publicClient,
     address,
-    lensProfile,
-    followersModal,
-    approvalArgs
+    quoteBox
   );
   return (
     <>
@@ -383,7 +229,7 @@ const Modals = ({
           videoRef={videoRef}
           hasMore={hasMore}
           connected={connected}
-          videoLoading={channelVideoLoading}
+          videoLoading={videoLoading}
           setVideoLoading={setVideoLoading}
           volume={volume}
           handleVolumeChange={handleVolumeChange}
@@ -419,183 +265,85 @@ const Modals = ({
           handleLensSignIn={handleLensSignIn}
         />
       )}
-      {reaction.open && (
+      {quoteBox?.open && (
+        <QuoteBox
+          type={quoteBox?.type!}
+          lensConnected={lensProfile}
+          setCaretCoord={setCaretCoord}
+          setMentionProfiles={setMentionProfiles}
+          setProfilesOpen={setProfilesOpen}
+          profilesOpen={profilesOpen}
+          mentionProfiles={mentionProfiles}
+          caretCoord={caretCoord}
+          dispatch={dispatch}
+          router={router}
+          quote={quoteBox?.quote}
+          makePost={makeQuote}
+          setMakePost={setMakeQuote}
+          post={quote}
+          postLoading={quoteLoading}
+          postCollect={postCollect}
+        />
+      )}
+      {postCollect?.id && (
+        <PostCollect
+          dispatch={dispatch}
+          openMeasure={openMeasure}
+          setOpenMeasure={setOpenMeasure}
+          availableCurrencies={availableCurrencies}
+          collects={collects}
+          setCollects={setCollects}
+          id={postCollect?.id!}
+          collectTypes={postCollect?.collectTypes}
+        />
+      )}
+      {reactBox?.open && (
         <Who
-          accounts={
-            reaction.type === "heart"
-              ? reacters
-              : reaction.type === "mirror"
-              ? mirrorers
-              : collectors
-          }
-          fetchMore={
-            reaction.type === "heart"
-              ? getMorePostReactions
-              : reaction.type === "mirror"
-              ? getMorePostMirrors
-              : getMorePostCollects
-          }
-          loading={
-            reaction.type === "heart"
-              ? reactInfoLoading
-              : reaction.type === "mirror"
-              ? mirrorInfoLoading
-              : collectInfoLoading
-          }
+          router={router}
           dispatch={dispatch}
-          hasMore={
-            reaction.type === "heart"
-              ? hasMoreReact
-              : reaction.type === "mirror"
-              ? hasMoreMirror
-              : hasMoreCollect
-          }
-          type={
-            reaction.type === "heart" ? 0 : reaction.type === "collect" ? 1 : 2
-          }
-        />
-      )}
-      {purchaseModal?.open && (
-        <Purchase
-          dispatch={dispatch}
-          collectInfoLoading={controlsCollectInfoLoading}
-          approvalLoading={approvalLoading}
-          address={address}
-          collectModuleValues={collectModuleValues}
-          lensProfile={lensProfile?.id}
-          collectComment={collectVideo}
-          collectLoading={collectCommentLoading[purchaseModal?.index!]}
-          approveCurrency={approveCurrency}
-          handleLensSignIn={handleLensSignIn}
-          commentId={purchaseModal?.id}
-          openConnectModal={openConnectModal}
-        />
-      )}
-      {followersModal?.open && (
-        <FollowerOnly
-          profile={profile}
-          followProfile={followProfile}
-          followLoading={followLoading}
-          approved={approved}
-          approveCurrency={approveFollowCurrency}
-          dispatch={dispatch}
-          followDetails={followersModal}
+          type={reactBox.type!}
+          reactors={reactors}
+          dataLoading={dataLoading}
+          quoters={quoters}
+          hasMore={hasMoreWho}
+          hasMoreQuote={hasMoreQuote}
+          showMore={showMore}
+          mirrorQuote={mirrorQuote}
+          setMirrorQuote={setMirrorQuote}
+          like={like}
+          mirror={mirror}
+          openMirrorChoice={openMirrorChoice}
+          setOpenMirrorChoice={setOpenMirrorChoice}
+          simpleCollect={simpleCollect}
+          interactionsLoading={interactionsLoading}
         />
       )}
       {noHandle.value && <NoHandle dispatch={dispatch} />}
-      {lensPost.value && (
-        <PostBox
-          dispatch={dispatch}
-          handlePost={handlePost}
-          postDescription={postDescription}
-          textElement={textElement}
-          handlePostDescription={handlePostDescription}
-          postLoading={postLoading}
-          caretCoord={caretCoord}
-          mentionProfiles={mentionProfiles}
-          profilesOpen={profilesOpen}
-          handleMentionClick={handleMentionClick}
-          handleGifSubmit={handleGifSubmit}
-          handleGif={handleGif}
-          results={results}
-          handleSetGif={handleSetGif}
-          gifOpen={gifOpen}
-          setGifOpen={setGifOpen}
-          handleKeyDownDelete={handleKeyDownDelete}
-          handleRemoveImage={handleRemoveImage}
-          videoLoading={videoLoading}
-          uploadImages={uploadImage}
-          uploadVideo={uploadVideo}
-          imageLoading={imageLoading}
-          mappedFeaturedFiles={mappedFeaturedFiles}
-          collectOpen={collectOpen}
-          enabledCurrencies={enabledCurrencies}
-          audienceDropDown={audienceDropDown}
-          audienceType={audienceType}
-          setAudienceDropDown={setAudienceDropDown}
-          setAudienceType={setAudienceType}
-          value={value}
-          setChargeCollect={setChargeCollect}
-          setChargeCollectDropDown={setChargeCollectDropDown}
-          setCollectible={setCollectible}
-          setCollectibleDropDown={setCollectibleDropDown}
-          setCurrencyDropDown={setCurrencyDropDown}
-          setEnabledCurrency={setEnabledCurrency}
-          setLimit={setLimit}
-          setLimitedDropDown={setLimitedDropDown}
-          setLimitedEdition={setLimitedEdition}
-          setReferral={setReferral}
-          setTimeLimit={setTimeLimit}
-          setTimeLimitDropDown={setTimeLimitDropDown}
-          setValue={setValue}
-          enabledCurrency={enabledCurrency}
-          chargeCollect={chargeCollect}
-          chargeCollectDropDown={chargeCollectDropDown}
-          limit={limit}
-          limitedDropDown={limitedDropDown}
-          limitedEdition={limitedEdition}
-          timeLimit={timeLimit}
-          timeLimitDropDown={timeLimitDropDown}
-          audienceTypes={audienceTypes}
-          referral={referral}
-          collectNotif={collectNotif}
-          collectible={collectible}
-          collectibleDropDown={collectibleDropDown}
-          currencyDropDown={currencyDropDown}
-          postImagesDispatched={postImagesDispatched}
-          preElement={preElement}
-          handleImagePaste={handleImagePaste}
-        />
-      )}
-      {messageModal?.open && (
-        <Messages message={messageModal.message} dispatch={dispatch} />
-      )}
       {generalModal?.open && (
         <General message={generalModal.message} dispatch={dispatch} />
       )}
-      {indexModal?.value && (
-        <Index
-          message={indexModal?.message}
-          distanceFromBottom={distanceFromBottom}
-        />
-      )}
+      {indexModal?.value && <Index message={indexModal?.message} />}
       {apiAdd?.open && <ApiAdd dispatch={dispatch} />}
       {searchExpand?.value && (
         <SearchExpand
           searchItem={searchExpand?.value}
           dispatch={dispatch}
           cartItems={cartItems}
-          preRolls={preRolls}
+          prerolls={prerolls}
           handlePromptChoose={handlePromptChoose}
           handleSearchSimilar={handleSearchSimilar}
           router={router}
           cartAddAnim={cartAddAnim}
         />
       )}
+      {insufficientBalance?.value && (
+        <InsufficientBalance
+          dispatch={dispatch}
+          message={insufficientBalance?.message!}
+        />
+      )}
       {imageModal?.value && (
         <ImageLarge mainImage={imageModal.image} dispatch={dispatch} />
-      )}
-      {questPrelude?.open && (
-        <QuestPrelude
-          questSignUpLoading={questSignUpLoading}
-          signUpForQuest={signUpForQuest}
-          openChainModal={openChainModal}
-          chain={chain}
-          connected={connected}
-          dispatch={dispatch}
-          isSubscribed={isSubscribed}
-          connectedPKP={currentPKP?.ethAddress}
-        />
-      )}
-      {login?.open && (
-        <Login
-          loginLoading={loginLoading}
-          openConnectModal={openConnectModal}
-          dispatch={dispatch}
-          loginWithWeb2Auth={loginWithWeb2Auth}
-          currentPKP={currentPKP}
-          highlight={login.highlight}
-        />
       )}
     </>
   );

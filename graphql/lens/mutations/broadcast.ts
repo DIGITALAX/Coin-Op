@@ -1,10 +1,10 @@
+import { FetchResult } from "@apollo/client";
 import { apolloClient } from "../../../lib/lens/client";
 import {
   BroadcastOnchainDocument,
   BroadcastOnchainMutation,
   BroadcastRequest,
-} from "./../../../src/components/Common/types/generated";
-import { FetchResult } from "@apollo/client";
+} from "@/components/Common/types/generated";
 
 const broadcast = async (
   request: BroadcastRequest

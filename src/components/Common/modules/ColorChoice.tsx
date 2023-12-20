@@ -1,12 +1,12 @@
 import { FunctionComponent } from "react";
 import { ColorChoiceProps } from "../types/common.types";
-import { setPreRoll } from "../../../../redux/reducers/preRollSlice";
+import { setPreroll } from "../../../../redux/reducers/prerollSlice";
 import { setSearchExpand } from "../../../../redux/reducers/searchExpandSlice";
 
 const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
   dispatch,
-  preRolls,
-  preRoll,
+  prerolls,
+  preroll,
   left,
   right,
   search,
@@ -14,46 +14,54 @@ const ColorChoice: FunctionComponent<ColorChoiceProps> = ({
   return (
     <div className="relative w-full h-fit flex justify-end">
       <div className="relative w-fit h-fit flex flex-row gap-1.5 justify-start">
-        {preRoll.colors?.map((color: string, index: number) => {
-          return (
-            <div
-              key={index}
-              className={`relative w-5 h-5 border rounded-full cursor-pointer ${
-                preRoll.chosenColor === color ? "border-fresa" : "border-white"
-              }`}
-              onClick={() => {
-                if (search) {
-                  dispatch(setSearchExpand({ ...preRoll, chosenColor: color }));
-                } else {
-                  const updated = {
-                    left: left
-                      ? preRolls.left.map((obj) =>
-                          obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                            ? { ...obj, chosenColor: color }
-                            : obj
-                        )
-                      : preRolls.left,
-                    right: right
-                      ? preRolls.right.map((obj) =>
-                          obj.uri.image?.[0] === preRoll?.uri?.image?.[0]
-                            ? { ...obj, chosenColor: color }
-                            : obj
-                        )
-                      : preRolls.right,
-                  };
+        {preroll.collectionMetadata?.colors?.map(
+          (color: string, index: number) => {
+            return (
+              <div
+                key={index}
+                className={`relative w-5 h-5 border rounded-full cursor-pointer ${
+                  preroll.chosenColor?.toLowerCase() === color?.toLowerCase()
+                    ? "border-fresa"
+                    : "border-white"
+                }`}
+                onClick={() => {
+                  if (search) {
+                    dispatch(
+                      setSearchExpand({ ...preroll, chosenColor: color })
+                    );
+                  } else {
+                    const updated = {
+                      left: left
+                        ? prerolls.left.map((obj) =>
+                            obj?.collectionMetadata?.images?.[0] ===
+                            preroll?.collectionMetadata?.images?.[0]
+                              ? { ...obj, chosenColor: color }
+                              : obj
+                          )
+                        : prerolls.left,
+                      right: right
+                        ? prerolls.right.map((obj) =>
+                            obj?.collectionMetadata?.images?.[0] ===
+                            preroll?.collectionMetadata?.images?.[0]
+                              ? { ...obj, chosenColor: color }
+                              : obj
+                          )
+                        : prerolls.right,
+                    };
 
-                  dispatch(
-                    setPreRoll({
-                      actionLeft: updated.left,
-                      actionRight: updated.right,
-                    })
-                  );
-                }
-              }}
-              style={{ backgroundColor: color }}
-            ></div>
-          );
-        })}
+                    dispatch(
+                      setPreroll({
+                        actionLeft: updated.left,
+                        actionRight: updated.right,
+                      })
+                    );
+                  }
+                }}
+                style={{ backgroundColor: color }}
+              ></div>
+            );
+          }
+        )}
       </div>
     </div>
   );

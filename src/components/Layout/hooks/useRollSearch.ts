@@ -1,20 +1,20 @@
-import { CartItem, PreRoll } from "@/components/Common/types/common.types";
+import { CartItem, Preroll } from "@/components/Common/types/common.types";
 import { useContext, useEffect, useState } from "react";
 import { setRollSearch } from "../../../../redux/reducers/rollSearchSlice";
-import { initializeAlgolia } from "../../../../lib/algolia/client";
-import { setAlgolia } from "../../../../redux/reducers/algoliaSlice";
 import { ScrollContext } from "@/pages/_app";
 import { setSynthConfig } from "../../../../redux/reducers/synthConfigSlice";
-import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { setCart } from "../../../../redux/reducers/cartSlice";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
 import { Chain } from "wagmi";
 import { setChain } from "../../../../redux/reducers/chainSlice";
-import { setCurrentPKP } from "../../../../redux/reducers/currentPKPSlice";
-import { getLitLoginLocalStorage } from "../../../../lib/subgraph/utils";
-import { setCartAddAnim } from "../../../../redux/reducers/cartAddAnimSlice";
 import { AnyAction, Dispatch } from "redux";
-import { SearchIndex } from "algoliasearch";
+import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
+import { setCartAddAnim } from "../../../../redux/reducers/cartAddAnimSlice";
+import { INFURA_GATEWAY } from "../../../../lib/constants";
+import { getPrerollSearch } from "../../../../graphql/subgraph/queries/getPrerolls";
+import handleCollectionProfilesAndPublications from "../../../../lib/subgraph/helpers/handleCollectionProfilesAndPublications";
+import { Profile } from "@/components/Common/types/generated";
+import buildTextQuery from "../../../../lib/lens/helpers/buildTextQuery";
 
 const useRollSearch = (
   dispatch: Dispatch<AnyAction>,
@@ -25,8 +25,8 @@ const useRollSearch = (
         unsupported?: boolean | undefined;
       })
     | undefined,
-  algolia: SearchIndex | undefined,
-  cartItems: CartItem[]
+  cartItems: CartItem[],
+  lensConnected: Profile | undefined
 ) => {
   const { scrollRef, synthRef } = useContext(ScrollContext);
   const [prompt, setPrompt] = useState<string>("");
@@ -34,19 +34,24 @@ const useRollSearch = (
 
   const handleRollSearch = async () => {
     try {
-      if (!algolia) return;
+      const searchItems = await getPrerollSearch(buildTextQuery(prompt!)!);
 
-      const { hits } = await algolia.search(prompt);
+      const colls = await handleCollectionProfilesAndPublications(
+        searchItems?.data?.collectionCreateds,
+        lensConnected
+      );
 
-      dispatch(setRollSearch(hits.length > 0 ? hits : (undefined as any)));
+      dispatch(setRollSearch(colls as Preroll[]));
     } catch (err: any) {
       console.error(err.message);
     }
   };
 
-  const handlePromptChoose = async (preRoll: PreRoll) => {
+  const handlePromptChoose = async (preroll: Preroll) => {
     const response = await fetch(
-      `${INFURA_GATEWAY}/ipfs/${preRoll.uri?.image?.[0].split("ipfs://")[1]}`
+      `${INFURA_GATEWAY}/ipfs/${
+        preroll.collectionMetadata?.images?.[0].split("ipfs://")[1]
+      }`
     );
     const data = await response.blob();
     const image = new File([data], "coinop", { type: "image/png" });
@@ -54,7 +59,7 @@ const useRollSearch = (
     dispatch(
       setSynthConfig({
         actionType: "img2img",
-        actionPrompt: preRoll.uri.prompt,
+        actionPrompt: preroll?.collectionMetadata?.prompt || "",
         actionImage: image,
       })
     );
@@ -68,63 +73,73 @@ const useRollSearch = (
     }, 500);
   };
 
-  const handleSearchSimilar = async (preRoll: PreRoll) => {
+  const handleSearchSimilar = async (preroll: Preroll) => {
     try {
-      if (!algolia) return;
-
-      const tagFilters = preRoll.uri.tags
-        .map((tag) => `uri.tags:${tag}`)
-        .join(" OR ");
-
-      const { hits } = await algolia.search("", {
-        filters: tagFilters,
-      });
-      dispatch(setRollSearch(hits.length > 0 ? hits : (undefined as any)));
+      dispatch(setRollSearch([]));
     } catch (err: any) {
       console.error(err.message);
     }
   };
 
-  const handleAddToCart = (preRoll: PreRoll) => {
-    let { colors, bgColor, ...newObj } = preRoll;
+  const handleAddToCart = (preroll: Preroll) => {
     const existing = [...cartItems].findIndex(
       (item) =>
-        item.collectionId === newObj.collectionId &&
-        item.chosenSize === newObj.chosenSize &&
-        item.chosenColor === newObj.chosenColor
+        item.item?.collectionId === preroll.collectionId &&
+        item.chosenSize === preroll.chosenSize &&
+        item.chosenColor === preroll.chosenColor
     );
 
     let newCartItems: CartItem[] = [...cartItems];
+
+    if (
+      cartItems
+        ?.filter(
+          (item) => item?.item?.pubId == newCartItems?.[existing]?.item?.pubId
+        )
+        ?.reduce(
+          (accumulator, currentItem) => accumulator + currentItem.chosenAmount,
+          0
+        ) +
+        1 >
+        Number(newCartItems?.[existing]?.item?.amount) ||
+      Number(newCartItems?.[existing]?.item?.amount) ==
+        Number(newCartItems?.[existing]?.item?.soldTokens)
+    ) {
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage:
+            "We know you're eager, but you've reached this prints' collect limit!",
+        })
+      );
+      return;
+    }
 
     if (existing !== -1) {
       newCartItems = [
         ...newCartItems.slice(0, existing),
         {
           ...newCartItems[existing],
-          amount: newCartItems[existing].amount + 1,
+          chosenAmount: newCartItems[existing].chosenAmount + 1,
         },
         ...newCartItems.slice(existing + 1),
       ];
     } else {
       newCartItems.push({
-        ...newObj,
-        amount: 1,
-        uri: {
-          ...preRoll.uri,
-          image: preRoll?.uri?.image?.[0],
-        },
-        price:
-          preRoll?.printType === "shirt" ||
-          preRoll?.printType === "hoodie" ||
-          preRoll?.printType === "sleeve"
-            ? preRoll.price?.[0]
-            : preRoll.price?.[preRoll.sizes?.indexOf(preRoll.chosenSize)],
+        item: preroll,
+        chosenColor: preroll?.chosenColor,
+        chosenSize: preroll?.chosenSize,
+        chosenAmount: 1,
+        chosenIndex:
+          preroll?.printType !== "0" && preroll?.printType !== "1"
+            ? 0
+            : preroll?.collectionMetadata?.sizes?.indexOf(preroll?.chosenSize),
       });
     }
 
     dispatch(setCart(newCartItems));
     setCartAnim(true);
-    dispatch(setCartAddAnim(preRoll?.uri?.image[0]));
+    dispatch(setCartAddAnim(preroll?.collectionMetadata?.images[0]));
   };
 
   const scrollToCheckOut = () => {
@@ -136,45 +151,6 @@ const useRollSearch = (
       scrollRef.current!.scrollTop = scrollRef.current!.scrollHeight;
     }, 500);
   };
-
-  const checkIfLoggedIn = async () => {
-    try {
-      const data = getLitLoginLocalStorage();
-
-      if (data) {
-        const matchTimeIssued = data?.authSig?.signedMessage.match(
-          /Issued At: ([\d\-T:.]+)Z/
-        )?.[1];
-
-        if (matchTimeIssued) {
-          const expirationTime = new Date(
-            new Date(matchTimeIssued).getTime() + 23 * 60 * 60 * 1000
-          );
-          const thirtyMinsAgo = new Date(new Date().getTime() - 30 * 60 * 1000);
-
-          if (expirationTime >= thirtyMinsAgo) {
-            dispatch(
-              setCurrentPKP({
-                ...data,
-                tokenId: data?.tokenId,
-                sessionSig: data?.sessionSig,
-                pkpWallet: data?.pkpWallet,
-                authSig: data?.authSig,
-                encryptedToken: data?.encryptedToken,
-              })
-            );
-          }
-        }
-      }
-    } catch (err: any) {}
-  };
-
-  useEffect(() => {
-    if (!algolia) {
-      const index = initializeAlgolia();
-      dispatch(setAlgolia(index));
-    }
-  }, []);
 
   useEffect(() => {
     if (cartAnim) {
@@ -188,10 +164,6 @@ const useRollSearch = (
     dispatch(setWalletConnected(isConnected));
     dispatch(setChain(chainNetwork?.id));
   }, [address, isConnected, chainNetwork]);
-
-  useEffect(() => {
-    checkIfLoggedIn();
-  }, []);
 
   return {
     handleRollSearch,

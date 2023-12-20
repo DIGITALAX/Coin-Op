@@ -1,20 +1,33 @@
 import { FetchResult } from "@apollo/client";
+import { apolloClient } from "../../../lib/lens/client";
 import {
   ActOnOpenActionRequest,
   CreateActOnOpenActionTypedDataDocument,
   CreateActOnOpenActionTypedDataMutation,
-} from "./../../../src/components/Common/types/generated";
-import { apolloClient } from "../../../lib/lens/client";
+  CreateLegacyCollectTypedDataDocument,
+  CreateLegacyCollectTypedDataMutation,
+  LegacyCollectRequest,
+} from "@/components/Common/types/generated";
 
-const collect = async (
+export const collectPost = async (
   request: ActOnOpenActionRequest
 ): Promise<FetchResult<CreateActOnOpenActionTypedDataMutation>> => {
   return await apolloClient.mutate({
     mutation: CreateActOnOpenActionTypedDataDocument,
     variables: {
-      request,
+      request: request,
     },
   });
 };
 
-export default collect;
+
+export const legacyCollectPost = async (
+  request: LegacyCollectRequest
+): Promise<FetchResult<CreateLegacyCollectTypedDataMutation>> => {
+  return await apolloClient.mutate({
+    mutation: CreateLegacyCollectTypedDataDocument,
+    variables: {
+      request: request,
+    },
+  });
+};

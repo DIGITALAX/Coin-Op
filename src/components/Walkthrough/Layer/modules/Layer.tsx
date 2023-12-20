@@ -7,7 +7,7 @@ const Layer: FunctionComponent<LayerProps> = ({
   dispatch,
   synthLayer,
   layersLoading,
-  scrollToPreRoll
+  scrollToPreroll
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
@@ -16,7 +16,7 @@ const Layer: FunctionComponent<LayerProps> = ({
         layers={layers}
         synthLayer={synthLayer}
         layersLoading={layersLoading}
-        scrollToPreRoll={scrollToPreRoll}
+        scrollToPreroll={scrollToPreroll}
       />
     </div>
   );

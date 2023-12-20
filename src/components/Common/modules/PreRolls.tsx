@@ -1,29 +1,40 @@
 import { FunctionComponent } from "react";
 import {
-  PreRoll as PreRollInterface,
-  PreRollsProps,
+  Preroll as PrerollInterface,
+  PrerollsProps,
 } from "../types/common.types";
-import PreRoll from "./PreRoll";
-import usePreRoll from "../hooks/usePreRoll";
+import Preroll from "./Preroll";
+import usePreroll from "../hooks/usePreroll";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import useInteractions from "../hooks/useInteractions";
+import { createPublicClient, http } from "viem";
+import { polygon } from "viem/chains";
+import { useAccount } from "wagmi";
 
-const PreRolls: FunctionComponent<PreRollsProps> = ({
+const Prerolls: FunctionComponent<PrerollsProps> = ({
   left,
   right,
 }): JSX.Element => {
   const dispatch = useDispatch();
-  const preRolls = useSelector((state: RootState) => state.app.preRollReducer);
+  const { address } = useAccount();
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+    ),
+  });
+  const prerolls = useSelector((state: RootState) => state.app.prerollReducer);
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
-  const preRollAnim = useSelector(
-    (state: RootState) => state.app.preRollAnimReducer.value
+  const lensConnected = useSelector(
+    (state: RootState) => state.app.profileReducer?.profile
   );
-  const algolia = useSelector(
-    (state: RootState) => state.app.algoliaReducer.value
+  const prerollAnim = useSelector(
+    (state: RootState) => state.app.prerollAnimReducer.value
   );
-  const preRollsLoading = useSelector(
+  const prerollsLoading = useSelector(
     (state: RootState) => state.app.prerollsLoadingReducer.value
   );
   const cartAddAnim = useSelector(
@@ -34,11 +45,19 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
     setImagesLoadingLeft,
     imagesLoadingRight,
     setImagesLoadingRight,
-  } = usePreRoll(dispatch, preRolls, algolia);
+  } = usePreroll(dispatch, prerolls, lensConnected);
+  const {
+    mirror,
+    like,
+    openMirrorChoice,
+    setOpenMirrorChoice,
+    interactionsLoading,
+  } = useInteractions(prerolls, lensConnected, dispatch, publicClient, address);
+
   return (
-    <div className="relative w-full xl:min-w-80 xl:w-80 h-fit xl:h-full flex overflow-x-scroll xl:overflow-x-hidden xl:overflow-y-scroll">
-      <div className="relative w-fit xl:w-full h-fit flex xl:flex-col flex-row justify-start items-center gap-10">
-        {preRollsLoading
+    <div className="relative w-full xl:m-w-[20rem] xl:w-80 h-fit xl:h-full flex overflow-x-scroll xl:overflow-x-hidden xl:overflow-y-scroll">
+      <div className="relative w-fit xl:w-fit h-fit flex xl:flex-col flex-row justify-start items-center gap-10">
+        {prerollsLoading
           ? Array.from({ length: 40 }).map((_, index: number) => {
               return (
                 <div
@@ -52,19 +71,19 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
                 </div>
               );
             })
-          : (left ? preRolls.left : preRolls.right)?.map(
-              (preRoll: PreRollInterface, index: number) => {
+          : (left ? prerolls.left : prerolls.right)?.map(
+              (preroll: PrerollInterface, index: number) => {
                 return (
-                  <PreRoll
+                  <Preroll
                     key={index}
                     cartAddAnim={cartAddAnim}
-                    preRoll={preRoll}
+                    preroll={preroll}
                     cartItems={cartItems}
                     dispatch={dispatch}
-                    preRolls={preRolls}
+                    prerolls={prerolls}
                     left={left}
                     right={right}
-                    preRollAnim={preRollAnim}
+                    prerollAnim={prerollAnim}
                     setImagesLoading={
                       left ? setImagesLoadingLeft : setImagesLoadingRight
                     }
@@ -74,6 +93,11 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
                         : imagesLoadingRight[index]
                     }
                     index={index}
+                    mirror={mirror}
+                    like={like}
+                    interactionsLoading={interactionsLoading}
+                    openMirrorChoice={openMirrorChoice}
+                    setOpenMirrorChoice={setOpenMirrorChoice}
                   />
                 );
               }
@@ -83,4 +107,4 @@ const PreRolls: FunctionComponent<PreRollsProps> = ({
   );
 };
 
-export default PreRolls;
+export default Prerolls;

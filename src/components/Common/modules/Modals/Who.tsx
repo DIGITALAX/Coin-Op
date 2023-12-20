@@ -1,101 +1,101 @@
 import { FunctionComponent } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { ImCross } from "react-icons/im";
-import { Profile } from "../../types/generated";
-import Image from "next/legacy/image";
 import { AiOutlineLoading } from "react-icons/ai";
+import Image from "next/legacy/image";
+import { INFURA_GATEWAY } from "../../../../../lib/constants";
+import { setReactBox } from "../../../../../redux/reducers/reactionStateSlice";
 import { WhoProps } from "../../types/common.types";
-import { setReactionState } from "../../../../../redux/reducers/reactionStateSlice";
-import createProfilePicture from "../../../../../lib/lens/helpers/createProfilePicture";
+import WhoSwitch from "./WhoSwitch";
 
 const Who: FunctionComponent<WhoProps> = ({
-  loading,
-  fetchMore,
-  accounts,
-  dispatch,
+  dataLoading,
+  reactors,
+  quoters,
   hasMore,
+  hasMoreQuote,
+  showMore,
+  mirrorQuote,
+  setMirrorQuote,
   type,
+  router,
+  dispatch,
+  mirror,
+  like,
+  interactionsLoading,
+  openMirrorChoice,
+  setOpenMirrorChoice,
+  simpleCollect,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
-      <div className="relative w-full md:w-[40vw] lg:w-[25vw] h-fit col-start-1 place-self-center bg-offBlack rounded-lg">
-        <div className="relative w-full row-start-2 h-fit rounded-xl grid grid-flow-col auto-cols-auto">
-          <div className="relative w-full h-full col-start-1 rounded-xl place-self-center">
+      <div className="relative w-full w-[90vw] sm:w-[70vw] tablet:w-[60vw] min-w-fit px-2 md:w-[40vw] lg:w-[25vw] h-fit col-start-1 place-self-center bg-offBlack border border-white">
+        <div className="relative w-full row-start-2 h-fit grid grid-flow-col auto-cols-auto">
+          <div className="relative w-full h-full col-start-1 place-self-center">
             <div className="relative w-full h-full flex flex-col items-center justify-center gap-4 pb-8">
-              <div className="relative w-fit h-fit items-end justify-end ml-auto pr-3 pt-3 cursor-sewingHS flex">
+              <div className="relative w-fit h-fit items-end justify-end ml-auto pr-3 pt-3 cursor-pointer flex">
                 <ImCross
                   color="white"
                   size={10}
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
-                      setReactionState({
+                      setReactBox({
                         actionOpen: false,
-                        actionType: "",
-                        actionValue: "",
-                        actionResponseReact: "",
                       })
-                    )
-                  }
+                    );
+                    setMirrorQuote(false);
+                  }}
                 />
               </div>
-              {!loading ? (
-                <>
-                  {accounts?.length > 0 && (
-                    <div className="relative w-full h-fit flex flex-col">
-                      <InfiniteScroll
-                        hasMore={hasMore}
-                        dataLength={accounts?.length}
-                        next={fetchMore}
-                        loader={""}
-                        height={"10rem"}
-                        className="relative w-full h-fit flex flex-col px-4 gap-2 overflow-y-scroll"
-                      >
-                        {accounts?.map((account: any, index: number) => {
-                          const reacter: Profile =
-                            type === 0 ? account.profile : account;
-
-                          const profileImage = createProfilePicture(
-                            reacter?.metadata?.picture
-                          );
-
-                          return (
-                            <div
-                              key={index}
-                              className="relative w-full h-fit p-2 drop-shadow-lg flex flex-row bg-gradient-to-r from-offBlack via-gray-600 to-black auto-cols-auto rounded-lg border border-black font-dosis text-white cursor-sewingHS"
-                            >
-                              <div className="relative w-fit h-fit flex flex-row gap-6">
-                                <div
-                                  className="relative w-6 h-6 rounded-full col-start-1"
-                                  id="crt"
-                                >
-                                  {profileImage && (
-                                    <Image
-                                      src={profileImage}
-                                      objectFit="cover"
-                                      layout="fill"
-                                      alt="pfp"
-                                      className="relative w-fit h-fit rounded-full self-center flex"
-                                      draggable={false}
-                                    />
-                                  )}
-                                </div>
-                                <div
-                                  id="handle"
-                                  className="relative w-fit h-fit justify-center flex"
-                                >
-                                  {
-                                    reacter?.handle?.suggestedFormatted
-                                      ?.localName
-                                  }
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </InfiniteScroll>
+              {type === "Mirrors" &&
+                (reactors?.length > 0 || quoters?.length > 0) && (
+                  <div className="relative w-full h-fit flex items-center justify-center flex-row gap-2">
+                    <div
+                      className={`relative w-5 h-5 flex items-center justify-center hover:opacity-70 cursor-pointer ${
+                        !mirrorQuote && "opacity-50"
+                      }`}
+                      onClick={() => setMirrorQuote(true)}
+                      title="Quotes"
+                    >
+                      <Image
+                        layout="fill"
+                        src={`${INFURA_GATEWAY}/ipfs/QmfDNH347Vph4b1tEuegydufjMU2QwKzYnMZCjygGvvUMM`}
+                        draggable={false}
+                      />
                     </div>
-                  )}
-                </>
+                    <div
+                      className={`relative w-5 h-5 flex items-center justify-center hover:opacity-70 cursor-pointer ${
+                        mirrorQuote && "opacity-50"
+                      }`}
+                      onClick={() => setMirrorQuote(false)}
+                      title="Mirrors"
+                    >
+                      <Image
+                        layout="fill"
+                        src={`${INFURA_GATEWAY}/ipfs/QmPRRRX1S3kxpgJdLC4G425pa7pMS1AGNnyeSedngWmfK3`}
+                        draggable={false}
+                      />
+                    </div>
+                  </div>
+                )}
+
+              {!dataLoading ? (
+                <WhoSwitch
+                  router={router}
+                  type={type}
+                  reactors={reactors}
+                  quoters={quoters}
+                  hasMore={hasMore}
+                  hasMoreQuote={hasMoreQuote}
+                  showMore={showMore}
+                  mirrorQuote={mirrorQuote}
+                  dispatch={dispatch}
+                  mirror={mirror}
+                  like={like}
+                  interactionsLoading={interactionsLoading}
+                  openMirrorChoice={openMirrorChoice}
+                  setOpenMirrorChoice={setOpenMirrorChoice}
+                  simpleCollect={simpleCollect}
+                />
               ) : (
                 <div className="relative w-[40vw] md:w-full h-60 grid grid-flow-col auto-cols-auto">
                   <div className="relative w-fit h-fit col-start-1 place-self-center animate-spin">

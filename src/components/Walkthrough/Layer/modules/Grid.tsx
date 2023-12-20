@@ -3,14 +3,14 @@ import { FunctionComponent } from "react";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
 import { GridProps, Layer } from "../types/layer.types";
 import Set from "./Set";
-import { setPreRollAnim } from "../../../../../redux/reducers/preRollAnimSlice";
+import { setPrerollAnim } from "../../../../../redux/reducers/prerollAnimSlice";
 
 const Grid: FunctionComponent<GridProps> = ({
   layers,
   dispatch,
   synthLayer,
   layersLoading,
-  scrollToPreRoll,
+  scrollToPreroll,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-110 preG:h-100 flex flex-col gap-2">
@@ -68,8 +68,8 @@ const Grid: FunctionComponent<GridProps> = ({
       <div
         className="relative preG:absolute preG:bottom-6 preG:right-3 sm:right-12 w-full preG:w-fit h-fit flex flex-row gap-1.5 sm:gap-3 text-white items-center justify-center text-center cursor-pointer md:pt-0 pt-4 order-3 preG:order-2"
         onClick={() => {
-          dispatch(setPreRollAnim(true));
-          window.innerWidth < 1280 && scrollToPreRoll();
+          dispatch(setPrerollAnim(true));
+          window.innerWidth < 1280 && scrollToPreroll();
         }}
       >
         <div
@@ -85,7 +85,7 @@ const Grid: FunctionComponent<GridProps> = ({
         >{`>>>`}</div>
       </div>
       <div
-        className="relative w-full flex justify-center preG:w-auto preG:absolute text-white font-mana text-sm sm:text-xl 900:text-3xl uppercase pt-2 preG:pt-0 preG:bottom-4 order-2 preG:order-3"
+        className="relative w-full flex justify-center preG:w-auto preG:absolute text-white font-mana text-sm sm:text-xl tablet:text-3xl uppercase pt-2 preG:pt-0 preG:bottom-4 order-2 preG:order-3"
         draggable={false}
       >
         choose layer set

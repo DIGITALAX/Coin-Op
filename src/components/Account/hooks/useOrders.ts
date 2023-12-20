@@ -1,264 +1,106 @@
 import { useEffect, useState } from "react";
-import {
-  getOrders,
-  getOrdersPKP,
-} from "../../../../graphql/subgraph/queries/getOrders";
-import { getPreRollId } from "../../../../graphql/subgraph/queries/getPreRolls";
-import CoinOpMarketABI from "../../../../abis/CoinOpMarket.json";
 import { setAllOrders } from "../../../../redux/reducers/allOrdersSlice";
-import { ethers } from "ethers";
 import {
   LitNodeClient,
   checkAndSignAuthMessage,
   decryptToString,
 } from "@lit-protocol/lit-node-client";
-import { PublicClient, createWalletClient, custom } from "viem";
-import { polygon } from "viem/chains";
-import { COIN_OP_FULFILLMENT, COIN_OP_MARKET } from "../../../../lib/constants";
-import { AuthSig } from "@lit-protocol/types";
-import { InformationType, Order } from "../types/account.types";
-import { encryptItems } from "../../../../lib/subgraph/helpers/encryptItems";
-import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
-import { litExecute } from "../../../../lib/subgraph/helpers/litExecute";
-import { createTxData } from "../../../../lib/subgraph/helpers/createTxData";
-import { setAllSubscriptions } from "../../../../redux/reducers/allSubscriptionsSlice";
-import { getSubscriptionsPKP } from "../../../../graphql/subgraph/queries/getSubscription";
-import { PKPSig } from "../../../../redux/reducers/currentPKPSlice";
+import { PublicClient } from "viem";
+import { EncryptedDetails, Order } from "../types/account.types";
 import { AnyAction, Dispatch } from "redux";
-import fetchIPFSJSON from "../../../../lib/algolia/helpers/fetchIpfsJson";
+import {
+  getCollectionOrder,
+  getOrders,
+} from "../../../../graphql/subgraph/queries/getOrders";
 
 const useOrders = (
   client: LitNodeClient,
-  publicClient: PublicClient,
   address: `0x${string}` | undefined,
   dispatch: Dispatch<AnyAction>,
-  allOrders: Order[],
-  connectedPKP: PKPSig | undefined
+  allOrders: Order[]
 ) => {
   const [subscriptionsLoading, setSubscriptionsLoading] =
     useState<boolean>(false);
   const [ordersLoading, setOrdersLoading] = useState<boolean>(false);
   const [decryptLoading, setDecryptLoading] = useState<boolean[]>([]);
-  const [decryptMessageLoading, setDecryptMessageLoading] = useState<boolean[]>(
-    []
-  );
   const [orderOpen, setOrderOpen] = useState<boolean[]>([]);
-  const [updateLoading, setUpdateLoading] = useState<boolean[]>([]);
-  const [updatedInformation, setUpdatedInformation] = useState<
-    InformationType[]
-  >([]);
-
-  const getAllSubscriptions = async () => {
-    setSubscriptionsLoading(true);
-    try {
-      const res = await getSubscriptionsPKP(
-        BigInt(connectedPKP?.tokenId.hex!).toString()
-      );
-
-      dispatch(
-        setAllSubscriptions(res?.data?.subscriberAddeds?.[0] || undefined)
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setSubscriptionsLoading(false);
-  };
 
   const getAllOrders = async () => {
     setOrdersLoading(true);
     try {
-      let res;
-      if (connectedPKP?.pkpWallet) {
-        res = await getOrdersPKP(BigInt(connectedPKP?.tokenId.hex!).toString());
-      } else {
-        res = await getOrders(address as string);
-      }
-
+      const res = await getOrders(address as string);
       if (!res || res?.data?.orderCreateds?.length < 1) {
         setOrdersLoading(false);
         return;
       }
-      let allOrders = [];
-      for (let i = 0; i < res?.data?.orderCreateds?.length; i++) {
-        const fetchDetails = await fetchIPFSJSON(
-          res?.data?.orderCreateds[i].fulfillmentInformation
-        );
 
-        const parsedInfo = JSON.parse(JSON.parse(fetchDetails)[0]);
-        let collectionDetails = [];
-        for (
-          let j = 0;
-          j < res?.data?.orderCreateds[i].collectionIds?.length;
-          j++
-        ) {
-          const coll = await getPreRollId(
-            res?.data?.orderCreateds[i].collectionIds[j]
-          );
-          const uri = await fetchIPFSJSON(
-            coll?.data?.collectionCreateds[0]?.uri
-          );
-          collectionDetails.push({
-            ...coll?.data?.collectionCreateds[0],
-            uri,
-          });
-        }
+      const promises = (res?.data?.orderCreateds || [])?.map(
+        async (item: {
+          orderId: string;
+          totalPrice: string;
+          currency: string;
+          pubId: string;
+          profileId: string;
+          buyer: string;
+          blockTimestamp: string;
+          transactionHash: string;
+          images: string[];
+          names: string[];
+          messages: string[];
+          details: string;
+          subOrderPrice: string[];
+          subOrderStatus: string[];
+          subOrderCollectionIds: string[];
+          subOrderIsFulfilled: boolean[];
+          subOrderAmount: string[];
+        }) => ({
+          ...item,
+          totalPrice: String(Number(item?.totalPrice) / 10 ** 18),
+          details: item?.details && (await JSON.parse(item?.details as string)),
+          decrypted: false,
+          subOrders: await Promise.all(
+            item?.subOrderCollectionIds?.map(
+              async (collectionId: string, index: number) => {
+                const collection = await getCollectionOrder(collectionId);
 
-        let messages: {
-          encryptedString: string;
-          encryptedSymmetricKey: string;
-        }[] = [];
-
-        for (let k = 0; k < res?.data?.orderCreateds[i].message.length; k++) {
-          const parsedInfoMessage = JSON.parse(
-            res?.data?.orderCreateds[i].message[k].replaceAll("'", '"')
-          );
-          messages.push({
-            encryptedString: JSON.parse(parsedInfoMessage.encryptedString),
-            encryptedSymmetricKey: parsedInfoMessage.encryptedSymmetricKey,
-          });
-        }
-
-        allOrders.push({
-          ...res?.data?.orderCreateds[i],
-          fulfillmentInformation: {
-            encryptedString: JSON.parse(parsedInfo.encryptedString),
-            encryptedSymmetricKey: parsedInfo.encryptedSymmetricKey,
-            decryptedFulfillment: undefined,
-          },
-          message: messages,
-          collectionDetails,
-        });
-      }
-
-      dispatch(setAllOrders(allOrders));
+                return {
+                  collection: {
+                    name: collection?.data?.collectionCreateds?.[0]
+                      ?.collectionMetadata?.title as string,
+                    image: collection?.data?.collectionCreateds?.[0]
+                      ?.collectionMetadata?.images?.[0]
+                      ? collection?.data?.collectionCreateds?.[0]
+                          ?.collectionMetadata?.images?.[0]
+                      : (collection?.data?.collectionCreateds?.[0]
+                          ?.collectionMetadata?.cover as string),
+                    origin: collection?.data?.collectionCreateds?.[0]
+                      ?.origin as string,
+                    pubId: collection?.data?.collectionCreateds?.[0]
+                      ?.pubId as string,
+                  },
+                  price: String(
+                    Number(item?.subOrderPrice?.[index]) / 10 ** 18
+                  ) as string,
+                  status: item?.subOrderStatus?.[index] as string,
+                  isFulfilled: item?.subOrderIsFulfilled?.[index],
+                  fulfillerAddress: "",
+                  amount: item?.subOrderAmount?.[index] as string,
+                };
+              }
+            )
+          ),
+        })
+      );
+      const awaited = await Promise.all(promises);
+      dispatch(setAllOrders(awaited));
     } catch (err: any) {
       console.error(err.message);
     }
     setOrdersLoading(false);
   };
 
-  const getFulfillerAddress = async (): Promise<string | undefined> => {
-    try {
-      const data = await publicClient.readContract({
-        address: COIN_OP_FULFILLMENT.toLowerCase() as `0x${string}`,
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: "uint256",
-                name: "_fulfillerId",
-                type: "uint256",
-              },
-            ],
-            name: "getFulfillerAddress",
-            outputs: [
-              {
-                internalType: "address",
-                name: "",
-                type: "address",
-              },
-            ],
-            stateMutability: "view",
-            type: "function",
-          },
-        ],
-        functionName: "getFulfillerAddress",
-        args: [BigInt(1)],
-      });
-
-      return data as string | undefined;
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
-  const handleDecryptMessage = async (order: Order): Promise<void> => {
-    if (!address && !connectedPKP?.pkpWallet) {
-      return;
-    }
-    setDecryptMessageLoading((prev) =>
-      prev.map((val, idx) =>
-        idx ===
-        allOrders.findIndex(
-          (o) =>
-            o.fulfillmentInformation.ciphertext ===
-            order.fulfillmentInformation.ciphertext
-        )
-          ? true
-          : val
-      )
-    );
-    try {
-      let authSig: AuthSig;
-      if (connectedPKP?.pkpWallet) {
-        authSig = connectedPKP?.authSig;
-      } else {
-        authSig = await checkAndSignAuthMessage({
-          chain: "polygon",
-        });
-      }
-      const fulfillerAddress = await getFulfillerAddress();
-      if (fulfillerAddress) {
-        let stringsDecrypted: {
-          message: string;
-          date: string;
-        }[] = [];
-
-        
-
-        for (let i = 0; i < order.message.length; i++) {
-          const decryptedString = await decryptToString(
-            {
-              authSig,
-              accessControlConditions:
-                order?.message[i].accessControlConditions,
-              dataToEncryptHash: order?.message[i].dataToEncryptHash,
-              ciphertext: order?.message[i].ciphertext,
-              chain: "polygon",
-            },
-            client
-          );
-          stringsDecrypted.push(JSON.parse(decryptedString));
-        }
-
-        const updatedOrders = allOrders.map((currentOrder) => {
-          if (
-            currentOrder.fulfillmentInformation.ciphertext ===
-            order.fulfillmentInformation.ciphertext
-          ) {
-            return {
-              ...currentOrder,
-              decryptedMessage: stringsDecrypted,
-            };
-          }
-          return currentOrder;
-        });
-
-        dispatch(setAllOrders(updatedOrders));
-      }
-    } catch (err: any) {
-      console.error(err);
-    }
-    setDecryptMessageLoading((prev) =>
-      prev.map((val, idx) =>
-        idx ===
-        allOrders.findIndex(
-          (o) =>
-            o.fulfillmentInformation.ciphertext ===
-            order.fulfillmentInformation.ciphertext
-        )
-          ? false
-          : val
-      )
-    );
-  };
-
   const handleDecryptFulfillment = async (order: Order): Promise<void> => {
-    if (
-      !order?.fulfillmentInformation?.ciphertext ||
-      !order?.fulfillmentInformation?.dataToEncryptHash ||
-      (!address && !connectedPKP?.pkpWallet)
-    ) {
+    if (order?.decrypted || !address) {
       return;
     }
     setDecryptLoading((prev) =>
@@ -266,67 +108,53 @@ const useOrders = (
         idx ===
         allOrders.findIndex(
           (o) =>
-            o.fulfillmentInformation?.ciphertext ===
-            order.fulfillmentInformation?.ciphertext
+            (o.details as EncryptedDetails)?.ciphertext ===
+            (order.details as EncryptedDetails)?.ciphertext
         )
           ? true
           : val
       )
     );
     try {
-      let authSig;
-      if (connectedPKP?.pkpWallet) {
-        authSig = connectedPKP?.authSig;
-      } else {
-        authSig = await checkAndSignAuthMessage({
+      const authSig = await checkAndSignAuthMessage({
+        chain: "polygon",
+      });
+
+      await client.connect();
+
+      const decryptedString = await decryptToString(
+        {
+          authSig,
+          accessControlConditions: (order?.details as EncryptedDetails)
+            ?.accessControlConditions,
+          ciphertext: (order?.details as EncryptedDetails)?.ciphertext,
+          dataToEncryptHash: (order?.details as EncryptedDetails)
+            ?.dataToEncryptHash,
           chain: "polygon",
-        });
-      }
+        },
+        client
+      );
 
-      
-
-      const fulfillerAddress = await getFulfillerAddress();
-
-      if (fulfillerAddress) {
-        const decryptedString = await decryptToString(
-          {
-            authSig,
-            accessControlConditions:
-              order?.fulfillmentInformation?.accessControlConditions,
-            ciphertext: order?.fulfillmentInformation.ciphertext,
-            dataToEncryptHash: order?.fulfillmentInformation.dataToEncryptHash,
-            chain: "polygon",
-          },
-          client
-        );
-
-        const updatedOrders = allOrders.map((currentOrder) => {
-          if (
-            currentOrder.fulfillmentInformation.ciphertext ===
-            order.fulfillmentInformation.ciphertext
-          ) {
-            return {
-              ...currentOrder,
-              fulfillmentInformation: {
-                ciphertext: order.fulfillmentInformation.ciphertext,
-                dataToEncryptHash:
-                  order.fulfillmentInformation.dataToEncryptHash,
-                decryptedFulfillment: JSON.parse(decryptedString),
-                accessControlConditions:
-                  order?.fulfillmentInformation?.accessControlConditions,
-              },
-            };
-          }
-          return currentOrder;
-        });
-        setUpdatedInformation(((prev: any) =>
-          prev.map(async (val: InformationType, idx: number) =>
-            idx === allOrders.indexOf(order)
-              ? await JSON.parse(decryptedString)
-              : val
-          )) as any);
-        dispatch(setAllOrders(updatedOrders));
-      }
+      const updatedOrders = allOrders.map(async (currentOrder) => {
+        if (
+          (currentOrder?.details as EncryptedDetails).ciphertext ===
+          (order?.details as EncryptedDetails).ciphertext
+        ) {
+          const details = await JSON.parse(decryptedString);
+          return {
+            ...currentOrder,
+            details,
+            subOrders: currentOrder?.subOrders.map((item, index) => ({
+              ...item,
+              size: details.sizes[details.sizes.length - 1 - index],
+              color: details.colors[details.colors.length - 1 - index],
+            })),
+            decrypted: true,
+          };
+        }
+        return currentOrder;
+      });
+      dispatch(setAllOrders(await Promise.all(updatedOrders)));
     } catch (err: any) {
       console.error(err);
     }
@@ -335,189 +163,26 @@ const useOrders = (
         idx ===
         allOrders.findIndex(
           (o) =>
-            o.fulfillmentInformation?.ciphertext ===
-            order.fulfillmentInformation?.ciphertext
+            (o.details as EncryptedDetails)?.ciphertext ===
+            (order.details as EncryptedDetails)?.ciphertext
         )
           ? false
           : val
       )
     );
-  };
-
-  const cryptoUpdateOrderInfo = async (
-    fulfillerDetails: string,
-    index: number
-  ) => {
-    try {
-      const { request } = await publicClient.simulateContract({
-        address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
-        abi: CoinOpMarketABI,
-        functionName: "setOrderDetails",
-        args: [allOrders[index].orderId, fulfillerDetails],
-        account: address?.toLowerCase() as `0x${string}`,
-      });
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-      const res = await clientWallet.writeContract(request);
-      await publicClient.waitForTransactionReceipt({ hash: res });
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
-  const fiatUpdateOrderInfo = async (
-    index: number,
-    fulfillerDetails: string,
-    client: LitNodeClient,
-    authSig: AuthSig
-  ) => {
-    try {
-      
-
-      const provider = new ethers.providers.JsonRpcProvider(
-        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-        137
-      );
-
-      const tx = await createTxData(
-        provider,
-        CoinOpMarketABI,
-        COIN_OP_MARKET,
-        "setOrderDetails",
-        [allOrders[index].orderId, fulfillerDetails]
-      );
-
-      await litExecute(client, provider, tx, "coinOpUpdateOrderInfo", authSig);
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
-  const updateFulfillmentInformation = async (index: number) => {
-    setUpdateLoading((prev) =>
-      prev.map((val, idx) => (idx === index ? true : val))
-    );
-    try {
-      let fulfillerGroups: { [key: string]: any[] } = {};
-      
-
-      for (let i = 0; i < allOrders[index].collectionDetails.length; i++) {
-        if (
-          fulfillerGroups[
-            allOrders[index].collectionDetails[i].fulfillerAddress
-          ]
-        ) {
-          fulfillerGroups[
-            allOrders[index].collectionDetails[i].fulfillerAddress
-          ].push(allOrders[index].collectionDetails[i]);
-        } else {
-          fulfillerGroups[
-            allOrders[index].collectionDetails[i].fulfillerAddress
-          ] = [allOrders[index].collectionDetails[i]];
-        }
-      }
-
-      const returned = await encryptItems(
-        client,
-        {
-          sizes:
-            allOrders[index].fulfillmentInformation.decryptedFulfillment
-              ?.sizes || [],
-          colors:
-            allOrders[index].fulfillmentInformation.decryptedFulfillment
-              ?.colors || [],
-          collectionIds:
-            allOrders[
-              index
-            ].fulfillmentInformation.decryptedFulfillment?.collectionIds.map(
-              (id) => Number(id)
-            ) || [],
-          collectionAmounts:
-            allOrders[
-              index
-            ].fulfillmentInformation.decryptedFulfillment?.collectionAmounts.map(
-              (id) => Number(id)
-            ) || [],
-        },
-        fulfillerGroups,
-        updatedInformation[index],
-        connectedPKP?.pkpWallet
-          ? (connectedPKP?.ethAddress as `0x${string}`)
-          : (address! as `0x${string}`),
-        connectedPKP?.authSig
-      );
-
-      const response = await fetch("/api/ipfs", {
-        method: "POST",
-        body: JSON.stringify(returned?.fulfillerDetails),
-      });
-      let cid = await response.json();
-
-      if (connectedPKP?.pkpWallet) {
-        await fiatUpdateOrderInfo(
-          index,
-          "ipfs://" + cid?.cid,
-          returned?.client,
-          connectedPKP?.authSig
-        );
-      } else {
-        await cryptoUpdateOrderInfo("ipfs://" + cid?.cid, index);
-      }
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setTimeout(async () => {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "Order details updated! It may take a little while for the changes to fully process on-chain, check back in a few minutes.",
-        })
-      );
-      await getAllOrders();
-      setUpdateLoading((prev) =>
-        prev.map((val, idx) => (idx === index ? false : val))
-      );
-    }, 5000);
   };
 
   useEffect(() => {
-    if (address || connectedPKP?.pkpWallet) {
+    if (address) {
       getAllOrders();
     } else {
       dispatch(setAllOrders([]));
     }
-
-    if (connectedPKP?.pkpWallet) {
-      getAllSubscriptions();
-    } else {
-      dispatch(setAllSubscriptions(undefined));
-    }
-  }, [address, connectedPKP?.pkpWallet]);
+  }, [address]);
 
   useEffect(() => {
     setDecryptLoading(Array.from({ length: allOrders.length }, () => false));
-    setDecryptMessageLoading(
-      Array.from({ length: allOrders.length }, () => false)
-    );
-    setUpdateLoading(Array.from({ length: allOrders.length }, () => false));
     setOrderOpen(Array.from({ length: allOrders.length }, () => false));
-    setUpdatedInformation(
-      Array.from({ length: allOrders.length }, () => ({
-        address: "",
-        city: "",
-        contact: "",
-        name: "",
-        state: "",
-        zip: "",
-        country: "",
-        sizes: [],
-        collectionIds: [],
-        collectionAmounts: [],
-      }))
-    );
   }, [allOrders.length]);
 
   return {
@@ -526,12 +191,6 @@ const useOrders = (
     decryptLoading,
     orderOpen,
     setOrderOpen,
-    updateFulfillmentInformation,
-    updateLoading,
-    updatedInformation,
-    setUpdatedInformation,
-    handleDecryptMessage,
-    decryptMessageLoading,
     subscriptionsLoading,
   };
 };

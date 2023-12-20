@@ -1,9 +1,9 @@
-import { Appearance } from "@stripe/stripe-js";
-
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
-
+export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
 export const BASE_URL: string = "https://api-v2.lens.dev";
 
+export const COIN_OP_OPEN_ACTION: `0x${string}` =
+  "0x179ACb90575CfF001c6c767b197FFe100B6ADc3a";
 export const LENS_HUB_PROXY_ADDRESS_MUMBAI: `0x${string}` =
   "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 export const LENS_PERIPHERY_CONTRACT_MUMBAI: `0x${string}` =
@@ -12,6 +12,8 @@ export const LENS_HUB_PROXY_ADDRESS_MATIC: `0x${string}` =
   "0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d";
 export const LENS_PERIPHERY_CONTRACT_MATIC: `0x${string}` =
   "0xeff187b4190E551FC25a7fA4dFC6cf7fDeF7194f";
+export const DIGITALAX_ADDRESS: `0x${string}` =
+  "0xAA3e5ee4fdC831e5274FE7836c95D670dC2502e6";
 
 export const ACCEPTED_TOKENS: string[][] = [
   [
@@ -59,21 +61,6 @@ export const ACCEPTED_TOKENS_MUMBAI: string[][] = [
   ],
 ];
 
-export const COIN_OP_MARKET: `0x${string}` =
-  "0x006923e8E51CB3e3f7e9744F694F999dB88887Ee";
-export const COIN_OP_ORACLE: `0x${string}` =
-  "0x7e066A206a982F7Aa0d6d0D4c5bC74E4bD048dF3";
-export const COIN_OP_FULFILLMENT: `0x${string}` =
-  "0x84E7493b1DB31bf643FD0C8A129B3b8acfD9413b";
-export const COIN_OP_PKPS: `0x${string}` =
-  "0x1c6cE9018c8F3BDa3C527817CB324b8a85Af11A3";
-export const COIN_OP_SUBSCRIPTION: `0x${string}` =
-  "0xF8371634aE217D9c24Fb5AB47D2641ea3FA343d8";
-export const MANUFACTORY: `0x${string}` =
-  "0xD17C63937aB8c91f57CB5bB1dD9B3480513bC1a9";
-export const COIN_OP_QUEST_PRELUDE: `0x${string}` =
-  "0x9CAC0A7944ba70Afd04AA62B532Cf041842E9A1a";
-
 export const allFonts: string[] = [
   "Manaspace",
   "Hermano Alto Stamp",
@@ -86,16 +73,138 @@ export const allFonts: string[] = [
 
 export const negative_prompt: string = "";
 
-export const REDIRECT_URL: string = "https://coinop.themanufactory.xyz";
 export const REDIRECT_URL_TEST: string = "http://localhost:3001";
 
-export const APPEARANCE: Appearance = {
-  theme: "night",
-  variables: {
-    colorPrimary: "#76b3f4",
-    colorBackground: "#000000",
-    fontFamily: "Manaspace",
-  },
+export const DIGITALAX_PROFILE_ID_LENS: string = "0x016305";
+
+export const COUNTRIES: string[] = [
+  "United States",
+  "Algeria",
+  "Argentina",
+  "Australia",
+  "Belgium",
+  "Brazil",
+  "Canada",
+  "Chile",
+  "China",
+  "Colombia",
+  "Egypt",
+  "France",
+  "Germany",
+  "Greece",
+  "India",
+  "Indonesia",
+  "Ireland",
+  "Israel",
+  "Italy",
+  "Japan",
+  "Kenya",
+  "Malaysia",
+  "Mexico",
+  "Morocco",
+  "Netherlands",
+  "New Zealand",
+  "Nigeria",
+  "Norway",
+  "Peru",
+  "Philippines",
+  "Poland",
+  "Portugal",
+  "Singapore",
+  "South Africa",
+  "South Korea",
+  "Spain",
+  "Sweden",
+  "Switzerland",
+  "Tanzania",
+  "Thailand",
+  "Turkey",
+  "Ukraine",
+  "United Arab Emirates",
+  "United Kingdom",
+  "Venezuela",
+  "Vietnam",
+];
+
+export const TAGS: string[] = [
+  "AI",
+  "public domain",
+  "cc0",
+  "cypherpunk",
+  "solarpunk",
+  "lofi",
+  "bedroom punk",
+  "crypto",
+  "Autonomy",
+  "retrofuturism",
+  "cybernetics",
+  "bio punk",
+  "digital art",
+  "urban exploration",
+  "ambient",
+  "sustainable",
+  "augmented",
+  "fashion",
+  "abstract expressionism",
+  "street photography",
+  "minimalist landscapes",
+  "digital surrealism",
+  "contemporary sculpture",
+  "vintage fashion",
+  "ceramic artistry",
+  "urban graffiti",
+  "fantasy illustration",
+  "retro pop culture",
+  "artisan crafts",
+  "eco-friendly designs",
+  "watercolor botanicals",
+  "avant-garde film",
+  "jazz age posters",
+  "psychedelic patterns",
+  "geometric tattoos",
+  "steampunk inventions",
+  "gothic architecture",
+  "conceptual installations",
+  "Abstract",
+  "Bohemian",
+  "Cyberpunk",
+  "Deco",
+  "Ethereal",
+  "Futurism",
+  "Graffiti",
+  "neo",
+  "Holographic",
+  "Impressionist",
+  "Juxtaposed",
+  "Kinetic",
+  "Luminous",
+  "Minimalist",
+  "Neon",
+  "Organic",
+  "Pixel",
+  "Quirky",
+  "Retro",
+  "Surreal",
+  "Textured",
+];
+
+export const printStringToNumber: { [key: string]: string } = {
+  ["Sticker"]: "0",
+  ["Poster"]: "1",
+  ["Shirt"]: "2",
+  ["Hoodie"]: "3",
+  ["Sleeve"]: "4",
+  ["Crop"]: "5",
+  ["NFTOnly"]: "6",
+  ["Custom"]: "7",
+  ["Other"]: "8",
 };
 
-export const DIGITALAX_PROFILE_ID_LENS: string = "0x016305"
+export const printTypeToString: { [key in number]: string } = {
+  [0]: "sticker",
+  [1]: "poster",
+  [2]: "shirt",
+  [3]: "hoodie",
+  [4]: "sleeve",
+  [5]: "crop",
+};

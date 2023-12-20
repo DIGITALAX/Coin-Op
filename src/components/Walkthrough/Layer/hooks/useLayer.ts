@@ -9,7 +9,7 @@ import { AnyAction, Dispatch } from "redux";
 import { Template } from "../../Format/types/format.types";
 
 const useLayer = (dispatch: Dispatch<AnyAction>, template: Template) => {
-  const { preRollRef } = useContext(ScrollContext);
+  const { prerollRef } = useContext(ScrollContext);
   const [layersLoading, setLayersLoading] = useState<boolean>(false);
 
   const getLayers = async () => {
@@ -62,16 +62,16 @@ const useLayer = (dispatch: Dispatch<AnyAction>, template: Template) => {
     setLayersLoading(false);
   };
 
-  const scrollToPreRoll = () => {
-    if (!preRollRef || !preRollRef?.current) return;
+  const scrollToPreroll = () => {
+    if (!prerollRef || !prerollRef?.current) return;
 
-    preRollRef?.current.scrollIntoView({
+    prerollRef?.current.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
 
     setTimeout(() => {
-      preRollRef.current!.scrollTop = preRollRef.current!.scrollHeight;
+      prerollRef.current!.scrollTop = prerollRef.current!.scrollHeight;
     }, 500);
   };
 
@@ -81,7 +81,7 @@ const useLayer = (dispatch: Dispatch<AnyAction>, template: Template) => {
 
   return {
     layersLoading,
-    scrollToPreRoll,
+    scrollToPreroll,
   };
 };
 

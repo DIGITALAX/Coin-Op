@@ -1,15 +1,16 @@
 import { FetchResult } from "@apollo/client";
+import { authClient, apolloClient } from "../../../lib/lens/client";
 import {
   WhoActedOnPublicationDocument,
   WhoActedOnPublicationQuery,
   WhoActedOnPublicationRequest,
-} from "./../../../src/components/Common/types/generated";
-import { authClient } from "../../../lib/lens/client";
+} from "@/components/Common/types/generated";
 
-export const whoActed = async (
-  request: WhoActedOnPublicationRequest
+export const whoActedPublication = async (
+  request: WhoActedOnPublicationRequest,
+  connected: boolean
 ): Promise<FetchResult<WhoActedOnPublicationQuery>> => {
-  return await authClient.query({
+  return await (connected ? apolloClient : authClient).query({
     query: WhoActedOnPublicationDocument,
     variables: {
       request: request,
@@ -17,3 +18,4 @@ export const whoActed = async (
     fetchPolicy: "no-cache",
   });
 };
+export default whoActedPublication;

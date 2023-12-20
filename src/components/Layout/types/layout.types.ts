@@ -1,8 +1,8 @@
-import { CartItem, PreRoll } from "@/components/Common/types/common.types";
+import { CartItem } from "@/components/Common/types/common.types";
 import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
-import { PreRollState } from "../../../../redux/reducers/preRollSlice";
-import { AuthSig, SessionSig } from "@lit-protocol/types";
+import { PrerollState } from "../../../../redux/reducers/prerollSlice";
+import { Profile } from "@/components/Common/types/generated";
 
 export type StickyProps = {
   router: NextRouter;
@@ -11,28 +11,18 @@ export type StickyProps = {
   cartAnim: boolean;
   dispatch: Dispatch<AnyAction>;
   videoPlayer: boolean;
+  signInLoading: boolean;
   connected: boolean;
   chain: number | undefined;
-  connectedPKP:
-    | {
-        ethAddress: string;
-        publicKey: string;
-        tokenId: {
-          hex: string;
-          type: string;
-        };
-        sessionSig: SessionSig;
-        pkpWallet: any;
-        authSig: AuthSig;
-        encryptedToken: string;
-      }
-    | undefined;
-  openAccountModal: (() => void) | undefined;
+  handleLogout: () => void;
   openChainModal: (() => void) | undefined;
+  openConnectModal: (() => void) | undefined;
+  handleLensSignIn: () => Promise<void>;
+  profile: Profile | undefined;
 };
 
 export type MobileFotosProps = {
-  preRolls: PreRollState;
+  prerolls: PrerollState;
   dispatch: Dispatch<AnyAction>;
-  preRollsLoading: boolean;
+  prerollsLoading: boolean;
 };

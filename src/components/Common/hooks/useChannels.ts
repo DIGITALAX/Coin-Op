@@ -20,13 +20,10 @@ import {
   MainVideoState,
   setMainVideo,
 } from "../../../../redux/reducers/mainVideoSlice";
-import {
-  getPublications,
-  getPublicationsAuth,
-} from "../../../../graphql/lens/queries/getPublications";
 import { setReactId } from "../../../../redux/reducers/reactIdSlice";
 import { AnyAction, Dispatch } from "redux";
 import { VideoSyncState } from "../types/common.types";
+import getPublications from "../../../../graphql/lens/queries/publications";
 
 const useChannels = (
   dispatch: Dispatch<AnyAction>,
@@ -54,26 +51,19 @@ const useChannels = (
         actionVideosLoading: true,
       })
     );
-    let data: FetchResult<PublicationsQuery>,
-      sortedArr: Post[] = [];
+    let sortedArr: Post[] = [];
     try {
-      if (lensProfile) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
             from: ["0x01c6a9"],
           },
-        });
-      } else {
-        data = await getPublications({
-          limit: LimitType.Ten,
-          where: {
-            publicationTypes: [PublicationType.Post],
-            from: ["0x01c6a9"],
-          },
-        });
-      }
+        },
+        lensProfile?.id
+      );
+
       if (!data || !data?.data || data?.data.publications?.items?.length < 1) {
         return;
       }
@@ -137,25 +127,18 @@ const useChannels = (
       return;
     }
     try {
-      if (lensProfile) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
             from: ["0x01c6a9"],
           },
           cursor: paginated?.next,
-        });
-      } else {
-        data = await getPublications({
-          limit: LimitType.Ten,
-          where: {
-            publicationTypes: [PublicationType.Post],
-            from: ["0x01c6a9"],
-          },
-          cursor: paginated?.next,
-        });
-      }
+        },
+        lensProfile?.id
+      );
+
       const arr: Post[] = [
         ...(data?.data?.publications?.items || []),
       ] as Post[];
@@ -230,25 +213,18 @@ const useChannels = (
   };
 
   const refetchInteractions = async () => {
-    let data: FetchResult<PublicationsQuery>;
     try {
-      if (lensProfile) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
             from: ["0x01c6a9"],
           },
-        });
-      } else {
-        data = await getPublications({
-          limit: LimitType.Ten,
-          where: {
-            publicationTypes: [PublicationType.Post],
-            from: ["0x01c6a9"],
-          },
-        });
-      }
+        },
+        lensProfile?.id
+      );
+
       const arr: Post[] = [
         ...(data?.data?.publications?.items || []),
       ] as Post[];

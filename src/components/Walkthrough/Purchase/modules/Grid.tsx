@@ -5,7 +5,6 @@ import { GridProps } from "../types/synth.types";
 import { CartItem } from "@/components/Common/types/common.types";
 import { setImageViewer } from "../../../../../redux/reducers/imageViewerSlice";
 import Checkout from "./Checkout";
-import useCheckout from "../hooks/useCheckout";
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
@@ -15,30 +14,28 @@ const Grid: FunctionComponent<GridProps> = ({
   address,
   openConnectModal,
   fulfillmentDetails,
-  connectedPKP,
   chain,
   openChainModal,
-  client,
-  publicClient,
-  paymentType,
-  encryptedInformation,
+  handleApproveSpend,
+  handleCheckoutCrypto,
+  approved,
+  cryptoCheckoutLoading,
+  checkoutCurrency,
+  setCheckoutCurrency,
+  setCartItem,
+  encryptFulfillment,
+  cartItem,
+  oracleValue,
+  setOpenCountryDropDown,
+  openCountryDropDown,
+  setFulfillmentDetails,
+  startIndex,
+  setStartIndex,
+  encrypted,
+  lensConnected,
+  handleLensSignIn,
+  setEncrypted,
 }): JSX.Element => {
-  const {
-    cartItem,
-    handleCheckoutFiat,
-    handleCheckoutCrypto,
-    cryptoCheckoutLoading,
-    fiatCheckoutLoading,
-    checkoutCurrency,
-    setCheckoutCurrency,
-    setCartItem,
-    startIndex,
-    setStartIndex,
-    approved,
-    handleApproveSpend,
-    oracleValue,
-    encryptFulfillerInformation,
-  } = useCheckout(client, dispatch, address, publicClient);
   return (
     <div
       className="relative w-full h-120 synth:h-100 flex flex-col gap-2"
@@ -54,15 +51,19 @@ const Grid: FunctionComponent<GridProps> = ({
       </div>
       <div className="relative w-full flex flex-col synth:flex-row h-5/6 synth:pr-7 pt-4 items-center justify-start gap-5">
         <Checkout
+          setEncrypted={setEncrypted}
+          lensConnected={lensConnected}
+          handleLensSignIn={handleLensSignIn}
+          setFulfillmentDetails={setFulfillmentDetails}
           address={address}
+          setOpenCountryDropDown={setOpenCountryDropDown}
+          openCountryDropDown={openCountryDropDown}
+          encrypted={encrypted}
           openConnectModal={openConnectModal}
           signInLoading={signInLoading}
-          paymentType={paymentType}
           cartItems={cartItems}
           cartItem={cartItem}
           handleCheckoutCrypto={handleCheckoutCrypto}
-          handleCheckoutFiat={handleCheckoutFiat}
-          fiatCheckoutLoading={fiatCheckoutLoading}
           cryptoCheckoutLoading={cryptoCheckoutLoading}
           dispatch={dispatch}
           checkoutCurrency={checkoutCurrency}
@@ -72,11 +73,9 @@ const Grid: FunctionComponent<GridProps> = ({
           handleApproveSpend={handleApproveSpend}
           oracleValue={oracleValue}
           setCartItem={setCartItem}
-          encryptFulfillerInformation={encryptFulfillerInformation}
-          encryptedInformation={encryptedInformation}
-          connectedPKP={connectedPKP}
           chain={chain}
           openChainModal={openChainModal}
+          encryptFulfillment={encryptFulfillment}
         />
         <div className="relative w-3/4 preG:w-96 h-96 xl:h-80 justify-end flex items-center">
           <div
@@ -86,18 +85,19 @@ const Grid: FunctionComponent<GridProps> = ({
               dispatch(
                 setImageViewer({
                   actionValue: true,
-                  actionImage: cartItem?.uri
-                    ? cartItem?.uri?.image?.split("ipfs://")[1]
-                    : cartItems[0]?.uri?.image?.split("ipfs://")[1],
+                  actionImage:
+                    cartItem?.item?.collectionMetadata?.images?.[0]?.split(
+                      "ipfs://"
+                    )?.[1],
                 })
               )
             }
           >
             <Image
               src={`${INFURA_GATEWAY}/ipfs/${
-                cartItem?.uri
-                  ? cartItem?.uri?.image?.split("ipfs://")[1]
-                  : cartItems[0]?.uri?.image?.split("ipfs://")[1]
+                cartItem?.item?.collectionMetadata?.images?.[0]?.split(
+                  "ipfs://"
+                )?.[1]
               }`}
               layout="fill"
               objectFit="cover"
@@ -127,7 +127,9 @@ const Grid: FunctionComponent<GridProps> = ({
                 >
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/${
-                      item?.uri?.image?.split("ipfs://")[1]
+                      item?.item?.collectionMetadata?.images?.[0]?.split(
+                        "ipfs://"
+                      )?.[1]
                     }`}
                     layout="fill"
                     objectFit="cover"
@@ -143,7 +145,7 @@ const Grid: FunctionComponent<GridProps> = ({
               className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center"
               onClick={() => {
                 setStartIndex((prevIndex) =>
-                  prevIndex === 0 ? cartItems.length - 1 : prevIndex - 1
+                  prevIndex === 0 ? cartItems?.length - 1 : prevIndex - 1
                 );
                 setCartItem(cartItems[startIndex]);
               }}
@@ -158,7 +160,7 @@ const Grid: FunctionComponent<GridProps> = ({
               className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center"
               onClick={() => {
                 setStartIndex(
-                  (prevIndex) => (prevIndex + 1) % cartItems.length
+                  (prevIndex) => (prevIndex + 1) % cartItems?.length
                 );
                 setCartItem(cartItems[startIndex]);
               }}
@@ -173,7 +175,7 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="relative flex justify-center w-full preG:w-fit preG:absolute text-white flex font-mana text-sm sm:text-xl 900:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-4"
+        className="relative flex justify-center w-full preG:w-fit preG:absolute text-white flex font-mana text-sm sm:text-xl tablet:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-4"
         draggable={false}
       >
         make it yours

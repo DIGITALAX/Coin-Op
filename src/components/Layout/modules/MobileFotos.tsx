@@ -1,19 +1,19 @@
 import { FunctionComponent } from "react";
 import { MobileFotosProps } from "../types/layout.types";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { PreRoll } from "@/components/Common/types/common.types";
+import { Preroll } from "@/components/Common/types/common.types";
 import "swiper/css";
 import Image from "next/legacy/image";
-import { INFURA_GATEWAY } from "../../../../lib/constants";
+import { INFURA_GATEWAY, printTypeToString } from "../../../../lib/constants";
 import PrintTag from "@/components/Common/modules/PrintTag";
 import { setSearchExpand } from "../../../../redux/reducers/searchExpandSlice";
 import createProfilePicture from "../../../../lib/lens/helpers/createProfilePicture";
 import Link from "next/link";
 
 const MobileFotos: FunctionComponent<MobileFotosProps> = ({
-  preRolls,
+  prerolls,
   dispatch,
-  preRollsLoading,
+  prerollsLoading,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-[95vh] items-center justify-center flex sm:hidden flex-col gap-3">
@@ -32,7 +32,7 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
         zoom
         loop
       >
-        {preRollsLoading
+        {prerollsLoading
           ? Array.from({ length: 40 }).map((_, index: number) => {
               return (
                 <SwiperSlide
@@ -47,10 +47,10 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                 </SwiperSlide>
               );
             })
-          : [...preRolls?.left, ...preRolls?.right].map(
-              (preRoll: PreRoll, index: number) => {
+          : [...(prerolls?.left || []), ...(prerolls?.right || [])].map(
+              (preroll: Preroll, index: number) => {
                 const profileImage = createProfilePicture(
-                  preRoll.uri.profile?.metadata?.picture
+                  preroll?.profile?.metadata?.picture
                 );
                 return (
                   <SwiperSlide
@@ -58,13 +58,13 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                     className={`h-fit w-full flex flex-col gap-2 relative items-center justify-center`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      dispatch(setSearchExpand(preRoll));
+                      dispatch(setSearchExpand(preroll));
                     }}
                     style={{ display: "flex" }}
                   >
                     <div
                       className={`w-full h-full border border-white grow p-3 ${
-                        preRoll.newDrop &&
+                        preroll.newDrop &&
                         "bg-[radial-gradient(at_center_bottom,_#00abfe,_#00cdc2,_#86a4b3,_#00CDC2)]"
                       }`}
                     >
@@ -76,19 +76,21 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                           layout="fill"
                           objectFit="cover"
                           src={`${INFURA_GATEWAY}/ipfs/${
-                            preRoll.uri.image?.[0]?.split("ipfs://")[1]
+                            preroll?.collectionMetadata?.images?.[0]?.split(
+                              "ipfs://"
+                            )[1]
                           }`}
                           className="w-full h-full flex grow"
                         />
-                        {preRoll.newDrop && (
+                        {preroll.newDrop && (
                           <div className="absolute top-2 left-2 bg-ama flex w-fit text-base h-fit px-2 py-1 text-black font-monu">
                             🔥 new drop 🔥
                           </div>
                         )}
                         <div className="absolute bottom-2 right-2 flex">
                           <PrintTag
-                            backgroundColor={preRoll.bgColor}
-                            type={preRoll.printType}
+                            backgroundColor={preroll.bgColor}
+                            type={printTypeToString[Number(preroll.printType)]}
                           />
                         </div>
                       </div>
@@ -98,8 +100,8 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                         className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
                         onClick={() =>
                           window.open(
-                            `https://www.chromadin.xyz/autograph/${
-                              preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                            `https://cypher.digitalax.xyz/autograph/${
+                              preroll?.profile?.handle?.suggestedFormatted?.localName?.split(
                                 "@"
                               )[1]
                             }`
@@ -119,25 +121,23 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                         </div>
                         <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
                           {
-                            preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
+                            preroll?.profile?.handle?.suggestedFormatted?.localName?.split(
                               "@"
                             )[1]
                           }
                         </div>
                       </div>
-                      {preRoll?.uri?.chromadinCollectionName && (
+                      {preroll?.collectionMetadata?.title && (
                         <div className="relative w-fit h-fit flex items-center justify-center">
                           <div
                             className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
                             onClick={() =>
                               window.open(
-                                `https://www.chromadin.xyz/autograph/${
-                                  preRoll?.uri?.profile?.handle?.suggestedFormatted?.localName?.split(
-                                    "@"
-                                  )[1]
-                                }/collection/${preRoll?.uri?.chromadinCollectionName
+                                `https://cypher.digitalax.xyz/item/chromadin/${preroll?.collectionMetadata?.title
                                   ?.toLowerCase()
-                                  ?.replaceAll(" ", "_")}`
+                                  ?.replaceAll(" ", "_")
+                                  ?.replaceAll(" ", "_")
+                                  ?.replaceAll("_(print)", "")}`
                               )
                             }
                             title="nft art"

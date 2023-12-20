@@ -350,7 +350,7 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="relative justify-center flex preG:absolute text-white font-mana text-sm sm:text-xl 900:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-3 preG:order-3 order-2"
+        className="relative justify-center flex preG:absolute text-white font-mana text-sm sm:text-xl tablet:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-3 preG:order-3 order-2"
         draggable={false}
       >
         presets & synth

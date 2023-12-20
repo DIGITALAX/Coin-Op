@@ -4,15 +4,14 @@ import { PublicClient, WalletClient } from "viem";
 import { polygon } from "viem/chains";
 import handleIndexCheck from "./handleIndexCheck";
 import LensHubProxy from "./../../../abis/LensHubProxy.json";
-import { setPurchase } from "../../../redux/reducers/purchaseSlice";
 import { setIndexModal } from "../../../redux/reducers/indexModalSlice";
 import {
   ActOnOpenActionInput,
   RelaySuccess,
 } from "@/components/Common/types/generated";
-import collect from "../../../graphql/lens/mutations/collect";
 import broadcast from "../../../graphql/lens/mutations/broadcast";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../../constants";
+import { collectPost } from "../../../graphql/lens/mutations/collect";
 
 const actSig = async (
   forId: string,
@@ -23,12 +22,11 @@ const actSig = async (
   dispatch: Dispatch<AnyAction>
 ) => {
   try {
-    const collectPost = await collect({
+    const collect = await collectPost({
       for: forId,
       actOn,
     });
-    const typedData =
-      collectPost.data?.createActOnOpenActionTypedData.typedData;
+    const typedData = collect.data?.createActOnOpenActionTypedData.typedData;
 
     const signature = await clientWallet.signTypedData({
       domain: omit(typedData?.domain, ["__typename"]),
@@ -39,7 +37,7 @@ const actSig = async (
     });
 
     const broadcastResult = await broadcast({
-      id: collectPost?.data?.createActOnOpenActionTypedData?.id,
+      id: collect?.data?.createActOnOpenActionTypedData?.id,
       signature,
     });
     if (broadcastResult?.data?.broadcastOnchain?.__typename == "RelayError") {
@@ -63,13 +61,6 @@ const actSig = async (
         account: address,
       });
       const res = await clientWallet.writeContract(request);
-      dispatch(
-        setPurchase({
-          actionOpen: false,
-          actionId: "",
-          actionIndex: undefined,
-        })
-      );
       const tx = await publicClient.waitForTransactionReceipt({ hash: res });
       dispatch(
         setIndexModal({
@@ -77,9 +68,12 @@ const actSig = async (
           actionMessage: "Indexing Interaction",
         })
       );
-      await handleIndexCheck({
-        forTxHash: tx.transactionHash
-      }, dispatch);
+      await handleIndexCheck(
+        {
+          forTxHash: tx.transactionHash,
+        },
+        dispatch
+      );
     } else {
       dispatch(
         setIndexModal({

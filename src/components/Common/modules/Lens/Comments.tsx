@@ -17,8 +17,6 @@ import { setSecondaryComment } from "../../../../../redux/reducers/secondaryComm
 import FetchMoreLoading from "./FetchMoreLoading";
 import descriptionRegex from "../../../../../lib/lens/helpers/descriptionRegex";
 import createProfilePicture from "../../../../../lib/lens/helpers/createProfilePicture";
-import { setFollowerOnly } from "../../../../../redux/reducers/followerOnlySlice";
-import { setPurchase } from "../../../../../redux/reducers/purchaseSlice";
 import { CommentsProps } from "../../types/common.types";
 
 const Comments: FunctionComponent<CommentsProps> = ({
@@ -149,11 +147,15 @@ const Comments: FunctionComponent<CommentsProps> = ({
                             dangerouslySetInnerHTML={{
                               __html: descriptionRegex(
                                 (comment?.metadata as TextOnlyMetadataV3)
-                                  ?.content
+                                  ?.content,
+                                false
                               ),
                             }}
                           ></div>
-                          <div className="relative w-44 h-fit overflow-x-scroll grid grid-flow-col auto-cols-auto gap-3 z-10" id="hozScroll">
+                          <div
+                            className="relative w-44 h-fit overflow-x-scroll grid grid-flow-col auto-cols-auto gap-3 z-10"
+                            id="hozScroll"
+                          >
                             {(
                               comment?.metadata as ImageMetadataV3
                             )?.attachments?.map(
@@ -303,46 +305,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                         </div>
                         <div className="relative w-full h-full grid grid-cols-2 gap-2 items-center justify-end">
                           <div
-                            className={`relative w-full h-full grid grid-flow-col auto-cols-auto items-center justify-end flex-row gap-2 ${
-                              comment?.openActionModules?.[0]?.__typename ===
-                                "SimpleCollectOpenActionSettings" &&
-                              lensProfile &&
-                              "cursor-sewingHS"
-                            }`}
-                            onClick={
-                              comment?.openActionModules?.[0]?.__typename ===
-                              "SimpleCollectOpenActionSettings"
-                                ? Number(
-                                    comment.openActionModules[0]?.amount?.value
-                                  ) > 0 &&
-                                  (!comment.openActionModules[0]
-                                    ?.followerOnly ||
-                                    (comment.openActionModules[0]
-                                      ?.followerOnly &&
-                                      lensProfile?.operations?.isFollowedByMe))
-                                  ? () => collectComment(comment?.id)
-                                  : comment?.openActionModules[0]
-                                      ?.followerOnly &&
-                                    !lensProfile?.operations?.isFollowedByMe
-                                  ? () =>
-                                      dispatch(
-                                        setFollowerOnly({
-                                          actionOpen: true,
-                                          actionId: comment?.id,
-                                          actionFollowerId: comment?.by?.id,
-                                          actionIndex: index,
-                                        })
-                                      )
-                                  : () =>
-                                      dispatch(
-                                        setPurchase({
-                                          actionOpen: true,
-                                          actionId: comment?.id,
-                                          actionIndex: index,
-                                        })
-                                      )
-                                : () => {}
-                            }
+                            className={`relative w-full h-full grid grid-flow-col auto-cols-auto items-center justify-end flex-row gap-2 opacity-70`}
                           >
                             {collectCommentLoading[index] ? (
                               <AiOutlineLoading

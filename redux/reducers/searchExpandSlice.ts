@@ -1,8 +1,8 @@
-import { PreRoll } from "@/components/Common/types/common.types";
+import { Preroll } from "@/components/Common/types/common.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface SearchExpandState {
-  value: PreRoll | undefined;
+  value: Preroll | undefined;
 }
 
 const initialSearchExpandState: SearchExpandState = {
@@ -15,7 +15,7 @@ export const searchExpandSlice = createSlice({
   reducers: {
     setSearchExpand: (
       state: SearchExpandState,
-      action: PayloadAction<PreRoll | undefined>
+      action: PayloadAction<Preroll | undefined>
     ) => {
       state.value = action.payload;
     },

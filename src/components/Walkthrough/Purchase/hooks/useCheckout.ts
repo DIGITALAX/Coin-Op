@@ -1,83 +1,362 @@
-import { CartItem } from "@/components/Common/types/common.types";
+import {
+  CartItem,
+  Details,
+  OracleData,
+} from "@/components/Common/types/common.types";
 import { useEffect, useState } from "react";
-import { useStripe, useElements } from "@stripe/react-stripe-js";
-import { useSelector } from "react-redux";
-import { setMessagesModal } from "../../../../../redux/reducers/messagesModalSlice";
+import { AnyAction, Dispatch } from "redux";
+import { NextRouter } from "next/router";
+import { PublicClient, createWalletClient, custom } from "viem";
+import {
+  LitNodeClient,
+  checkAndSignAuthMessage,
+} from "@lit-protocol/lit-node-client";
 import {
   ACCEPTED_TOKENS,
-  // ACCEPTED_TOKENS_MUMBAI,
-  COIN_OP_MARKET,
-  COIN_OP_ORACLE,
+  COIN_OP_OPEN_ACTION,
 } from "../../../../../lib/constants";
-import { ethers } from "ethers";
-import CoinOpMarketABI from "../../../../../abis/CoinOpMarket.json";
-import { RootState } from "../../../../../redux/store";
-import { setCart } from "../../../../../redux/reducers/cartSlice";
-import { PublicClient, createWalletClient, custom } from "viem";
-import { polygon } from "viem/chains";
+import { Profile } from "@/components/Common/types/generated";
 import { encryptItems } from "../../../../../lib/subgraph/helpers/encryptItems";
-import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
-import { setLogin } from "../../../../../redux/reducers/loginSlice";
-import { setEncryptedInfo } from "../../../../../redux/reducers/encryptedInformationSlice";
-import { setFulfillmentDetails } from "../../../../../redux/reducers/fulfillmentDetailsSlice";
+import findBalance from "../../../../../lib/subgraph/helpers/findBalance";
+import { polygon } from "viem/chains";
+import encodeActData from "../../../../../lib/subgraph/helpers/encodeActData";
+import toHexWithLeadingZero from "../../../../../lib/lens/helpers/leadingZero";
 import {
   removeCartItemsLocalStorage,
-  removeFulfillmentDetailsLocalStorage,
+  setCartItemsLocalStorage,
 } from "../../../../../lib/subgraph/utils";
-import { createTxData } from "../../../../../lib/subgraph/helpers/createTxData";
-import { litExecute } from "../../../../../lib/subgraph/helpers/litExecute";
-import { LitNodeClient } from "@lit-protocol/lit-node-client";
-import { AnyAction, Dispatch } from "redux";
+import { setCart } from "../../../../../redux/reducers/cartSlice";
+import actPost from "../../../../../lib/lens/helpers/actPost";
+import { setInsufficientBalance } from "../../../../../redux/reducers/insufficientBalanceSlice";
+import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 
 const useCheckout = (
-  client: LitNodeClient,
+  publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
-  publicClient: PublicClient
+  lensConnected: Profile | undefined,
+  client: LitNodeClient,
+  oracleData: OracleData[],
+  cartItems: CartItem[],
+  router: NextRouter
 ) => {
-  const fulfillmentDetails = useSelector(
-    (state: RootState) => state.app.fulfillmentDetailsReducer.value
-  );
-  const cartItems = useSelector(
-    (state: RootState) => state.app.cartReducer.value
-  );
-  const encrypted = useSelector(
-    (state: RootState) => state.app.encryptedInformationReducer
-  );
-  const currentPKP = useSelector(
-    (state: RootState) => state.app.currentPKPReducer.value
-  );
-  const paymentType = useSelector(
-    (state: RootState) => state.app.paymentTypeReducer.value
-  );
-  const stripe = useStripe();
-  const elements = useElements();
-  const [approved, setApproved] = useState<boolean>(false);
-  const [cartItem, setCartItem] = useState<CartItem | undefined>();
   const [startIndex, setStartIndex] = useState<number>(0);
-  const [oracleValue, setOracleValue] = useState<number>(1);
-  const [cryptoCheckoutLoading, setCryptoCheckoutLoading] =
-    useState<boolean>(false);
-  const [fiatCheckoutLoading, setFiatCheckoutLoading] =
-    useState<boolean>(false);
-  const [checkoutCurrency, setCheckoutCurrency] = useState<string>("USDT");
-  const [totalAmount, setTotalAmount] = useState<number>(
-    cartItems?.length > 0
-      ? cartItems?.reduce(
-          (accumulator, currentItem) =>
-            accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
-          0
-        )
-      : 0
+  const [fulfillmentDetails, setFulfillmentDetails] = useState<Details>({
+    name: "",
+    contact: "",
+    address: "",
+    zip: "",
+    city: "",
+    state: "",
+    country: "",
+  });
+  const [encrypted, setEncrypted] = useState<
+    | {
+        pubId: string;
+        data: string;
+      }[]
+    | undefined
+  >();
+  const [chooseCartItem, setChooseCartItem] = useState<CartItem>();
+  const [isApprovedSpend, setApprovedSpend] = useState<boolean>(false);
+  const [checkoutCurrency, setCheckoutCurrency] = useState<string>(
+    ACCEPTED_TOKENS[1][2]?.toLowerCase()
   );
+  const [openCountryDropdown, setOpenCountryDropdown] =
+    useState<boolean>(false);
+  const [collectPostLoading, setCollectPostLoading] = useState<boolean>(false);
 
-  const getAddressApproved = async () => {
-    if (!address) return;
+  const encryptFulfillment = async () => {
+    if (
+      !address ||
+      fulfillmentDetails?.address?.trim() === "" ||
+      fulfillmentDetails?.city?.trim() === "" ||
+      fulfillmentDetails?.name?.trim() === "" ||
+      fulfillmentDetails?.state?.trim() === "" ||
+      fulfillmentDetails?.zip?.trim() === "" ||
+      fulfillmentDetails?.country?.trim() === ""
+    )
+      return;
+    setCollectPostLoading(true);
+    try {
+      const authSig = await checkAndSignAuthMessage({
+        chain: "polygon",
+      });
+
+      await client.connect();
+
+      const encryptedItems = await encryptItems(
+        client,
+        {
+          ...fulfillmentDetails,
+          contact: lensConnected?.handle?.suggestedFormatted?.localName!,
+        },
+        address,
+        authSig,
+        cartItems
+      );
+
+      encryptedItems && setEncrypted(encryptedItems);
+    } catch (err: any) {
+      console.error(err.message);
+    }
+    setCollectPostLoading(false);
+  };
+
+  const collectItem = async () => {
+    if (!encrypted) return;
+
+    setCollectPostLoading(true);
+    try {
+      const balance = await findBalance(
+        publicClient,
+        checkoutCurrency,
+        address as `0x${string}`
+      );
+
+      if (
+        Number(balance) <
+        (Number(
+          cartItems
+            ?.filter(
+              (item) =>
+                item?.item?.collectionMetadata?.title ==
+                chooseCartItem?.item?.collectionMetadata?.title
+            )
+            ?.reduce(
+              (accumulator, currentItem) =>
+                accumulator +
+                Number(currentItem?.item?.prices?.[currentItem.chosenIndex!]) *
+                  currentItem.chosenAmount,
+              0
+            ) *
+            10 ** 18
+        ) /
+          Number(
+            oracleData?.find(
+              (oracle) =>
+                oracle.currency?.toLowerCase() ===
+                checkoutCurrency?.toLowerCase()
+            )?.rate
+          )) *
+          Number(
+            oracleData?.find(
+              (oracle) =>
+                oracle.currency?.toLowerCase() ===
+                checkoutCurrency?.toLowerCase()
+            )?.wei
+          )
+      ) {
+        dispatch(
+          setInsufficientBalance({
+            actionValue: true,
+            actionMessage: "Pockets Empty. Need to top up?",
+          })
+        );
+        setCollectPostLoading(false);
+        return;
+      }
+
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      const unknownOpenAction = encodeActData(
+        chooseCartItem!,
+        cartItems,
+        encrypted?.find((item) => item?.pubId == chooseCartItem?.item?.pubId)
+          ?.data || "",
+        checkoutCurrency as `0x${string}`
+      );
+
+      const success = await actPost(
+        `${toHexWithLeadingZero(
+          Number(chooseCartItem?.item?.profileId)
+        )}-${toHexWithLeadingZero(Number(chooseCartItem?.item?.pubId))}`,
+        {
+          unknownOpenAction,
+        },
+        dispatch,
+        address as `0x${string}`,
+        clientWallet,
+        publicClient
+      );
+
+      if (success) {
+        const newItems = [...cartItems];
+
+        const newCart = newItems
+          ?.filter((item) => item?.item?.pubId !== chooseCartItem?.item?.pubId)
+          ?.filter(Boolean);
+
+        if (newCart?.length < 1) {
+          dispatch(setCart([]));
+          removeCartItemsLocalStorage();
+          setEncrypted(undefined);
+          setFulfillmentDetails({
+            name: "",
+            contact: "",
+            address: "",
+            zip: "",
+            city: "",
+            state: "",
+            country: "",
+          });
+          dispatch(
+            setModalOpen({
+              actionOpen: true,
+              actionMessage:
+                "They're all yours, now. Keep up with fulfillment & shipping in your account page.",
+            })
+          );
+          router.push(
+            `https://cypher.digitalax.xyz/autograph/${
+              lensConnected?.handle?.suggestedFormatted?.localName?.split(
+                "@"
+              )?.[1]
+            }`
+          );
+        }
+
+        dispatch(setCart(newCart));
+        setCartItemsLocalStorage(JSON.stringify(newCart));
+        setChooseCartItem(newCart?.[0]);
+      }
+    } catch (err: any) {
+      console.error(err.message);
+    }
+
+    setCollectPostLoading(false);
+  };
+
+  const approveSpend = async () => {
+    setCollectPostLoading(true);
+    try {
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      const item = cartItems?.find(
+        (item) => item?.item?.pubId === chooseCartItem?.item?.pubId
+      );
+
+      const { request } = await publicClient.simulateContract({
+        address: checkoutCurrency as `0x${string}`,
+        abi: [
+          checkoutCurrency === "0xf87b6343c172720ac9cc7d1c9465d63454a8ef30"
+            ? {
+                inputs: [
+                  {
+                    internalType: "address",
+                    name: "spender",
+                    type: "address",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "tokens",
+                    type: "uint256",
+                  },
+                ],
+                name: "approve",
+                outputs: [
+                  { internalType: "bool", name: "success", type: "bool" },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+              }
+            : checkoutCurrency === "0x3cf7283c025d82390e86d2feb96eda32a393036b"
+            ? {
+                constant: false,
+                inputs: [
+                  { name: "guy", type: "address" },
+                  { name: "wad", type: "uint256" },
+                ],
+                name: "approve",
+                outputs: [{ name: "", type: "bool" }],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "function",
+              }
+            : {
+                inputs: [
+                  {
+                    internalType: "address",
+                    name: "spender",
+                    type: "address",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "amount",
+                    type: "uint256",
+                  },
+                ],
+                name: "approve",
+                outputs: [
+                  {
+                    internalType: "bool",
+                    name: "",
+                    type: "bool",
+                  },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+              },
+        ],
+        functionName: "approve",
+        chain: polygon,
+        args: [
+          COIN_OP_OPEN_ACTION,
+          ((Number(
+            cartItems
+              ?.filter(
+                (item) =>
+                  item?.item?.collectionMetadata?.title ==
+                  chooseCartItem?.item?.collectionMetadata?.title
+              )
+              ?.reduce(
+                (accumulator, currentItem) =>
+                  accumulator +
+                  Number(
+                    currentItem?.item?.prices?.[currentItem.chosenIndex!]
+                  ) *
+                    currentItem.chosenAmount,
+                0
+              ) *
+              10 ** 18
+          ) /
+            Number(
+              oracleData?.find(
+                (oracle) =>
+                  oracle.currency?.toLowerCase() ===
+                  checkoutCurrency?.toLowerCase()
+              )?.rate
+            )) *
+            Number(
+              oracleData?.find(
+                (oracle) =>
+                  oracle.currency?.toLowerCase() ===
+                  checkoutCurrency?.toLowerCase()
+              )?.wei
+            ) *
+            1.3) as any,
+        ],
+        account: address,
+      });
+      const res = await clientWallet.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash: res });
+      setApprovedSpend(true);
+    } catch (err: any) {
+      console.error(err.message);
+    }
+    setCollectPostLoading(false);
+  };
+
+  const checkApproved = async () => {
     try {
       const data = await publicClient.readContract({
-        address: ACCEPTED_TOKENS.find(
-          ([_, token]) => token === checkoutCurrency
-        )?.[2].toLowerCase() as `0x${string}`,
+        address: checkoutCurrency?.toLowerCase() as `0x${string}`,
         abi: [
           {
             inputs: [
@@ -105,613 +384,98 @@ const useCheckout = (
           },
         ],
         functionName: "allowance",
-        args: [address as `0x${string}`, COIN_OP_MARKET],
+        args: [address as `0x${string}`, COIN_OP_OPEN_ACTION],
       });
 
-      if (
-        Number(data as any) /
-          ((ACCEPTED_TOKENS.find(
-            ([_, token]) => token === checkoutCurrency
-          )?.[2] as `0x${string}`) ===
-          "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
-            ? 10 ** 6
-            : 10 ** 18) >=
-        totalAmount
-      ) {
-        setApproved(true);
-      } else {
-        setApproved(false);
-      }
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
-  const getTotalAmount = async () => {
-    if (cartItems.length < 1) {
-      setTotalAmount(0);
-    } else {
-      const total = cartItems?.reduce(
-        (accumulator, currentItem) =>
-          accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
-        0
-      );
-
-      const data = await publicClient.readContract({
-        address: COIN_OP_ORACLE.toLowerCase() as `0x${string}`,
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: "address",
-                name: "_tokenAddress",
-                type: "address",
-              },
-            ],
-            name: "getRateByAddress",
-            outputs: [
-              {
-                internalType: "uint256",
-                name: "",
-                type: "uint256",
-              },
-            ],
-            stateMutability: "view",
-            type: "function",
-          },
-        ],
-        functionName: "getRateByAddress",
-        args: [
-          ACCEPTED_TOKENS.find(
-            ([_, token]) => token === checkoutCurrency
-          )?.[2].toLowerCase() as `0x${string}`,
-        ],
-      });
-
-      if (data) {
-        const oracle = Number(data as any) / 10 ** 18;
-        setOracleValue(oracle);
-        setTotalAmount(Number(total) / Number(oracle));
-      }
-    }
-  };
-
-  const encryptFulfillerInformation = async () => {
-    if (
-      fulfillmentDetails.address.trim() === "" ||
-      fulfillmentDetails.city.trim() === "" ||
-      fulfillmentDetails.contact.trim() === "" ||
-      fulfillmentDetails.country.trim() === "" ||
-      fulfillmentDetails.name.trim() === "" ||
-      fulfillmentDetails.state.trim() === "" ||
-      fulfillmentDetails.zip.trim() === ""
-    ) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Fill out your Contact & Shipment details first.",
-        })
-      );
-      return;
-    }
-    setFiatCheckoutLoading(true);
-    try {
-      let fulfillerGroups: { [key: string]: CartItem[] } = {};
-
-      for (let i = 0; i < cartItems.length; i++) {
-        if (fulfillerGroups[cartItems[i].fulfillerAddress]) {
-          fulfillerGroups[cartItems[i].fulfillerAddress].push(cartItems[i]);
+      if (address) {
+        if (
+          Number((data as any)?.toString()) /
+          ((Number(
+            cartItems
+              ?.filter(
+                (item) =>
+                  item?.item?.collectionMetadata?.title ==
+                  chooseCartItem?.item?.collectionMetadata?.title
+              )
+              ?.reduce(
+                (accumulator, currentItem) =>
+                  accumulator +
+                  Number(
+                    currentItem?.item?.prices?.[currentItem.chosenIndex!]
+                  ) *
+                    currentItem.chosenAmount,
+                0
+              ) *
+              10 ** 18
+          ) /
+            Number(
+              oracleData?.find(
+                (oracle) =>
+                  oracle.currency?.toLowerCase() ===
+                  checkoutCurrency?.toLowerCase()
+              )?.rate
+            )) *
+            Number(
+              oracleData?.find(
+                (oracle) =>
+                  oracle.currency?.toLowerCase() ===
+                  checkoutCurrency?.toLowerCase()
+              )?.wei
+            ))
+        ) {
+          setApprovedSpend(true);
         } else {
-          fulfillerGroups[cartItems[i].fulfillerAddress] = [cartItems[i]];
+          setApprovedSpend(false);
         }
       }
-
-      const returned = await encryptItems(
-        client,
-        {
-          sizes: cartItems?.reduce((accumulator: string[], item) => {
-            accumulator.push(String(item.chosenSize));
-            return accumulator;
-          }, []),
-          colors: cartItems?.reduce((accumulator: string[], item) => {
-            accumulator.push(String(item.chosenColor));
-            return accumulator;
-          }, []),
-          collectionIds: cartItems?.reduce((accumulator: number[], item) => {
-            accumulator.push(Number(item.collectionId));
-            return accumulator;
-          }, []),
-          collectionAmounts: cartItems?.reduce(
-            (accumulator: number[], item) => {
-              accumulator.push(Number(item.amount));
-              return accumulator;
-            },
-            []
-          ),
-        },
-        fulfillerGroups,
-        fulfillmentDetails,
-        currentPKP?.ethAddress as `0x${string}`,
-        currentPKP?.authSig
-      );
-
-      dispatch(setEncryptedInfo(returned?.fulfillerDetails));
     } catch (err: any) {
-      dispatch(setEncryptedInfo(undefined));
       console.error(err.message);
     }
-    setFiatCheckoutLoading(false);
   };
 
-  const handleCheckoutFiat = async () => {
-    if (!stripe || !elements || !currentPKP) {
-      dispatch(
-        setLogin({
-          actionOpen: true,
-          actionHighlight: "fiat",
-        })
-      );
-      return;
+  useEffect(() => {
+    if (lensConnected?.id) {
+      checkApproved();
     }
+  }, [checkoutCurrency, chooseCartItem, lensConnected?.id]);
 
-    if (!encrypted.information) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Fill out your Contact & Shipment details first.",
-        })
-      );
-      return;
+  useEffect(() => {
+    if (cartItems?.length > 0 && !chooseCartItem) {
+      setChooseCartItem(cartItems?.[0]);
     }
-    setFiatCheckoutLoading(true);
-    try {
-      const { error } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {},
-        redirect: "if_required",
-      });
+  }, [cartItems?.length]);
 
-      if (error) {
-        setFiatCheckoutLoading(false);
-        dispatch(
-          setMessagesModal({
-            actionOpen: true,
-            actionMessage: "There was an error with your payment, try again?",
-          })
-        );
-        return;
-      }
-
-      await createPKPOrder();
-      dispatch(setCart([]));
-      removeCartItemsLocalStorage();
-      removeFulfillmentDetailsLocalStorage();
-      dispatch(
-        setFulfillmentDetails({
-          name: "",
-          contact: "",
-          address: "",
-          zip: "",
-          city: "",
-          state: "",
-          country: "",
-        })
-      );
-      dispatch(setEncryptedInfo(undefined));
-      dispatch(
-        setMessagesModal({
-          actionOpen: true,
-          actionMessage:
-            "It’s all yours now. Return to your account page soon for fulfillment and shipping updates.",
-        })
-      );
-    } catch (err: any) {
-      dispatch(setEncryptedInfo(undefined));
-      console.error(err.message);
-    }
-    setFiatCheckoutLoading(false);
-  };
-
-  const handleApproveSpend = async () => {
-    setCryptoCheckoutLoading(true);
-    try {
-      const { request } = await publicClient.simulateContract({
-        address: ACCEPTED_TOKENS.find(
-          ([_, token]) => token === checkoutCurrency
-        )?.[2]!.toLowerCase() as `0x${string}`,
-        abi: (checkoutCurrency === "MONA"
-          ? [
-              {
-                inputs: [
-                  { internalType: "address", name: "spender", type: "address" },
-                  { internalType: "uint256", name: "tokens", type: "uint256" },
-                ],
-                name: "approve",
-                outputs: [
-                  { internalType: "bool", name: "success", type: "bool" },
-                ],
-                stateMutability: "nonpayable",
-                type: "function",
-              },
-            ]
-          : checkoutCurrency === "WMATIC"
-          ? [
-              {
-                constant: false,
-                inputs: [
-                  { name: "guy", type: "address" },
-                  { name: "wad", type: "uint256" },
-                ],
-                name: "approve",
-                outputs: [{ name: "", type: "bool" }],
-                payable: false,
-                stateMutability: "nonpayable",
-                type: "function",
-              },
-            ]
-          : [
-              {
-                inputs: [
-                  {
-                    internalType: "address",
-                    name: "spender",
-                    type: "address",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "amount",
-                    type: "uint256",
-                  },
-                ],
-                name: "approve",
-                outputs: [
-                  {
-                    internalType: "bool",
-                    name: "",
-                    type: "bool",
-                  },
-                ],
-                stateMutability: "nonpayable",
-                type: "function",
-              },
-            ]) as any,
-        functionName: "approve",
-        args: [
-          COIN_OP_MARKET,
-          ethers.utils.parseEther(totalAmount.toString() || "0"),
-        ],
-        account: address,
-      });
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-      const res = await clientWallet.writeContract(request);
-      await publicClient.waitForTransactionReceipt({ hash: res });
-      if (res) {
-        setApproved(true);
-      }
-    } catch (err: any) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "Something went wrong with your token approval. Try Again?",
-        })
-      );
-      console.error(err.message);
-    }
-    setCryptoCheckoutLoading(false);
-  };
-
-  const handleCheckoutCrypto = async () => {
-    if (!address) {
-      dispatch(
-        setLogin({
-          actionOpen: true,
-          actionHighlight: "crypto",
-        })
-      );
-      return;
-    }
-
+  useEffect(() => {
     if (
-      fulfillmentDetails.address.trim() === "" ||
-      fulfillmentDetails.city.trim() === "" ||
-      fulfillmentDetails.contact.trim() === "" ||
-      fulfillmentDetails.country.trim() === "" ||
-      fulfillmentDetails.name.trim() === "" ||
-      fulfillmentDetails.state.trim() === "" ||
-      fulfillmentDetails.zip.trim() === ""
+      chooseCartItem &&
+      chooseCartItem?.item?.acceptedTokens?.findIndex(
+        (item) => item?.toLowerCase() == checkoutCurrency?.toLowerCase()
+      ) == -1
     ) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Fill out your Contact & Shipment details first.",
-        })
+      setCheckoutCurrency(
+        chooseCartItem?.item?.acceptedTokens?.[0]?.toLowerCase()
       );
-      return;
     }
-
-    setCryptoCheckoutLoading(true);
-    try {
-      let fulfillerGroups: { [key: string]: CartItem[] } = {};
-
-      for (let i = 0; i < cartItems.length; i++) {
-        if (fulfillerGroups[cartItems[i].fulfillerAddress]) {
-          fulfillerGroups[cartItems[i].fulfillerAddress].push(cartItems[i]);
-        } else {
-          fulfillerGroups[cartItems[i].fulfillerAddress] = [cartItems[i]];
-        }
-      }
-
-      const returned = await encryptItems(
-        client,
-        {
-          sizes: cartItems?.reduce((accumulator: string[], item) => {
-            accumulator.push(String(item.chosenSize));
-            return accumulator;
-          }, []),
-          colors: cartItems?.reduce((accumulator: string[], item) => {
-            accumulator.push(String(item.chosenColor));
-            return accumulator;
-          }, []),
-          collectionIds: cartItems?.reduce((accumulator: number[], item) => {
-            accumulator.push(Number(item.collectionId));
-            return accumulator;
-          }, []),
-          collectionAmounts: cartItems?.reduce(
-            (accumulator: number[], item) => {
-              accumulator.push(Number(item.amount));
-              return accumulator;
-            },
-            []
-          ),
-        },
-        fulfillerGroups,
-        fulfillmentDetails,
-        address!
-      );
-
-      const response = await fetch("/api/ipfs", {
-        method: "POST",
-        body: JSON.stringify(returned?.fulfillerDetails),
-      });
-      let cid = await response.json();
-
-      const { request } = await publicClient.simulateContract({
-        address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
-        abi: CoinOpMarketABI,
-        functionName: "buyTokens",
-        args: [
-          {
-            preRollIds: cartItems?.reduce((accumulator: number[], item) => {
-              accumulator.push(item.collectionId);
-              return accumulator;
-            }, []),
-            preRollAmounts: cartItems?.reduce((accumulator: number[], item) => {
-              accumulator.push(item.amount);
-              return accumulator;
-            }, []),
-            preRollIndexes: cartItems.map((item) =>
-              ["shirt", "hoodie", "sleeve"].includes(
-                item.printType.toLowerCase()
-              )
-                ? 0
-                : item.sizes.indexOf(item.chosenSize)
-            ),
-            customIds: [],
-            customAmounts: [],
-            customIndexes: [],
-            customURIs: [],
-            fulfillmentDetails: "ipfs://" + cid?.cid,
-            pkpTokenId: "",
-            chosenTokenAddress: ACCEPTED_TOKENS.find(
-              ([_, token]) => token === checkoutCurrency
-            )?.[2],
-            sinPKP: true,
-          },
-        ],
-        account: address?.toLowerCase() as `0x${string}`,
-      });
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-      const res = await clientWallet.writeContract(request);
-      await publicClient.waitForTransactionReceipt({ hash: res });
-
-      dispatch(setCart([]));
-      removeCartItemsLocalStorage();
-      removeFulfillmentDetailsLocalStorage();
-      dispatch(
-        setFulfillmentDetails({
-          name: "",
-          contact: "",
-          address: "",
-          zip: "",
-          city: "",
-          state: "",
-          country: "",
-        })
-      );
-      dispatch(
-        setMessagesModal({
-          actionOpen: true,
-          actionMessage:
-            "It’s all yours now. Return to your account page soon for fulfillment and shipping updates.",
-        })
-      );
-    } catch (err: any) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Something went wrong on Checkout. Try Again?",
-        })
-      );
-      console.error(err.message);
-    }
-    setCryptoCheckoutLoading(false);
-  };
-
-  const createPKPOrder = async () => {
-    try {
-      const provider = new ethers.providers.JsonRpcProvider(
-        `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-        137
-      );
-
-      const tx = await createTxData(
-        provider,
-        CoinOpMarketABI,
-        COIN_OP_MARKET,
-        "buyTokens",
-        [
-          {
-            preRollIds: cartItems?.reduce((accumulator: number[], item) => {
-              accumulator.push(item.collectionId);
-              return accumulator;
-            }, []),
-            preRollAmounts: cartItems?.reduce((accumulator: number[], item) => {
-              accumulator.push(item.amount);
-              return accumulator;
-            }, []),
-            preRollIndexes: cartItems.map((item) =>
-              ["shirt", "hoodie", "sleeve"].includes(
-                item.printType.toLowerCase()
-              )
-                ? 0
-                : item.sizes.indexOf(item.chosenSize)
-            ),
-            customIds: [],
-            customAmounts: [],
-            customIndexes: [],
-            customURIs: [],
-            fulfillmentDetails: JSON.stringify(encrypted.information!),
-            pkpTokenId: BigInt(currentPKP?.tokenId.hex!).toString(),
-            chosenTokenAddress: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-            sinPKP: false,
-          },
-        ]
-      );
-
-      await litExecute(
-        client,
-        provider,
-        tx,
-        "coinOpBuyTokens",
-        currentPKP?.authSig!
-      );
-    } catch (err: any) {
-      setFiatCheckoutLoading(false);
-      console.error(err.message);
-    }
-  };
-
-  useEffect(() => {
-    if (!stripe) {
-      return;
-    }
-
-    const clientSecret = new URLSearchParams(window.location.search).get(
-      "payment_intent_client_secret"
-    );
-
-    if (!clientSecret) {
-      return;
-    }
-
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      switch (paymentIntent?.status) {
-        case "succeeded":
-          setFiatCheckoutLoading(false);
-          break;
-        case "processing":
-          setFiatCheckoutLoading(true);
-          dispatch(
-            setMessagesModal({
-              actionOpen: true,
-              actionMessage: "Your payment is processing.",
-            })
-          );
-          break;
-        case "requires_payment_method":
-          setFiatCheckoutLoading(false);
-          dispatch(
-            setMessagesModal({
-              actionOpen: true,
-              actionMessage:
-                "Your payment was not successful, please try again.",
-            })
-          );
-          break;
-        default:
-          setFiatCheckoutLoading(false);
-          dispatch(
-            setMessagesModal({
-              actionOpen: true,
-              actionMessage: "Something went wrong. Try again?",
-            })
-          );
-          break;
-      }
-    });
-  }, [stripe]);
-
-  useEffect(() => {
-    if (paymentType !== "fiat") {
-      getTotalAmount();
-    }
-  }, [
-    checkoutCurrency,
-    paymentType,
-    cartItems?.length,
-    cartItems?.reduce(
-      (accumulator, currentItem) =>
-        accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
-      0
-    ),
-  ]);
-
-  useEffect(() => {
-    getAddressApproved();
-  }, [
-    address,
-    totalAmount,
-    checkoutCurrency,
-    cartItems?.reduce(
-      (accumulator, currentItem) =>
-        accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
-      0
-    ),
-  ]);
-
-  useEffect(() => {
-    if (!cartItem || !cartItems?.indexOf(cartItem)) {
-      setCartItem(cartItems[0]);
-    }
-
-    if (cartItems?.length < 1) {
-      setCartItem(undefined);
-    }
-  }, [cartItems]);
+  }, [chooseCartItem]);
 
   return {
-    cartItem,
-    setCartItem,
-    startIndex,
-    setStartIndex,
-    handleCheckoutFiat,
-    handleCheckoutCrypto,
-    cryptoCheckoutLoading,
-    fiatCheckoutLoading,
+    encryptFulfillment,
+    collectPostLoading,
+    collectItem,
+    fulfillmentDetails,
+    setFulfillmentDetails,
     checkoutCurrency,
     setCheckoutCurrency,
-    handleApproveSpend,
-    fulfillmentDetails,
-    approved,
-    oracleValue,
-    encryptFulfillerInformation,
+    openCountryDropdown,
+    setOpenCountryDropdown,
+    approveSpend,
+    chooseCartItem,
+    setChooseCartItem,
+    isApprovedSpend,
+    startIndex,
+    setStartIndex,
+    encrypted,
+    setEncrypted,
   };
 };
 
