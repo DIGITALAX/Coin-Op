@@ -74,11 +74,12 @@ const collectionFixer = async (
     newDrop: index < 28 ? true : false,
     currentIndex: 0,
     chosenSize:
-      coll.printType === "0"
-        ? '2"x2"'
-        : coll.printType === "1"
-        ? '11"x17"'
-        : "M",
+      typeof coll?.collectionMetadata?.sizes === "string"
+        ? (coll?.collectionMetadata?.sizes as any)
+            ?.split(",")
+            ?.map((word: string) => word.trim())
+            ?.filter((word: string) => word.length > 0)?.[0]
+        : coll?.collectionMetadata?.sizes?.[0],
     chosenColor:
       typeof coll?.collectionMetadata?.colors === "string"
         ? (coll?.collectionMetadata?.colors as any)
