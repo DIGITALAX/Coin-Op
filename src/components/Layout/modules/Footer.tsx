@@ -38,7 +38,7 @@ const Footer: FunctionComponent = (): JSX.Element => {
         <a
           rel="noreferrer"
           target="_blank"
-          href="https://www.chromadin.xyz/autograph/digitalax"
+          href="https://cypher.digitalax.xyz/autograph/digitalax"
           className="relative w-5 h-5 flex cursor-pointer active:scale-95 justify-center items-center"
           draggable={false}
         >
