@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import prerollReducer from "./reducers/prerollSlice";
 import cartReducer from "./reducers/cartSlice";
-import availableCurrenciesReducer from "./reducers/availableCurrenciesSlice"; 
+import availableCurrenciesReducer from "./reducers/availableCurrenciesSlice";  
 import templateReducer from "./reducers/templateSlice";
 import rollSearchReducer from "./reducers/rollSearchSlice";
 import synthLayerReducer from "./reducers/synthLayerSlice";
