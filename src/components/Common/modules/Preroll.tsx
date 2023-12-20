@@ -245,7 +245,7 @@ const Preroll: FunctionComponent<PrerollProps> = ({
                   preroll?.prices?.[
                     preroll?.collectionMetadata?.sizes?.indexOf(
                       preroll?.chosenSize
-                    )
+                    ) || 0
                   ]
                 )}
           </div>

@@ -22,7 +22,7 @@ const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
             return (
               <div
                 key={index}
-                className={`relative border rounded-full cursor-pointer flex items-center justify-center text-xxs h-6 uppercase font-mana ${
+                className={`relative border rounded-full cursor-pointer flex items-center justify-center text-xxs h-6 uppercase font-mana whitespace-nowrap ${
                   preroll.chosenSize === size
                     ? "border-fresa bg-white text-black"
                     : "border-white text-white"
@@ -62,7 +62,11 @@ const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
                   }
                 }}
               >
-                {size}
+                {size
+                  ?.replaceAll("Small", "")
+                  ?.replaceAll("Standard", "")
+                  ?.replaceAll("Medium", "")
+                  ?.replaceAll("Large", "")}
               </div>
             );
           }

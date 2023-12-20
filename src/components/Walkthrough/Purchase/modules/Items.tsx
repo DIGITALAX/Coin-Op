@@ -37,7 +37,7 @@ const Items: FunctionComponent<ItemsProps> = ({
                   return (
                     <div
                       key={index}
-                      className={`relative w-full h-12 flex flex-row gap-5 font-mana text-white text-xs justify-between items-center px-1.5 cursor-pointer ${
+                      className={`relative w-full h-fit sm:h-12 flex sm:flex-nowrap flex-wrap flex-row gap-3 sm:gap-5 font-mana text-white text-xs justify-start sm:justify-between items-center sm:py-0 py-1.5 px-1.5 cursor-pointer ${
                         item?.item?.collectionMetadata?.title ===
                           cartItem?.item?.collectionMetadata?.title &&
                         "bg-ama/20 rounded-md"
@@ -65,8 +65,14 @@ const Items: FunctionComponent<ItemsProps> = ({
                         className="relative w-4 h-4 border border-ligero flex justify-start items-center rounded-full"
                         style={{ backgroundColor: item.chosenColor }}
                       ></div>
-                      <div className="relative w-fit h-fit flex justify-start items-center uppercase">
-                        {item.chosenSize}
+                      <div className="relative w-fit h-fit flex justify-start items-center uppercase break-all">
+                        {item.chosenSize
+                          ?.replaceAll('(24" x 36")', "")
+                          ?.replaceAll('(18" x 24")', "")
+                          ?.replaceAll('(11" x 17")', "")
+                          ?.replaceAll('(4" x 4")', "")
+                          ?.replaceAll('(2" x 2")', "")
+                          ?.replaceAll('(3" x 3")', "")}
                       </div>
                       <div className="relative w-fit h-fit text-ama flex whitespace-nowrap">
                         {
