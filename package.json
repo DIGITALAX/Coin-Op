@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.7",
-    "@lit-protocol/lit-node-client": "3.0.22",
+    "@lit-protocol/lit-node-client": "^3.0.25",
     "@rainbow-me/rainbowkit": "^1.3.0",
     "@reduxjs/toolkit": "^1.9.7",
     "@uiw/react-color-sketch": "^1.3.3",

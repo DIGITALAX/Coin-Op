@@ -116,8 +116,11 @@ const useOrders = (
       )
     );
     try {
+      let nonce = client.getLatestBlockhash();
+
       const authSig = await checkAndSignAuthMessage({
         chain: "polygon",
+        nonce: nonce!,
       });
 
       await client.connect();
@@ -132,7 +135,7 @@ const useOrders = (
             ?.dataToEncryptHash,
           chain: "polygon",
         },
-        client
+        client as any
       );
 
       const updatedOrders = allOrders.map(async (currentOrder) => {

@@ -79,8 +79,11 @@ const useCheckout = (
       return;
     setCollectPostLoading(true);
     try {
+      let nonce = client.getLatestBlockhash();
+
       const authSig = await checkAndSignAuthMessage({
         chain: "polygon",
+        nonce: nonce!,
       });
 
       await client.connect();
