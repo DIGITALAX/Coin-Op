@@ -97,7 +97,7 @@ export const encryptItems = async (
             fulfillerAddress: [DIGITALAX_ADDRESS],
           }),
         },
-        client!
+        client as any
       );
 
       encryptedItems.push({
