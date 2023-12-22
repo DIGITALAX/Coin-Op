@@ -13,8 +13,10 @@ query($buyer: String!) {
       buyer
       blockTimestamp
       transactionHash
-      images
-      names
+      orderMetadata {
+        images
+        names
+      }
       messages
       details
       subOrderPrice
@@ -38,8 +40,10 @@ const ORDERS_ID = `
       buyer
       blockTimestamp
       transactionHash
-      images
-      names
+      orderMetadata {
+        images
+        names
+      }
       messages
       details
       subOrderPrice
