@@ -16,8 +16,10 @@ export interface Order {
   blockTimestamp: string;
   transactionHash: string;
   images: string[];
-  names: string[];
-  messages: string[];
+  orderMetadata: {
+    names: string[];
+    messages: string[];
+  };
   details?: Details | EncryptedDetails | string;
   subOrders: Sub[];
   decrypted: boolean;
