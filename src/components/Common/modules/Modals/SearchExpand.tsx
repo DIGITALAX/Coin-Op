@@ -25,7 +25,6 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
   dispatch,
   cartItems,
   prerolls,
-  handleSearchSimilar,
   handlePromptChoose,
   router,
   cartAddAnim,

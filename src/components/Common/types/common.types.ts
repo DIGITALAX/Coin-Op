@@ -580,7 +580,6 @@ export type SearchExpandProps = {
     right: Preroll[];
     left: Preroll[];
   };
-  handleSearchSimilar: (e: Preroll) => Promise<void>;
   handlePromptChoose: (e: Preroll) => Promise<void>;
   router: NextRouter;
   cartAddAnim: string;

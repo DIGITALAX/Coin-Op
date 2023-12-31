@@ -114,7 +114,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
     oracleData,
     lensProfile
   );
-  const { handlePromptChoose, handleSearchSimilar } = useRollSearch(
+  const { handlePromptChoose } = useRollSearch(
     dispatch,
     isConnected,
     address,
@@ -331,7 +331,6 @@ const Modals = ({ router }: { router: NextRouter }) => {
           cartItems={cartItems}
           prerolls={prerolls}
           handlePromptChoose={handlePromptChoose}
-          handleSearchSimilar={handleSearchSimilar}
           router={router}
           cartAddAnim={cartAddAnim}
         />
