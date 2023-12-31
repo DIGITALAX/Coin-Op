@@ -1,6 +1,7 @@
 import { ChangeEvent, FunctionComponent } from "react";
 import { Preroll, RollSearchProps } from "../types/common.types";
 import SearchBox from "./SearchBox";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const RollSearch: FunctionComponent<RollSearchProps> = ({
   rollSearch,
@@ -8,11 +9,11 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
   prompt,
   setPrompt,
   handlePromptChoose,
-  handleSearchSimilar,
+  searchLoading,
   dispatch,
   handleAddToCart,
   router,
-  cartAddAnim
+  cartAddAnim,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 flex flex-col justify-start h-fit gap-4 sm:pb-28 order-2">
@@ -31,12 +32,26 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
         value={prompt || ""}
       />
       <div
-        className="relative justify-start rounded-sm bg-white text-black font-mega text-xs cursor-pointer active:scale-95 px-1.5 py-1 w-fit h-8 items-center flex hover:opacity-70"
+        className="relative items-center justify-center rounded-sm bg-white text-black font-mega text-xs cursor-pointer active:scale-95 px-1.5 py-1 w-32 h-8 items-center flex hover:opacity-70"
         onClick={() => handleRollSearch()}
       >
-        search prompts
+        <div
+          className={`relative w-fit h-fit flex items-center justify-center ${
+            searchLoading && "animate-spin"
+          }`}
+        >
+          {searchLoading ? (
+            <AiOutlineLoading color="black" size={15} />
+          ) : (
+            "search prompts"
+          )}
+        </div>
       </div>
-      <div className={`relative flex flex-col w-full h-48 justify-start items-start overflow-y-scroll ${rollSearch?.length > 0 ? "flex" : "hidden sm:flex"}`}>
+      <div
+        className={`relative flex flex-col w-full h-48 justify-start items-start overflow-y-scroll ${
+          rollSearch?.length > 0 ? "flex" : "hidden sm:flex"
+        }`}
+      >
         {rollSearch?.length > 0 && (
           <div className="relative inline-flex flex-wrap gap-6 pt-6 justify-start items-center">
             {rollSearch?.map((roll: Preroll, index: number) => {
@@ -45,7 +60,7 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
                   key={index}
                   promptSearch={roll}
                   handlePromptChoose={handlePromptChoose}
-                  handleSearchSimilar={handleSearchSimilar}
+                  searchLoading={searchLoading}
                   dispatch={dispatch}
                   handleAddToCart={handleAddToCart}
                   router={router}

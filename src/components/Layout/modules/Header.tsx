@@ -57,7 +57,7 @@ const Header: FunctionComponent<HeaderProps> = ({
     setPrompt,
     handlePromptChoose,
     scrollToCheckOut,
-    handleSearchSimilar,
+    searchLoading,
     handleAddToCart,
     cartAnim,
   } = useRollSearch(
@@ -105,7 +105,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         handleRollSearch={handleRollSearch}
         setPrompt={setPrompt}
         prompt={prompt}
-        handleSearchSimilar={handleSearchSimilar}
+        searchLoading={searchLoading}
         dispatch={dispatch}
         handlePromptChoose={handlePromptChoose}
         handleAddToCart={handleAddToCart}

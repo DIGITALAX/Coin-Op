@@ -419,7 +419,7 @@ export type SizingChoiceProps = {
 export type SearchBoxProps = {
   promptSearch: Preroll;
   handlePromptChoose: (e: Preroll) => Promise<void>;
-  handleSearchSimilar: (e: Preroll) => Promise<void>;
+  searchLoading: boolean;
   dispatch: Dispatch<AnyAction>;
   handleAddToCart: (e: Preroll) => void;
   router: NextRouter;
@@ -432,7 +432,7 @@ export type RollSearchProps = {
   prompt: string;
   setPrompt: (e: string) => void;
   handlePromptChoose: (e: Preroll) => Promise<void>;
-  handleSearchSimilar: (e: Preroll) => Promise<void>;
+  searchLoading: boolean;
   dispatch: Dispatch<AnyAction>;
   handleAddToCart: (e: Preroll) => void;
   router: NextRouter;

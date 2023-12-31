@@ -9,7 +9,7 @@ import { ImRedo } from "react-icons/im";
 
 const SearchBox: FunctionComponent<SearchBoxProps> = ({
   promptSearch,
-  handleSearchSimilar,
+  searchLoading,
   dispatch,
   handlePromptChoose,
   handleAddToCart,

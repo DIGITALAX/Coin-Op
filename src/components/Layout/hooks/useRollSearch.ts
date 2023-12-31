@@ -31,8 +31,10 @@ const useRollSearch = (
   const { scrollRef, synthRef } = useContext(ScrollContext);
   const [prompt, setPrompt] = useState<string>("");
   const [cartAnim, setCartAnim] = useState<boolean>(false);
+  const [searchLoading, setSearchLoading] = useState<boolean>(false);
 
   const handleRollSearch = async () => {
+    setSearchLoading(true)
     try {
       const searchItems = await getPrerollSearch(buildTextQuery(prompt!)!);
 
@@ -45,6 +47,7 @@ const useRollSearch = (
     } catch (err: any) {
       console.error(err.message);
     }
+    setSearchLoading(false)
   };
 
   const handlePromptChoose = async (preroll: Preroll) => {
@@ -71,14 +74,6 @@ const useRollSearch = (
     setTimeout(() => {
       synthRef.current!.scrollTop = synthRef.current!.scrollHeight;
     }, 500);
-  };
-
-  const handleSearchSimilar = async (preroll: Preroll) => {
-    try {
-      dispatch(setRollSearch([]));
-    } catch (err: any) {
-      console.error(err.message);
-    }
   };
 
   const handleAddToCart = (preroll: Preroll) => {
@@ -171,9 +166,9 @@ const useRollSearch = (
     setPrompt,
     handlePromptChoose,
     scrollToCheckOut,
-    handleSearchSimilar,
     handleAddToCart,
     cartAnim,
+    searchLoading
   };
 };
 
