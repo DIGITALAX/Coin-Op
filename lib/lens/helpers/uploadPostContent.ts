@@ -14,7 +14,7 @@ const uploadPostContent = async (
           contentText && contentText?.trim() !== "" ? contentText : undefined,
         content:
           contentText && contentText?.trim() !== "" ? contentText : undefined,
-        appId: "cyphersearch",
+        appId: "coinop",
         id: uuidv4(),
         hideFromFeed: false,
         locale: "en",
