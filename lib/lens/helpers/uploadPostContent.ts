@@ -10,8 +10,10 @@ const uploadPostContent = async (
         "https://json-schemas.lens.dev/publications/text-only/3.0.0.json",
       lens: {
         mainContentFocus: PublicationMetadataMainFocusType.TextOnly,
-        title: contentText ? contentText.slice(0, 20) : "",
-        content: contentText ? contentText : "",
+        title:
+          contentText && contentText?.trim() !== "" ? contentText : undefined,
+        content:
+          contentText && contentText?.trim() !== "" ? contentText : undefined,
         appId: "cyphersearch",
         id: uuidv4(),
         hideFromFeed: false,
