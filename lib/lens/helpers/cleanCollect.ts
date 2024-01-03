@@ -1,5 +1,4 @@
-import { OpenActionModuleInput } from "@/components/Common/types/generated";
-
+import { OpenActionModuleInput } from "../../../src/components/Common/types/generated";
 const cleanCollect = (
   openActionModules: OpenActionModuleInput[]
 ): OpenActionModuleInput[] => {
@@ -19,22 +18,20 @@ const cleanCollect = (
         newSimpleCollectOpenAction;
     }
 
-    if (
-      firstModule.collectOpenAction?.simpleCollectOpenAction?.hasOwnProperty(
-        "amount"
-      ) &&
-      (!firstModule.collectOpenAction.simpleCollectOpenAction.amount?.hasOwnProperty(
-        "value"
-      ) ||
-        !firstModule.collectOpenAction?.simpleCollectOpenAction?.amount?.hasOwnProperty(
-          "currency"
-        )) &&
-      parseFloat(
-        firstModule.collectOpenAction?.simpleCollectOpenAction?.amount?.value ||
-          ""
-      ) <= 0
-    ) {
-      delete firstModule.collectOpenAction?.simpleCollectOpenAction?.amount;
+    let simpleCollect = firstModule.collectOpenAction?.simpleCollectOpenAction;
+    if (simpleCollect && simpleCollect.hasOwnProperty("amount")) {
+      const amount = simpleCollect.amount;
+      if (
+        !amount?.value ||
+        !amount?.currency ||
+        parseFloat(amount?.value || "") <= 0
+      ) {
+        const { amount, ...restOfSimpleCollect } = simpleCollect;
+        simpleCollect = restOfSimpleCollect;
+      }
+    }
+    if (firstModule.collectOpenAction) {
+      firstModule.collectOpenAction.simpleCollectOpenAction = simpleCollect;
     }
 
     openActionModules[0] = firstModule;
