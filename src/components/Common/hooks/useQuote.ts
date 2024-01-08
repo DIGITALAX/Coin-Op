@@ -223,34 +223,37 @@ const useQuote = (
 
   useEffect(() => {
     if (postCollect?.id) {
-      setOpenMeasure((prev) => ({
-        ...prev,
-        collectibleOpen: false,
-        collectible:
-          postCollect.collectTypes?.[postCollect?.id!]?.amount?.value ||
-          Number(postCollect.collectTypes?.[postCollect?.id!]?.amount?.value) >
-            0
+      if (postCollect.collectTypes?.[postCollect?.id!]) {
+        setOpenMeasure((prev) => ({
+          ...prev,
+          collectibleOpen: false,
+          collectible:
+            postCollect.collectTypes?.[postCollect?.id!]?.amount?.value ||
+            Number(
+              postCollect.collectTypes?.[postCollect?.id!]?.amount?.value
+            ) > 0
+              ? "Yes"
+              : "No",
+          award:
+            postCollect.collectTypes?.[postCollect?.id!]?.amount?.value ||
+            Number(postCollect.collectTypes?.[postCollect?.id!]?.amount?.value)
+              ? "Yes"
+              : "No",
+          whoCollectsOpen: false,
+          creatorAwardOpen: false,
+          currencyOpen: false,
+          editionOpen: false,
+          edition: postCollect.collectTypes?.[postCollect?.id!]?.collectLimit
             ? "Yes"
             : "No",
-        award:
-          postCollect.collectTypes?.[postCollect?.id!]?.amount?.value ||
-          Number(postCollect.collectTypes?.[postCollect?.id!]?.amount?.value)
+          timeOpen: false,
+          time: postCollect.collectTypes?.[postCollect?.id!]?.endsAt
             ? "Yes"
             : "No",
-        whoCollectsOpen: false,
-        creatorAwardOpen: false,
-        currencyOpen: false,
-        editionOpen: false,
-        edition: postCollect.collectTypes?.[postCollect?.id!]?.collectLimit
-          ? "Yes"
-          : "No",
-        timeOpen: false,
-        time: postCollect.collectTypes?.[postCollect?.id!]?.endsAt
-          ? "Yes"
-          : "No",
-      }));
+        }));
+      }
     }
-  }, [postCollect]);
+  }, [postCollect?.id]);
 
   return {
     quote,

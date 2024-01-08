@@ -115,7 +115,6 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                         typeof collectTypes === "object"
                           ? { ...collectTypes }
                           : {};
-
                       newCTs[id] = {
                         ...(newCTs[id] || {}),
                         amount: {
