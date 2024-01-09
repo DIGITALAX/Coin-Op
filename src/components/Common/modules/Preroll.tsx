@@ -369,7 +369,7 @@ const Preroll: FunctionComponent<PrerollProps> = ({
             {preroll?.profile?.handle?.suggestedFormatted?.localName}
           </div>
         </div>
-        {preroll?.collectionMetadata?.title && (
+        {preroll?.collectionMetadata?.onChromadin == "yes" && (
           <div className="relative w-fit h-fit flex items-center justify-center">
             <div
               className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
