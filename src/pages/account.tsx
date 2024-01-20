@@ -60,6 +60,7 @@ const Account: NextPage<{ client: LitNodeClient; router: NextRouter }> = ({
       <Head>
         <title>Coin Op | Account</title>
         <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
+        <link rel="icon" href="/favicon.ico" />
         <meta name="og:title" content="Coin Op | Account" />
         <meta
           name="og:description"
