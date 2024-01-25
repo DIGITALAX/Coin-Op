@@ -3,7 +3,7 @@ export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
 export const BASE_URL: string = "https://api-v2.lens.dev";
 
 export const COIN_OP_OPEN_ACTION: `0x${string}` =
-  "0x179ACb90575CfF001c6c767b197FFe100B6ADc3a";
+  "0x3710f718f9E78a58FEcfF5Cd9cc41a4b7466BB14";
 export const LENS_HUB_PROXY_ADDRESS_MUMBAI: `0x${string}` =
   "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 export const LENS_PERIPHERY_CONTRACT_MUMBAI: `0x${string}` =
