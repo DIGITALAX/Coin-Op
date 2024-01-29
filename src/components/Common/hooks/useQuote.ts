@@ -56,7 +56,6 @@ const useQuote = (
 
   const [openMeasure, setOpenMeasure] = useState<{
     collectibleOpen: boolean;
-    collectible: string;
     award: string;
     whoCollectsOpen: boolean;
     creatorAwardOpen: boolean;
@@ -67,7 +66,6 @@ const useQuote = (
     time: string;
   }>({
     collectibleOpen: false,
-    collectible: "Yes",
     award: "No",
     whoCollectsOpen: false,
     creatorAwardOpen: false,
@@ -227,13 +225,6 @@ const useQuote = (
         setOpenMeasure((prev) => ({
           ...prev,
           collectibleOpen: false,
-          collectible:
-            postCollect.collectTypes?.[postCollect?.id!]?.amount?.value ||
-            Number(
-              postCollect.collectTypes?.[postCollect?.id!]?.amount?.value
-            ) > 0
-              ? "Yes"
-              : "No",
           award:
             postCollect.collectTypes?.[postCollect?.id!]?.amount?.value ||
             Number(postCollect.collectTypes?.[postCollect?.id!]?.amount?.value)
