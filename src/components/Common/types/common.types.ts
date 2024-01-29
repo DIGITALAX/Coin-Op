@@ -849,7 +849,6 @@ export type PostCollectProps = {
   ) => void;
   collects: SimpleCollectOpenActionModuleInput | undefined;
   openMeasure: {
-    collectibleOpen: boolean;
     award: string;
     whoCollectsOpen: boolean;
     creatorAwardOpen: boolean;
@@ -861,7 +860,6 @@ export type PostCollectProps = {
   };
   setOpenMeasure: (
     e: SetStateAction<{
-      collectibleOpen: boolean;
       award: string;
       whoCollectsOpen: boolean;
       creatorAwardOpen: boolean;
