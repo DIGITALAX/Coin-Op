@@ -3,6 +3,7 @@ import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
 import { PrerollState } from "../../../../redux/reducers/prerollSlice";
 import { Profile } from "@/components/Common/types/generated";
+import { FullScreenVideoState } from "../../../../redux/reducers/fullScreenVideoSlice";
 
 export type StickyProps = {
   router: NextRouter;
@@ -10,7 +11,7 @@ export type StickyProps = {
   cartItems: CartItem[];
   cartAnim: boolean;
   dispatch: Dispatch<AnyAction>;
-  videoPlayer: boolean;
+  fullScreenVideo: FullScreenVideoState;
   signInLoading: boolean;
   connected: boolean;
   chain: number | undefined;

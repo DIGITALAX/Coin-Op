@@ -4,11 +4,11 @@ import Image from "next/legacy/image";
 import numeral from "numeral";
 import { AiOutlineLoading } from "react-icons/ai";
 import { CartItem, InteractBarProps } from "../../types/common.types";
-import { setReactBox } from "../../../../../redux/reducers/reactionStateSlice";
 import { setCart } from "../../../../../redux/reducers/cartSlice";
 import { setCartAddAnim } from "../../../../../redux/reducers/cartAddAnimSlice";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 import { setQuoteBox } from "../../../../../redux/reducers/quoteBoxSlice";
+import { setReactBox } from "../../../../../redux/reducers/reactBoxSlice";
 
 const InteractBar: FunctionComponent<InteractBarProps> = ({
   mirror,

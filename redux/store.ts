@@ -2,7 +2,9 @@ import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import prerollReducer from "./reducers/prerollSlice";
 import cartReducer from "./reducers/cartSlice";
-import availableCurrenciesReducer from "./reducers/availableCurrenciesSlice";  
+import availableCurrenciesReducer from "./reducers/availableCurrenciesSlice";
+import reactBoxReducer from "./reducers/reactBoxSlice";
+import fullScreenVideoReducer from "./reducers/fullScreenVideoSlice";
 import templateReducer from "./reducers/templateSlice";
 import rollSearchReducer from "./reducers/rollSearchSlice";
 import synthLayerReducer from "./reducers/synthLayerSlice";
@@ -31,16 +33,6 @@ import insufficientBalanceReducer from "./reducers/insufficientBalanceSlice";
 import postCollectReducer from "./reducers/postCollectSlice";
 import quoteBoxReducer from "./reducers/quoteBoxSlice";
 import oracleDataReducer from "./reducers/oracleDataSlice";
-import videoPlayerReducer from "./reducers/videoPlayerSlice";
-import mainVideoReducer from "./reducers/mainVideoSlice";
-import secondaryCommentReducer from "./reducers/secondaryCommentSlice";
-import videoSyncReducer from "./reducers/videoSyncSlice";
-import reactIdReducer from "./reducers/reactIdSlice";
-import seekReducer from "./reducers/seekSlice";
-import reactionStateReducer from "./reducers/reactionStateSlice";
-import channelsReducer from "./reducers/channelsSlice";
-import videoCountReducer from "./reducers/videoCountSlice";
-import hasMoreVideoReducer from "./reducers/hasMoreVideoSlice";
 import prerollsLoadingReducer from "./reducers/prerollsLoadingSlice";
 import cartAddAnimReducer from "./reducers/cartAddAnimSlice";
 
@@ -54,6 +46,7 @@ const reducer = combineReducers({
   layerToSynthReducer,
   prerollAnimReducer,
   synthConfigReducer,
+  fullScreenVideoReducer,
   modalOpenReducer,
   profileReducer,
   noHandleReducer,
@@ -70,19 +63,10 @@ const reducer = combineReducers({
   setElementsReducer,
   searchExpandReducer,
   apiAddReducer,
+  reactBoxReducer,
   allOrdersReducer,
   walletConnectedReducer,
   chainReducer,
-  videoPlayerReducer,
-  mainVideoReducer,
-  secondaryCommentReducer,
-  videoSyncReducer,
-  reactIdReducer,
-  seekReducer,
-  reactionStateReducer,
-  channelsReducer,
-  videoCountReducer,
-  hasMoreVideoReducer,
   prerollsLoadingReducer,
   cartAddAnimReducer,
   oracleDataReducer,

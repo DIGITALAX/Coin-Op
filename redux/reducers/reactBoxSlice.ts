@@ -2,12 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface ReactBoxState {
   open: boolean;
+  type?: string;
   id?: string;
-  type?: "Mirrors" | "Likes" | "Followers" | "Following" | "Acts" | "Comments";
 }
 
 const initialReactBoxState: ReactBoxState = {
   open: false,
+  type: undefined,
+  id: undefined,
 };
 
 export const reactBoxSlice = createSlice({
@@ -16,7 +18,14 @@ export const reactBoxSlice = createSlice({
   reducers: {
     setReactBox: (
       state: ReactBoxState,
-      { payload: { actionOpen, actionType, actionId } }
+      {
+        payload: {
+          actionOpen,
+          actionType,
+
+          actionId,
+        },
+      }
     ) => {
       state.open = actionOpen;
       state.type = actionType;

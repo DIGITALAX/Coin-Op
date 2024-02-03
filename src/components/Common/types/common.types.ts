@@ -11,6 +11,7 @@ import {
   MouseEvent,
   MutableRefObject,
   Ref,
+  RefObject,
   SetStateAction,
 } from "react";
 import { AnyAction, Dispatch, Dispatch as DispatchRedux } from "redux";
@@ -32,9 +33,9 @@ import {
 } from "./generated";
 import { Layer } from "@/components/Walkthrough/Layer/types/layer.types";
 import { SynthData } from "../../../../redux/reducers/completedSynthsSlice";
-import { MainVideoState } from "../../../../redux/reducers/mainVideoSlice";
-import ReactPlayer from "react-player";
 import { PostCollectState } from "../../../../redux/reducers/postCollectSlice";
+import { FullScreenVideoState } from "../../../../redux/reducers/fullScreenVideoSlice";
+import Draggable from "react-draggable";
 
 export interface Details {
   name: string;
@@ -598,107 +599,8 @@ export type HeaderProps = {
   router: NextRouter;
 };
 
-export interface VideoSyncState {
-  duration: number;
-  currentTime: number;
-  heart: boolean;
-  isPlaying: boolean;
-  likedArray: boolean[];
-  mirroredArray: boolean[];
-  collectedArray: boolean[];
-  videosLoading: boolean;
-}
-
-export type ComponentProps = {
-  streamRef: Ref<ReactPlayer>;
-  mainVideo: MainVideoState;
-  isPlaying: boolean;
-  volume: number;
-  dispatchVideos: Post[];
-  videoSync: VideoSyncState;
-  dispatch: Dispatch<AnyAction>;
-  hasMore: boolean;
-  fetchMoreVideos: () => Promise<
-    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
-    | undefined
-  >;
-  videoLoading: boolean;
-  setVideoLoading: (e: boolean) => void;
-};
-
-export type PlayerProps = {
-  streamRef: Ref<ReactPlayer>;
-  mainVideo: MainVideoState;
-  volume: number;
-  wrapperRef: Ref<HTMLDivElement>;
-  dispatchVideos: Post[];
-  videoSync: VideoSyncState;
-  dispatch: Dispatch<AnyAction>;
-  hasMore: boolean;
-  fetchMoreVideos: () => Promise<
-    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
-    | undefined
-  >;
-  videoLoading: boolean;
-  setVideoLoading: (e: boolean) => void;
-};
-
 export type LoadingProps = {
   size: string;
-};
-
-export type FullScreenVideoProps = {
-  openConnectModal: (() => void) | undefined;
-  dispatch: Dispatch<AnyAction>;
-  mainVideo: MainVideoState;
-  videoRef: Ref<HTMLDivElement>;
-  streamRef: Ref<ReactPlayer>;
-  wrapperRef: Ref<HTMLDivElement>;
-  dispatchVideos: Post[];
-  videoSync: VideoSyncState;
-  mirrorLoading: boolean;
-  collectLoading: boolean;
-  likeLoading: boolean;
-  profileId: string;
-  lensProfile: Profile | undefined;
-  hasMore: boolean;
-  connected: boolean;
-  commentors: Comment[];
-  commentsOpen: boolean;
-  setCommentsOpen: (e: boolean) => void;
-  handleLensSignIn: () => Promise<void>;
-  fetchMoreVideos: () => Promise<
-    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
-    | undefined
-  >;
-  videoLoading: boolean;
-  setVideoLoading: (e: boolean) => void;
-  handleHeart: () => void;
-  collected: boolean;
-  mirrored: boolean;
-  liked: boolean;
-  mirrorVideo: () => Promise<void>;
-  likeVideo: () => Promise<void>;
-  collectVideo: () => Promise<void>;
-  volume: number;
-  volumeOpen: boolean;
-  setVolumeOpen: (volumeOpen: boolean) => void;
-  handleVolumeChange: (e: FormEvent) => void;
-  progressRef: Ref<HTMLDivElement>;
-  handleSeek: (
-    e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
-  ) => void;
-  formatTime: (time: number) => string;
-  collectAmount: number[];
-  mirrorAmount: number[];
-  likeAmount: number[];
-  getMorePostComments: () => Promise<void>;
-  commentsLoading: boolean;
-  hasMoreComments: boolean;
-  mirrorCommentLoading: boolean[];
-  likeCommentLoading: boolean[];
-  collectCommentLoading: boolean[];
-  commentId: string;
 };
 
 export interface ApprovalArgs {
@@ -756,46 +658,6 @@ export type WhoProps = {
   }[];
   setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
   openMirrorChoice: boolean[];
-};
-
-export type ControlsProps = {
-  videoSync: VideoSyncState;
-  formatTime: (time: number) => string;
-  volume: number;
-  connected: boolean;
-  handleLensSignIn: () => Promise<void>;
-  volumeOpen: boolean;
-  setVolumeOpen: (volumeOpen: boolean) => void;
-  handleVolumeChange: (e: FormEvent) => void;
-  handleHeart: () => void;
-  collected: boolean;
-  mirrored: boolean;
-  liked: boolean;
-  mirrorVideo: () => Promise<void>;
-  likeVideo: () => Promise<void>;
-  collectVideo: () => Promise<void>;
-  mirrorLoading: boolean;
-  collectLoading: boolean;
-  likeLoading: boolean;
-  profileId: string;
-  mainVideo: MainVideoState;
-  progressRef: Ref<HTMLDivElement>;
-  handleSeek: (
-    e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
-  ) => void;
-  dispatchVideos: Post[];
-  collectAmount: number[];
-  mirrorAmount: number[];
-  likeAmount: number[];
-  dispatch: Dispatch<AnyAction>;
-  hasMore: boolean;
-  fetchMoreVideos: () => Promise<
-    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
-    | undefined
-  >;
-  videoLoading: boolean;
-  setVideoLoading: (e: boolean) => void;
-  openConnectModal: (() => void) | undefined;
 };
 
 export type CommentsProps = {
@@ -894,4 +756,20 @@ export type PostBarProps = {
   openMirrorChoice: boolean[];
   router: NextRouter;
   disabled: boolean;
+};
+
+export type FullScreenVideoProps = {
+  dispatch: Dispatch<AnyAction>;
+  fullScreenVideo: FullScreenVideoState;
+  videoRef: RefObject<HTMLVideoElement>;
+  handlePlayPause: () => Promise<void>;
+  handleSeek: (e: MouseEvent<HTMLDivElement>) => void;
+  handleVolumeChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleNextVideo: (forward: boolean) => Promise<void>;
+  loading: {
+    play: boolean;
+    next: boolean;
+    videos: boolean;
+  };
+  wrapperRef: RefObject<Draggable>;
 };

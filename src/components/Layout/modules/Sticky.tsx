@@ -2,9 +2,9 @@ import { FunctionComponent } from "react";
 import Link from "next/link";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
-import { setVideoPlayer } from "../../../../redux/reducers/videoPlayerSlice";
 import { StickyProps } from "../types/layout.types";
 import { AiOutlineLoading } from "react-icons/ai";
+import { setFullScreenVideo } from "../../../../redux/reducers/fullScreenVideoSlice";
 
 const Sticky: FunctionComponent<StickyProps> = ({
   router,
@@ -12,7 +12,7 @@ const Sticky: FunctionComponent<StickyProps> = ({
   cartItems,
   cartAnim,
   dispatch,
-  videoPlayer,
+  fullScreenVideo,
   connected,
   chain,
   handleLogout,
@@ -74,7 +74,21 @@ const Sticky: FunctionComponent<StickyProps> = ({
           <div
             className="relative flex w-5 h-5 items-center break-words cursor-pointer row-start-1"
             draggable={false}
-            onClick={() => dispatch(setVideoPlayer(!videoPlayer))}
+            onClick={() =>
+              dispatch(
+                setFullScreenVideo({
+                  actionOpen: fullScreenVideo?.open ? false : true,
+                  actionTime: fullScreenVideo?.currentTime,
+                  actionDuration: fullScreenVideo?.duration,
+                  actionIsPlaying: fullScreenVideo?.isPlaying,
+                  actionVolume: fullScreenVideo?.volume,
+                  actionVolumeOpen: fullScreenVideo?.volumeOpen,
+                  actionAllVideos: fullScreenVideo?.allVideos,
+                  actionCursor: fullScreenVideo?.cursor,
+                  actionIndex: fullScreenVideo?.index,
+                })
+              )
+            }
           >
             <Image
               layout="fill"

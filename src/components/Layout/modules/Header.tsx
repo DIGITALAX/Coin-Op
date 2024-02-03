@@ -43,8 +43,8 @@ const Header: FunctionComponent<HeaderProps> = ({
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
-  const videoPlayer = useSelector(
-    (state: RootState) => state.app.videoPlayerReducer.open
+  const fullScreenVideo = useSelector(
+    (state: RootState) => state.app.fullScreenVideoReducer
   );
   const profile = useSelector(
     (state: RootState) => state.app.profileReducer?.profile
@@ -94,7 +94,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         chain={chain}
         router={router}
         dispatch={dispatch}
-        videoPlayer={videoPlayer}
+        fullScreenVideo={fullScreenVideo}
         handleLensSignIn={handleLensSignIn}
         profile={profile}
         signInLoading={signInLoading}

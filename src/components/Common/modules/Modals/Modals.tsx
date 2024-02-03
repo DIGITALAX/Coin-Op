@@ -3,33 +3,27 @@ import { RootState } from "../../../../../redux/store";
 import General from "./General";
 import NoHandle from "./NoHandle";
 import Index from "./Index";
-import { useRef } from "react";
 import ImageLarge from "./ImageLarge";
 import SearchExpand from "./SearchExpand";
 import useRollSearch from "@/components/Layout/hooks/useRollSearch";
 import ApiAdd from "./ApiAdd";
 import { NextRouter } from "next/router";
-import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import FullScreenVideo from "./FullScreenVideo";
-import useControls from "../../hooks/useControls";
 import Who from "./Who";
 import { useAccount, useNetwork } from "wagmi";
-import useSignIn from "../../hooks/useSignIn";
 import useWho from "../../hooks/useWho";
-import useChannels from "../../hooks/useChannels";
-import useInteractionsPlayer from "../../hooks/useInteractionsPlayer";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
 import InsufficientBalance from "./InsufficientBalance";
 import QuoteBox from "./QuoteBox";
 import useQuote from "../../hooks/useQuote";
 import PostCollect from "./PostCollect";
+import useVideo from "../../hooks/useVideo";
+import { RefObject } from "react";
 
 const Modals = ({ router }: { router: NextRouter }) => {
-  const videoRef = useRef<HTMLDivElement>(null);
   const { address, isConnected } = useAccount();
   const { chain: chainNetwork } = useNetwork();
-  const { openAccountModal } = useAccountModal();
   const dispatch = useDispatch();
   const publicClient = createPublicClient({
     chain: polygon,
@@ -40,26 +34,11 @@ const Modals = ({ router }: { router: NextRouter }) => {
   const generalModal = useSelector(
     (state: RootState) => state.app.modalOpenReducer
   );
-  const videoSync = useSelector(
-    (state: RootState) => state.app.videoSyncReducer
-  );
   const lensProfile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
   );
-  const dispatchVideos = useSelector(
-    (state: RootState) => state.app.channelsReducer.value
-  );
-  const fullScreenVideo = useSelector(
-    (state: RootState) => state.app.videoPlayerReducer
-  );
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
-  );
   const searchExpand = useSelector(
     (state: RootState) => state.app.searchExpandReducer
-  );
-  const connected = useSelector(
-    (state: RootState) => state.app.walletConnectedReducer.value
   );
   const cartAddAnim = useSelector(
     (state: RootState) => state.app.cartAddAnimReducer.value
@@ -70,50 +49,27 @@ const Modals = ({ router }: { router: NextRouter }) => {
   const indexModal = useSelector(
     (state: RootState) => state.app.indexModalReducer
   );
-  const seek = useSelector((state: RootState) => state.app.seekReducer.seek);
   const imageModal = useSelector(
     (state: RootState) => state.app.imageViewerReducer
   );
   const cartItems = useSelector(
     (state: RootState) => state.app.cartReducer.value
   );
-  const reactBox = useSelector(
-    (state: RootState) => state.app.reactionStateReducer
-  );
-  const oracleData = useSelector(
-    (state: RootState) => state.app.oracleDataReducer.data
-  );
-  const reactions = useSelector(
-    (state: RootState) => state.app.videoCountReducer
-  );
   const availableCurrencies = useSelector(
     (state: RootState) => state.app.availableCurrenciesReducer?.currencies
   );
+  const fullScreenVideo = useSelector(
+    (state: RootState) => state.app.fullScreenVideoReducer
+  );
+  const reactBox = useSelector((state: RootState) => state.app.reactBoxReducer);
   const postCollect = useSelector(
     (state: RootState) => state.app.postCollectReducer
   );
-  const hasMore = useSelector(
-    (state: RootState) => state.app.hasMoreVideoReducer.value
-  );
   const quoteBox = useSelector((state: RootState) => state.app.quoteBoxReducer);
   const apiAdd = useSelector((state: RootState) => state.app.apiAddReducer);
-  const commentId = useSelector(
-    (state: RootState) => state.app.secondaryCommentReducer.value
-  );
   const prerolls = useSelector((state: RootState) => state.app.prerollReducer);
   const noHandle = useSelector((state: RootState) => state.app.noHandleReducer);
-  const reactId = useSelector(
-    (state: RootState) => state.app.reactIdReducer.value
-  );
 
-  const { handleLensSignIn } = useSignIn(
-    dispatch,
-    address,
-    isConnected,
-    openAccountModal,
-    oracleData,
-    lensProfile
-  );
   const { handlePromptChoose } = useRollSearch(
     dispatch,
     isConnected,
@@ -122,57 +78,6 @@ const Modals = ({ router }: { router: NextRouter }) => {
     cartItems,
     lensProfile
   );
-  const { openConnectModal } = useConnectModal();
-  const {
-    formatTime,
-    volume,
-    volumeOpen,
-    setVolumeOpen,
-    handleHeart,
-    mirrorLoading,
-    collectLoading,
-    likeLoading,
-    collectVideo,
-    mirrorVideo,
-    likeVideo,
-    mirrorCommentLoading,
-    likeCommentLoading,
-    collectCommentLoading,
-    handleVolumeChange,
-    wrapperRef,
-    progressRef,
-    handleSeek,
-    fullVideoRef,
-  } = useControls(
-    publicClient,
-    dispatch,
-    address,
-    lensProfile,
-    mainVideo,
-    fullScreenVideo,
-    videoSync,
-    seek,
-    commentId,
-    indexModal
-  );
-  const { fetchMoreVideos, videoLoading, setVideoLoading } = useChannels(
-    dispatch,
-    mainVideo,
-    lensProfile,
-    dispatchVideos,
-    indexModal.message,
-    reactId,
-    videoSync,
-    reactions
-  );
-  const {
-    commentors,
-    getMorePostComments,
-    commentsLoading,
-    hasMoreComments,
-    commentsOpen,
-    setCommentsOpen,
-  } = useInteractionsPlayer(lensProfile, mainVideo, commentId, indexModal);
   const {
     dataLoading,
     reactors,
@@ -189,6 +94,15 @@ const Modals = ({ router }: { router: NextRouter }) => {
     simpleCollect,
     interactionsLoading,
   } = useWho(lensProfile, reactBox, dispatch, address, publicClient);
+  const {
+    videoRef,
+    videoLoading,
+    handleNextVideo,
+    handlePlayPause,
+    handleSeek,
+    handleVolumeChange,
+    wrapperRef,
+  } = useVideo(fullScreenVideo, dispatch, lensProfile);
 
   const {
     quote,
@@ -215,54 +129,17 @@ const Modals = ({ router }: { router: NextRouter }) => {
   );
   return (
     <>
-      {fullScreenVideo.open && (
+      {fullScreenVideo?.open && (
         <FullScreenVideo
-          lensProfile={lensProfile}
-          openConnectModal={openConnectModal}
-          formatTime={formatTime}
           dispatch={dispatch}
-          mainVideo={mainVideo}
-          streamRef={fullVideoRef}
-          wrapperRef={wrapperRef}
-          dispatchVideos={dispatchVideos}
-          videoSync={videoSync}
-          videoRef={videoRef}
-          hasMore={hasMore}
-          connected={connected}
-          videoLoading={videoLoading}
-          setVideoLoading={setVideoLoading}
-          volume={volume}
+          fullScreenVideo={fullScreenVideo}
+          videoRef={videoRef as RefObject<HTMLVideoElement>}
+          loading={videoLoading}
+          handleNextVideo={handleNextVideo}
+          handlePlayPause={handlePlayPause}
           handleVolumeChange={handleVolumeChange}
-          volumeOpen={volumeOpen}
-          setVolumeOpen={setVolumeOpen}
-          handleHeart={handleHeart}
-          collected={mainVideo.collected}
-          mirrored={mainVideo.mirrored}
-          liked={mainVideo.liked}
-          mirrorVideo={mirrorVideo}
-          collectVideo={collectVideo}
-          likeVideo={likeVideo}
-          likeLoading={likeLoading}
-          collectLoading={collectLoading}
-          mirrorLoading={mirrorLoading}
-          profileId={lensProfile?.id}
-          progressRef={progressRef}
           handleSeek={handleSeek}
-          collectAmount={reactions.collect}
-          mirrorAmount={reactions.mirror}
-          likeAmount={reactions.like}
-          fetchMoreVideos={fetchMoreVideos}
-          commentId={commentId}
-          commentors={commentors}
-          collectCommentLoading={collectCommentLoading}
-          commentsLoading={commentsLoading}
-          mirrorCommentLoading={mirrorCommentLoading}
-          likeCommentLoading={likeCommentLoading}
-          hasMoreComments={hasMoreComments}
-          getMorePostComments={getMorePostComments}
-          commentsOpen={commentsOpen}
-          setCommentsOpen={setCommentsOpen}
-          handleLensSignIn={handleLensSignIn}
+          wrapperRef={wrapperRef}
         />
       )}
       {quoteBox?.open && (

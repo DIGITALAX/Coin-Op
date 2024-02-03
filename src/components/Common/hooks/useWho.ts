@@ -10,7 +10,6 @@ import {
   PublicationStats,
   Quote,
 } from "../types/generated";
-import { ReactBoxState } from "../../../../redux/reducers/reactionStateSlice";
 import { Dispatch } from "redux";
 import lensLike from "../../../../lib/lens/helpers/lensLike";
 import errorChoice from "../../../../lib/lens/helpers/errorChoice";
@@ -18,6 +17,7 @@ import lensMirror from "../../../../lib/lens/helpers/lensMirror";
 import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import lensCollect from "../../../../lib/lens/helpers/lensCollect";
+import { ReactBoxState } from "../../../../redux/reducers/reactBoxSlice";
 
 const useWho = (
   lensConnected: Profile | undefined,

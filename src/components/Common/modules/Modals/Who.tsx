@@ -3,9 +3,9 @@ import { ImCross } from "react-icons/im";
 import { AiOutlineLoading } from "react-icons/ai";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
-import { setReactBox } from "../../../../../redux/reducers/reactionStateSlice";
 import { WhoProps } from "../../types/common.types";
 import WhoSwitch from "./WhoSwitch";
+import { setReactBox } from "../../../../../redux/reducers/reactBoxSlice";
 
 const Who: FunctionComponent<WhoProps> = ({
   dataLoading,

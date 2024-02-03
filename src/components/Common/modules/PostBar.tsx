@@ -6,8 +6,8 @@ import Image from "next/legacy/image";
 import { COIN_OP_OPEN_ACTION, INFURA_GATEWAY } from "../../../../lib/constants";
 import numeral from "numeral";
 import { setQuoteBox } from "../../../../redux/reducers/quoteBoxSlice";
-import { setReactBox } from "../../../../redux/reducers/reactionStateSlice";
 import { PostBarProps } from "../types/common.types";
+import { setReactBox } from "../../../../redux/reducers/reactBoxSlice";
 
 const PostBar: FunctionComponent<PostBarProps> = ({
   index,

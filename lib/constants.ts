@@ -208,3 +208,5 @@ export const printTypeToString: { [key in number]: string } = {
   [4]: "sleeve",
   [5]: "crop",
 };
+
+export const CHROMADIN_ID: string = "0x01c6a9";

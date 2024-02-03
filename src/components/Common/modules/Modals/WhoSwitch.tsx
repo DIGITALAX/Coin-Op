@@ -1,11 +1,11 @@
 import { FunctionComponent } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Image from "next/legacy/image";
-import { setReactBox } from "../../../../../redux/reducers/reactionStateSlice";
 import createProfilePicture from "../../../../../lib/lens/helpers/createProfilePicture";
 import { WhoSwitchProps } from "../../types/common.types";
 import { Comment, Quote } from "../../types/generated";
 import Publication from "../Publication";
+import { setReactBox } from "../../../../../redux/reducers/reactBoxSlice";
 
 const WhoSwitch: FunctionComponent<WhoSwitchProps> = ({
   type,
