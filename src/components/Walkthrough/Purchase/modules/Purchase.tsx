@@ -31,10 +31,13 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   lensConnected,
   handleLensSignIn,
   setEncrypted,
+  router,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
       <Grid
+        router={router}
         setEncrypted={setEncrypted}
         lensConnected={lensConnected}
         handleLensSignIn={handleLensSignIn}
@@ -49,6 +52,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
         scrollRef={scrollRef}
         cartItems={cartItems}
         address={address}
+        t={t}
         openConnectModal={openConnectModal}
         signInLoading={signInLoading}
         fulfillmentDetails={fulfillmentDetails}

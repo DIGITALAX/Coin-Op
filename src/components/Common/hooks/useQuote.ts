@@ -24,6 +24,7 @@ import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import { setAvailableCurrencies } from "../../../../redux/reducers/availableCurrenciesSlice";
 import lensQuote from "../../../../lib/lens/helpers/lensQuote";
 import lensComment from "../../../../lib/lens/helpers/lensComment";
+import { TFunction } from "i18next";
 
 const useQuote = (
   availableCurrencies: Erc20[],
@@ -31,7 +32,8 @@ const useQuote = (
   dispatch: Dispatch,
   publicClient: PublicClient,
   address: `0x${string}` | undefined,
-  quoteBox: QuoteBoxState
+  quoteBox: QuoteBoxState,
+  t: TFunction<"common", undefined>
 ) => {
   const [mentionProfiles, setMentionProfiles] = useState<Profile[]>([]);
   const [profilesOpen, setProfilesOpen] = useState<boolean[]>([false]);
@@ -104,7 +106,8 @@ const useQuote = (
           address as `0x${string}`,
           clientWallet,
           publicClient,
-          () => clearComment()
+          () => clearComment(),
+          t
         );
       } else {
         await lensQuote(
@@ -124,6 +127,7 @@ const useQuote = (
           address as `0x${string}`,
           clientWallet,
           publicClient,
+          t,
           () => clearBox()
         );
       }
@@ -147,8 +151,7 @@ const useQuote = (
         dispatch(
           setModalOpen({
             actionOpen: true,
-            actionMessage:
-              "Something went wrong indexing your interaction. Try again?",
+            actionMessage: t("try"),
           })
         );
         console.error(err.message);
@@ -156,7 +159,7 @@ const useQuote = (
         dispatch(
           setIndexModal({
             actionOpen: true,
-            actionMessage: "Successfully Indexed",
+            actionMessage: t("succ"),
           })
         );
 

@@ -46,6 +46,7 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   setThickness,
   brushWidth,
   setBrushWidth,
+  router,
   setTool,
   colorPicker,
   tool,
@@ -94,13 +95,22 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
   setFulfillmentDetails,
   startIndex,
   setStartIndex,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
-      <TopBanner />
+      <TopBanner t={t} />
       <div className="relative w-full h-full flex flex-col overflow-y-scroll gap-20 justify-start items-center overflow-x-hidden">
-        <Format dispatch={dispatch} template={template} templates={templates} />
+        <Format
+          t={t}
+          router={router}
+          dispatch={dispatch}
+          template={template}
+          templates={templates}
+        />
         <Layer
+          t={t}
+          router={router}
           layers={printTypeLayers}
           dispatch={dispatch}
           synthLayer={synthLayer}
@@ -108,6 +118,8 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           scrollToPreroll={scrollToPreroll}
         />
         <Synth
+          t={t}
+          router={router}
           itemClicked={itemClicked}
           setItemClicked={setItemClicked}
           materialBackground={materialBackground}
@@ -159,6 +171,8 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           synthRef={synthRef}
         />
         <Composite
+          t={t}
+          router={router}
           openChainModal={openChainModal}
           chain={chain}
           dispatch={dispatch}
@@ -174,12 +188,14 @@ const PageContainer: FunctionComponent<PageContainerProps> = ({
           apiKey={apiKey}
         />
         <Purchase
+          router={router}
           chain={chain}
           setEncrypted={setEncrypted}
           lensConnected={profile}
           handleLensSignIn={handleLensSignIn}
           setStartIndex={setStartIndex}
           startIndex={startIndex}
+          t={t}
           setFulfillmentDetails={setFulfillmentDetails}
           setCartItem={setCartItem}
           setCheckoutCurrency={setCheckoutCurrency}

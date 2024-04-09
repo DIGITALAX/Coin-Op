@@ -15,6 +15,7 @@ import validateMetadata from "../../../graphql/lens/queries/validate";
 import cleanCollect from "./cleanCollect";
 import { setModalOpen } from "../../../redux/reducers/modalOpenSlice";
 import { setIndexModal } from "../../../redux/reducers/indexModalSlice";
+import { TFunction } from "i18next";
 
 const lensComment = async (
   id: string,
@@ -24,7 +25,8 @@ const lensComment = async (
   address: `0x${string}`,
   clientWallet: WalletClient,
   publicClient: PublicClient,
-  clearComment: () => void
+  clearComment: () => void,
+  t: TFunction<"common", undefined>
 ): Promise<void> => {
   if (
     openActionModules &&
@@ -54,8 +56,7 @@ const lensComment = async (
     dispatch(
       setModalOpen({
         actionOpen: true,
-        actionMessage:
-          "Something went wrong indexing your interaction. Try again?",
+        actionMessage: t("try"),
       })
     );
     return;
@@ -88,7 +89,8 @@ const lensComment = async (
       {
         forTxId: broadcastResult?.data?.broadcastOnchain.txId,
       },
-      dispatch
+      dispatch,
+      t
     );
   } else {
     const { request } = await publicClient.simulateContract({
@@ -118,7 +120,7 @@ const lensComment = async (
     dispatch(
       setIndexModal({
         actionOpen: true,
-        actionMessage: "Indexing Interaction",
+        actionMessage: t("index"),
       })
     );
     clearComment();
@@ -126,7 +128,8 @@ const lensComment = async (
       {
         forTxHash: tx.transactionHash,
       },
-      dispatch
+      dispatch,
+      t
     );
   }
   setTimeout(() => {

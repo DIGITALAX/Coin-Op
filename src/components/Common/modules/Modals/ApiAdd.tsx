@@ -4,9 +4,11 @@ import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../../lib/constants";
 import { ImCross } from "react-icons/im";
 import { setApiAdd } from "../../../../../redux/reducers/apiAddSlice";
-import Link from "next/link";
 
-const ApiAdd: FunctionComponent<ApiAddProps> = ({ dispatch }): JSX.Element => {
+const ApiAdd: FunctionComponent<ApiAddProps> = ({
+  dispatch,
+  t,
+}): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
       <div className="relative w-full sm:w-[50vw] lg:w-[30vw] h-fit col-start-1 place-self-center bg-black rounded-lg">
@@ -29,7 +31,7 @@ const ApiAdd: FunctionComponent<ApiAddProps> = ({ dispatch }): JSX.Element => {
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
                 <div className="relative w-3/4 h-fit justify-center items-center text-white font-mana text-sm text-center cursor-pointer active:scale-95">
-                  Set your api key to synth {`>`}
+                  {t("key")}
                 </div>
                 <div className="relative w-1/2 h-36 preG:h-52 lg:h-40 xl:h-52 justify-center items-center rounded-lg border border-white bg-cross">
                   <Image

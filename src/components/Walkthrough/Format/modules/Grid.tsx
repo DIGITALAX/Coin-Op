@@ -11,6 +11,8 @@ const Grid: FunctionComponent<GridProps> = ({
   templates,
   template,
   dispatch,
+  t,
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 flex flex-col gap-2">
@@ -32,6 +34,7 @@ const Grid: FunctionComponent<GridProps> = ({
             ?.map((value: TemplateInterface, index: number) => {
               return (
                 <Template
+                  t={t}
                   template={value}
                   key={index}
                   dispatch={dispatch}
@@ -62,8 +65,8 @@ const Grid: FunctionComponent<GridProps> = ({
               />
             </div>
           </div>
-          <div className="relative w-fit h-fit text-white font-mega flex break-words text-right text-xxs sm:text-xs md:text-base md:pl-0 pl-2">
-            or level up <br /> to unlock more
+          <div className="relative w-fit h-fit text-white font-mega flex break-words text-right text-xxs sm:text-xs md:text-base md:pl-0 pl-2 whitespace-pre-line">
+            {t("unlock")}
           </div>
         </div>
         <div
@@ -78,6 +81,7 @@ const Grid: FunctionComponent<GridProps> = ({
                   <Template
                     template={value}
                     key={index}
+                    t={t}
                     chosenTemplate={template}
                     height="6.5rem"
                     dispatch={dispatch}
@@ -90,14 +94,19 @@ const Grid: FunctionComponent<GridProps> = ({
       </div>
       <div className="flex flex-col absolute w-fit h-fit gap-1.5 bottom-40 px-5 preG:px-0 preG:right-auto preG:-bottom-2 sm:-bottom-5 synth:-bottom-3">
         <div
-          className="relative text-base sm:text-2xl tablet:text-4xl uppercase font-mana flex text-white"
+          className={`relative text-base sm:text-2xl tablet:text-4xl uppercase flex text-white ${
+            router.locale == "es" ? "font-bit" : "font-mana"
+          }`}
           draggable={false}
         >
-          choose format
+          {t("format")}
         </div>
-        <div className="text-xxs sm:text-sm relative flex font-sat text-bb w-2/3 synth:w-fit h-fit">
-          Ethical Climatecore? Don&apos;t wait for the suits to fix things; they
-          won&apos;t.
+        <div
+          className={`relative flex font-sat text-bb w-2/3 break-all synth:w-fit h-fit ${
+            router.locale == "en" ? "text-xxs" : "text-xxxs"
+          }`}
+        >
+          {t("eth")}
         </div>
       </div>
     </div>

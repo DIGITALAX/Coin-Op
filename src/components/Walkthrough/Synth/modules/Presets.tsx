@@ -6,11 +6,12 @@ const Presets: FunctionComponent<PresetProps> = ({
   presets,
   dispatch,
   synthConfig,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col items-start justify-start p-2 gap-4 font-mana text-xs text-white">
       <div className="relative w-fit h-fit flex justify-start items-start">
-        choose a preset:
+        {t("pres")}
       </div>
       <div className="relative w-full h-full overflow-y-scroll flex items-start justify-start">
         <div className="inline-flex gap-2 relative w-fit h-fit items-start justify-start flex-wrap">

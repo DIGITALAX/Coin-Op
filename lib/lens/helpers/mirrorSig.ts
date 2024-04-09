@@ -9,13 +9,15 @@ import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../../constants";
 import { RelaySuccess } from "@/components/Common/types/generated";
 import handleIndexCheck from "./handleIndexCheck";
 import mirrorPost from "../../../graphql/lens/mutations/mirror";
+import { TFunction } from "i18next";
 
 const mirrorSig = async (
   mirrorOn: string,
   clientWallet: WalletClient,
   publicClient: PublicClient,
   address: `0x${string}`,
-  dispatch: Dispatch<AnyAction>
+  dispatch: Dispatch<AnyAction>,
+  t: TFunction<"common", undefined>
 ) => {
   try {
     const mirror = await mirrorPost({
@@ -61,26 +63,28 @@ const mirrorSig = async (
       dispatch(
         setIndexModal({
           actionValue: true,
-          actionMessage: "Indexing Interaction",
+          actionMessage: t("index"),
         })
       );
       await handleIndexCheck(
         {
           forTxHash: tx.transactionHash,
         },
-        dispatch
+        dispatch,
+        t
       );
     } else {
       dispatch(
         setIndexModal({
           actionValue: true,
-          actionMessage: "Indexing Interaction",
+          actionMessage: t("index"),
         })
       );
       setTimeout(async () => {
         await handleIndexCheck(
           (broadcastResult?.data?.broadcastOnchain as RelaySuccess).txHash,
-          dispatch
+          dispatch,
+          t
         );
       }, 7000);
     }

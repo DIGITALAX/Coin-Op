@@ -1,4 +1,6 @@
 import "@/styles/globals.css";
+import "./../../i18n";
+import { appWithTranslation } from "next-i18next";
 import type { AppProps } from "next/app";
 import Header from "../components/Layout/modules/Header";
 import Footer from "../components/Layout/modules/Footer";
@@ -50,7 +52,7 @@ export const ScrollContext = createContext<{
   prerollRef: null!,
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -112,7 +114,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <Component {...pageProps} client={client} router={router} />
                 <Prerolls right={true} />
               </div>
-              <Footer />
+              <Footer router={router} />
               <Modals router={router} />
             </div>
           </ScrollContext.Provider>
@@ -121,3 +123,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </Provider>
   );
 }
+
+export default appWithTranslation(App);

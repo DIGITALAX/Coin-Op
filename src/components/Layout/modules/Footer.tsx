@@ -3,8 +3,13 @@ import { FunctionComponent } from "react";
 import { BsTwitter, BsGithub } from "react-icons/bs";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
+import { NextRouter } from "next/router";
 
-const Footer: FunctionComponent = (): JSX.Element => {
+const Footer: FunctionComponent<{ router: NextRouter }> = ({
+  router,
+}): JSX.Element => {
+  const { t } = useTranslation("footer");
   return (
     <div className="relative w-full h-fit inline-flex flex-wrap items-center justify-start px-4 pb-3 mt-auto pt-8 md:gap-0 gap-5">
       <div className="flex flex-col items-center justify-center preG:items-end preG:justify-end relative preG:absolute preG:right-3 preG:bottom-3 w-full h-fit preG:h-auto preG:w-auto">
@@ -68,9 +73,13 @@ const Footer: FunctionComponent = (): JSX.Element => {
           <BsTwitter size={20} color={"white"} />
         </a>
       </div>
-      <div className="flex flex-col items-start justify-start relative md:absolute text-xs font-mana text-white text-left">
+      <div
+        className={`flex flex-col items-start justify-start relative md:absolute text-xs  text-white text-left ${
+          router.locale == "es" ? "font-bit" : "font-mana"
+        }`}
+      >
         <div className="relative flex w-fit h-fit text-left justify-center items-start">
-          Fulfilled Locally in NYC at
+          {t("fulf")}
         </div>
         <Link
           target="_blank"
@@ -78,7 +87,7 @@ const Footer: FunctionComponent = (): JSX.Element => {
           href="https://www.themanufactory.xyz"
           className="underline cursor-pointer flex text-left justify-center items-start w-fit h-fit"
         >
-          The Manufactory
+          {t("manu")}
         </Link>
       </div>
     </div>

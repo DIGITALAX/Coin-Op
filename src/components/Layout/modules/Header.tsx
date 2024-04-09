@@ -14,12 +14,14 @@ import Sticky from "./Sticky";
 import MobileFotos from "./MobileFotos";
 import { useAccount, useNetwork } from "wagmi";
 import useSignIn from "@/components/Common/hooks/useSignIn";
+import { useTranslation } from "next-i18next";
 
 const Header: FunctionComponent<HeaderProps> = ({
   prerollRef,
   router,
 }): JSX.Element => {
   const dispatch = useDispatch();
+  const { t, i18n } = useTranslation("footer");
   const { isConnected, address } = useAccount();
   const { chain: chainNetwork } = useNetwork();
   const { openAccountModal } = useAccountModal();
@@ -66,7 +68,8 @@ const Header: FunctionComponent<HeaderProps> = ({
     address,
     chainNetwork,
     cartItems,
-    profile
+    profile,
+    t
   );
   const { handleLensSignIn, signInLoading, handleLogout } = useSignIn(
     dispatch,
@@ -79,11 +82,14 @@ const Header: FunctionComponent<HeaderProps> = ({
   return (
     <div className="relative w-full h-fit items-center justify-center flex flex-col gap-20 px-3 pt-2 pb-20">
       <MobileFotos
+        t={t}
         prerolls={prerolls}
         dispatch={dispatch}
         prerollsLoading={prerollsLoading}
       />
       <Sticky
+        t={t}
+        i18n={i18n}
         openConnectModal={openConnectModal}
         openChainModal={openChainModal}
         handleLogout={handleLogout}
@@ -111,8 +117,9 @@ const Header: FunctionComponent<HeaderProps> = ({
         handleAddToCart={handleAddToCart}
         router={router}
         cartAddAnim={cartAddAnim}
+        t={t}
       />
-      <Hook prerollRef={prerollRef} />
+      <Hook t={t} prerollRef={prerollRef} />
       {/* </div> */}
     </div>
   );

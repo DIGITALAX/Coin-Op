@@ -9,6 +9,7 @@ import { setCompletedSynths } from "../../../../../redux/reducers/completedSynth
 const General: FunctionComponent<GeneralProps> = ({
   message,
   dispatch,
+  t,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -43,9 +44,8 @@ const General: FunctionComponent<GeneralProps> = ({
                     draggable={false}
                   />
                 </div>
-                {message.includes(
-                  "Are you sure you want to clear all synths for this composite and restart?"
-                ) && (
+                {(message.includes("Are you sure you want to clear") ||
+                  message.includes("Estás seguro de que")) && (
                   <div
                     className={`relative w-24 h-fit px-2 py-1.5 bg-azul border border-smo rounded-md cursor-pointer font-mana text-white hover:bg-smo/10 justify-center flex items-center`}
                     onClick={() => {
@@ -58,7 +58,7 @@ const General: FunctionComponent<GeneralProps> = ({
                       );
                     }}
                   >
-                    clear
+                    {t("clar")}
                   </div>
                 )}
               </div>

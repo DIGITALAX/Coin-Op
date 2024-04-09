@@ -13,6 +13,8 @@ const Dash: FunctionComponent<DashProps> = ({
   controlType,
   setControlType,
   canvasExpand,
+  t,
+  router
 }): JSX.Element => {
   const imageUrl = useMemo(
     () => (synthConfig?.image ? URL.createObjectURL(synthConfig.image) : ""),
@@ -23,7 +25,7 @@ const Dash: FunctionComponent<DashProps> = ({
     <div className="relative w-full h-full flex flex-col preG:flex-row gap-5 items-start justify-center px-2 py-2.5">
       <div className="relative flex flex-col w-full h-full gap-4 items-start justify-start">
         <div className="relative w-fit h-fit text-white text-sm font-mana">
-          modify suggested prompt:
+          {t("modify")}
         </div>
         <textarea
           style={{ resize: "none" }}
@@ -80,9 +82,11 @@ const Dash: FunctionComponent<DashProps> = ({
           </div>
           <div className="relative flex flex-col gap-2 text-white font-mana items-center justify-center">
             <div
-              className={`relative w-fit h-fit justify-center flex items-center text-xs break-words text-center`}
+              className={`relative w-fit h-fit justify-center flex items-center text-xs break-words text-center ${
+                router.locale == "es" ? "font-bit" : "font-mana"
+              }`}
             >
-              synth layer
+              {t("capa")}
             </div>
             <div
               className={`relative w-20 h-fit px-3 py-1.5 border border-smo rounded-md justify-center flex items-center text-lg leading-3 ${
@@ -173,26 +177,29 @@ const Dash: FunctionComponent<DashProps> = ({
                 />
               </div>
               <div
-                className={`relative w-fit h-fit font-mana text-white flex justify-center items-center ${
+                className={`relative w-fit h-fit text-white flex justify-center items-center ${
                   canvasExpand ? "text-xxs" : "text-xs"
+                } ${
+                  router.locale == "es" ? "font-bit" : "font-mana"
                 }`}
               >
-                add image inspiration
+                {t("inspo")}
               </div>
             </div>
             {!canvasExpand && (
-              <div className="relative flex items-center justify-center break-words text-xxs text-white font-mana">
-                {`( On txt2img, the pattern element's drawing is
-              used as an init. )`}
+              <div className={`relative flex items-center justify-center break-words text-xxs text-white ${
+                router.locale == "es" ? "font-bit" : "font-mana"
+              }`}>
+                {t("pat")}
               </div>
             )}
           </label>
         </div>
         <div className="relative w-full h-fit flex flex-col gap-1.5">
           <div className="relative w-full h-fit justify-between text-white font-mana flex flex-row break-words text-xxs">
-            <div className="relative w-fit h-fit">trace</div>
-            <div className="relative w-fit h-fit">remix</div>
-            <div className="relative w-fit h-fit">freestyle</div>
+            <div className="relative w-fit h-fit">{t("trace")}</div>
+            <div className="relative w-fit h-fit">{t("remix")}</div>
+            <div className="relative w-fit h-fit">{t("free")}</div>
           </div>
           <div className="relative flex flex-col w-full h-fit">
             <input

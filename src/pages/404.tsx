@@ -1,8 +1,11 @@
 import Head from "next/head";
 import Link from "next/link";
 import { FunctionComponent } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 const Custom404: FunctionComponent = (): JSX.Element => {
+  const { t } = useTranslation("404");
   return (
     <div className="relative w-full h-screen flex flex-col items-center justify-center overflow-x-hidden">
       <Head>
@@ -18,7 +21,7 @@ const Custom404: FunctionComponent = (): JSX.Element => {
           href={"/"}
           className="relative w-fit h-fit flex items-center justify-center font-mana text-white"
         >
-          Wrong Way? Head home.
+          {t("wrong")}
         </Link>
       </div>
     </div>
@@ -26,3 +29,9 @@ const Custom404: FunctionComponent = (): JSX.Element => {
 };
 
 export default Custom404;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["404", "footer"])),
+  },
+});

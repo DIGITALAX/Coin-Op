@@ -12,6 +12,7 @@ import {
 import broadcast from "../../../graphql/lens/mutations/broadcast";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../../constants";
 import { collectPost } from "../../../graphql/lens/mutations/collect";
+import { TFunction } from "i18next";
 
 const actSig = async (
   forId: string,
@@ -19,7 +20,8 @@ const actSig = async (
   clientWallet: WalletClient,
   publicClient: PublicClient,
   address: `0x${string}`,
-  dispatch: Dispatch<AnyAction>
+  dispatch: Dispatch<AnyAction>,
+  t: TFunction<"common", undefined>
 ) => {
   try {
     const collect = await collectPost({
@@ -65,26 +67,28 @@ const actSig = async (
       dispatch(
         setIndexModal({
           actionValue: true,
-          actionMessage: "Indexing Interaction",
+          actionMessage: t("index"),
         })
       );
       await handleIndexCheck(
         {
           forTxHash: tx.transactionHash,
         },
-        dispatch
+        dispatch,
+        t
       );
     } else {
       dispatch(
         setIndexModal({
           actionValue: true,
-          actionMessage: "Indexing Interaction",
+          actionMessage: t("index"),
         })
       );
       setTimeout(async () => {
         await handleIndexCheck(
           (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-          dispatch
+          dispatch,
+          t
         );
       }, 7000);
     }

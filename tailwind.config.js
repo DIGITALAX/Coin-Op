@@ -16,6 +16,7 @@ module.exports = {
         herm: "Hermano Alto Stamp",
         mana: "Manaspace",
         vcr: "Vcr",
+        bit: "Bitblox"
       },
       colors: {
         oscurazul: "#030D6B",
@@ -55,6 +56,7 @@ module.exports = {
       },
       fontSize: {
         xxs: "0.5rem",
+        xxxs: "0.6rem",
       },
       zIndex: {
         1: 1,

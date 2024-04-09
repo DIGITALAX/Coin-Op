@@ -28,6 +28,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
   handlePromptChoose,
   router,
   cartAddAnim,
+  t,
 }): JSX.Element => {
   const profileImage = createProfilePicture(
     searchItem?.profile?.metadata?.picture
@@ -135,7 +136,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                                   ?.replaceAll("_(print)", "")}`
                               )
                             }
-                            title="nft art"
+                            title={"nft"}
                           >
                             <Image
                               className="rounded-full"
@@ -150,6 +151,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                       )}
                     </div>
                     <PrintTag
+                      t={t}
                       backgroundColor={searchItem.bgColor}
                       type={printTypeToString[Number(searchItem.printType)]}
                     />
@@ -219,8 +221,7 @@ const SearchExpand: FunctionComponent<SearchExpandProps> = ({
                           dispatch(
                             setModalOpen({
                               actionOpen: true,
-                              actionMessage:
-                                "We know you're eager, but you've reached this prints' collect limit!",
+                              actionMessage: t("eager"),
                             })
                           );
                           return;

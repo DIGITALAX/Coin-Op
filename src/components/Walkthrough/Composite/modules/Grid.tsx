@@ -30,6 +30,8 @@ const Grid: FunctionComponent<GridProps> = ({
   openChainModal,
   chain,
   apiKey,
+  router,
+  t,
 }): JSX.Element => {
   return (
     <div
@@ -52,7 +54,7 @@ const Grid: FunctionComponent<GridProps> = ({
             objectFit="cover"
             draggable={false}
           />
-          <ModelSelect models={models} />
+          <ModelSelect models={models} t={t} />
         </div>
       </div>
       <div className="relative preG:absolute bottom-6 right-2 sm:right-9 w-full preG:pt-0 pt-10 preG:w-fit h-fit flex flex-col md:flex-row gap-3 text-white items-center justify-center text-center preG:order-2 order-3">
@@ -63,8 +65,10 @@ const Grid: FunctionComponent<GridProps> = ({
             draggable={false}
           />
         </div>
-        <div className="relative w-fit h-fit items-center justify-center text-center flex font-mega text-xs md:text-sm lg:text-xl xl:text-base synth:text-2xl uppercase">
-          share with friends
+        <div className={`relative w-fit h-fit items-center justify-center text-center flex font-mega uppercase" ${
+          router.locale == "es" ? "text-xs md:text-sm lg:text-xl" : "text-xs md:text-sm lg:text-xl xl:text-base synth:text-2xl"
+        }`}>
+          {t("friends")}
         </div>
         <div className="relative w-fit h-fit items-center justify-center flex flex-row gap-2 font-herm text-lg">
           <div
@@ -204,10 +208,12 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="relative w-full preG:w-fit flex justify-center preG:absolute text-white font-mana text-sm sm:text-xl tablet:text-3xl uppercase preG:bottom-4 preG:order-3 order-2 preG:pt-0 pt-3"
+        className={`relative w-full preG:w-fit flex justify-center preG:absolute text-white text-sm sm:text-xl tablet:text-3xl uppercase preG:bottom-4 preG:order-3 order-2 preG:pt-0 pt-3 ${
+          router.locale == "en" ? "font-mana" : "font-bit"
+        }`}
         draggable={false}
       >
-        edit for composite
+        {t("edit")}
       </div>
     </div>
   );

@@ -16,6 +16,8 @@ const Items: FunctionComponent<ItemsProps> = ({
   setCartItem,
   oracleValue,
   setEncrypted,
+  t,
+  router
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 h-[12rem] flex">
@@ -23,8 +25,12 @@ const Items: FunctionComponent<ItemsProps> = ({
         <div className="relative w-full h-full items-start justify-start flex overflow-scroll">
           <div className="flex flex-col gap-2 items-start justify-start w-fit preG:w-full h-fit">
             {cartItems?.length < 1 ? (
-              <div className="relative w-full h-full font-mana text-white text-xs flex items-center justify-center text-center">
-                fill up your cart
+              <div
+                className={`relative w-full h-full text-white text-xs flex items-center justify-center text-center ${
+                  router.locale == "es" ? "font-bit" : "font-mana"
+                }`}
+              >
+                {t("fill")}
               </div>
             ) : (
               [...cartItems]
@@ -149,8 +155,7 @@ const Items: FunctionComponent<ItemsProps> = ({
                               dispatch(
                                 setModalOpen({
                                   actionOpen: true,
-                                  actionMessage:
-                                    "We know you're eager, but you've reached this prints' collect limit!",
+                                  actionMessage: t("eager"),
                                 })
                               );
                               return;

@@ -14,6 +14,7 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
   prerolls,
   dispatch,
   prerollsLoading,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-full h-[95vh] items-center justify-center flex sm:hidden flex-col gap-3">
@@ -89,6 +90,7 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                         )}
                         <div className="absolute bottom-2 right-2 flex">
                           <PrintTag
+                            t={t}
                             backgroundColor={preroll.bgColor}
                             type={printTypeToString[Number(preroll.printType)]}
                           />

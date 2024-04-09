@@ -12,6 +12,7 @@ import {
   useChainModal,
   useConnectModal,
 } from "@rainbow-me/rainbowkit";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import useSignIn from "@/components/Common/hooks/useSignIn";
 import useLayer from "@/components/Walkthrough/Layer/hooks/useLayer";
 import useCanvas from "@/components/Walkthrough/Synth/hooks/useCanvas";
@@ -22,6 +23,7 @@ import { polygon } from "viem/chains";
 import useCheckout from "@/components/Walkthrough/Purchase/hooks/useCheckout";
 import { NextRouter } from "next/router";
 import Head from "next/head";
+import { useTranslation } from "next-i18next";
 
 export default function Home({
   client,
@@ -30,6 +32,7 @@ export default function Home({
   client: LitNodeClient;
   router: NextRouter;
 }): JSX.Element {
+  const { t } = useTranslation("common");
   const { scrollRef, synthRef } = useContext(ScrollContext);
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();
@@ -193,7 +196,8 @@ export default function Home({
     client,
     oracleData,
     cartItems,
-    router
+    router,
+    t
   );
 
   const { layersLoading, scrollToPreroll } = useLayer(dispatch, template);
@@ -306,11 +310,12 @@ export default function Home({
           type="font/ttf"
         />
       </Head>
-
       <PageContainer
+        router={router}
         setStartIndex={setStartIndex}
         startIndex={startIndex}
         encrypted={encrypted}
+        t={t}
         setEncrypted={setEncrypted}
         setOpenCountryDropDown={setOpenCountryDropdown}
         openCountryDropDown={openCountryDropdown}
@@ -397,3 +402,9 @@ export default function Home({
     </>
   );
 }
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common", "footer"])),
+  },
+});

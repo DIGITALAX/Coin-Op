@@ -17,6 +17,7 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   encrypted,
   lensConnected,
   handleLensSignIn,
+  t
 }): JSX.Element => {
   return (
     <div
@@ -49,17 +50,17 @@ const Crypto: FunctionComponent<CryptoProps> = ({
         {signInLoading || cryptoCheckoutLoading ? (
           <AiOutlineLoading size={15} color={"white"} />
         ) : cartItems.length < 1 ? (
-          "ADD TO CART"
+          t("add")
         ) : !address ? (
-          "CONNECT"
+          t("conn")
         ) : !lensConnected?.id ? (
           "LENS"
         ) : !encrypted ? (
-          "ENCRYPT DETAILS"
+          t("det")
         ) : !approved ? (
-          "APPROVE SPEND"
+          t("app")
         ) : (
-          "CHECKOUT"
+          t("check")
         )}
       </div>
     </div>

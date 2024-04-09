@@ -9,12 +9,15 @@ import { setPrerollAnim } from "../../redux/reducers/prerollAnimSlice";
 import { useEffect } from "react";
 import { setCartAddAnim } from "../../redux/reducers/cartAddAnimSlice";
 import { useAccount } from "wagmi";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { NextRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 const Account: NextPage<{ client: LitNodeClient; router: NextRouter }> = ({
   client,
   router,
 }): JSX.Element => {
+  const { t } = useTranslation("account");
   const { address } = useAccount();
   const { openChainModal } = useChainModal();
   const { openConnectModal } = useConnectModal();
@@ -151,6 +154,7 @@ const Account: NextPage<{ client: LitNodeClient; router: NextRouter }> = ({
       <AllOrders
         openConnectModal={openConnectModal}
         router={router}
+        t={t}
         client={client}
         connected={connected}
         ordersLoading={ordersLoading}
@@ -168,3 +172,9 @@ const Account: NextPage<{ client: LitNodeClient; router: NextRouter }> = ({
 };
 
 export default Account;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["account", "footer", "common"])),
+  },
+});

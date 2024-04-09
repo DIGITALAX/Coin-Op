@@ -1,3 +1,5 @@
+import { TFunction } from "i18next";
+import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
 
 export interface Layer {
@@ -13,6 +15,8 @@ export interface Layer {
 
 export type LayerProps = {
   layers: Layer[];
+  router: NextRouter;
+  t: TFunction<"common", undefined>;
   scrollToPreroll: () => void;
   dispatch: Dispatch<AnyAction>;
   synthLayer:
@@ -32,6 +36,7 @@ export type LayerProps = {
 export type GridProps = {
   layers: Layer[];
   dispatch: Dispatch<AnyAction>;
+  router: NextRouter;
   synthLayer:
     | {
         parentURI: string;
@@ -45,6 +50,7 @@ export type GridProps = {
     | undefined;
   layersLoading: boolean;
   scrollToPreroll: () => void;
+  t: TFunction<"common", undefined>;
 };
 
 export type SetProps = {

@@ -1,11 +1,13 @@
 import { AnyAction, Dispatch } from "redux";
 import { setIndexModal } from "../../../redux/reducers/indexModalSlice";
 import { setModalOpen } from "../../../redux/reducers/modalOpenSlice";
+import { TFunction } from "i18next";
 
 const errorChoice = async (
   err: any,
   runner: (() => Promise<void>) | (() => void),
-  dispatch: Dispatch<AnyAction>
+  dispatch: Dispatch<AnyAction>,
+  t: TFunction<"common", undefined>
 ) => {
   if (err?.message?.includes("User rejected the request")) return;
   if (
@@ -15,8 +17,7 @@ const errorChoice = async (
     dispatch(
       setModalOpen({
         actionOpen: true,
-        actionMessage:
-          "Something went wrong indexing your interaction. Try again?",
+        actionMessage: t("try"),
       })
     );
     console.error(err.message);
@@ -24,7 +25,7 @@ const errorChoice = async (
     dispatch(
       setIndexModal({
         actionOpen: true,
-        actionMessage: "Successfully Indexed",
+        actionMessage: t("succ"),
       })
     );
 

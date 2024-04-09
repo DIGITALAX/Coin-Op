@@ -15,6 +15,7 @@ import { setModalOpen } from "../../../redux/reducers/modalOpenSlice";
 import broadcast from "../../../graphql/lens/mutations/broadcast";
 import { setIndexModal } from "../../../redux/reducers/indexModalSlice";
 import handleIndexCheck from "./handleIndexCheck";
+import { TFunction } from "i18next";
 
 const lensQuote = async (
   quoteOn: string,
@@ -24,6 +25,7 @@ const lensQuote = async (
   address: `0x${string}`,
   clientWallet: WalletClient,
   publicClient: PublicClient,
+  t: TFunction<"common", undefined>,
   closeBox?: () => void
 ): Promise<void> => {
   if (
@@ -54,8 +56,7 @@ const lensQuote = async (
     dispatch(
       setModalOpen({
         actionOpen: true,
-        actionMessage:
-          "Something went wrong indexing your interaction. Try again?",
+        actionMessage: t("try"),
       })
     );
     return;
@@ -86,7 +87,7 @@ const lensQuote = async (
     dispatch(
       setIndexModal({
         actionOpen: true,
-        actionMessage: "Indexing Interaction",
+        actionMessage: t("index"),
       })
     );
     closeBox && closeBox();
@@ -94,7 +95,8 @@ const lensQuote = async (
       {
         forTxId: broadcastResult?.data?.broadcastOnchain?.txId,
       },
-      dispatch
+      dispatch,
+      t
     );
   } else {
     const { request } = await publicClient.simulateContract({
@@ -123,7 +125,7 @@ const lensQuote = async (
     dispatch(
       setIndexModal({
         actionOpen: true,
-        actionMessage: "Indexing Interaction",
+        actionMessage: t("index"),
       })
     );
     closeBox && closeBox();
@@ -132,7 +134,8 @@ const lensQuote = async (
       {
         forTxHash: tx.transactionHash,
       },
-      dispatch
+      dispatch,
+      t
     );
   }
   setTimeout(() => {

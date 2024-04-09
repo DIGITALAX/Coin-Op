@@ -7,13 +7,17 @@ const Layer: FunctionComponent<LayerProps> = ({
   dispatch,
   synthLayer,
   layersLoading,
-  scrollToPreroll
+  scrollToPreroll,
+  t,
+  router
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
       <Grid
         dispatch={dispatch}
         layers={layers}
+        t={t}
+        router={router}
         synthLayer={synthLayer}
         layersLoading={layersLoading}
         scrollToPreroll={scrollToPreroll}

@@ -25,6 +25,7 @@ const Who: FunctionComponent<WhoProps> = ({
   openMirrorChoice,
   setOpenMirrorChoice,
   simpleCollect,
+  t,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -54,7 +55,7 @@ const Who: FunctionComponent<WhoProps> = ({
                         !mirrorQuote && "opacity-50"
                       }`}
                       onClick={() => setMirrorQuote(true)}
-                      title="Quotes"
+                      title={t("quos")}
                     >
                       <Image
                         layout="fill"
@@ -67,7 +68,7 @@ const Who: FunctionComponent<WhoProps> = ({
                         mirrorQuote && "opacity-50"
                       }`}
                       onClick={() => setMirrorQuote(false)}
-                      title="Mirrors"
+                      title={t("mirs")}
                     >
                       <Image
                         layout="fill"
@@ -82,6 +83,7 @@ const Who: FunctionComponent<WhoProps> = ({
                 <WhoSwitch
                   router={router}
                   type={type}
+                  t={t}
                   reactors={reactors}
                   quoters={quoters}
                   hasMore={hasMore}

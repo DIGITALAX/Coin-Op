@@ -20,6 +20,7 @@ const InteractBar: FunctionComponent<InteractBarProps> = ({
   index,
   dispatch,
   cartItems,
+  t
 }): JSX.Element => {
   return (
     <div
@@ -28,7 +29,7 @@ const InteractBar: FunctionComponent<InteractBarProps> = ({
       {[
         {
           image: "QmPRRRX1S3kxpgJdLC4G425pa7pMS1AGNnyeSedngWmfK3",
-          title: "Mirrors",
+          title: t("mirs"),
           responded:
             publication?.publication?.operations?.hasMirrored! ||
             publication?.publication?.operations?.hasQuoted!,
@@ -46,7 +47,7 @@ const InteractBar: FunctionComponent<InteractBarProps> = ({
         },
         {
           image: "QmT1aZypVcoAWc6ffvrudV3JQtgkL8XBMjYpJEfdFwkRMZ",
-          title: "Likes",
+          title: t("like"),
           responded: publication?.publication?.operations?.hasReacted!,
           function: () =>
             like(
@@ -58,7 +59,7 @@ const InteractBar: FunctionComponent<InteractBarProps> = ({
         },
         {
           image: "QmXD3LnHiiLSqG2TzaNd1Pmhk2nVqDHDqn8k7RtwVspE6n",
-          title: "Comments",
+          title: t("comm"),
           responded: false,
           function: () =>
             dispatch(
@@ -88,25 +89,24 @@ const InteractBar: FunctionComponent<InteractBarProps> = ({
 
             if (
               cartItems
-              ?.filter(
-                (item) =>
-                  item?.item?.pubId == newCartItems?.[existing]?.item?.pubId
-              )
-              ?.reduce(
-                (accumulator, currentItem) =>
-                  accumulator + currentItem.chosenAmount,
-                0
-              ) +
-              1 >
-              Number(newCartItems?.[existing]?.item?.amount) ||
+                ?.filter(
+                  (item) =>
+                    item?.item?.pubId == newCartItems?.[existing]?.item?.pubId
+                )
+                ?.reduce(
+                  (accumulator, currentItem) =>
+                    accumulator + currentItem.chosenAmount,
+                  0
+                ) +
+                1 >
+                Number(newCartItems?.[existing]?.item?.amount) ||
               Number(newCartItems?.[existing]?.item?.amount) ==
                 Number(newCartItems?.[existing]?.item?.soldTokens)
             ) {
               dispatch(
                 setModalOpen({
                   actionOpen: true,
-                  actionMessage:
-                    "We know you're eager, but you've reached this prints' collect limit!",
+                  actionMessage: t("eager"),
                 })
               );
               return;
@@ -222,13 +222,13 @@ const InteractBar: FunctionComponent<InteractBarProps> = ({
         >
           {[
             {
-              title: "Mirror",
+              title: t("mirror"),
               image: "QmPRRRX1S3kxpgJdLC4G425pa7pMS1AGNnyeSedngWmfK3",
               function: () => mirror(publication?.publication?.id),
               loader: interactionsLoading[index]?.mirror,
             },
             {
-              title: "Quote",
+              title: t("quote"),
               image: "QmfDNH347Vph4b1tEuegydufjMU2QwKzYnMZCjygGvvUMM",
               function: () =>
                 dispatch(

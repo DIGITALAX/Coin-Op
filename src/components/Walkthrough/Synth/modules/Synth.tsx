@@ -9,6 +9,7 @@ const Synth: FunctionComponent<SynthProps> = ({
   synthConfig,
   handleSynth,
   presets,
+  t,
   selectedElement,
   scrollToComposite,
   canvasRef,
@@ -52,13 +53,16 @@ const Synth: FunctionComponent<SynthProps> = ({
   controlType,
   setControlType,
   synthRef,
+  router
 }): JSX.Element => {
   return (
     <div className={`relative w-full h-fit flex flex-col`} ref={synthRef}>
       <Grid
+        router={router}
         controlType={controlType}
         setControlType={setControlType}
         font={font}
+        t={t}
         setFont={setFont}
         fontOpen={fontOpen}
         setFontOpen={setFontOpen}

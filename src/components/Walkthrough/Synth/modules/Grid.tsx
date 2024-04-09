@@ -8,15 +8,15 @@ import Presets from "./Presets";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 import CompleteImages from "./CompleteImages";
 
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
-const DynamicCanvasComponent = dynamic(
-  () => import("./Canvas"),
-  { ssr: false }
-);
+const DynamicCanvasComponent = dynamic(() => import("./Canvas"), {
+  ssr: false,
+});
 
 const Grid: FunctionComponent<GridProps> = ({
   dispatch,
+  t,
   layerToSynth,
   synthLayer,
   synthConfig,
@@ -64,6 +64,7 @@ const Grid: FunctionComponent<GridProps> = ({
   setItemClicked,
   controlType,
   setControlType,
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-160 preG:h-150 md:h-130 xl:h-auto synth:h-100 flex flex-col gap-2">
@@ -85,11 +86,14 @@ const Grid: FunctionComponent<GridProps> = ({
         >
           <div
             className={`relative flex gap-3 w-full ${
-              canvasExpand ? "flex-row h-52" : "flex-col md:flex-row synth:flex-col synth:h-full h-fit md:h-72 xl:h-72"
+              canvasExpand
+                ? "flex-row h-52"
+                : "flex-col md:flex-row synth:flex-col synth:h-full h-fit md:h-72 xl:h-72"
             }`}
           >
             <div className="relative w-full h-full flex items-center justify-center rounded-md border border-ama">
               <Dash
+                router={router}
                 synthConfig={synthConfig}
                 dispatch={dispatch}
                 handleSynth={handleSynth}
@@ -97,6 +101,7 @@ const Grid: FunctionComponent<GridProps> = ({
                 controlType={controlType}
                 setControlType={setControlType}
                 canvasExpand={canvasExpand}
+                t={t}
               />
             </div>
             <div className="relative w-full md:w-60 xl:w-full h-52 md:h-full synth:h-52 flex items-center justify-center rounded-md border border-ama grow">
@@ -104,10 +109,13 @@ const Grid: FunctionComponent<GridProps> = ({
                 presets={presets}
                 dispatch={dispatch}
                 synthConfig={synthConfig}
+                t={t}
               />
             </div>
           </div>
-          <div className={`relative w-full h-110 synth:h-full flex flex-col gap-3`}>
+          <div
+            className={`relative w-full h-110 synth:h-full flex flex-col gap-3`}
+          >
             {(completedSynths.get(String(layerToSynth.id))?.synths || [])
               ?.length > 0 && (
               <CompleteImages
@@ -165,8 +173,8 @@ const Grid: FunctionComponent<GridProps> = ({
                 canvasExpand
                   ? `absolute flex-row p-2 h-14 ${
                       (
-                        completedSynths.get(String(layerToSynth?.id))
-                          ?.synths || []
+                        completedSynths.get(String(layerToSynth?.id))?.synths ||
+                        []
                       )?.length > 0
                         ? "top-10"
                         : "top-2"
@@ -184,11 +192,11 @@ const Grid: FunctionComponent<GridProps> = ({
                         .map(
                           (_, index) =>
                             synthLayer?.childTokenURIs?.[
-                             ( (synthLayer?.childTokenURIs?.indexOf(
+                              (synthLayer?.childTokenURIs?.indexOf(
                                 layerToSynth?.layer!
                               ) +
                                 index) %
-                                synthLayer?.childTokenURIs?.length) 
+                                synthLayer?.childTokenURIs?.length
                             ]
                         )
                   )?.map((uri: string | undefined, index: number) => {
@@ -320,15 +328,21 @@ const Grid: FunctionComponent<GridProps> = ({
             draggable={false}
           />
         </div>
-        <div className="relative w-fit h-fit items-center justify-center text-center flex font-mega text-sm lg:text-xl xl:text-sm synth:text-xl uppercase flex-col md:flex-row gap-1">
+        <div
+          className={`relative w-fit h-fit items-center justify-center text-center flex font-mega  uppercase flex-col md:flex-row gap-1 ${
+            router.locale == "en"
+              ? "text-sm lg:text-xl xl:text-sm synth:text-xl"
+              : "text-sm lg:text-base xl:text-sm synth:text-base"
+          }`}
+        >
           <div
             className="relative w-fit h-fit px-1.5 py-1 border border-eme rounded-md cursor-pointer flex items-center justify-center active:scale-95"
             onClick={() => scrollToComposite()}
           >
-            continue
+            {t("con")}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center">
-            or
+            {t("or")}
           </div>
           <div
             className="relative w-fit h-fit px-1.5 py-1 border border-smol rounded-md cursor-pointer flex items-center justify-center active:scale-95"
@@ -336,13 +350,12 @@ const Grid: FunctionComponent<GridProps> = ({
               dispatch(
                 setModalOpen({
                   actionOpen: true,
-                  actionMessage:
-                    "Are you sure you want to clear all synths for this composite and restart?",
+                  actionMessage: t("clear"),
                 })
               )
             }
           >
-            start again
+            {t("again")}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center">
             ?
@@ -350,10 +363,12 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="relative justify-center flex preG:absolute text-white font-mana text-sm sm:text-xl tablet:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-3 preG:order-3 order-2"
+        className={`relative justify-center flex preG:absolute text-white  text-sm sm:text-xl tablet:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-3 preG:order-3 order-2 ${
+          router.locale == "es" ? "font-bit" : "font-mana"
+        }`}
         draggable={false}
       >
-        presets & synth
+        {t("preset")}
       </div>
     </div>
   );

@@ -27,6 +27,7 @@ const Publication: FunctionComponent<PublicationProps> = ({
   simpleCollect,
   disabled,
   router,
+  t,
 }): JSX.Element => {
   return (
     <div
@@ -67,19 +68,19 @@ const Publication: FunctionComponent<PublicationProps> = ({
               }
             >
               {item?.__typename === "Comment"
-                ? `Comment on ${
+                ? `${t("comO")} ${
                     (
                       (item as Comment)?.commentOn
                         ?.metadata as TextOnlyMetadataV3
                     )?.content?.slice(0, 10) + "..."
                   }`
                 : item?.__typename === "Mirror"
-                ? `Mirror of ${
+                ? `${t("mirO")} ${
                     (
                       (item as Mirror)?.mirrorOn?.metadata as TextOnlyMetadataV3
                     )?.content?.slice(0, 10) + "..."
                   }`
-                : `Quote on ${
+                : `${t("quoO")} ${
                     (
                       (item as Quote)?.quoteOn?.metadata as TextOnlyMetadataV3
                     )?.content?.slice(0, 10) + "..."
@@ -114,6 +115,7 @@ const Publication: FunctionComponent<PublicationProps> = ({
       <PostBar
         disabled={disabled!}
         index={index}
+        t={t}
         item={item as Post}
         dispatch={dispatch}
         router={router}

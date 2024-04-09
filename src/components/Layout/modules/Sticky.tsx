@@ -5,12 +5,17 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { StickyProps } from "../types/layout.types";
 import { AiOutlineLoading } from "react-icons/ai";
 import { setFullScreenVideo } from "../../../../redux/reducers/fullScreenVideoSlice";
+import {
+  PiArrowFatLinesRightFill,
+  PiArrowFatLinesLeftFill,
+} from "react-icons/pi";
 
 const Sticky: FunctionComponent<StickyProps> = ({
   router,
   scrollToCheckOut,
   cartItems,
   cartAnim,
+  i18n,
   dispatch,
   fullScreenVideo,
   connected,
@@ -21,6 +26,7 @@ const Sticky: FunctionComponent<StickyProps> = ({
   handleLensSignIn,
   profile,
   signInLoading,
+  t,
 }): JSX.Element => {
   return (
     <div className="flex w-full h-fit text-white font-mega items-center justify-center md:justify-between md:flex-nowrap flex-wrap md:gap-0 gap-3 order-3 sm:order-1">
@@ -41,12 +47,16 @@ const Sticky: FunctionComponent<StickyProps> = ({
           }}
           id={cartAnim ? "cartAnim" : ""}
         >
-          <div className="relative text-white font-mana text-xs items-center justify-center">
+          <div
+            className={`relative text-white text-xs items-center justify-center ${
+              router.locale == "es" ? "font-bit" : "font-mana"
+            }`}
+          >
             {cartItems.reduce(
               (total, cartItem) => total + cartItem.chosenAmount,
               0
             )}{" "}
-            items in cart
+            {t("cart")}
           </div>
           <div className="relative h-4 w-px bg-white/50"></div>
           <div className="relative w-4 h-3 flex items-center justify-center">
@@ -60,6 +70,49 @@ const Sticky: FunctionComponent<StickyProps> = ({
       </div>
       <div className="relative w-full sm:w-fit h-fit flex flex-col md:flex-row gap-3 items-center justify-between sm:justify-center md:ml-auto">
         <div className="relative w-full sm:w-fit h-fit flex flex-row gap-3 items-center justify-center grow order-2 sm:order-1">
+          <div className="relative w-fit h-fit flex items-center justify-center flex flex-row gap-3">
+            <div className="relative w-fit h-fit flex items-center justify-center text-white flex-col text-center font-gen uppercase">
+              <div className="relative w-fit h-fit flex items-center justify-center flex-row gap-2">
+                <div
+                  className="relative flex items-center justify-center w-fit h-fit active:scale-95 cursor-sewingHS"
+                  onClick={() => {
+                    i18n.changeLanguage(router.locale !== "es" ? "es" : "en");
+                    router.push(router.asPath, undefined, {
+                      // shallow: true,
+                      locale: router.locale !== "es" ? "es" : "en",
+                    });
+                  }}
+                >
+                  <PiArrowFatLinesLeftFill size={15} />
+                </div>
+                <div className="relative w-fit h-fit flex items-center justify-center">
+                  <div className="relative w-5 h-7 flex items-center justify-center">
+                    <Image
+                      layout="fill"
+                      src={`${INFURA_GATEWAY}/ipfs/${
+                        router.locale == "es"
+                          ? "QmY43U5RovVkoGrkLiFyA2VPMnGxf5e3NgYZ95u9aNJdem"
+                          : "QmXdyvCYjZ7FkPjgFX5BPi98WTpPdJT5FHhzhtbyzkJuNs"
+                      }`}
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+                <div
+                  className="relative flex items-center justify-center w-fit h-fit active:scale-95 cursor-pointer"
+                  onClick={() => {
+                    i18n.changeLanguage(router.locale !== "es" ? "es" : "en");
+                    router.push(router.asPath, undefined, {
+                      // shallow: true,
+                      locale: router.locale !== "es" ? "es" : "en",
+                    });
+                  }}
+                >
+                  <PiArrowFatLinesRightFill size={15} />
+                </div>
+              </div>
+            </div>
+          </div>
           <Link
             href={"/account"}
             className="relative flex w-12 w-5 h-5 items-center break-words cursor-pointer row-start-1"

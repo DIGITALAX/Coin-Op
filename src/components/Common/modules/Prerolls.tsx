@@ -11,6 +11,7 @@ import useInteractions from "../hooks/useInteractions";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
 import { useAccount } from "wagmi";
+import { useTranslation } from "next-i18next";
 
 const Prerolls: FunctionComponent<PrerollsProps> = ({
   left,
@@ -18,6 +19,7 @@ const Prerolls: FunctionComponent<PrerollsProps> = ({
 }): JSX.Element => {
   const dispatch = useDispatch();
   const { address } = useAccount();
+  const { t } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -52,7 +54,14 @@ const Prerolls: FunctionComponent<PrerollsProps> = ({
     openMirrorChoice,
     setOpenMirrorChoice,
     interactionsLoading,
-  } = useInteractions(prerolls, lensConnected, dispatch, publicClient, address);
+  } = useInteractions(
+    prerolls,
+    lensConnected,
+    dispatch,
+    publicClient,
+    address,
+    t
+  );
 
   return (
     <div className="relative w-full xl:m-w-[20rem] xl:w-80 h-fit xl:h-full flex overflow-x-scroll xl:overflow-x-hidden xl:overflow-y-scroll">
@@ -76,6 +85,7 @@ const Prerolls: FunctionComponent<PrerollsProps> = ({
                 return (
                   <Preroll
                     key={index}
+                    t={t}
                     cartAddAnim={cartAddAnim}
                     preroll={preroll}
                     cartItems={cartItems}

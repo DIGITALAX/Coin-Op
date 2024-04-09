@@ -15,6 +15,7 @@ import { getPrerollSearch } from "../../../../graphql/subgraph/queries/getPrerol
 import handleCollectionProfilesAndPublications from "../../../../lib/subgraph/helpers/handleCollectionProfilesAndPublications";
 import { Profile } from "@/components/Common/types/generated";
 import buildTextQuery from "../../../../lib/lens/helpers/buildTextQuery";
+import { TFunction } from "i18next";
 
 const useRollSearch = (
   dispatch: Dispatch<AnyAction>,
@@ -26,7 +27,8 @@ const useRollSearch = (
       })
     | undefined,
   cartItems: CartItem[],
-  lensConnected: Profile | undefined
+  lensConnected: Profile | undefined,
+  t: TFunction<"common", undefined>
 ) => {
   const { scrollRef, synthRef } = useContext(ScrollContext);
   const [prompt, setPrompt] = useState<string>("");
@@ -34,7 +36,7 @@ const useRollSearch = (
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
 
   const handleRollSearch = async () => {
-    setSearchLoading(true)
+    setSearchLoading(true);
     try {
       const searchItems = await getPrerollSearch(buildTextQuery(prompt!)!);
 
@@ -47,7 +49,7 @@ const useRollSearch = (
     } catch (err: any) {
       console.error(err.message);
     }
-    setSearchLoading(false)
+    setSearchLoading(false);
   };
 
   const handlePromptChoose = async (preroll: Preroll) => {
@@ -103,8 +105,7 @@ const useRollSearch = (
       dispatch(
         setModalOpen({
           actionOpen: true,
-          actionMessage:
-            "We know you're eager, but you've reached this prints' collect limit!",
+          actionMessage: t("eager"),
         })
       );
       return;
@@ -168,7 +169,7 @@ const useRollSearch = (
     scrollToCheckOut,
     handleAddToCart,
     cartAnim,
-    searchLoading
+    searchLoading,
   };
 };
 

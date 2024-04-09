@@ -4,6 +4,7 @@ import { AnyAction, Dispatch } from "redux";
 import { NextRouter } from "next/router";
 import { AccessControlConditions } from "@lit-protocol/types";
 import { Details } from "@/components/Common/types/common.types";
+import { TFunction } from "i18next";
 
 export interface Order {
   orderId: string;
@@ -60,6 +61,7 @@ export type AllOrdersProps = {
   openConnectModal: (() => void) | undefined;
   router: NextRouter;
   client: LitNodeClient;
+  t: TFunction<"account", undefined>;
 };
 
 export type OrderProps = {
@@ -72,6 +74,7 @@ export type OrderProps = {
   handleDecryptFulfillment: (order: Order) => Promise<void>;
   decryptLoading: boolean[];
   connected: boolean;
+  t: TFunction<"account", undefined>
 };
 
 export type InformationType = {

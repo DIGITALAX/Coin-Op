@@ -18,13 +18,15 @@ import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import lensCollect from "../../../../lib/lens/helpers/lensCollect";
 import { ReactBoxState } from "../../../../redux/reducers/reactBoxSlice";
+import { TFunction } from "i18next";
 
 const useWho = (
   lensConnected: Profile | undefined,
   reactBox: ReactBoxState,
   dispatch: Dispatch,
   address: `0x${string}` | undefined,
-  publicClient: PublicClient
+  publicClient: PublicClient,
+  t: TFunction<"common", undefined>
 ) => {
   const [openMirrorChoice, setOpenMirrorChoice] = useState<boolean[]>([]);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
@@ -571,7 +573,7 @@ const useWho = (
     });
 
     try {
-      await lensLike(id, dispatch, hasReacted);
+      await lensLike(id, dispatch, hasReacted, t);
       updateInteractions(
         index,
         {
@@ -592,7 +594,8 @@ const useWho = (
             "reactions",
             hasReacted ? false : true
           ),
-        dispatch
+        dispatch,
+        t
       );
     }
 
@@ -635,7 +638,8 @@ const useWho = (
         dispatch,
         address as `0x${string}`,
         clientWallet,
-        publicClient
+        publicClient,
+        t
       );
       updateInteractions(
         index!,
@@ -665,7 +669,8 @@ const useWho = (
             "countOpenActions",
             true
           ),
-        dispatch
+        dispatch,
+        t
       );
     }
 
@@ -702,7 +707,7 @@ const useWho = (
         transport: custom((window as any).ethereum),
       });
 
-      await lensMirror(id, dispatch, address!, clientWallet, publicClient);
+      await lensMirror(id, dispatch, address!, clientWallet, publicClient, t);
       updateInteractions(
         index,
         {
@@ -723,7 +728,8 @@ const useWho = (
             "mirrors",
             true
           ),
-        dispatch
+        dispatch,
+        t
       );
     }
 

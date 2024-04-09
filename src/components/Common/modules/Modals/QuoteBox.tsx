@@ -23,6 +23,7 @@ const QuoteBox: FunctionComponent<QuoteBoxProps> = ({
   setProfilesOpen,
   setCaretCoord,
   type,
+  t
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -53,6 +54,7 @@ const QuoteBox: FunctionComponent<QuoteBoxProps> = ({
           <div className="relative w-full h-full flex items-center justify-center pb-3">
             <div className="relative h-full w-4/5 items-center justify-center flex">
               <PostComment
+                t={t}
                 dispatch={dispatch}
                 itemId={undefined}
                 router={router}

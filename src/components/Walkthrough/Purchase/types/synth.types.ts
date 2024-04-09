@@ -4,6 +4,8 @@ import {
   OracleData,
 } from "@/components/Common/types/common.types";
 import { Profile } from "@/components/Common/types/generated";
+import { TFunction } from "i18next";
+import { NextRouter } from "next/router";
 import { MutableRefObject, SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
 
@@ -13,6 +15,8 @@ export type PurchaseProps = {
   handleLensSignIn: () => Promise<void>;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   cartItems: CartItem[];
+  t: TFunction<"common", undefined>;
+  router: NextRouter;
   setEncrypted: (
     e: SetStateAction<
       | {
@@ -53,6 +57,7 @@ export type PurchaseProps = {
 
 export type GridProps = {
   dispatch: Dispatch<AnyAction>;
+  t: TFunction<"common", undefined>;
   scrollRef: MutableRefObject<HTMLDivElement | null>;
   cartItems: CartItem[];
   setEncrypted: (
@@ -88,6 +93,7 @@ export type GridProps = {
   handleApproveSpend: () => Promise<void>;
   setCheckoutCurrency: (e: string) => void;
   checkoutCurrency: string;
+  router: NextRouter;
   encryptFulfillment: () => Promise<void>;
   oracleValue: OracleData[];
   cartItem: CartItem | undefined;
@@ -125,6 +131,7 @@ export type CheckoutProps = {
   encryptFulfillment: () => Promise<void>;
   lensConnected: Profile | undefined;
   handleLensSignIn: () => Promise<void>;
+  router: NextRouter;
   setEncrypted: (
     e: SetStateAction<
       | {
@@ -134,6 +141,7 @@ export type CheckoutProps = {
       | undefined
     >
   ) => void;
+  t: TFunction<"common", undefined>;
 };
 
 export type CryptoProps = {
@@ -156,15 +164,18 @@ export type CryptoProps = {
   openChainModal: (() => void) | undefined;
   lensConnected: Profile | undefined;
   handleLensSignIn: () => Promise<void>;
+  t: TFunction<"common", undefined>;
 };
 
 export type ItemsProps = {
   cartItems: CartItem[];
+  t: TFunction<"common", undefined>;
   cartItem: CartItem | undefined;
   dispatch: Dispatch<AnyAction>;
   checkoutCurrency: string;
   setCartItem: (e: CartItem) => void;
   oracleValue: OracleData[];
+  router: NextRouter;
   setEncrypted: (
     e: SetStateAction<
       | {
@@ -178,6 +189,7 @@ export type ItemsProps = {
 
 export type ShippingInfoProps = {
   fulfillmentDetails: Details;
+  router: NextRouter;
   setFulfillmentDetails: (e: SetStateAction<Details>) => void;
   openCountryDropDown: boolean;
   setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
@@ -190,6 +202,7 @@ export type ShippingInfoProps = {
       | undefined
     >
   ) => void;
+  t: TFunction<"common", undefined>;
   encrypted:
     | {
         pubId: string;

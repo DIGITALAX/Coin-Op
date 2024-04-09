@@ -1,12 +1,16 @@
 import { FormEvent, MouseEvent, Ref } from "react";
 import { AnyAction, Dispatch } from "redux";
 import { SynthData } from "../../../../../redux/reducers/completedSynthsSlice";
+import { TFunction } from "i18next";
+import { NextRouter } from "next/router";
 
 export type SynthProps = {
-  synthRef: Ref<HTMLDivElement>
+  synthRef: Ref<HTMLDivElement>;
   dispatch: Dispatch<AnyAction>;
   scrollToComposite: () => void;
   controlType: number;
+  router: NextRouter;
+  t: TFunction<"common", undefined>;
   setControlType: (e: number) => void;
   isDragging: boolean;
   itemClicked: boolean;
@@ -88,6 +92,7 @@ export type GridProps = {
   canvasExpand: boolean;
   newLayersLoading: boolean;
   itemClicked: boolean;
+  t: TFunction<"common", undefined>;
   controlType: number;
   setControlType: (e: number) => void;
   setItemClicked: (e: boolean) => void;
@@ -95,6 +100,7 @@ export type GridProps = {
     id: number;
     layer: string | undefined;
   };
+  router: NextRouter;
   handleDownloadImage: (image: string) => void;
   isDragging: boolean;
   selectedElement: ElementInterface | null;
@@ -155,17 +161,20 @@ export interface SynthConfig {
 export type DashProps = {
   synthConfig: SynthConfig;
   dispatch: Dispatch<AnyAction>;
+  router: NextRouter;
   handleSynth: () => Promise<void>;
   synthLoading: boolean;
   controlType: number;
   canvasExpand: boolean;
   setControlType: (e: number) => void;
+  t: TFunction<"common", undefined>;
 };
 
 export type PresetProps = {
   presets: string[];
   synthConfig: SynthConfig;
   dispatch: Dispatch<AnyAction>;
+  t: TFunction<"common", undefined>;
 };
 
 export type CanvasProps = {

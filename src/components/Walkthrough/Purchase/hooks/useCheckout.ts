@@ -29,6 +29,7 @@ import { setCart } from "../../../../../redux/reducers/cartSlice";
 import actPost from "../../../../../lib/lens/helpers/actPost";
 import { setInsufficientBalance } from "../../../../../redux/reducers/insufficientBalanceSlice";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
+import { TFunction } from "i18next";
 
 const useCheckout = (
   publicClient: PublicClient,
@@ -38,7 +39,8 @@ const useCheckout = (
   client: LitNodeClient,
   oracleData: OracleData[],
   cartItems: CartItem[],
-  router: NextRouter
+  router: NextRouter,
+  t: TFunction<"common", undefined>
 ) => {
   const [startIndex, setStartIndex] = useState<number>(0);
   const [fulfillmentDetails, setFulfillmentDetails] = useState<Details>({
@@ -153,7 +155,7 @@ const useCheckout = (
         dispatch(
           setInsufficientBalance({
             actionValue: true,
-            actionMessage: "Pockets Empty. Need to top up?",
+            actionMessage: t("pocket"),
           })
         );
         setCollectPostLoading(false);
@@ -183,7 +185,8 @@ const useCheckout = (
         dispatch,
         address as `0x${string}`,
         clientWallet,
-        publicClient
+        publicClient,
+        t
       );
 
       if (success) {

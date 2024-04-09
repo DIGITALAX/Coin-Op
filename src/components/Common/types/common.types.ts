@@ -36,6 +36,7 @@ import { SynthData } from "../../../../redux/reducers/completedSynthsSlice";
 import { PostCollectState } from "../../../../redux/reducers/postCollectSlice";
 import { FullScreenVideoState } from "../../../../redux/reducers/fullScreenVideoSlice";
 import Draggable from "react-draggable";
+import { TFunction } from "i18next";
 
 export interface Details {
   name: string;
@@ -63,6 +64,7 @@ export type PublicationProps = {
   openMirrorChoice: boolean[];
   router: NextRouter;
   dispatch: Dispatch<AnyAction>;
+  t: TFunction<"common", undefined>;
 };
 
 export interface MakePostComment {
@@ -85,6 +87,7 @@ export type PostCommentProps = {
   dispatch: Dispatch<AnyAction>;
   router: NextRouter;
   mentionProfiles: Profile[];
+  t: TFunction<"common", undefined>;
   profilesOpen: boolean;
   setMentionProfiles: (e: SetStateAction<Profile[]>) => void;
   setProfilesOpen: (e: SetStateAction<boolean[]>) => void;
@@ -141,12 +144,14 @@ export type QuoteBoxProps = {
   setMakePost: (e: SetStateAction<MakePostComment[]>) => void;
   postLoading: boolean[];
   router: NextRouter;
+  t: TFunction<"common", undefined>;
 };
 
 export type PageContainerProps = {
   dispatch: DispatchRedux<AnyAction>;
   scrollToComposite: () => void;
   newLayersLoading: boolean;
+  t: TFunction<"common", undefined>;
   isDragging: boolean;
   apiKey: string | undefined;
   fulfillmentDetails: Details;
@@ -221,6 +226,7 @@ export type PageContainerProps = {
   thickness: boolean;
   setBrushWidth: (e: number) => void;
   brushWidth: number;
+  router: NextRouter;
   tool: string;
   setTool: (e: string) => void;
   synthLayer:
@@ -386,11 +392,13 @@ export type PrerollProps = {
     mirror: boolean;
     like: boolean;
   }[];
+  t: TFunction<"common", undefined>;
 };
 
 export type PrintTagProps = {
   backgroundColor: string;
   type: string;
+  t: TFunction<"common", undefined>;
 };
 
 export type ColorChoiceProps = {
@@ -425,10 +433,12 @@ export type SearchBoxProps = {
   handleAddToCart: (e: Preroll) => void;
   router: NextRouter;
   cartAddAnim: string;
+  t: TFunction<"common", undefined>;
 };
 
 export type RollSearchProps = {
   rollSearch: Preroll[];
+  t: TFunction<"common", undefined>;
   handleRollSearch: () => Promise<void>;
   prompt: string;
   setPrompt: (e: string) => void;
@@ -442,10 +452,12 @@ export type RollSearchProps = {
 
 export type GeneralProps = {
   message: string;
+  t: TFunction<"common", undefined>;
   dispatch: DispatchRedux<AnyAction>;
 };
 
 export type NoHandleProps = {
+  t: TFunction<"common", undefined>;
   dispatch: DispatchRedux<AnyAction>;
 };
 
@@ -584,14 +596,17 @@ export type SearchExpandProps = {
   handlePromptChoose: (e: Preroll) => Promise<void>;
   router: NextRouter;
   cartAddAnim: string;
+  t: TFunction<"common", undefined>;
 };
 
 export type ApiAddProps = {
   dispatch: DispatchRedux<AnyAction>;
+  t: TFunction<"common", undefined>;
 };
 
 export type HookProps = {
   prerollRef: Ref<HTMLDivElement>;
+  t: TFunction<"common", undefined>;
 };
 
 export type HeaderProps = {
@@ -632,6 +647,7 @@ export type WhoSwitchProps = {
     mirror: boolean;
     collect: boolean;
   }[];
+  t: TFunction<"common", undefined>;
   setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
   openMirrorChoice: boolean[];
 };
@@ -656,6 +672,7 @@ export type WhoProps = {
     mirror: boolean;
     collect: boolean;
   }[];
+  t: TFunction<"common", undefined>;
   setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
   openMirrorChoice: boolean[];
 };
@@ -701,6 +718,7 @@ export type InteractBarProps = {
   index: number;
   cartItems: CartItem[];
   dispatch: Dispatch<AnyAction>;
+  t: TFunction<"common", undefined>;
 };
 
 export type PostCollectProps = {
@@ -709,6 +727,7 @@ export type PostCollectProps = {
   setCollects: (
     e: SetStateAction<SimpleCollectOpenActionModuleInput | undefined>
   ) => void;
+  t: TFunction<"common", undefined>;
   collects: SimpleCollectOpenActionModuleInput | undefined;
   openMeasure: {
     award: string;
@@ -756,6 +775,7 @@ export type PostBarProps = {
   openMirrorChoice: boolean[];
   router: NextRouter;
   disabled: boolean;
+  t: TFunction<"common", undefined>;
 };
 
 export type FullScreenVideoProps = {

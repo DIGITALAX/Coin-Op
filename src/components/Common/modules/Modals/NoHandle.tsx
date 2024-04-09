@@ -7,6 +7,7 @@ import { setNoHandle } from "../../../../../redux/reducers/noHandleSlice";
 
 const NoHandle: FunctionComponent<NoHandleProps> = ({
   dispatch,
+  t
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -30,8 +31,7 @@ const NoHandle: FunctionComponent<NoHandleProps> = ({
             </div>
             <div className="relative w-full h-full flex flex-col gap-8 items-center justify-center">
               <div className="relative w-3/4 h-fit flex px-4 text-white text-base items-center justify-center break-words font-vcr text-center">
-                Own Your Digital Roots. Claim A Lens Handle to Sign In &
-                Collect.
+                {t("own")}
               </div>
               <a
                 target="_blank"
@@ -41,7 +41,7 @@ const NoHandle: FunctionComponent<NoHandleProps> = ({
                 className="relative w-fit h-10 flex px-4 cursor-sewingHS font-vcr bg-black active:scale-95 border border-white text-white rounded-md items-center justify-center"
               >
                 <div className="relative w-fit h-fit items-center justify-center flex text-sm px-3 py-1.5 text-center">
-                  Claim Handle
+                  {t("hand")}
                 </div>
               </a>
             </div>

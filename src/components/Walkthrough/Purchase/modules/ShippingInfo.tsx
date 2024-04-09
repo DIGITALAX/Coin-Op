@@ -10,16 +10,22 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
   encrypted,
   openCountryDropDown,
   setOpenCountryDropDown,
-  setEncrypted
+  setEncrypted,
+  t,
+  router
 }): JSX.Element => {
   return (
-    <div className="relative w-3/4 h-fit flex flex-col items-start justify-start gap-3">
-      <div className="relative w-fit h-fit flex text-white font-mana text-lg">
-        Fulfillment Details
+    <div
+      className={`relative w-3/4 h-fit flex flex-col items-start justify-start gap-3 ${
+        router.locale == "en" ? "font-mana" : "font-bit"
+      }`}
+    >
+      <div className="relative w-fit h-fit flex text-white text-lg">
+        {t("full")}
       </div>
       <div className="relative flex flex-row items-start justify-start gap-3 w-full h-fit flex-wrap">
         <div className="relative w-full h-fit flex flex-col sm:flex-row gap-2">
-          {["Name", "Address"].map((item: string, index: number) => {
+          {[t("name"), t("addr")].map((item: string, index: number) => {
             return (
               <div
                 key={index}
@@ -27,12 +33,12 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                   encrypted && "opacity-20"
                 }`}
               >
-                <div className="relative w-fit h-fit flex text-white font-mana text-xs">
+                <div className="relative w-fit h-fit flex text-white text-xs">
                   {item}
                 </div>
 
                 <input
-                  className={`relative border border-white rounded-md flex bg-offBlack font-mana text-white text-xs p-2 h-10 w-full`}
+                  className={`relative border border-white rounded-md flex bg-offBlack text-white text-xs p-2 h-10 w-full`}
                   placeholder={
                     (fulfillmentDetails?.[
                       item?.toLowerCase() as keyof Details
@@ -51,7 +57,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
           })}
         </div>
         <div className="relative w-full h-fit flex flex-col sm:flex-row  gap-2">
-          {["Zip", "City"].map((item: string, index: number) => {
+          {[t("zip"), t("city")].map((item: string, index: number) => {
             return (
               <div
                 key={index}
@@ -59,11 +65,11 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                   encrypted && "opacity-20"
                 }`}
               >
-                <div className="relative w-fit h-fit flex text-white font-mana text-xs">
+                <div className="relative w-fit h-fit flex text-white text-xs">
                   {item}
                 </div>
                 <input
-                  className={`relative border border-white rounded-md flex bg-offBlack font-mana text-white text-xs p-2 h-10 w-full`}
+                  className={`relative border border-white rounded-md flex bg-offBlack text-white text-xs p-2 h-10 w-full`}
                   placeholder={
                     (fulfillmentDetails?.[
                       item?.toLowerCase() as keyof Details
@@ -84,11 +90,11 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
         <div className="relative w-full h-fit flex flex-col sm:flex-row  gap-2">
           {[
             {
-              title: "State",
+              title: t("state"),
               drop: false,
             },
             {
-              title: "Country",
+              title: t("coun"),
               drop: true,
             },
           ].map(
@@ -106,7 +112,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                     encrypted && "opacity-20"
                   }`}
                 >
-                  <div className="relative w-fit h-fit flex text-white font-mana text-xs">
+                  <div className="relative w-fit h-fit flex text-white text-xs">
                     {item?.title}
                   </div>
                   {item?.drop ? (
@@ -119,7 +125,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                           setOpenCountryDropDown(!openCountryDropDown)
                         }
                       >
-                        <div className="relative w-fit h-fit flex items-center justify-center font-mana text-white text-xs">
+                        <div className="relative w-fit h-fit flex items-center justify-center text-white text-xs">
                           {fulfillmentDetails?.country}
                         </div>
                         <div className="relative w-4 h-3 flex items-center justify-center">
@@ -138,7 +144,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                                 return (
                                   <div
                                     key={index}
-                                    className="relative w-full py-1 h-10 flex items-center justify-center text-white border-y border-white font-mana text-xs cursor-pointer hover:opacity-80"
+                                    className="relative w-full py-1 h-10 flex items-center justify-center text-white border-y border-white text-xs cursor-pointer hover:opacity-80"
                                     onClick={() => {
                                       setOpenCountryDropDown(false);
                                       setEncrypted(undefined);
@@ -159,7 +165,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                     </div>
                   ) : (
                     <input
-                      className={`relative border border-white rounded-md flex bg-offBlack font-mana text-white text-xs p-2 h-10 w-full`}
+                      className={`relative border border-white rounded-md flex bg-offBlack text-white text-xs p-2 h-10 w-full`}
                       placeholder={
                         (fulfillmentDetails?.[
                           item?.title?.toLowerCase() as keyof Details

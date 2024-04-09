@@ -21,6 +21,7 @@ const PostBar: FunctionComponent<PostBarProps> = ({
   setOpenMirrorChoice,
   router,
   disabled,
+  t,
 }): JSX.Element => {
   const profilePicture = createProfilePicture(item?.by?.metadata?.picture);
   return (
@@ -29,7 +30,7 @@ const PostBar: FunctionComponent<PostBarProps> = ({
         {[
           {
             image: "QmPRRRX1S3kxpgJdLC4G425pa7pMS1AGNnyeSedngWmfK3",
-            title: "Mirrors",
+            title: t("mirs"),
             function: () =>
               setOpenMirrorChoice!((prev) => {
                 const choices = [...prev!];
@@ -43,7 +44,7 @@ const PostBar: FunctionComponent<PostBarProps> = ({
           },
           {
             image: "QmT1aZypVcoAWc6ffvrudV3JQtgkL8XBMjYpJEfdFwkRMZ",
-            title: "Likes",
+            title: t("like"),
             function: () => like(item?.id, item?.operations?.hasReacted),
             stat: item?.stats?.reactions || 0,
             responded: item?.operations?.hasReacted,
@@ -51,7 +52,7 @@ const PostBar: FunctionComponent<PostBarProps> = ({
           },
           {
             image: "QmXD3LnHiiLSqG2TzaNd1Pmhk2nVqDHDqn8k7RtwVspE6n",
-            title: "Comments",
+            title: t("comm"),
             function: () =>
               dispatch(
                 setQuoteBox({
@@ -66,7 +67,7 @@ const PostBar: FunctionComponent<PostBarProps> = ({
           },
           {
             image: "QmZ4v5pzdnCBeyKnS9VrjZiEAbUpAVy8ECArNcpxBt6Tw4",
-            title: "Collects",
+            title: t("colls"),
             function: () =>
               item?.openActionModules?.[0]?.__typename &&
               simpleCollect(
@@ -98,7 +99,7 @@ const PostBar: FunctionComponent<PostBarProps> = ({
                   className={`relative w-fit h-fit flex items-center justify-center ${
                     value?.responded && "mix-blend-hard-light hue-rotate-60"
                   } ${
-                    value?.title == "Collects" &&
+                    value?.title == t("colls") &&
                     !item?.openActionModules?.[0]?.__typename
                       ? "opacity-50"
                       : "active:scale-95 cursor-pointer"
@@ -180,13 +181,13 @@ const PostBar: FunctionComponent<PostBarProps> = ({
         >
           {[
             {
-              title: "Mirror",
+              title: t("mirror"),
               image: "QmPRRRX1S3kxpgJdLC4G425pa7pMS1AGNnyeSedngWmfK3",
               loader: interactionsLoading?.[index]?.mirror,
               function: () => mirror(item?.id),
             },
             {
-              title: "Quote",
+              title: t("quote"),
               image: "QmfDNH347Vph4b1tEuegydufjMU2QwKzYnMZCjygGvvUMM",
               loader: false,
               function: () =>

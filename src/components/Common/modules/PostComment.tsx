@@ -28,6 +28,7 @@ const PostComment: FunctionComponent<PostCommentProps> = ({
   router,
   postCollect,
   dispatch,
+  t
 }): JSX.Element => {
   const textElement = useRef(null);
   return (
@@ -175,7 +176,7 @@ const PostComment: FunctionComponent<PostCommentProps> = ({
               {commentPostLoading ? (
                 <AiOutlineLoading size={15} color="white" />
               ) : (
-                "Send It"
+                t("send")
               )}
             </div>
           </div>

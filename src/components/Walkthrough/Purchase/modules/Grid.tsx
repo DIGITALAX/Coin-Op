@@ -21,6 +21,7 @@ const Grid: FunctionComponent<GridProps> = ({
   approved,
   cryptoCheckoutLoading,
   checkoutCurrency,
+  router,
   setCheckoutCurrency,
   setCartItem,
   encryptFulfillment,
@@ -35,6 +36,7 @@ const Grid: FunctionComponent<GridProps> = ({
   lensConnected,
   handleLensSignIn,
   setEncrypted,
+  t,
 }): JSX.Element => {
   return (
     <div
@@ -51,6 +53,8 @@ const Grid: FunctionComponent<GridProps> = ({
       </div>
       <div className="relative w-full flex flex-col synth:flex-row h-5/6 synth:pr-7 pt-4 items-center justify-start gap-5">
         <Checkout
+          router={router}
+          t={t}
           setEncrypted={setEncrypted}
           lensConnected={lensConnected}
           handleLensSignIn={handleLensSignIn}
@@ -175,10 +179,12 @@ const Grid: FunctionComponent<GridProps> = ({
         </div>
       </div>
       <div
-        className="relative flex justify-center w-full preG:w-fit preG:absolute text-white flex font-mana text-sm sm:text-xl tablet:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-4"
+        className={`relative flex justify-center w-full preG:w-fit preG:absolute text-white flex text-sm sm:text-xl tablet:text-3xl uppercase preG:bottom-4 preG:pt-0 pt-4 ${
+          router.locale == "es" ? "font-bit" : "font-mana"
+        }`}
         draggable={false}
       >
-        make it yours
+        {t("yours")}
       </div>
     </div>
   );

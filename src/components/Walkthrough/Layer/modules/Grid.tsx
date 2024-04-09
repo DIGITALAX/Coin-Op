@@ -11,6 +11,8 @@ const Grid: FunctionComponent<GridProps> = ({
   synthLayer,
   layersLoading,
   scrollToPreroll,
+  t,
+  router
 }): JSX.Element => {
   return (
     <div className="relative w-full h-110 preG:h-100 flex flex-col gap-2">
@@ -76,8 +78,14 @@ const Grid: FunctionComponent<GridProps> = ({
           className="relative w-fit h-fit items-center justify-center flex font-herm text-sm sm:text-lg"
           id="arrowsLeft"
         >{`<<<`}</div>
-        <div className="relative w-fit h-fit items-center justify-center text-center flex font-mega text-sm sm:text-base lg:text-2xl synth:text-3xl uppercase pr-1">
-          or buy preroll
+        <div
+          className={`relative w-fit h-fit items-center justify-center text-center flex font-mega uppercase pr-1 ${
+            router.locale == "en"
+              ? "text-sm sm:text-base lg:text-2xl synth:text-3xl"
+              : "text-xs sm:text-base lg:text-xl"
+          } `}
+        >
+          {t("buy")}
         </div>
         <div
           className="relative w-fit h-fit items-center justify-center flex font-herm text-sm  sm:text-lg"
@@ -85,10 +93,12 @@ const Grid: FunctionComponent<GridProps> = ({
         >{`>>>`}</div>
       </div>
       <div
-        className="relative w-full flex justify-center preG:w-auto preG:absolute text-white font-mana text-sm sm:text-xl tablet:text-3xl uppercase pt-2 preG:pt-0 preG:bottom-4 order-2 preG:order-3"
+        className={`relative w-full flex justify-center preG:w-auto preG:absolute text-white text-sm sm:text-xl tablet:text-3xl uppercase pt-2 preG:pt-0 preG:bottom-4 order-2 preG:order-3 ${
+          router.locale == "es" ? "font-bit" : "font-mana"
+        }`}
         draggable={false}
       >
-        choose layer set
+        {t("layer")}
       </div>
     </div>
   );

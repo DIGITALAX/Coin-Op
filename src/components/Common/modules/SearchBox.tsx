@@ -5,7 +5,6 @@ import { SearchBoxProps } from "../types/common.types";
 import { CgArrowsExpandUpLeft } from "react-icons/cg";
 import { setSearchExpand } from "../../../../redux/reducers/searchExpandSlice";
 import { AiOutlineCode } from "react-icons/ai";
-import { ImRedo } from "react-icons/im";
 
 const SearchBox: FunctionComponent<SearchBoxProps> = ({
   promptSearch,
@@ -15,6 +14,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
   handleAddToCart,
   router,
   cartAddAnim,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-40 h-40 rounded-md border border-white/70 p-3">
@@ -57,7 +57,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
             </div>
             <div
               className="relative flex items-center justify-center w-4 h-3.5 cursor-pointer active:scale-95 hover:opacity-50"
-              title="add to cart"
+              title={t("add")}
               onClick={(e) => {
                 e.stopPropagation();
                 handleAddToCart(promptSearch);

@@ -17,6 +17,7 @@ const Order: FunctionComponent<OrderProps> = ({
   chain,
   openChainModal,
   connected,
+  t,
 }): JSX.Element => {
   return (
     <div className={`relative w-full border border-white bg-smo/10 p-2 h-fit`}>
@@ -28,7 +29,7 @@ const Order: FunctionComponent<OrderProps> = ({
       >
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
           <div className="relative w-fit h-fit flex items-center justify-center">
-            Order Id
+            {t("id")}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
             {order.orderId}
@@ -36,7 +37,7 @@ const Order: FunctionComponent<OrderProps> = ({
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
           <div className="relative w-fit h-fit flex items-center justify-center">
-            Total Order Price
+            {t("price")}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
             {`${
@@ -50,7 +51,7 @@ const Order: FunctionComponent<OrderProps> = ({
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
           <div className="relative w-fit h-fit flex items-center justify-center">
-            Order Status
+            {t("status")}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat text-sol">
             {order?.subOrders[0]?.isFulfilled ? "Fulfilled" : "Ordered"}
@@ -58,7 +59,7 @@ const Order: FunctionComponent<OrderProps> = ({
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
           <div className="relative w-fit h-fit flex items-center justify-center">
-            Is Fulfilled?
+            {t("ful")}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
             {order?.subOrders[0]?.isFulfilled ? "Yes" : "No"}
@@ -89,7 +90,7 @@ const Order: FunctionComponent<OrderProps> = ({
                 </div>
                 <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                   <div className="relative w-fit h-fit flex items-center justify-center">
-                    Block Number
+                    {t("bloc")}
                   </div>
                   <div className="relative w-fit h-fit flex items-center justify-center font-sat">
                     {order.blockNumber}
@@ -97,7 +98,7 @@ const Order: FunctionComponent<OrderProps> = ({
                 </div>
                 <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                   <div className="relative w-fit h-fit flex items-center justify-center">
-                    Order Date
+                    {t("fec")}
                   </div>
                   <div className="relative w-fit h-fit flex items-center justify-center font-sat">
                     {convertDate(order.blockTimestamp)}
@@ -106,13 +107,13 @@ const Order: FunctionComponent<OrderProps> = ({
               </div>
               <div className="relative w-full h-fit items-start justify-center flex flex-col gap-2">
                 <div className="relative w-fit h-fit flex items-center justify-center font-satB text-base break-all">
-                  Messages
+                  {t("mes")}
                 </div>
               </div>
               <div className="relative w-full h-fit flex flex-col gap-3 p-2 bg-sol/20">
                 <div className="relative w-full h-fit justify-between inline-flex">
                   <div className="relative w-full h-fit justify-start flex items-center text-base font-monu">
-                    Fulfillment Information
+                    {t("info")}
                   </div>
                   {!order.decrypted && (
                     <div
@@ -138,7 +139,7 @@ const Order: FunctionComponent<OrderProps> = ({
                         {decryptLoading[index] ? (
                           <AiOutlineLoading size={12} color="black" />
                         ) : (
-                          "Decrypt Fulfillment"
+                          t("dec")
                         )}
                       </div>
                     </div>
@@ -147,7 +148,7 @@ const Order: FunctionComponent<OrderProps> = ({
                 <div className="relative w-full h-fit inline-flex justify-between flex-wrap items-center text-xs break-all gap-2">
                   <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
-                      Name
+                      {t("name")}
                     </div>
                     {!order.decrypted ? (
                       <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
@@ -163,7 +164,7 @@ const Order: FunctionComponent<OrderProps> = ({
                   </div>
                   <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
-                      Contact
+                      {t("contact")}
                     </div>
                     {!order.decrypted ? (
                       <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
@@ -179,7 +180,7 @@ const Order: FunctionComponent<OrderProps> = ({
                   </div>
                   <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
-                      Address
+                      {t("addr")}
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                       {!order.decrypted ? (
@@ -197,7 +198,7 @@ const Order: FunctionComponent<OrderProps> = ({
                   </div>
                   <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
-                      City
+                      {t("city")}
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                       {!order.decrypted ? (
@@ -215,7 +216,7 @@ const Order: FunctionComponent<OrderProps> = ({
                   </div>
                   <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
-                      State
+                      {t("state")}
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                       {!order.decrypted ? (
@@ -233,7 +234,7 @@ const Order: FunctionComponent<OrderProps> = ({
                   </div>
                   <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
-                      Zip
+                      {t("zip")}
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                       {!order.decrypted ? (
@@ -251,7 +252,7 @@ const Order: FunctionComponent<OrderProps> = ({
                   </div>
                   <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                     <div className="relative w-fit h-fit flex items-center justify-center font-satB break-all">
-                      Country
+                      {t("coun")}
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all">
                       {!order.decrypted ? (
@@ -272,7 +273,7 @@ const Order: FunctionComponent<OrderProps> = ({
               <div className="relative w-full h-fit flex flex-col gap-3  pb-2 pt-4">
                 <div className="relative w-full h-fit justify-between inline-flex">
                   <div className="relative w-full h-fit justify-start flex items-center text-base font-monu">
-                    Order Items
+                    {t("items")}
                   </div>
                 </div>
                 <div className="relative w-full h-fit flex flex-col gap-2">
@@ -295,17 +296,15 @@ const Order: FunctionComponent<OrderProps> = ({
                         </div>
                         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-1">
                           <div className="relative w-fit h-fit flex items-center text-sm justify-center font-satB break-all">
-                            Amount
+                            {t("am")}
                           </div>
                           <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all text-xs">
-                            {!order?.decrypted
-                              ? "#$%"
-                              : collection?.amount}
+                            {!order?.decrypted ? "#$%" : collection?.amount}
                           </div>
                         </div>
                         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-1">
                           <div className="relative w-fit h-fit flex items-center text-sm justify-center font-satB break-all">
-                            Size
+                            {t("siz")}
                           </div>
                           <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all text-xs">
                             {!order?.decrypted
@@ -315,7 +314,7 @@ const Order: FunctionComponent<OrderProps> = ({
                         </div>
                         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-1">
                           <div className="relative w-fit h-fit flex items-center text-sm justify-center font-satB break-all">
-                            Color
+                            {t("col")}
                           </div>
                           <div
                             className="relative w-4 h-4 rounded-full border border-white flex items-center justify-center font-sat break-all text-xxs"

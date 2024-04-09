@@ -10,6 +10,7 @@ import { polygon } from "viem/chains";
 import { setInsufficientBalance } from "../../../redux/reducers/insufficientBalanceSlice";
 import { ActOnOpenActionInput } from "@/components/Common/types/generated";
 import { setIndexModal } from "../../../redux/reducers/indexModalSlice";
+import { TFunction } from "i18next";
 
 const actPost = async (
   pubId: string,
@@ -17,7 +18,8 @@ const actPost = async (
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}`,
   clientWallet: WalletClient,
-  publicClient: PublicClient
+  publicClient: PublicClient,
+  t: TFunction<"common", undefined>
 ): Promise<boolean | void> => {
   try {
     const { data } = await collectPost({
@@ -47,7 +49,8 @@ const actPost = async (
         {
           forTxId: broadcastResult?.data?.broadcastOnchain.txId,
         },
-        dispatch
+        dispatch,
+        t
       );
     } else {
       const { request } = await publicClient.simulateContract({
@@ -76,7 +79,7 @@ const actPost = async (
       dispatch(
         setIndexModal({
           actionOpen: true,
-          actionMessage: "Indexing Collect",
+          actionMessage: t("indexC"),
         })
       );
 
@@ -84,7 +87,8 @@ const actPost = async (
         {
           forTxHash: tx.transactionHash,
         },
-        dispatch
+        dispatch,
+        t
       );
 
       dispatch(

@@ -9,25 +9,26 @@ import {
 import { AnyAction, Dispatch } from "redux";
 import { setIndexModal } from "../../../redux/reducers/indexModalSlice";
 import { setModalOpen } from "../../../redux/reducers/modalOpenSlice";
+import { TFunction } from "i18next";
 
 const handleIndexCheck = async (
   tx: LensTransactionStatusRequest,
-  dispatch: Dispatch<AnyAction>
+  dispatch: Dispatch<AnyAction>,
+  t: TFunction<"common", undefined>
 ) => {
   const indexedStatus = await pollUntilIndexed(tx);
   if (indexedStatus) {
     dispatch(
       setIndexModal({
         actionOpen: true,
-        actionMessage: "Successfully Indexed",
+        actionMessage: t("succ"),
       })
     );
   } else {
     dispatch(
       setModalOpen({
         actionOpen: true,
-        actionMessage:
-          "Something went wrong indexing your interaction. Try again?",
+        actionMessage: t("try"),
       })
     );
   }

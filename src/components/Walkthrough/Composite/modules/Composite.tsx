@@ -15,11 +15,15 @@ const Composite: FunctionComponent<CompositeProps> = ({
   compositeRef,
   chain,
   openChainModal,
-  apiKey
+  apiKey,
+  t,
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
       <Grid
+        router={router}
+        t={t}
         chain={chain}
         openChainModal={openChainModal}
         dispatch={dispatch}

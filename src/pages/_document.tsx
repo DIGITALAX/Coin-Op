@@ -6,13 +6,19 @@ export default function Document() {
       <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
       <meta name="og:title" content="Coin Op" />
       <meta
-          name="og:description"
-          content="We know it's a lot to keep up with. How can you know if this is the blend of instant convenience and purchasing power you've been waiting for?"
-        />
-      <meta name="og:image" content="https://coinop.themanufactory.xyz/card.png/" />
+        name="og:description"
+        content="We know it's a lot to keep up with. How can you know if this is the blend of instant convenience and purchasing power you've been waiting for?"
+      />
+      <meta
+        name="og:image"
+        content="https://coinop.themanufactory.xyz/card.png/"
+      />
       <meta name="twitter:card" content="summary" />
       <meta name="og:url" content="https://coinop.themanufactory.xyz/" />
-      <meta name="og:image" content="https://coinop.themanufactory.xyz/card.png/" />
+      <meta
+        name="og:image"
+        content="https://coinop.themanufactory.xyz/card.png/"
+      />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@digitalax_" />
       <meta name="twitter:creator" content="@digitalax_" />
@@ -52,6 +58,13 @@ export default function Document() {
       <link
         rel="preload"
         href="/fonts/AquaticoRegular.otf"
+        as="font"
+        crossOrigin="anonymous"
+        type="font/otf"
+      />
+      <link
+        rel="preload"
+        href="/fonts/Bitblox.otf"
         as="font"
         crossOrigin="anonymous"
         type="font/otf"

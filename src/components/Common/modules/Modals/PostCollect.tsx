@@ -10,6 +10,7 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
   availableCurrencies,
   collectTypes,
   id,
+  t,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -36,12 +37,12 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                 {[
                   {
                     type: "drop",
-                    title: "Who can collect?",
-                    dropValues: ["Everyone", "Only Followers"],
+                    title: t("who"),
+                    dropValues: [t("all"), t("foll")],
                     dropOpen: openMeasure.whoCollectsOpen,
                     chosenValue: collectTypes?.[id]?.followerOnly
-                      ? "Only Followers"
-                      : "Everyone",
+                      ? t("foll")
+                      : t("all"),
                     showObject: true,
                     openDropdown: () =>
                       setOpenMeasure((prev) => ({
@@ -55,15 +56,13 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                           : {};
 
                       newCTs[id] =
-                        openMeasure?.award == "No"
+                        openMeasure?.award == t("no")
                           ? {
-                              followerOnly:
-                                item === "Only Followers" ? true : false,
+                              followerOnly: item === t("foll") ? true : false,
                             }
                           : {
                               ...(newCTs[id] || {}),
-                              followerOnly:
-                                item === "Only Followers" ? true : false,
+                              followerOnly: item === t("foll") ? true : false,
                             };
 
                       dispatch(
@@ -76,8 +75,8 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                   },
                   {
                     type: "drop",
-                    title: "Creator award?",
-                    dropValues: ["Yes", "No"],
+                    title: t("awa"),
+                    dropValues: [t("yes"), t("no")],
                     dropOpen: openMeasure.creatorAwardOpen,
                     chosenValue: openMeasure.award,
                     showObject: true,
@@ -98,10 +97,9 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                           : {};
 
                       newCTs[id] =
-                        openMeasure?.award == "No"
+                        openMeasure?.award == t("no")
                           ? {
-                              followerOnly:
-                                item === "Only Followers" ? true : false,
+                              followerOnly: item === t("foll") ? true : false,
                             }
                           : ({
                               ...(newCTs[id] || {}),
@@ -117,9 +115,9 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                   },
                   {
                     type: "input",
-                    title: "Award amount",
+                    title: t("am"),
                     chosenValue: collectTypes?.[id]?.amount?.value || "0",
-                    showObject: openMeasure.award === "Yes" ? true : false,
+                    showObject: openMeasure.award === t("yes") ? true : false,
                     setValue: (item: string) => {
                       const newCTs =
                         typeof collectTypes === "object"
@@ -154,7 +152,7 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                   },
                   {
                     type: "drop",
-                    title: "Award currency",
+                    title: t("mon"),
                     dropValues: availableCurrencies?.map((item) => item.symbol),
                     chosenValue:
                       availableCurrencies?.find((item) => {
@@ -166,7 +164,7 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                         }
                       })?.symbol! || availableCurrencies?.[0]?.symbol,
                     dropOpen: openMeasure.currencyOpen,
-                    showObject: openMeasure.award === "Yes" ? true : false,
+                    showObject: openMeasure.award === t("yes") ? true : false,
                     openDropdown: () =>
                       setOpenMeasure((prev) => ({
                         ...prev,
@@ -199,9 +197,9 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                   },
                   {
                     type: "input",
-                    title: "Referral?",
+                    title: t("ref"),
                     chosenValue: String(collectTypes?.[id]?.referralFee || "0"),
-                    showObject: openMeasure.award === "Yes" ? true : false,
+                    showObject: openMeasure.award === t("yes") ? true : false,
 
                     setValue: (item: string) => {
                       const newCTs =
@@ -224,11 +222,11 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                   },
                   {
                     type: "drop",
-                    title: "Limited Edition?",
-                    dropValues: ["Yes", "No"],
+                    title: t("ed"),
+                    dropValues: [t("yes"), t("no")],
                     dropOpen: openMeasure.editionOpen,
                     chosenValue: openMeasure.edition,
-                    showObject: openMeasure.award === "Yes" ? true : false,
+                    showObject: openMeasure.award === t("yes") ? true : false,
                     openDropdown: () =>
                       setOpenMeasure((prev) => ({
                         ...prev,
@@ -246,7 +244,7 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                           : {};
 
                       newCTs[id] =
-                        openMeasure?.edition == "No"
+                        openMeasure?.edition == t("no")
                           ? {
                               ...(newCTs[id] || {}),
                               collectLimit: undefined,
@@ -265,9 +263,10 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                   },
                   {
                     type: "input",
-                    title: "Edition amount",
+                    title: t("edN"),
                     chosenValue: collectTypes?.[id]?.collectLimit || "0",
-                    showObject: openMeasure?.edition === "Yes" ? true : false,
+                    showObject:
+                      openMeasure?.edition === t("yes") ? true : false,
                     setValue: (item: string) => {
                       const newCTs =
                         typeof collectTypes === "object"
@@ -275,7 +274,7 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                           : {};
 
                       newCTs[id] =
-                        openMeasure?.edition == "No"
+                        openMeasure?.edition == t("no")
                           ? {
                               ...(newCTs[id] || {}),
                               collectLimit: undefined,
@@ -295,11 +294,11 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                   },
                   {
                     type: "drop",
-                    title: "24hr time limit?",
-                    dropValues: ["Yes", "No"],
+                    title: t("time"),
+                    dropValues: [t("yes"), t("no")],
                     dropOpen: openMeasure.timeOpen,
                     chosenValue: openMeasure.time,
-                    showObject: openMeasure.award === "Yes" ? true : false,
+                    showObject: openMeasure.award === t("yes") ? true : false,
                     openDropdown: () =>
                       setOpenMeasure((prev) => ({
                         ...prev,
@@ -316,7 +315,7 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                           ? { ...collectTypes }
                           : {};
 
-                      if (item === "Yes") {
+                      if (item === t("yes")) {
                         newCTs[id] = {
                           ...(newCTs[id] || {}),
                           endsAt: new Date(

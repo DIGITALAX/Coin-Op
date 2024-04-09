@@ -20,10 +20,12 @@ import useQuote from "../../hooks/useQuote";
 import PostCollect from "./PostCollect";
 import useVideo from "../../hooks/useVideo";
 import { RefObject } from "react";
+import { useTranslation } from "next-i18next";
 
 const Modals = ({ router }: { router: NextRouter }) => {
   const { address, isConnected } = useAccount();
   const { chain: chainNetwork } = useNetwork();
+  const { t } = useTranslation("common");
   const dispatch = useDispatch();
   const publicClient = createPublicClient({
     chain: polygon,
@@ -76,7 +78,8 @@ const Modals = ({ router }: { router: NextRouter }) => {
     address,
     chainNetwork,
     cartItems,
-    lensProfile
+    lensProfile,
+    t
   );
   const {
     dataLoading,
@@ -93,7 +96,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
     setOpenMirrorChoice,
     simpleCollect,
     interactionsLoading,
-  } = useWho(lensProfile, reactBox, dispatch, address, publicClient);
+  } = useWho(lensProfile, reactBox, dispatch, address, publicClient, t);
   const {
     videoRef,
     videoLoading,
@@ -125,7 +128,8 @@ const Modals = ({ router }: { router: NextRouter }) => {
     dispatch,
     publicClient,
     address,
-    quoteBox
+    quoteBox,
+    t
   );
   return (
     <>
@@ -145,6 +149,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
       {quoteBox?.open && (
         <QuoteBox
           type={quoteBox?.type!}
+          t={t}
           lensConnected={lensProfile}
           setCaretCoord={setCaretCoord}
           setMentionProfiles={setMentionProfiles}
@@ -165,6 +170,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
       {postCollect?.id && (
         <PostCollect
           dispatch={dispatch}
+          t={t}
           openMeasure={openMeasure}
           setOpenMeasure={setOpenMeasure}
           availableCurrencies={availableCurrencies}
@@ -185,6 +191,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
           hasMore={hasMoreWho}
           hasMoreQuote={hasMoreQuote}
           showMore={showMore}
+          t={t}
           mirrorQuote={mirrorQuote}
           setMirrorQuote={setMirrorQuote}
           like={like}
@@ -195,14 +202,15 @@ const Modals = ({ router }: { router: NextRouter }) => {
           interactionsLoading={interactionsLoading}
         />
       )}
-      {noHandle.value && <NoHandle dispatch={dispatch} />}
+      {noHandle.value && <NoHandle t={t} dispatch={dispatch} />}
       {generalModal?.open && (
-        <General message={generalModal.message} dispatch={dispatch} />
+        <General t={t} message={generalModal.message} dispatch={dispatch} />
       )}
       {indexModal?.value && <Index message={indexModal?.message} />}
-      {apiAdd?.open && <ApiAdd dispatch={dispatch} />}
+      {apiAdd?.open && <ApiAdd t={t} dispatch={dispatch} />}
       {searchExpand?.value && (
         <SearchExpand
+          t={t}
           searchItem={searchExpand?.value}
           dispatch={dispatch}
           cartItems={cartItems}

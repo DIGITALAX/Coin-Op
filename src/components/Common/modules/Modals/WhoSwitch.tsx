@@ -19,6 +19,7 @@ const WhoSwitch: FunctionComponent<WhoSwitchProps> = ({
   dispatch,
   like,
   mirror,
+  t,
   simpleCollect,
   openMirrorChoice,
   setOpenMirrorChoice,
@@ -42,6 +43,7 @@ const WhoSwitch: FunctionComponent<WhoSwitchProps> = ({
               return (
                 <Publication
                   router={router}
+                  t={t}
                   interactionsLoading={interactionsLoading}
                   index={index}
                   item={item}

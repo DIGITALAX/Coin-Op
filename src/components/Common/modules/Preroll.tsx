@@ -30,6 +30,7 @@ const Preroll: FunctionComponent<PrerollProps> = ({
   like,
   openMirrorChoice,
   setOpenMirrorChoice,
+  t,
 }): JSX.Element => {
   const profileImage = createProfilePicture(
     preroll?.profile?.metadata?.picture
@@ -211,13 +212,14 @@ const Preroll: FunctionComponent<PrerollProps> = ({
 
             {preroll.newDrop && (
               <div className="absolute bottom-2 right-2 bg-ama flex w-fit text-xxs h-fit px-2 py-1 text-black font-monu">
-                🔥 new drop 🔥
+                {t("new")}
               </div>
             )}
           </div>
         </div>
         <div className="relative flex flex-row gap-2 w-full h-fit justify-between">
           <PrintTag
+            t={t}
             backgroundColor={preroll.bgColor}
             type={printTypeToString[Number(preroll.printType)]}
           />
@@ -285,8 +287,7 @@ const Preroll: FunctionComponent<PrerollProps> = ({
                 dispatch(
                   setModalOpen({
                     actionOpen: true,
-                    actionMessage:
-                      "We know you're eager, but you've reached this prints' collect limit!",
+                    actionMessage: t("eager"),
                   })
                 );
                 return;
@@ -331,6 +332,7 @@ const Preroll: FunctionComponent<PrerollProps> = ({
         </div>
       </div>
       <InteractBar
+        t={t}
         dispatch={dispatch}
         openMirrorChoice={openMirrorChoice}
         setOpenMirrorChoice={setOpenMirrorChoice}
@@ -381,7 +383,7 @@ const Preroll: FunctionComponent<PrerollProps> = ({
                     ?.replaceAll("_(print)", "")}`
                 )
               }
-              title="nft art"
+              title= {t("nft")}
             >
               <Image
                 className="rounded-full"

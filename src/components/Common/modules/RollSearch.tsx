@@ -14,12 +14,13 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
   handleAddToCart,
   router,
   cartAddAnim,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 flex flex-col justify-start h-fit gap-4 sm:pb-28 order-2">
       <input
         className="bg-black font-mega text-white text-xs w-full rounded-full flex py-1 px-4 h-12 border border-white"
-        placeholder={`graffiti on a wall in LES, illustration, digital art, breakcore`}
+        placeholder={t("graff")}
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           setPrompt(e.target.value)
         }
@@ -43,7 +44,7 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
           {searchLoading ? (
             <AiOutlineLoading color="black" size={15} />
           ) : (
-            "search prompts"
+            t("search")
           )}
         </div>
       </div>
@@ -57,6 +58,7 @@ const RollSearch: FunctionComponent<RollSearchProps> = ({
             {rollSearch?.map((roll: Preroll, index: number) => {
               return (
                 <SearchBox
+                  t={t}
                   key={index}
                   promptSearch={roll}
                   handlePromptChoose={handlePromptChoose}

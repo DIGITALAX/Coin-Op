@@ -4,6 +4,7 @@ import { PrintTagProps } from "../types/common.types";
 const PrintTag: FunctionComponent<PrintTagProps> = ({
   backgroundColor,
   type,
+  t,
 }): JSX.Element => {
   return (
     <div
@@ -12,7 +13,7 @@ const PrintTag: FunctionComponent<PrintTagProps> = ({
     >
       <div className="relative w-2 h-2 rounded-full bg-white flex items-center justify-center"></div>
       <div className="relative w-fit h-fit flex items-center justify-center text-xxs">
-        {type}
+        {t(type?.toLowerCase())}
       </div>
     </div>
   );

@@ -32,16 +32,22 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   lensConnected,
   handleLensSignIn,
   setEncrypted,
+  t,
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-full synth:w-3/4 h-full flex overflow-y-scroll">
       <div className="relative w-full h-fit flex flex-col gap-4 items-center justify-center">
-        <div className="relative w-3/4 text-center h-fit flex items-center justify-center break-words font-mana text-white text-xs">
-          Claim your cart. Each Lens collect is unique like you—one by one
-          checkouts give them that personal touch. <br />
-          <br /> No batch buys at this time.
+        <div
+          className={`relative w-3/4 text-center h-fit flex items-center justify-center break-words  text-white text-xs whitespace-pre-line ${
+            router.locale == "es" ? "font-bit" : "font-mana"
+          }`}
+        >
+          {t("claim")}
         </div>
         <Items
+          t={t}
+          router={router}
           setEncrypted={setEncrypted}
           setCartItem={setCartItem}
           cartItems={cartItems}
@@ -50,8 +56,12 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           checkoutCurrency={checkoutCurrency}
           oracleValue={oracleValue}
         />
-        <div className="relative justify-start items-start w-3/4  h-fit flex flex-row font-mana text-ama text-base gap-3">
-          <div className="relative w-fit h-fit">Cart Total:</div>
+        <div
+          className={`relative justify-start items-start w-3/4  h-fit flex flex-row  text-ama text-base gap-3 ${
+            router.locale == "es" ? "font-bit" : "font-mana"
+          }`}
+        >
+          <div className="relative w-fit h-fit">{t("cart")}</div>
           <div className="relative w-fit h-fit">
             {`${
               ACCEPTED_TOKENS.find(
@@ -80,8 +90,9 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
             )?.toFixed(2)}
           </div>
         </div>
-
         <ShippingInfo
+          t={t}
+          router={router}
           fulfillmentDetails={fulfillmentDetails}
           openCountryDropDown={openCountryDropDown}
           setOpenCountryDropDown={setOpenCountryDropDown}
@@ -112,8 +123,12 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
             );
           })}
         </div>
-        <div className="relative justify-start items-start w-3/4  h-fit flex flex-row font-mana text-sol text-xs gap-3">
-          <div className="relative w-fit h-fit">Selected Item Total:</div>
+        <div
+          className={`relative justify-start items-start w-3/4  h-fit flex flex-row text-sol text-xs gap-3 ${
+            router.locale == "en" ? "font-mana" : "font-bit"
+          }`}
+        >
+          <div className="relative w-fit h-fit">{t("total")}</div>
           <div className="relative w-fit h-fit">
             {`${
               ACCEPTED_TOKENS.find(
@@ -149,6 +164,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           </div>
         </div>
         <Crypto
+          t={t}
           address={address}
           lensConnected={lensConnected}
           handleLensSignIn={handleLensSignIn}

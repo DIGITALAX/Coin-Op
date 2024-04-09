@@ -10,13 +10,15 @@ import lensLike from "../../../../lib/lens/helpers/lensLike";
 import lensMirror from "../../../../lib/lens/helpers/lensMirror";
 import { PublicClient, WalletClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
+import { TFunction } from "i18next";
 
 const useInteractions = (
   prerolls: PrerollState,
   lensConnected: Profile | undefined,
   dispatch: Dispatch,
   publicClient: PublicClient,
-  address: `0x${string}` | undefined
+  address: `0x${string}` | undefined,
+  t: TFunction<"common", undefined>
 ) => {
   const [interactionsLoading, setInteractionsLoading] = useState<
     {
@@ -50,7 +52,7 @@ const useInteractions = (
     });
 
     try {
-      await lensLike(id, dispatch, hasReacted);
+      await lensLike(id, dispatch, hasReacted, t);
       updateInteractions(
         id,
         {
@@ -71,7 +73,8 @@ const useInteractions = (
             "reactions",
             hasReacted ? false : true
           ),
-        dispatch
+        dispatch,
+        t
       );
     }
 
@@ -114,7 +117,7 @@ const useInteractions = (
         transport: custom((window as any).ethereum),
       });
 
-      await lensMirror(id, dispatch, address!, clientWallet, publicClient);
+      await lensMirror(id, dispatch, address!, clientWallet, publicClient, t);
       updateInteractions(
         id,
         {
@@ -135,7 +138,8 @@ const useInteractions = (
             "mirrors",
             true
           ),
-        dispatch
+        dispatch,
+        t
       );
     }
 
@@ -191,7 +195,6 @@ const useInteractions = (
       ...newItems?.[left !== -1 ? "left" : ("right" as keyof PrerollState)],
     ];
 
-
     newArray[left !== -1 ? left : right] = {
       ...newArray[left !== -1 ? left : right],
       publication: {
@@ -209,7 +212,7 @@ const useInteractions = (
         },
       },
     };
-    
+
     dispatch(
       setPreroll(
         left !== -1

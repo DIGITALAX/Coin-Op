@@ -8,6 +8,12 @@
 }
 
 @font-face {
+  font-family: "Bitblox";
+  font-weight: 400;
+  src: url("/fonts/Bitblox.otf");
+}
+
+@font-face {
   font-family: "Vcr";
   src: url("/fonts/Vcr.ttf");
 }
@@ -44,48 +50,31 @@
 
 body {
   background: black;
-  scrollbar-width: thin;
-  scrollbar-color: #b620e0 #f0f0f0;
+  scrollbar-width: 0px;
 }
 
-input:focus {
-  outline-color: #b620e0;
-}
 
 body::-webkit-scrollbar {
-  width: 6px;
-  opacity: 0; /* Initially hide the scrollbar */
-  transition: opacity 0.3s ease;
+  width: 0px;
 }
 
 body:hover::-webkit-scrollbar {
-  opacity: 1; /* Show the scrollbar on hover */
+  opacity: 0; /* Show the scrollbar on hover */
 }
 
 body::-webkit-scrollbar-track {
   background-color: black;
 }
 
-body::-webkit-scrollbar-thumb {
-  background-color: #b620e0;
-}
 
 div::-webkit-scrollbar {
-  width: 6px;
+  width: 0px;
   opacity: 0; /* Initially hide the scrollbar */
-  transition: opacity 0.3s ease;
 }
 
-div::-webkit-scrollbar-track {
-  background-color: black;
-}
-
-div::-webkit-scrollbar-thumb {
-  background-color: #b620e0;
-}
 
 div:hover::-webkit-scrollbar {
-  opacity: 1; /* Show the scrollbar on hover */
+  opacity: 0; /* Show the scrollbar on hover */
 }
 
 #anim {
