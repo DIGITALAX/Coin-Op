@@ -183,7 +183,9 @@ const PostCollect: FunctionComponent<PostCollectProps> = ({
                         ...(newCTs[id] || {}),
                         amount: {
                           ...(newCTs[id]?.amount || {}),
-                          currency: item,
+                          currency: availableCurrencies?.find(
+                            (val) => item == val.symbol
+                          )?.contract?.address,
                         },
                       } as any;
 
