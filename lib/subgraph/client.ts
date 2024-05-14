@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 const httpLink = new HttpLink({
-  uri: "https://api.thegraph.com/subgraphs/name/digitalax/coin-op",
+  uri: `https://gateway-arbitrum.network.thegraph.com/api/${process.env.NEXT_PUBLIC_GRAPH_KEY}/subgraphs/id/E2M1NyxMJ7xNhiY6S7HNUMPNE7ihdP95kTEuj5pqup9j`,
 });
 
 export const graphClient = new ApolloClient({
@@ -18,17 +18,8 @@ export const graphClientTestnet = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const httpLinkChromadin = new HttpLink({
-  uri: "https://api.thegraph.com/subgraphs/name/digitalax/chromadin",
-});
-
-export const graphClientChromadin = new ApolloClient({
-  link: httpLinkChromadin,
-  cache: new InMemoryCache(),
-});
-
 const httpLinkPrint = new HttpLink({
-  uri: "https://api.thegraph.com/subgraphs/name/digitalax/print-library",
+  uri: `https://gateway-arbitrum.network.thegraph.com/api/${process.env.NEXT_PUBLIC_GRAPH_KEY}/subgraphs/id/DcuUkg3QC5zg1t86VeNjWzg6R6ohaGa8QGyVE1rFYMZB`,
 });
 
 export const graphPrintClient = new ApolloClient({
