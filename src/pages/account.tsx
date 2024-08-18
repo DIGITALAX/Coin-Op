@@ -12,7 +12,7 @@ import { useAccount } from "wagmi";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { NextRouter } from "next/router";
-import { useTranslation } from "next-i18next";
+import { useTranslation, withTranslation } from "next-i18next";
 const Account: NextPage<{ client: LitNodeClient; router: NextRouter }> = ({
   client,
   router,
@@ -171,7 +171,7 @@ const Account: NextPage<{ client: LitNodeClient; router: NextRouter }> = ({
   );
 };
 
-export default Account;
+export default withTranslation()(Account);
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {

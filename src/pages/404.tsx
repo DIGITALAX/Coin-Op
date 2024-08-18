@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { FunctionComponent } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useTranslation } from "next-i18next";
+import { useTranslation, withTranslation } from "next-i18next";
 
 const Custom404: FunctionComponent = (): JSX.Element => {
   const { t } = useTranslation("404");
@@ -28,7 +28,8 @@ const Custom404: FunctionComponent = (): JSX.Element => {
   );
 };
 
-export default Custom404;
+export default withTranslation()(Custom404);
+
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
