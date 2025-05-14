@@ -63,11 +63,11 @@ export async function GET() {
         ${locales
           .map(
             (locale) => `
-          <link rel="alternate" hreflang="${locale}" href="${baseUrl}/${locale}/" ></link>
+          <xhtml:link rel="alternate" hreflang="${locale}" href="${baseUrl}/${locale}/" />
           `
           )
           .join("")}
-        <link rel="alternate" hreflang="x-default" href="${baseUrl}/" ></link>
+        <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/"  />
             ${collectionsXml}
       </url>
     </urlset>`;
