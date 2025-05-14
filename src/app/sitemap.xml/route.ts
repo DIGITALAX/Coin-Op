@@ -34,14 +34,19 @@ export async function GET() {
   const collectionsXml = collections
     .map((coll: any) => {
       const rawTitle = coll?.metadata?.title ?? "";
-      const title = escapeXml(rawTitle.replace(/-/g, " "));
       const image = coll?.metadata?.images?.[0]?.split("ipfs://")?.[1];
 
       return `
        <image:image>
           <image:loc>${INFURA_GATEWAY_INTERNAL}${image}/</image:loc>
-          <image:title><![CDATA[${title} | CoinOp | DIGITALAX]]></image:title>
-          <image:caption><![CDATA[${title} | CoinOp | DIGITALAX]]></image:caption>
+          <image:title><![CDATA[${rawTitle.replace(
+            /-/g,
+            " "
+          )} | CoinOp | DIGITALAX]]></image:title>
+          <image:caption><![CDATA[${rawTitle.replace(
+            /-/g,
+            " "
+          )} | CoinOp | DIGITALAX]]></image:caption>
         </image:image>
     `;
     })

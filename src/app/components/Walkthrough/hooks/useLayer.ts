@@ -14,7 +14,6 @@ const useLayer = () => {
       const data = await getTemplatesByPrintType(
         Number(printTypeToNumber[synthContext?.current?.template?.type!])
       );
-
       synthContext?.setCurrent((prev) => ({
         ...prev,
         printLayers: data?.data?.parentCreateds,
