@@ -114,6 +114,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
                 ...fulfillmentDetails,
                 size: item?.chosenColor,
                 color: item?.chosenColor,
+                index: item?.chosenIndex,
                 origin: "1",
                 fulfillerAddress: [DIGITALAX_ADDRESS],
               })

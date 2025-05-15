@@ -84,6 +84,7 @@ export type CartItem = {
   item: Preroll;
   chosenColor: string;
   chosenSize: string;
+  chosenIndex?: number;
   chosenAmount: number;
 };
 
