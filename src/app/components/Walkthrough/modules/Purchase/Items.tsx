@@ -12,7 +12,6 @@ const Items: FunctionComponent<ItemsProps> = ({
   cartItem,
   checkoutCurrency,
   setCartItem,
-  setEncrypted,
   dict,
 }): JSX.Element => {
   const context = useContext(ModalContext);
@@ -107,7 +106,6 @@ const Items: FunctionComponent<ItemsProps> = ({
                           onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            setEncrypted(undefined);
                             if (
                               (context?.cartItems || [])
                                 ?.filter(
@@ -206,7 +204,6 @@ const Items: FunctionComponent<ItemsProps> = ({
                           onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            setEncrypted(undefined);
                             const newCart =
                               (context?.cartItems || [])?.find(
                                 (value) =>
