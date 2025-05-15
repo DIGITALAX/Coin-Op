@@ -25,7 +25,7 @@ const useLens = (
 
       if (resumed?.isOk()) {
         const accounts = await fetchAccountsAvailable(contexto?.clienteLens!, {
-          managedBy: evmAddress(contexto?.lensConectado?.address!),
+          managedBy: evmAddress(address!),
           includeOwned: true,
         });
 
@@ -47,32 +47,19 @@ const useLens = (
   };
 
   useEffect(() => {
-    if (isConnected && !contexto?.lensConectado?.address && address) {
-      contexto?.setLensConectado({
-        ...contexto?.lensConectado,
-        address: address,
-      });
-    }
-  }, [isConnected, address]);
-
-  useEffect(() => {
-    if (
-      contexto?.lensConectado?.address &&
-      contexto?.clienteLens &&
-      !contexto?.lensConectado?.profile
-    ) {
+    if (address && contexto?.clienteLens && !contexto?.lensConectado?.profile) {
       resumeLensSession();
     }
-  }, [contexto?.lensConectado?.address, contexto?.clienteLens]);
+  }, [address, contexto?.clienteLens]);
 
   const handleConectarse = async () => {
-    if (!contexto?.lensConectado?.address || !contexto?.clienteLens) return;
+    if (!address || !contexto?.clienteLens) return;
     setLensCargando(true);
     try {
       const signer = createWalletClient({
         chain: chains.mainnet,
         transport: custom(window.ethereum!),
-        account: contexto?.lensConectado?.address,
+        account: address,
       });
       const accounts = await fetchAccountsAvailable(contexto?.clienteLens, {
         managedBy: evmAddress(signer.account.address),
@@ -102,8 +89,6 @@ const useLens = (
         const sessionClient = authenticated.value;
 
         contexto?.setLensConectado?.({
-          address: contexto?.lensConectado?.address,
-
           sessionClient,
           profile: accounts.value.items?.[0]?.account,
         });
@@ -126,7 +111,6 @@ const useLens = (
         const sessionClient = authenticatedOnboarding.value;
 
         contexto?.setLensConectado?.({
-          address: contexto?.lensConectado?.address,
           sessionClient,
         });
 

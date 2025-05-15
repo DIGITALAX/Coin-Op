@@ -10,8 +10,10 @@ import { v4 as uuidv4 } from "uuid";
 import { immutable } from "@lens-chain/storage-client";
 import pollResult from "@/app/lib/helpers/pollResult";
 import { ModalContext } from "@/app/providers";
+import { useAccount } from "wagmi";
 
 const useCrearCuenta = (dict: any) => {
+  const { address } = useAccount();
   const context = useContext(ModalContext);
   const [account, setAccount] = useState<{
     localname: string;
@@ -26,17 +28,13 @@ const useCrearCuenta = (dict: any) => {
   const [accountLoading, setAccountLoading] = useState<boolean>(false);
 
   const handleCreateAccount = async () => {
-    if (
-      !context?.lensConectado?.address ||
-      !context?.lensConectado?.sessionClient
-    )
-      return;
+    if (!address || !context?.lensConectado?.sessionClient) return;
     setAccountLoading(true);
     try {
       const signer = createWalletClient({
         chain: chains.mainnet,
         transport: custom(window.ethereum!),
-        account: context?.lensConectado?.address,
+        account: address,
       });
 
       let picture = undefined;

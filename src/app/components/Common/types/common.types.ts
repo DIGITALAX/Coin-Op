@@ -4,7 +4,6 @@ import { Preroll } from "../../Prerolls/types/prerolls.types";
 export interface LensConnected {
   profile?: Account;
   sessionClient?: SessionClient;
-  address?: `0x${string}`;
 }
 
 export enum Indexar {
