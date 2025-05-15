@@ -48,10 +48,6 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
     state: "",
     country: "",
   });
-
-  const [encrypted, setEncrypted] = useState<
-    { postId: string; data: string }[] | undefined
-  >();
   const [isApprovedSpend, setApprovedSpend] = useState<boolean>(false);
   const [checkoutCurrency, setCheckoutCurrency] = useState<string>(
     ASSETS?.[0]?.contract?.address?.toLowerCase()
@@ -79,36 +75,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
       });
       await client.connect();
 
-      let encryptedItems: {
-        postId: string;
-        data: string;
-      }[] = [];
-
-      let groupedItems: {
-        [key: string]: {
-          color: string;
-          size: string;
-          amount: number;
-          collectionId: number;
-        };
-      } = {};
-
-      context?.cartItems?.forEach((item: CartItem) => {
-        const pubId = item?.item?.postId;
-        if (!groupedItems[pubId]) {
-          groupedItems[pubId] = {
-            color: "",
-            size: "",
-            amount: 0,
-            collectionId: 0,
-          };
-        }
-
-        groupedItems[pubId].color = item?.chosenColor;
-        groupedItems[pubId].size = item?.chosenSize;
-        groupedItems[pubId].amount = item?.chosenAmount;
-        groupedItems[pubId].collectionId = Number(item?.item?.collectionId);
-      });
+      let encryptedItems: string[] = [];
 
       const accessControlConditions = [
         {
@@ -138,31 +105,40 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
         },
       ] as AccessControlConditions;
 
-      for (const [postId, item] of Object.entries(groupedItems)) {
-        const { ciphertext, dataToEncryptHash } = await client.encrypt({
-          accessControlConditions,
-          dataToEncrypt: uint8arrayFromString(
-            JSON.stringify({
-              ...fulfillmentDetails,
-              ...item,
-              origin: "1",
-              fulfillerAddress: [DIGITALAX_ADDRESS],
-            })
-          ),
-        });
-
-        encryptedItems.push({
-          postId,
-          data: JSON.stringify({
-            ciphertext,
-            dataToEncryptHash,
+      await Promise.all(
+        (context?.cartItems || [])?.map(async (item) => {
+          const { ciphertext, dataToEncryptHash } = await client.encrypt({
             accessControlConditions,
-            chain: "polygon",
-          }),
-        });
-      }
+            dataToEncrypt: uint8arrayFromString(
+              JSON.stringify({
+                ...fulfillmentDetails,
+                size: item?.chosenColor,
+                color: item?.chosenColor,
+                origin: "1",
+                fulfillerAddress: [DIGITALAX_ADDRESS],
+              })
+            ),
+          });
 
-      encryptedItems && setEncrypted(encryptedItems);
+          const ipfsRes = await fetch("/api/ipfs", {
+            method: "POST",
+            headers: {
+              contentType: "application/json",
+            },
+            body: JSON.stringify({
+              ciphertext,
+              dataToEncryptHash,
+              accessControlConditions,
+              chain: "polygon",
+            }),
+          });
+          const json = await ipfsRes.json();
+
+          encryptedItems.push("ipfs://" + json?.cid);
+        })
+      );
+
+      return encryptedItems;
     } catch (err: any) {
       console.error(err.message);
     }
@@ -170,9 +146,16 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
   };
 
   const collectItem = async () => {
-    if (!encrypted || !context?.lensConectado?.sessionClient) return;
-
+    if (!context?.lensConectado?.sessionClient) return;
     setCollectPostLoading(true);
+    const encrypted = await encryptFulfillment();
+
+    if (!encrypted) {
+      context?.setError?.(dict.Common.error);
+      setCollectPostLoading(false);
+      return;
+    }
+
     try {
       const balance = await findBalance(
         publicClient,
@@ -212,27 +195,6 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
         return;
       }
 
-      let encryptedFulfillmentUploaded: string[] = [];
-
-      const orderedEncrypted = context?.cartItems.map((item) => {
-        const match = encrypted?.find((e) => e?.postId === item?.item?.postId);
-        return match;
-      });
-
-      await Promise.all(
-        orderedEncrypted?.map(async (encrypt) => {
-          const ipfsRes = await fetch("/api/ipfs", {
-            method: "POST",
-            headers: {
-              contentType: "application/json",
-            },
-            body: encrypt?.data,
-          });
-          const json = await ipfsRes.json();
-          encryptedFulfillmentUploaded.push("ipfs://" + json?.cid);
-        })
-      );
-
       const res = await executePostAction(
         context?.lensConectado?.sessionClient,
         {
@@ -249,7 +211,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
                     coder.encode(
                       ["string[]", "address[]", "uint256[]", "uint8[]"],
                       [
-                        encryptedFulfillmentUploaded,
+                        encrypted,
                         Array.from({ length: context?.cartItems?.length }, () =>
                           Number(checkoutCurrency)
                         ),
@@ -297,7 +259,6 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
 
         context?.setCartItems([]);
         removeCartItemsLocalStorage();
-        setEncrypted(undefined);
         setFulfillmentDetails({
           address: "",
           zip: "",
@@ -327,7 +288,6 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
         ) {
           context?.setCartItems([]);
           removeCartItemsLocalStorage();
-          setEncrypted(undefined);
           setFulfillmentDetails({
             address: "",
             zip: "",
@@ -517,7 +477,6 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
   }, [context?.cartItems]);
 
   return {
-    encryptFulfillment,
     collectPostLoading,
     collectItem,
     fulfillmentDetails,
@@ -530,8 +489,6 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
     isApprovedSpend,
     startIndex,
     setStartIndex,
-    encrypted,
-    setEncrypted,
     chooseCartItem,
     setChooseCartItem,
   };

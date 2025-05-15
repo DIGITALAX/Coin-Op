@@ -284,36 +284,13 @@ export type CheckoutProps = {
   handleApproveSpend: () => Promise<void>;
   openCountryDropDown: boolean;
   setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
-  encrypted:
-    | {
-        postId: string;
-        data: string;
-      }[]
-    | undefined;
   setFulfillmentDetails: (e: SetStateAction<Details>) => void;
-  encryptFulfillment: () => Promise<void>;
-  setEncrypted: (
-    e: SetStateAction<
-      | {
-          postId: string;
-          data: string;
-        }[]
-      | undefined
-    >
-  ) => void;
 };
 
 export type CryptoProps = {
-  encrypted:
-    | {
-        postId: string;
-        data: string;
-      }[]
-    | undefined;
   dict: any;
   handleCheckoutCrypto?: () => Promise<void>;
   cryptoCheckoutLoading?: boolean;
-  encryptFulfillment: () => Promise<void>;
   approved?: boolean;
   handleApproveSpend?: () => Promise<void>;
 };
@@ -323,15 +300,6 @@ export type ItemsProps = {
   cartItem: CartItem | undefined;
   checkoutCurrency: string;
   setCartItem: (e: CartItem) => void;
-  setEncrypted: (
-    e: SetStateAction<
-      | {
-          postId: string;
-          data: string;
-        }[]
-      | undefined
-    >
-  ) => void;
 };
 
 export type ShippingInfoProps = {
@@ -339,22 +307,8 @@ export type ShippingInfoProps = {
   setFulfillmentDetails: (e: SetStateAction<Details>) => void;
   openCountryDropDown: boolean;
   dict: any;
+  cryptoCheckoutLoading: boolean;
   setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
-  setEncrypted: (
-    e: SetStateAction<
-      | {
-          postId: string;
-          data: string;
-        }[]
-      | undefined
-    >
-  ) => void;
-  encrypted:
-    | {
-        postId: string;
-        data: string;
-      }[]
-    | undefined;
 };
 
 export type InputTypeVenice = {

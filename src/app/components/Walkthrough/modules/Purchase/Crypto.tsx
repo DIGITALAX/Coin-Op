@@ -11,8 +11,6 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   cryptoCheckoutLoading,
   approved,
   handleApproveSpend,
-  encryptFulfillment,
-  encrypted,
   dict,
 }): JSX.Element => {
   const { address, isConnected, chainId } = useAccount();
@@ -38,9 +36,6 @@ const Crypto: FunctionComponent<CryptoProps> = ({
             ? () => openSwitchNetworks()
             : !context?.lensConectado?.profile
             ? () => handleConectarse()
-            : !encrypted
-            ? () =>
-                Number(context?.cartItems?.length) > 0 && encryptFulfillment()
             : !approved
             ? () =>
                 Number(context?.cartItems?.length) > 0 && handleApproveSpend!()
@@ -63,8 +58,6 @@ const Crypto: FunctionComponent<CryptoProps> = ({
           dict?.Common?.conn
         ) : !context?.lensConectado?.profile ? (
           "LENS"
-        ) : !encrypted ? (
-          dict?.Common?.det
         ) : !approved ? (
           dict?.Common?.app
         ) : (

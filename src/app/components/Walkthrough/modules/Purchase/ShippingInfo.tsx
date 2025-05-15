@@ -7,11 +7,10 @@ import { COUNTRIES, INFURA_GATEWAY } from "@/app/lib/constants";
 const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
   fulfillmentDetails,
   setFulfillmentDetails,
-  encrypted,
   openCountryDropDown,
   setOpenCountryDropDown,
-  setEncrypted,
   dict,
+  cryptoCheckoutLoading,
 }): JSX.Element => {
   const path = usePathname();
   return (
@@ -30,7 +29,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
               <div
                 key={index}
                 className={`relative w-full h-fit flex items-start justify-center flex-col gap-2 ${
-                  encrypted && "opacity-20"
+                  cryptoCheckoutLoading && "opacity-20"
                 }`}
               >
                 <div className="relative w-fit h-fit flex text-white text-xs">
@@ -44,8 +43,8 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                       item?.toLowerCase() as keyof Details
                     ] as string) || ""
                   }
+                  disabled={cryptoCheckoutLoading}
                   onChange={(e) => {
-                    setEncrypted(undefined);
                     setFulfillmentDetails((prev) => ({
                       ...prev,
                       [item?.toLowerCase()]: e.target.value,
@@ -63,7 +62,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                 <div
                   key={index}
                   className={`relative w-full h-fit flex items-start justify-center flex-col gap-2 ${
-                    encrypted && "opacity-20"
+                    cryptoCheckoutLoading && "opacity-20"
                   }`}
                 >
                   <div className="relative w-fit h-fit flex text-white text-xs">
@@ -76,8 +75,8 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                         item?.toLowerCase() as keyof Details
                       ] as string) || ""
                     }
+                    disabled={cryptoCheckoutLoading}
                     onChange={(e) => {
-                      setEncrypted(undefined);
                       setFulfillmentDetails({
                         ...fulfillmentDetails,
                         [item?.toLowerCase()]: e.target.value,
@@ -111,7 +110,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                 <div
                   key={index}
                   className={`relative w-full h-fit flex items-start justify-center flex-col gap-2 ${
-                    encrypted && "opacity-20"
+                    cryptoCheckoutLoading && "opacity-20"
                   }`}
                 >
                   <div className="relative w-fit h-fit flex text-white text-xs">
@@ -121,9 +120,12 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                     <div className="relative w-full h-fit flex flex-col items-start justify-start gap-1">
                       <div
                         className={`relative h-10 flex flex-row justify-between p-2 w-full items-center border border-white rounded-md ${
-                          !encrypted ? "cursor-pointer" : "opacity-70"
+                          !cryptoCheckoutLoading
+                            ? "cursor-pointer"
+                            : "opacity-70"
                         }`}
                         onClick={() =>
+                          !cryptoCheckoutLoading &&
                           setOpenCountryDropDown(!openCountryDropDown)
                         }
                       >
@@ -150,8 +152,8 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                                     key={index}
                                     className="relative w-full py-1 h-10 flex items-center justify-center text-white border-y border-white text-xs cursor-pointer hover:opacity-80"
                                     onClick={() => {
+                                      if (cryptoCheckoutLoading) return;
                                       setOpenCountryDropDown(false);
-                                      setEncrypted(undefined);
                                       setFulfillmentDetails({
                                         ...fulfillmentDetails,
                                         country,
@@ -175,8 +177,8 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                           item?.title?.toLowerCase() as keyof Details
                         ] || ""
                       }
+                      disabled={cryptoCheckoutLoading}
                       onChange={(e) => {
-                        setEncrypted(undefined);
                         setFulfillmentDetails({
                           ...fulfillmentDetails,
                           [item?.title?.toLowerCase()]: e.target.value,

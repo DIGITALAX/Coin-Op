@@ -14,7 +14,6 @@ const Purchase: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
   const path = usePathname();
   const { address } = useAccount();
   const {
-    encryptFulfillment,
     collectPostLoading,
     collectItem,
     fulfillmentDetails,
@@ -29,8 +28,6 @@ const Purchase: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
     isApprovedSpend,
     startIndex,
     setStartIndex,
-    encrypted,
-    setEncrypted,
   } = useCheckout(dict, address);
   return (
     <div className="relative w-full h-fit flex flex-col">
@@ -60,10 +57,8 @@ const Purchase: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
             handleApproveSpend={approveSpend}
             openCountryDropDown={openCountryDropdown}
             setOpenCountryDropDown={setOpenCountryDropdown}
-            encrypted={encrypted}
             setFulfillmentDetails={setFulfillmentDetails}
-            encryptFulfillment={encryptFulfillment}
-            setEncrypted={setEncrypted}
+
           />
           <div className="relative w-3/4 preG:w-96 h-96 xl:h-80 justify-end flex items-center">
             <div

@@ -21,10 +21,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   handleApproveSpend,
   openCountryDropDown,
   setOpenCountryDropDown,
-  encrypted,
   setFulfillmentDetails,
-  encryptFulfillment,
-  setEncrypted,
 }): JSX.Element => {
   const context = useContext(ModalContext);
   const path = usePathname();
@@ -40,7 +37,6 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
         </div>
         <Items
           dict={dict}
-          setEncrypted={setEncrypted}
           setCartItem={setCartItem}
           cartItem={cartItem}
           checkoutCurrency={checkoutCurrency}
@@ -82,9 +78,8 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           fulfillmentDetails={fulfillmentDetails}
           openCountryDropDown={openCountryDropDown}
           setOpenCountryDropDown={setOpenCountryDropDown}
-          setEncrypted={setEncrypted}
           setFulfillmentDetails={setFulfillmentDetails}
-          encrypted={encrypted}
+          cryptoCheckoutLoading={cryptoCheckoutLoading}
         />
         <div className="relative w-3/4 justify-start items-center flex flex-row gap-3">
           {ASSETS?.map((item, index: number) => {
@@ -148,8 +143,6 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           cryptoCheckoutLoading={cryptoCheckoutLoading}
           approved={approved}
           handleApproveSpend={handleApproveSpend}
-          encryptFulfillment={encryptFulfillment}
-          encrypted={encrypted}
         />
       </div>
     </div>
