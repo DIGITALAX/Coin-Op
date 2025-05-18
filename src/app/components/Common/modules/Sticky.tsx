@@ -124,7 +124,7 @@ const Sticky: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
             onClick={() =>
               context?.setFullScreenVideo({
                 ...context?.fullScreenVideo,
-                open: !context?.fullScreenVideo?.open ? false : true,
+                open: !context?.fullScreenVideo?.open ? true : false,
               })
             }
           >

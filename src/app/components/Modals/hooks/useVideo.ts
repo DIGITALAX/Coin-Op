@@ -1,12 +1,4 @@
-import { CHROMADIN } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
-import {
-  MainContentFocus,
-  PageSize,
-  Post,
-  PostType,
-} from "@lens-protocol/client";
-import { fetchPosts } from "@lens-protocol/client/actions";
 import {
   ChangeEvent,
   MouseEvent,
@@ -15,12 +7,14 @@ import {
   useRef,
   useState,
 } from "react";
-import Draggable from "react-draggable";
+import { fetchPosts } from "@lens-protocol/client/actions";
+import { MainContentFocus, PageSize, Post } from "@lens-protocol/client";
+import { CHROMADIN } from "@/app/lib/constants";
 
 const useVideo = () => {
   const context = useContext(ModalContext);
   const videoRef = useRef<null | HTMLVideoElement>(null);
-  const wrapperRef = useRef<Draggable | null>(null);
+  const [videosLoading, setVideosLoading] = useState<boolean>(false);
   const [videoLoading, setVideoLoading] = useState<{
     play: boolean;
     next: boolean;
@@ -42,16 +36,32 @@ const useVideo = () => {
       if (video && video.readyState >= 3) {
         if (video?.paused) {
           await video.play();
-          context?.setFullScreenVideo((prev) => ({
-            ...prev,
+
+          context?.setFullScreenVideo({
+            open: context?.fullScreenVideo?.open,
+            time: context?.fullScreenVideo?.time,
+            duration: context?.fullScreenVideo?.duration,
             isPlaying: true,
-          }));
+            volume: context?.fullScreenVideo?.volume,
+            volumeOpen: context?.fullScreenVideo?.volumeOpen,
+            allVideos: context?.fullScreenVideo?.allVideos,
+            cursor: context?.fullScreenVideo?.cursor,
+            index: context?.fullScreenVideo?.index,
+          });
         } else {
           video.pause();
-          context?.setFullScreenVideo((prev) => ({
-            ...prev,
+
+          context?.setFullScreenVideo({
+            open: context?.fullScreenVideo?.open,
+            time: context?.fullScreenVideo?.time,
+            duration: context?.fullScreenVideo?.duration,
             isPlaying: false,
-          }));
+            volume: context?.fullScreenVideo?.volume,
+            volumeOpen: context?.fullScreenVideo?.volumeOpen,
+            allVideos: context?.fullScreenVideo?.allVideos,
+            cursor: context?.fullScreenVideo?.cursor,
+            index: context?.fullScreenVideo?.index,
+          });
         }
       }
     } catch (err: any) {
@@ -65,12 +75,12 @@ const useVideo = () => {
 
   const handleSeek = (e: MouseEvent<HTMLDivElement>): void => {
     const progressRect = e.currentTarget.getBoundingClientRect();
-    const seekFraction = (e.clientX - progressRect.left) / progressRect.width;
+    const seekFr = (e.clientX - progressRect.left) / progressRect.width;
 
     const video = videoRef?.current;
 
     if (video && Number.isFinite(video.duration)) {
-      const seekTime = seekFraction * video.duration;
+      const seekTime = seekFr * video.duration;
       if (Number.isFinite(seekTime)) {
         video.currentTime = seekTime;
       }
@@ -102,11 +112,17 @@ const useVideo = () => {
           }
         }
 
-        context?.setFullScreenVideo((prev) => ({
-          ...prev,
-          index,
+        context?.setFullScreenVideo({
+          open: context?.fullScreenVideo?.open,
           time: 0,
-        }));
+          duration: context?.fullScreenVideo?.duration,
+          isPlaying: context?.fullScreenVideo?.isPlaying,
+          volume: context?.fullScreenVideo?.volume,
+          volumeOpen: context?.fullScreenVideo?.volumeOpen,
+          allVideos: context?.fullScreenVideo?.allVideos,
+          cursor: context?.fullScreenVideo?.cursor,
+          index: index,
+        });
       }
     } catch (err: any) {
       console.error(err.message);
@@ -125,38 +141,45 @@ const useVideo = () => {
   };
 
   const getVideos = async (newIndex?: number): Promise<void> => {
+    if (!context?.clienteLens) return;
     setVideoLoading((prev) => ({
       ...prev,
       videos: true,
     }));
     try {
-      const data = await fetchPosts(
-        context?.lensConectado?.sessionClient ?? context?.clienteLens!,
-        {
-          cursor: context?.fullScreenVideo?.cursor,
-          filter: {
-            postTypes: [PostType.Root],
-            authors: [CHROMADIN],
-            metadata: {
-              mainContentFocus: [MainContentFocus.Video],
-            },
+      const data = await fetchPosts(context?.clienteLens, {
+        cursor: context?.fullScreenVideo?.cursor,
+        pageSize: PageSize.Ten,
+        filter: {
+          authors: [CHROMADIN],
+          metadata: {
+            mainContentFocus: [MainContentFocus.Video],
           },
-          pageSize: PageSize.Ten,
-        }
-      );
+        },
+      });
 
-      if (data.isOk()) {
-        context?.setFullScreenVideo((prev) => ({
+      if (!data?.isOk()) {
+        setVideoLoading((prev) => ({
           ...prev,
-          time: 0,
-          allVideos: [
-            ...prev?.allVideos,
-            ...((data?.value?.items || []) as Post[]),
-          ],
-          cursor: data?.value?.pageInfo?.next!,
-          index: newIndex ? newIndex : 0,
+          videos: false,
         }));
+        return;
       }
+
+      context?.setFullScreenVideo({
+        open: context?.fullScreenVideo?.open,
+        time: 0,
+        duration: context?.fullScreenVideo?.duration,
+        isPlaying: context?.fullScreenVideo?.isPlaying,
+        volume: context?.fullScreenVideo?.volume,
+        volumeOpen: context?.fullScreenVideo?.volumeOpen,
+        allVideos: [
+          ...context?.fullScreenVideo?.allVideos,
+          ...(data?.value?.items || []),
+        ] as Post[],
+        cursor: data?.value?.pageInfo.next!,
+        index: newIndex ? newIndex : 0,
+      });
     } catch (err: any) {
       console.error(err.message);
     }
@@ -168,8 +191,8 @@ const useVideo = () => {
 
   useEffect(() => {
     if (
-      Number(context?.fullScreenVideo?.allVideos?.length) < 1 &&
       context?.fullScreenVideo?.open &&
+      context?.fullScreenVideo?.allVideos?.length < 1 &&
       context?.clienteLens
     ) {
       getVideos();
@@ -183,7 +206,8 @@ const useVideo = () => {
     handlePlayPause,
     handleSeek,
     handleVolumeChange,
-    wrapperRef,
+    videosLoading,
+    setVideosLoading,
   };
 };
 

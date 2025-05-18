@@ -4,6 +4,8 @@ import { INFURA_GATEWAY } from "@/app/lib/constants";
 import { CartItem, Preroll } from "../../Prerolls/types/prerolls.types";
 import { ModalContext, ScrollContext, SynthContext } from "@/app/providers";
 import buildTextQuery from "@/app/lib/helpers/buildTextQuery";
+import { fetchPost } from "@lens-protocol/client/actions";
+import { Post } from "@lens-protocol/client";
 
 const useRollSearch = (dict: any) => {
   const context = useContext(ModalContext);
@@ -23,9 +25,98 @@ const useRollSearch = (dict: any) => {
       //   lensConnected
       // );
 
-      synthContext?.setRollSearch(
-        searchItems?.data?.collectionCreateds as Preroll[]
+      const colls = await Promise.all(
+        searchItems?.data?.collectionCreateds?.map(
+          async (coll: any, index: number) => {
+            let publication;
+            if (coll?.postId) {
+              const post = await fetchPost(
+                context?.lensConectado?.sessionClient ?? context?.clienteLens!,
+                {
+                  post: coll?.postId,
+                }
+              );
+
+              if (post.isOk()) {
+                publication = post?.value as Post;
+              }
+            }
+            return {
+              ...coll,
+              profile: publication?.author,
+              publication,
+              metadata: {
+                ...coll?.metadata,
+                sizes:
+                  typeof coll?.metadata?.sizes === "string"
+                    ? (coll?.metadata?.sizes as any)
+                        ?.split(",")
+                        ?.map((word: string) => word.trim())
+                        ?.filter((word: string) => word.length > 0)
+                    : coll?.metadata?.sizes,
+                colors:
+                  typeof coll?.metadata?.colors === "string"
+                    ? (coll?.metadata?.colors as any)
+                        ?.split(",")
+                        ?.map((word: string) => word.trim())
+                        ?.filter((word: string) => word.length > 0)
+                    : coll?.metadata?.colors,
+                mediaTypes:
+                  typeof coll?.metadata?.mediaTypes === "string"
+                    ? (coll?.metadata?.mediaTypes as any)
+                        ?.split(",")
+                        ?.map((word: string) => word.trim())
+                        ?.filter((word: string) => word.length > 0)
+                    : coll?.metadata?.mediaTypes,
+                access:
+                  typeof coll?.metadata?.access === "string"
+                    ? (coll?.metadata?.access as any)
+                        ?.split(",")
+                        ?.map((word: string) => word.trim())
+                        ?.filter((word: string) => word.length > 0)
+                    : coll?.metadata?.access,
+
+                tags:
+                  typeof coll?.metadata?.tags === "string"
+                    ? (coll?.metadata?.tags as any)
+                        ?.split(",")
+                        ?.map((word: string) => word.trim())
+                        ?.filter((word: string) => word.length > 0)
+                    : coll?.metadata?.tags,
+              },
+              price: Number(coll?.price) / 10 ** 18,
+              newDrop: index < 28 ? true : false,
+              currentIndex: 0,
+              chosenSize:
+                typeof coll?.metadata?.sizes === "string"
+                  ? (coll?.metadata?.sizes as any)
+                      ?.split(",")
+                      ?.map((word: string) => word.trim())
+                      ?.filter((word: string) => word.length > 0)?.[0]
+                  : coll?.metadata?.sizes?.[0],
+              chosenColor:
+                typeof coll?.metadata?.colors === "string"
+                  ? (coll?.metadata?.colors as any)
+                      ?.split(",")
+                      ?.map((word: string) => word.trim())
+                      ?.filter((word: string) => word.length > 0)?.[0]
+                  : coll?.metadata?.colors?.[0],
+              bgColor:
+                coll.printType === "3"
+                  ? "#32C5FF"
+                  : coll.printType === "2"
+                  ? "#6236FF"
+                  : coll.printType === "1"
+                  ? "#FFC800"
+                  : coll.printType === "4"
+                  ? "#29C28A"
+                  : "#B620E0",
+            };
+          }
+        )
       );
+
+      synthContext?.setRollSearch(colls);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -67,7 +158,6 @@ const useRollSearch = (dict: any) => {
         item.chosenSize === preroll.chosenSize &&
         item.chosenColor === preroll.chosenColor
     );
-
 
     let newCartItems: CartItem[] = [...(context?.cartItems || [])];
 
