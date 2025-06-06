@@ -112,7 +112,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
             dataToEncrypt: uint8arrayFromString(
               JSON.stringify({
                 ...fulfillmentDetails,
-                size: item?.chosenColor,
+                size: item?.chosenSize,
                 color: item?.chosenColor,
                 index: item?.chosenIndex,
                 origin: "1",
