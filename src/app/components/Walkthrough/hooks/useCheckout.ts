@@ -100,7 +100,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
           parameters: [":userAddress"],
           returnValueTest: {
             comparator: "=",
-            value: address?.toLowerCase() as string,
+            value: DIGITALAX_ADDRESS?.toLowerCase() as string,
           },
         },
       ] as AccessControlConditions;
