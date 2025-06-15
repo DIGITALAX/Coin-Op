@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
+import { LOCALES } from "./lib/constants";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://coinop.themanufactory.xyz"),
@@ -10,6 +11,13 @@ export const metadata: Metadata = {
       index: true,
       follow: true,
     },
+  },
+  alternates: {
+    canonical: `https://coinop.themanufactory.xyz/`,
+    languages: LOCALES.reduce((acc, item) => {
+      acc[item] = `https://coinop.themanufactory/${item}/`;
+      return acc;
+    }, {} as { [key: string]: string }),
   },
   description:
     "We know it's a lot to keep up with. How can you know if this is the blend of instant convenience and purchasing power you've been waiting for?",
@@ -30,7 +38,6 @@ export const metadata: Metadata = {
   creator: "Emma-Jane MacKinnon-Lee",
   publisher: "Emma-Jane MacKinnon-Lee",
 };
-
 
 export default function RootLayout({
   children,

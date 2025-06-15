@@ -7,6 +7,7 @@ export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
 export const COIN_OP_OPEN_ACTION: `0x${string}` =
   "0x77D6D8A6d059820AD2C6DC2e3Fba73BcB1eFddf8";
 export const VENICE_BASE_URL: string = "https://api.venice.ai/api/v1";
+export const LOCALES: string[] = ["en", "es"];
 
 export const NEGATIVE_PROMPT: string =
   "(worst quality, low quality), (bad face), (deformed eyes), (bad eyes), ((extra hands)), extra fingers, too many fingers, fused fingers, bad arm, distorted arm, extra arms, fused arms, extra legs, missing leg, disembodied leg, extra nipples, detached arm, liquid hand, inverted hand, disembodied limb, oversized head, extra body, extra navel, (hair between eyes), twins, doubles";
