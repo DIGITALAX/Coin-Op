@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `https://coinop.themanufactory.xyz/`,
     languages: LOCALES.reduce((acc, item) => {
-      acc[item] = `https://coinop.themanufactory/${item}/`;
+      acc[item] = `https://coinop.themanufactory.xyz/${item}/`;
       return acc;
     }, {} as { [key: string]: string }),
   },
