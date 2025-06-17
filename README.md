@@ -1,3 +1,3 @@
 Coin op
 
-www.coinop.themanufactory.xyz
+coinop.themanufactory.xyz
