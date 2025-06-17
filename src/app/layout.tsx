@@ -4,7 +4,7 @@ import Providers from "./providers";
 import { LOCALES } from "./lib/constants";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://coinop.themanufactory.xyz"),
+  metadataBase: new URL("https://coinop.themanufactory.xyz/"),
   title: "Coinop",
   robots: {
     googleBot: {
@@ -46,6 +46,39 @@ export default function RootLayout({
 }>) {
   return (
     <html>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Coin Op",
+              url: "https://coinop.themanufactory.xyz/",
+              founder: {
+                "@type": "Person",
+                name: "Emma-Jane MacKinnon-Lee",
+                url: "https://emmajanemackinnonlee.com/",
+                sameAs: [
+                  "https://emmajanemackinnonlee.com/",
+                  "https://syntheticfutures.xyz/",
+                  "https://web3fashion.xyz/",
+                  "https://emancipa.xyz/",
+                  "https://highlangu.com/",
+                  "https://digitalax.xyz/",
+                  "https://cc0web3fashion.com/",
+                  "https://cc0web3.com/",
+                  "https://cuntism.net/",
+                  "https://dhawu.com/",
+                  "https://twitter.com/emmajane1313",
+                  "https://medium.com/@casadeespejos",
+                  "https://www.flickr.com/photos/emmajanemackinnonlee/",
+                ],
+              },
+            }),
+          }}
+        />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>
