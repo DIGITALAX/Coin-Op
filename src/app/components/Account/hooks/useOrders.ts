@@ -143,7 +143,7 @@ const useOrders = (address: `0x${string}` | undefined) => {
 
       const details = await JSON.parse(uint8arrayToString(decryptedData));
 
-      const updatedOrders = allOrders.map(async (currentOrder) => {
+      const updatedOrders = allOrders.map((currentOrder) => {
         if (
           (currentOrder?.details as EncryptedDetails).ciphertext ===
           (order?.details as EncryptedDetails).ciphertext
@@ -156,7 +156,7 @@ const useOrders = (address: `0x${string}` | undefined) => {
         }
         return currentOrder;
       });
-      setAllOrders(await Promise.all(updatedOrders));
+      setAllOrders(updatedOrders);
     } catch (err: any) {
       console.error(err);
     }
