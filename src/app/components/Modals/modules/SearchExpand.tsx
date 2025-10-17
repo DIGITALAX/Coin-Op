@@ -143,41 +143,9 @@ const SearchExpand: FunctionComponent<{
                         ]
                       }
                     />
-                    <ColorChoice
-                      preroll={context?.searchExpand!}
-                      left={
-                        context?.prerolls.left?.indexOf(context?.searchExpand!)
-                          ? true
-                          : false
-                      }
-                      right={
-                        context?.prerolls?.right?.indexOf(
-                          context?.searchExpand!
-                        )
-                          ? true
-                          : false
-                      }
-                      search
-                    />
+                    <ColorChoice preroll={context?.searchExpand!} search />
                     <div className="relative justify-end items-end w-fit h-fit flex">
-                      <SizingChoice
-                        preroll={context?.searchExpand!}
-                        left={
-                          context?.prerolls.left?.indexOf(
-                            context?.searchExpand!
-                          )
-                            ? true
-                            : false
-                        }
-                        right={
-                          context?.prerolls.right?.indexOf(
-                            context?.searchExpand!
-                          )
-                            ? true
-                            : false
-                        }
-                        search
-                      />
+                      <SizingChoice preroll={context?.searchExpand!} search />
                     </div>
                     <div className="relative text-xl text-white font-aqua flex justify-end items-end w-fit h-fit">
                       $

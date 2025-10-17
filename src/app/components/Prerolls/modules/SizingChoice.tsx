@@ -4,8 +4,6 @@ import { SizingChoiceProps } from "../types/prerolls.types";
 
 const SizingChoice: FunctionComponent<SizingChoiceProps> = ({
   preroll,
-  left,
-  right,
   search,
 }): JSX.Element => {
   const context = useContext(ModalContext);

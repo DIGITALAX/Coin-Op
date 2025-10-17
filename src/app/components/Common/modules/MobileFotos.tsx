@@ -47,107 +47,106 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
                 </SwiperSlide>
               );
             })
-          : [
-              ...(context?.prerolls?.left || []),
-              ...(context?.prerolls?.right || []),
-            ].map((preroll: Preroll, index: number) => {
-              return (
-                <SwiperSlide
-                  key={index}
-                  className={`h-fit w-full flex flex-col gap-2 relative items-center justify-center`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    context?.setSearchExpand(preroll);
-                  }}
-                  style={{ display: "flex" }}
-                >
-                  <div
-                    className={`w-full h-full border border-white grow p-3 ${
-                      preroll.newDrop &&
-                      "bg-[radial-gradient(at_center_bottom,_#00abfe,_#00cdc2,_#86a4b3,_#00CDC2)]"
-                    }`}
+          : [...(context?.prerolls || [])].map(
+              (preroll: Preroll, index: number) => {
+                return (
+                  <SwiperSlide
+                    key={index}
+                    className={`h-fit w-full flex flex-col gap-2 relative items-center justify-center`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      context?.setSearchExpand(preroll);
+                    }}
+                    style={{ display: "flex" }}
                   >
                     <div
-                      className="relative w-full h-full flex"
-                      id="staticLoad"
+                      className={`w-full h-full border border-white grow p-3 ${
+                        preroll.newDrop &&
+                        "bg-[radial-gradient(at_center_bottom,_#00abfe,_#00cdc2,_#86a4b3,_#00CDC2)]"
+                      }`}
                     >
-                      <Image
-                        layout="fill"
-                        objectFit="cover"
-                        src={`${INFURA_GATEWAY}/ipfs/${
-                          preroll?.metadata?.images?.[0]?.split("ipfs://")[1]
-                        }`}
-                        className="w-full h-full flex grow"
-                      />
-                      {preroll.newDrop && (
-                        <div className="absolute top-2 left-2 bg-ama flex w-fit text-base h-fit px-2 py-1 text-black font-monu">
-                          🔥 new drop 🔥
-                        </div>
-                      )}
-                      <div className="absolute bottom-2 right-2 flex">
-                        <PrintTag
-                          backgroundColor={preroll.bgColor}
-                          type={printTypeToString[Number(preroll.printType)]}
-                          dict={dict}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="relative w-full h-fit flex flex-row border border-white p-1.5 items-center justify-between gap-3">
-                    <div
-                      className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
-                      onClick={() =>
-                        window.open(
-                          `https://cypher.digitalax.xyz/autograph/${preroll?.profile?.username?.localName}`
-                        )
-                      }
-                    >
-                      <div className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center">
+                      <div
+                        className="relative w-full h-full flex"
+                        id="staticLoad"
+                      >
                         <Image
-                          className="rounded-full"
-                          src={handleProfilePicture(
-                            preroll?.profile?.metadata?.picture
-                          )}
                           layout="fill"
                           objectFit="cover"
-                          draggable={false}
+                          src={`${INFURA_GATEWAY}/ipfs/${
+                            preroll?.metadata?.images?.[0]?.split("ipfs://")[1]
+                          }`}
+                          className="w-full h-full flex grow"
                         />
-                      </div>
-                      <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
-                        {preroll?.profile?.username?.localName}
+                        {preroll.newDrop && (
+                          <div className="absolute top-2 left-2 bg-ama flex w-fit text-base h-fit px-2 py-1 text-black font-monu">
+                            🔥 new drop 🔥
+                          </div>
+                        )}
+                        <div className="absolute bottom-2 right-2 flex">
+                          <PrintTag
+                            backgroundColor={preroll.bgColor}
+                            type={printTypeToString[Number(preroll.printType)]}
+                            dict={dict}
+                          />
+                        </div>
                       </div>
                     </div>
-                    {preroll?.metadata?.title && (
-                      <div className="relative w-fit h-fit flex items-center justify-center">
-                        <div
-                          className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
-                          onClick={() =>
-                            window.open(
-                              `https://cypher.digitalax.xyz/item/chromadin/${preroll?.metadata?.title
-                                ?.toLowerCase()
-                                ?.replaceAll(" ", "_")
-                                ?.replaceAll(" ", "_")
-                                ?.replaceAll("_(print)", "")}`
-                            )
-                          }
-                          title="nft art"
-                        >
+                    <div className="relative w-full h-fit flex flex-row border border-white p-1.5 items-center justify-between gap-3">
+                      <div
+                        className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
+                        onClick={() =>
+                          window.open(
+                            `https://cypher.digitalax.xyz/autograph/${preroll?.profile?.username?.localName}`
+                          )
+                        }
+                      >
+                        <div className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center">
                           <Image
                             className="rounded-full"
-                            src={
-                              "https://ik.imagekit.io/lens/media-snapshot/71fa64480da4a5be0d7904712715f2ba19bb8aad4fdfecc4616572e8ffef0101.png"
-                            }
+                            src={handleProfilePicture(
+                              preroll?.profile?.metadata?.picture
+                            )}
                             layout="fill"
                             objectFit="cover"
                             draggable={false}
                           />
                         </div>
+                        <div className="text-ama w-fit h-fit flex items-center justify-center font-monu text-xxs">
+                          {preroll?.profile?.username?.localName}
+                        </div>
                       </div>
-                    )}
-                  </div>
-                </SwiperSlide>
-              );
-            })}
+                      {preroll?.metadata?.title && (
+                        <div className="relative w-fit h-fit flex items-center justify-center">
+                          <div
+                            className="relative flex rounded-full w-5 h-5 bg-black border border-ama items-center justify-center cursor-pointer"
+                            onClick={() =>
+                              window.open(
+                                `https://cypher.digitalax.xyz/item/chromadin/${preroll?.metadata?.title
+                                  ?.toLowerCase()
+                                  ?.replaceAll(" ", "_")
+                                  ?.replaceAll(" ", "_")
+                                  ?.replaceAll("_(print)", "")}`
+                              )
+                            }
+                            title="nft art"
+                          >
+                            <Image
+                              className="rounded-full"
+                              src={
+                                "https://ik.imagekit.io/lens/media-snapshot/71fa64480da4a5be0d7904712715f2ba19bb8aad4fdfecc4616572e8ffef0101.png"
+                              }
+                              layout="fill"
+                              objectFit="cover"
+                              draggable={false}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </SwiperSlide>
+                );
+              }
+            )}
       </Swiper>
     </div>
   );
