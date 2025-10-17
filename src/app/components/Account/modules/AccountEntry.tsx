@@ -8,7 +8,8 @@ import { useContext } from "react";
 import { useAccount } from "wagmi";
 import useOrders from "../hooks/useOrders";
 import Order from "./Order";
-import CompositeOrder from "./CompositeOrder";
+import Designer from "./Designer";
+import Parent from "./Parent";
 
 export default function AccountEntry({ dict }: { dict: any }) {
   const path = usePathname();
@@ -22,10 +23,9 @@ export default function AccountEntry({ dict }: { dict: any }) {
     orderOpen,
     setOrderOpen,
     allOrders,
-    compositeOrders,
   } = useOrders(address);
   return (
-    <div className="relative w-full xl:w-[calc(100vw-35rem)] h-full flex flex-col gap-5">
+    <div className="relative w-full h-full flex flex-col gap-5">
       <Head>
         <title>Coin Op | Account</title>
         <link rel="icon" href="/favicon.ico" />
@@ -35,6 +35,8 @@ export default function AccountEntry({ dict }: { dict: any }) {
         />
       </Head>
       <div className="relative w-full h-full flex flex-col items-center gap-16 overflow-y-scroll justify-start overflow-x-hidden">
+        <Designer dict={dict} />
+        <Parent dict={dict} />
         <div className="relative w-full h-full flex flex-col text-white gap-4">
           <div className="font-monu text-2xl text-left w-fit h-fit flex justify-start items-center">
             {dict?.Account?.all}
@@ -70,40 +72,22 @@ export default function AccountEntry({ dict }: { dict: any }) {
               {dict?.Account?.shop}
             </div>
           ) : (
-            <>
-              {allOrders?.map((order, index: number) => {
-                return (
-                  <Order
-                    key={index}
-                    order={order}
-                    orderOpen={orderOpen}
-                    setOrderOpen={setOrderOpen}
-                    index={index}
-                    handleDecryptFulfillment={handleDecryptFulfillment}
-                    decryptLoading={decryptLoading}
-                    chainId={chainId}
-                    connected={isConnected}
-                    dict={dict}
-                  />
-                );
-              })}
-              {compositeOrders?.map((order, index: number) => {
-                return (
-                  <CompositeOrder
-                    key={index + allOrders?.length}
-                    order={order}
-                    orderOpen={orderOpen}
-                    setOrderOpen={setOrderOpen}
-                    index={index + allOrders?.length}
-                    handleDecryptFulfillment={handleDecryptFulfillment}
-                    decryptLoading={decryptLoading}
-                    chainId={chainId}
-                    connected={isConnected}
-                    dict={dict}
-                  />
-                );
-              })}
-            </>
+            allOrders?.map((order, index: number) => {
+              return (
+                <Order
+                  key={index}
+                  order={order}
+                  orderOpen={orderOpen}
+                  setOrderOpen={setOrderOpen}
+                  index={index}
+                  handleDecryptFulfillment={handleDecryptFulfillment}
+                  decryptLoading={decryptLoading}
+                  chainId={chainId}
+                  connected={isConnected}
+                  dict={dict}
+                />
+              );
+            })
           )}
         </div>
         <div className="relative w-full h-fit flex flex-col text-white gap-4 mt-auto">

@@ -14,7 +14,7 @@ export default function FooterEntry({ dict }: { dict: any }) {
       <div className="flex flex-col items-center justify-center preG:items-end preG:justify-end relative preG:absolute preG:right-3 preG:bottom-3 w-full h-fit preG:h-auto preG:w-auto">
         <div
           className="relative flex w-5 h-5 justify-center items-start"
-          title="all in the public domain"
+          title={dict?.Common?.pubdomain}
         >
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmbdBp58hLPngQ8nmQTtYDfQbUBoT3RowBKu2nrJ67Xne3`}

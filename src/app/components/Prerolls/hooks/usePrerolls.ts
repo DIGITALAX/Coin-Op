@@ -6,8 +6,7 @@ import { fetchPost } from "@lens-protocol/client/actions";
 
 const usePrerolls = () => {
   const context = useContext(ModalContext);
-  const [imagesLoadingLeft, setImagesLoadingLeft] = useState<boolean[]>([]);
-  const [imagesLoadingRight, setImagesLoadingRight] = useState<boolean[]>([]);
+  const [imagesLoading, setImagesLoading] = useState<boolean[]>([]);
 
   const getPrerolls = async () => {
     context?.setPrerollsLoading(true);
@@ -106,10 +105,7 @@ const usePrerolls = () => {
       );
 
       const sorted = colls?.sort(() => Math.random() - 0.5);
-      context?.setPrerolls({
-        left: sorted?.slice(0, Math.ceil(sorted.length / 2)),
-        right: sorted?.slice(Math.ceil(sorted.length / 2)),
-      });
+      context?.setPrerolls(sorted?.slice(0, Math.ceil(sorted.length / 2)));
     } catch (err: any) {
       console.error(err.message);
     }
@@ -117,40 +113,22 @@ const usePrerolls = () => {
   };
 
   useEffect(() => {
-    if (
-      Number(context?.prerolls.left?.length) < 1 &&
-      Number(context?.prerolls.right?.length) < 1 &&
-      context?.clienteLens
-    ) {
+    if (Number(context?.prerolls?.length) < 1 && context?.clienteLens) {
       getPrerolls();
     }
   }, [context?.clienteLens]);
 
   useEffect(() => {
-    if (
-      Number(context?.prerolls.left?.length) > 0 &&
-      Number(context?.prerolls.right?.length) > 0
-    ) {
-      setImagesLoadingLeft(
-        Array.from(
-          { length: Number(context?.prerolls.left?.length) },
-          () => false
-        )
-      );
-      setImagesLoadingRight(
-        Array.from(
-          { length: Number(context?.prerolls.right?.length) },
-          () => false
-        )
+    if (Number(context?.prerolls?.length) > 0) {
+      setImagesLoading(
+        Array.from({ length: Number(context?.prerolls?.length) }, () => false)
       );
     }
   }, [context?.prerolls]);
 
   return {
-    imagesLoadingLeft,
-    imagesLoadingRight,
-    setImagesLoadingLeft,
-    setImagesLoadingRight,
+    imagesLoading,
+    setImagesLoading,
   };
 };
 

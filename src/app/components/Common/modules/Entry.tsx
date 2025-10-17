@@ -1,22 +1,29 @@
 "use client";
 
-import Composite from "../../Walkthrough/modules/Composite/Composite";
-import Format from "../../Walkthrough/modules/Format/Format";
-import Layer from "../../Walkthrough/modules/Layer/Layer";
+import { INFURA_GATEWAY } from "@/app/lib/constants";
+import Prerolls from "../../Prerolls/modules/Prerolls";
 import Purchase from "../../Walkthrough/modules/Purchase/Purchase";
-import Synth from "../../Walkthrough/modules/Synth/Synth";
-import TopBanner from "./TopBanner";
+import AppMarket from "./AppMarket";
+import Walkthrough from "./Walkthrough";
+import Image from "next/image";
 
 export default function Entry({ dict }: { dict: any }) {
   return (
-    <div className="relative w-full xl:w-[calc(100vw-35rem)] h-full flex flex-col gap-5">
-      <TopBanner dict={dict} />
-      <div className="relative w-full h-full flex flex-col overflow-y-scroll gap-20 justify-start items-center overflow-x-hidden">
-        <Format dict={dict} />
-        <Layer dict={dict} />
-        <Synth dict={dict} />
-        <Composite dict={dict} />
+    <div className="relative overflow-hidden w-full flex flex-col xl:grid xl:grid-cols-[auto_1fr] px-2 preG:px-6 md:gap-28 gap-10 items-center xl:items-start justify-start pb-[32rem]">
+      <div className="absolute flex w-full h-[60rem] bottom-0 left-0">
+        <Image
+          src={`${INFURA_GATEWAY}/ipfs/QmUczkYYGyeMTKdRNmp8AX4AQc8Qvw6hR8nVnXKSfAuFdj`}
+          draggable={false}
+          layout="fill"
+          objectFit="cover"
+          alt="retro"
+        />
+      </div>
+      <Prerolls dict={dict} />
+      <div className="relative w-full h-full flex flex-col gap-5">
+        <AppMarket dict={dict} />
         <Purchase dict={dict} />
+        <Walkthrough dict={dict} />
       </div>
     </div>
   );

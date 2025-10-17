@@ -8,15 +8,12 @@ import { getOrders } from "../../../../../graphql/queries/getOrders";
 import {
   EncryptedDetails,
   Order,
-  CompositeOrder,
 } from "../types/account.types";
 import { LIT_NETWORK } from "@lit-protocol/constants";
 import { INFURA_GATEWAY, orderStatus } from "@/app/lib/constants";
-import { getCompositeOrders } from "../../../../../graphql/queries/getCompositeOrders";
 
 const useOrders = (address: `0x${string}` | undefined) => {
   const [allOrders, setAllOrders] = useState<Order[]>([]);
-  const [compositeOrders, setCompositeOrders] = useState<CompositeOrder[]>([]);
   const [ordersLoading, setOrdersLoading] = useState<boolean>(false);
   const [decryptLoading, setDecryptLoading] = useState<boolean[]>([]);
   const [orderOpen, setOrderOpen] = useState<boolean[]>([]);
@@ -29,8 +26,7 @@ const useOrders = (address: `0x${string}` | undefined) => {
     setOrdersLoading(true);
     try {
       const res = await getOrders(address as string);
-      const compositeRes = await getCompositeOrders(address as string);
-      if (!res || res?.data?.orderCreateds?.length < 1 || !compositeRes) {
+      if (!res || res?.data?.orderCreateds?.length < 1 ) {
         setOrdersLoading(false);
         return;
       }
@@ -60,44 +56,10 @@ const useOrders = (address: `0x${string}` | undefined) => {
         )
       );
 
-      const compositeCleaned = await Promise.all(
-        (compositeRes?.data?.orderCreateds || [])?.map(
-          async (item: {
-            totalPrice: string;
-            status: string;
-            details: string;
-          }) => {
-            if (item?.details) {
-              const data = await fetch(
-                `${INFURA_GATEWAY}/ipfs/${item?.details?.split("ipfs://")?.[1]}`
-              );
-              item.details = await data?.json();
-            }
-
-            return {
-              ...item,
-              totalPrice: String(Number(item?.totalPrice) / 10 ** 18),
-              details: item?.details,
-              status: orderStatus[Number(item?.status)],
-              decrypted: false,
-            };
-          }
-        )
-      );
-
       setAllOrders(ordersCleaned);
-      setCompositeOrders(compositeCleaned);
-      setOrderOpen(
-        Array.from(
-          { length: ordersCleaned.length + compositeCleaned?.length },
-          () => false
-        )
-      );
+      setOrderOpen(Array.from({ length: ordersCleaned.length }, () => false));
       setDecryptLoading(
-        Array.from(
-          { length: ordersCleaned.length + compositeCleaned?.length },
-          () => false
-        )
+        Array.from({ length: ordersCleaned.length }, () => false)
       );
     } catch (err: any) {
       console.error(err.message);
@@ -106,7 +68,7 @@ const useOrders = (address: `0x${string}` | undefined) => {
   };
 
   const handleDecryptFulfillment = async (
-    order: Order | CompositeOrder
+    order: Order 
   ): Promise<void> => {
     if (order?.decrypted || !address) {
       return;
@@ -194,7 +156,6 @@ const useOrders = (address: `0x${string}` | undefined) => {
     orderOpen,
     setOrderOpen,
     allOrders,
-    compositeOrders,
   };
 };
 

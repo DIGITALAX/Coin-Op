@@ -38,6 +38,7 @@ export const config = createConfig(
     transports: {
       [chains.mainnet.id]: http("https://rpc.lens.xyz"),
     },
+    connectors: [],
     ssr: true,
   })
 );
@@ -157,6 +158,8 @@ export const ModalContext = createContext<
       cartItems: CartItem[];
       setCartItems: (e: SetStateAction<CartItem[]>) => void;
       modalOpen: string | undefined;
+      modalSuccess: string | undefined;
+      setModalSuccess: (e: SetStateAction<string | undefined>) => void;
       setModalOpen: (e: SetStateAction<string | undefined>) => void;
       cartAddAnim: string | undefined;
       setCartAddAnim: (e: SetStateAction<string | undefined>) => void;
@@ -178,16 +181,8 @@ export const ModalContext = createContext<
       clienteAlmacenamiento: StorageClient | undefined;
       verImagen: string | undefined;
       setVerImagen: (e: SetStateAction<string | undefined>) => void;
-      prerolls: {
-        left: Preroll[];
-        right: Preroll[];
-      };
-      setPrerolls: (
-        e: SetStateAction<{
-          left: Preroll[];
-          right: Preroll[];
-        }>
-      ) => void;
+      prerolls: Preroll[];
+      setPrerolls: (e: SetStateAction<Preroll[]>) => void;
     }
   | undefined
 >(undefined);
@@ -205,18 +200,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const [apiKey, setApiKey] = useState<string | undefined>();
   const [oracleData, setOracleData] = useState<OracleData[]>([]);
   const [crearCuenta, setCrearCuenta] = useState<boolean>(false);
-  const [prerolls, setPrerolls] = useState<{
-    left: Preroll[];
-    right: Preroll[];
-  }>({
-    left: [],
-    right: [],
-  });
+  const [prerolls, setPrerolls] = useState<Preroll[]>([]);
   const [verImagen, setVerImagen] = useState<string | undefined>();
   const clienteAlmacenamiento = StorageClient.create();
   const [lensConectado, setLensConectado] = useState<LensConnected>();
   const [cartAddAnim, setCartAddAnim] = useState<string | undefined>();
   const [modalOpen, setModalOpen] = useState<string | undefined>();
+  const [modalSuccess, setModalSuccess] = useState<string | undefined>();
   const [signless, setSignless] = useState<boolean>(false);
   const [prerollsLoading, setPrerollsLoading] = useState<boolean>(false);
   const [prerollAnim, setPrerollAnim] = useState<boolean>(false);
@@ -332,6 +322,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                   openApiKey,
                   setOpenAPIKey,
                   apiKey,
+                  modalSuccess,
+                  setModalSuccess,
                   setApiKey,
                   fullScreenVideo,
                   setFullScreenVideo,

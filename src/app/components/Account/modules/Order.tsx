@@ -83,7 +83,7 @@ const Order: FunctionComponent<OrderProps> = ({
                   </div>
                   <Link
                     className="relative w-fit h-fit flex items-center justify-center font-sat cursor-pointer"
-                    href={`https://polygonscan.com/tx/${order.transactionHash}`}
+                    href={`https://explorer.lens.xyz/tx/${order.transactionHash}`}
                     target="_blank"
                     rel={"noreferrer"}
                   >

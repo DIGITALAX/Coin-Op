@@ -1,4 +1,11 @@
-import { Account, BigDecimal, DateTime, EvmAddress, Post, SessionClient } from "@lens-protocol/client";
+import {
+  Account,
+  BigDecimal,
+  DateTime,
+  EvmAddress,
+  Post,
+  SessionClient,
+} from "@lens-protocol/client";
 import { Preroll } from "../../Prerolls/types/prerolls.types";
 
 export interface LensConnected {
@@ -62,4 +69,16 @@ export interface SimpleCollect {
       }
     | null
     | undefined;
+}
+
+export type DownloadProps = {
+  dict: any;
+  position: {
+    x: number;
+    y: number;
+  };
+};
+
+export type AppMarketProps = {
+  dict: any
 }

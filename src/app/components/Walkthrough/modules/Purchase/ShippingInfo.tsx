@@ -15,7 +15,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
   const path = usePathname();
   return (
     <div
-      className={`relative w-3/4 h-fit flex flex-col items-start justify-start gap-3 ${
+      className={`relative w-full h-fit flex flex-col items-start justify-start gap-3 ${
         path?.includes("/en/") ? "font-mana" : "font-bit"
       }`}
     >

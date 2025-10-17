@@ -23,7 +23,7 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   );
   return (
     <div
-      className={`relative w-3/4 h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex  ${
+      className={`relative w-full h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex  ${
         !lensCargando && !cryptoCheckoutLoading
           ? "cursor-pointer active:scale-95"
           : "opacity-70"

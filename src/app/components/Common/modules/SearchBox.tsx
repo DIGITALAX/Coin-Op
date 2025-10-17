@@ -17,7 +17,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
   const router = useRouter();
   const context = useContext(ModalContext);
   return (
-    <div className="relative w-40 h-40 rounded-md border border-white/70 p-3">
+    <div className="relative w-40 h-40 bg-agua rounded-md border border-white/70 p-3">
       <div className="relative w-full h-full object-cover">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${

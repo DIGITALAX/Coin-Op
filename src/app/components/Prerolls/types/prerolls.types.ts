@@ -68,15 +68,11 @@ export type PrintTagProps = {
 
 export type ColorChoiceProps = {
   preroll: Preroll;
-  left?: boolean;
-  right?: boolean;
   search?: boolean;
 };
 
 export type SizingChoiceProps = {
   preroll: Preroll;
-  left?: boolean;
-  right?: boolean;
   search?: boolean;
 };
 

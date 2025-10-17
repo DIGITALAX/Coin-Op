@@ -28,13 +28,44 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const userAgent = request.headers.get("user-agent") || "";
 
+  if (pathname.startsWith("/api")) {
+    const origin = request.headers.get("origin");
+    
+    // Allow specific production origins and any localhost
+    const allowedOrigins = [
+      "https://thedial.infura-ipfs.io",
+      "https://ik.imagekit.io", 
+      "https://themanufactory.xyz",
+      "https://coinop.themanufactory.xyz"
+    ];
+    
+    // Check if origin is localhost with any port
+    const isLocalhost = origin && /^http:\/\/localhost:\d+$/.test(origin);
+    const isAllowed = origin && (allowedOrigins.includes(origin) || isLocalhost);
+    
+    const response = NextResponse.next();
+    
+    if (isAllowed) {
+      response.headers.set("Access-Control-Allow-Origin", origin);
+    }
+    
+    response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With, Accept");
+    response.headers.set("Access-Control-Max-Age", "86400");
+    
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 200, headers: response.headers });
+    }
+    
+    return response;
+  }
+
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/images") ||
     pathname.startsWith("/fonts") ||
     pathname.startsWith("/videos") ||
     pathname.startsWith("/favicon.ico") ||
-    pathname.startsWith("/api") ||
     pathname.startsWith("/opengraph_image.png") ||
     pathname.startsWith("/sitemap.xml") ||
     pathname.startsWith("/BingSiteAuth.xml")
@@ -61,7 +92,7 @@ export function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.redirect(
-    new URL(`/${locale}${pathname}`, request.url)
+    new URL(`/${locale}${pathname}${request.nextUrl.search}`, request.url)
   );
 
   response.cookies.set("NEXT_LOCALE", locale, { path: "/", sameSite: "lax" });

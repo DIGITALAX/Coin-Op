@@ -16,6 +16,7 @@ const useRollSearch = (dict: any) => {
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
 
   const handleRollSearch = async () => {
+    if (!prompt || prompt.trim() == "") return;
     setSearchLoading(true);
     try {
       const searchItems = await getPrerollSearch(buildTextQuery(prompt!)!);

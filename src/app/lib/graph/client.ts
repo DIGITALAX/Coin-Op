@@ -17,3 +17,12 @@ export const graphPrintClient = new ApolloClient({
   link: httpLinkPrint,
   cache: new InMemoryCache(),
 });
+
+const httpLinkFactory = new HttpLink({
+  uri: `https://api.studio.thegraph.com/query/109132/fractional-garment-ownership/version/latest`,
+});
+
+export const graphFactoryClient = new ApolloClient({
+  link: httpLinkFactory,
+  cache: new InMemoryCache(),
+});

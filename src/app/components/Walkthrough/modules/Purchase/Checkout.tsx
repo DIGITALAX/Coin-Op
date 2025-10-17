@@ -26,10 +26,10 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   const context = useContext(ModalContext);
   const path = usePathname();
   return (
-    <div className="relative w-full synth:w-3/4 h-full flex overflow-y-scroll">
+    <div className="relative w-full h-full flex overflow-y-scroll">
       <div className="relative w-full h-fit flex flex-col gap-4 items-center justify-center">
         <div
-          className={`relative w-3/4 text-center h-fit flex items-center justify-center break-words  text-white text-xs whitespace-pre-line ${
+          className={`relative w-full text-center h-fit flex items-center justify-center break-words  text-white text-xs whitespace-pre-line ${
             path?.includes("/es/") ? "font-bit" : "font-mana"
           }`}
         >
@@ -42,7 +42,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           checkoutCurrency={checkoutCurrency}
         />
         <div
-          className={`relative justify-start items-start w-3/4  h-fit flex flex-row  text-ama text-base gap-3 ${
+          className={`relative justify-start items-start w-full h-fit flex flex-row  text-ama text-base gap-3 ${
             path?.includes("/es/") ? "font-bit" : "font-mana"
           }`}
         >
@@ -81,7 +81,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           setFulfillmentDetails={setFulfillmentDetails}
           cryptoCheckoutLoading={cryptoCheckoutLoading}
         />
-        <div className="relative w-3/4 justify-start items-center flex flex-row gap-3">
+        <div className="relative w-full justify-start items-center flex flex-row gap-3">
           {ASSETS?.map((item, index: number) => {
             return (
               <div
@@ -106,7 +106,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
           })}
         </div>
         <div
-          className={`relative justify-start items-start w-3/4  h-fit flex flex-row text-sol text-xs gap-3 ${
+          className={`relative justify-start items-start w-full h-fit flex flex-row text-sol text-xs gap-3 ${
             path?.includes("/en/") ? "font-mana" : "font-bit"
           }`}
         >

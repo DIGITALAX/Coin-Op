@@ -13,6 +13,7 @@ import CrearCuenta from "./CrearCuenta";
 import Who from "./Who";
 import QuoteBox from "./QuoteBox";
 import PostCollect from "./PostCollect";
+import Success from "./Success";
 import { Indexar } from "../../Common/types/common.types";
 
 const ModalsEntry = ({ dict }: { dict: any }) => {
@@ -27,6 +28,7 @@ const ModalsEntry = ({ dict }: { dict: any }) => {
       {context?.indexar !== Indexar.Inactivo && <Index />}
       {context?.openApiKey && <ApiAdd dict={dict} />}
       {context?.searchExpand && <SearchExpand dict={dict} />}
+      {context?.modalSuccess && <Success dict={dict} />}
       {context?.modalOpen && <General dict={dict} />}
       {context?.verImagen && <ImageLarge />}
       {context?.crearCuenta && <CrearCuenta dict={dict} />}

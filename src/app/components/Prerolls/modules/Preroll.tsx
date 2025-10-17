@@ -82,41 +82,20 @@ const Preroll: FunctionComponent<PrerollProps> = ({
                       newStates[index] = true;
                       return newStates;
                     }) as any);
-                    const updated = {
-                      left: left
-                        ? context?.prerolls.left.map((obj) =>
-                            obj.metadata.images?.[0] ===
-                            preroll?.metadata?.images?.[0]
-                              ? {
-                                  ...obj,
-                                  currentIndex:
-                                    preroll.currentIndex > 0
-                                      ? preroll.currentIndex - 1
-                                      : preroll?.metadata?.images?.length - 1,
-                                }
-                              : obj
-                          )
-                        : context?.prerolls.left,
-                      right: right
-                        ? context?.prerolls.right.map((obj) =>
-                            obj.metadata.images?.[0] ===
-                            preroll?.metadata?.images?.[0]
-                              ? {
-                                  ...obj,
-                                  currentIndex:
-                                    preroll?.currentIndex > 0
-                                      ? preroll?.currentIndex - 1
-                                      : preroll?.metadata?.images?.length - 1,
-                                }
-                              : obj
-                          )
-                        : context?.prerolls.right,
-                    };
+                    const updated = context?.prerolls.map((obj) =>
+                      obj.metadata.images?.[0] ===
+                      preroll?.metadata?.images?.[0]
+                        ? {
+                            ...obj,
+                            currentIndex:
+                              preroll?.currentIndex > 0
+                                ? preroll?.currentIndex - 1
+                                : preroll?.metadata?.images?.length - 1,
+                          }
+                        : obj
+                    );
 
-                    context?.setPrerolls({
-                      left: updated.left || [],
-                      right: updated.right || [],
-                    });
+                    context?.setPrerolls(updated || []);
                   }}
                 >
                   <Image
@@ -134,43 +113,21 @@ const Preroll: FunctionComponent<PrerollProps> = ({
                       newStates[index] = true;
                       return newStates;
                     }) as any);
-                    const updated = {
-                      left: left
-                        ? context?.prerolls.left.map((obj) =>
-                            obj.metadata.images?.[0] ===
-                            preroll?.metadata?.images?.[0]
-                              ? {
-                                  ...obj,
-                                  currentIndex:
-                                    preroll.currentIndex <
-                                    preroll?.metadata?.images?.length - 1
-                                      ? preroll.currentIndex + 1
-                                      : 0,
-                                }
-                              : obj
-                          )
-                        : context?.prerolls.left,
-                      right: right
-                        ? context?.prerolls.right.map((obj) =>
-                            obj.metadata.images?.[0] ===
-                            preroll?.metadata?.images?.[0]
-                              ? {
-                                  ...obj,
-                                  currentIndex:
-                                    preroll.currentIndex <
-                                    preroll?.metadata?.images?.length - 1
-                                      ? preroll.currentIndex + 1
-                                      : 0,
-                                }
-                              : obj
-                          )
-                        : context?.prerolls.right,
-                    };
+                    const updated = context?.prerolls.map((obj) =>
+                      obj.metadata.images?.[0] ===
+                      preroll?.metadata?.images?.[0]
+                        ? {
+                            ...obj,
+                            currentIndex:
+                              preroll.currentIndex <
+                              preroll?.metadata?.images?.length - 1
+                                ? preroll.currentIndex + 1
+                                : 0,
+                          }
+                        : obj
+                    );
 
-                    context?.setPrerolls({
-                      left: updated.left || [],
-                      right: updated.right || [],
-                    });
+                    context?.setPrerolls(updated || []);
                   }}
                 >
                   <Image

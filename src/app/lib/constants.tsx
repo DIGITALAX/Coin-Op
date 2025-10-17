@@ -1,4 +1,5 @@
 import { Status } from "../components/Account/types/account.types";
+import { Fulfiller } from "../components/Sell/types/sell.types";
 export const GROVE_GATEWAY: string = "https://api.grove.storage/";
 export const INFURA_GATEWAY_INTERNAL: string =
   "https://themanufactory.xyz/api/infura/";
@@ -8,6 +9,25 @@ export const COIN_OP_OPEN_ACTION: `0x${string}` =
   "0x77D6D8A6d059820AD2C6DC2e3Fba73BcB1eFddf8";
 export const VENICE_BASE_URL: string = "https://api.venice.ai/api/v1";
 export const LOCALES: string[] = ["en", "es"];
+
+export const COIN_OP_PARENT: `0x${string}` =
+  "0xd07a1a3dcfe987ac6a8b0f698a2f8f84d6154946";
+export const COIN_OP_DESIGNER: `0x${string}` =
+  "0xe22cc87e60470bb2babdfcbe76e2d550373bd3dc";
+export const COIN_OP_MARKET: `0x${string}` =
+  "0x226aab6c5cadf13750ced9a2d2e07fdaadf53541";
+export const INFRA_ID: string =
+  "0x0000000000000000000000000000000000000000000000000000000000000004";
+
+export const FULFILLERS: Fulfiller[] = [
+  {
+    title: "The Manufactory",
+    uri: "ipfs://QmfCoKxKmrJw1fAgwqWh6a3MmJ1h8cv4jh2mQx15CrgyT5",
+    base: 1,
+    vig: 5,
+    address: "0xdD35935C12E3748704C96492E5565d34daE73De7",
+  },
+];
 
 export const NEGATIVE_PROMPT: string =
   "(worst quality, low quality), (bad face), (deformed eyes), (bad eyes), ((extra hands)), extra fingers, too many fingers, fused fingers, bad arm, distorted arm, extra arms, fused arms, extra legs, missing leg, disembodied leg, extra nipples, detached arm, liquid hand, inverted hand, disembodied limb, oversized head, extra body, extra navel, (hair between eyes), twins, doubles";
@@ -167,5 +187,52 @@ export const ASSETS: {
       chainId: 232,
     },
     cover: "QmZRqza7VxetyQh2JWvxC6PsnXVUPVV7vU3RS1XUhuqmNA",
+  },
+];
+
+export const WALKTHROUGH_IMAGES: {
+  image: string;
+  title: string;
+  content: string;
+}[] = [
+  {
+    image: "QmdsEWxXPdTva7JL29JQFqFhxx77BHiYRMrgVnDQ22G17c",
+    title: "Format",
+    content: "format_content",
+  },
+  {
+    image: "QmRzn9byKrUeS6c7fCKTJ47RXVF2kAG6gDizHwJyck8yz2",
+    title: "Layer",
+    content: "layer_content",
+  },
+  {
+    image: "QmSHJdszBSPVmzi9aNf8ArUhMjH5g7YL1Ph6MJvmhayQg7",
+    title: "Synth",
+    content: "synth_content",
+  },
+  {
+    image: "QmcyWnosoaiF7bneC2fLCro6MRB7DBvsFBg5oasrso4pUT",
+    title: "Composite",
+    content: "composite_content",
+  },
+  {
+    image: "QmeDNvxmeNX9sP1CJJFeyMH8fSLvVZBNYsTJG5hfLy7zqc",
+    title: "Pattern",
+    content: "pattern_content",
+  },
+  {
+    image: "QmU6hHG4spLviz5xvV2q7TCZiaqwtNvcgu8wiHTpq5d5QH",
+    title: "Blender",
+    content: "blender_content",
+  },
+  {
+    image: "QmRQgekXK1Dy8hoYuyM61kroxLpaqzJ3AuGAE97KDMyE4j",
+    title: "Fulfill",
+    content: "fulfill_content",
+  },
+  {
+    image: "QmVvYdhfSWScCTRRwbxf2Xi6KGHKt33m6FtsKGe7QjKgpP",
+    title: "Sell",
+    content: "sell_content",
   },
 ];

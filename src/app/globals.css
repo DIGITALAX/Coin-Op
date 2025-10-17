@@ -12,6 +12,12 @@
 }
 
 @font-face {
+  font-family: "Countdown";
+  font-weight: 400;
+  src: url("/fonts/Countdown.ttf");
+}
+
+@font-face {
   font-family: "Vcr";
   src: url("/fonts/Vcr.ttf");
 }
@@ -24,6 +30,16 @@
 @font-face {
   font-family: "Aquatico Regular";
   src: url("/fonts/AquaticoRegular.otf");
+}
+
+@font-face {
+  font-family: "Chicago Kare";
+  src: url("/fonts/ChicagoKare.otf");
+}
+
+@font-face {
+  font-family: "Awkward";
+  src: url("/fonts/Awkward.ttf");
 }
 
 @font-face {
@@ -59,8 +75,23 @@
   --font-mana: "Manaspace";
   --font-vcr: "Vcr";
   --font-bit: "Bitblox";
+  --font-count: "Countdown";
+  --font-awk: "Awkward";
+  --font-chic: "Chicago Kare";
 
   --color-azul: #2a36f6;
+  --color-nube: #252434;
+  --color-agua: #66c89b;
+  --color-rillo: #fece2c;
+  --color-morado: #7753f3;
+  --color-arbol: #278668;
+  --color-rosa: #f17de2;
+  --color-apagado: #ccc8bc;
+  --color-mar: #01c1cb;
+  --color-coral: #facc52;
+  --color-pez: #07addd;
+  --color-corazon: #e63c89;
+  --color-dorado: #fb887e;
   --color-eme: #6dd400;
   --color-smo: #32c5ff;
   --color-gris: #6d7278;
@@ -95,7 +126,7 @@
   --h-150: 70rem;
   --h-160: 95rem;
 
-  --bg-cross: url("https://thedial.infura-ipfs.io/ipfs/QmPKU1ck9PLyFchFpe2vzJh3eyxSYij28ixTdRzaHi4E1p");
+  --bg-cross: url("https://thedial.infura-ipfs.io/ipfs/QmXZSyTXMxttm9jxioNH3k5L9uWpnbFTrTUK85muBen21F");
 }
 
 /* === CUSTOM UTILITIES === */
@@ -113,8 +144,17 @@
   .font-monu {
     font-family: var(--font-monu);
   }
+  .font-chic {
+    font-family: var(--font-chic);
+  }
+  .font-awk {
+    font-family: var(--font-awk);
+  }
   .font-aqua {
     font-family: var(--font-aqua);
+  }
+  .font-count {
+    font-family: var(--font-count);
   }
   .font-sat {
     font-family: var(--font-sat);

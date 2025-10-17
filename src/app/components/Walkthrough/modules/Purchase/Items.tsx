@@ -18,7 +18,7 @@ const Items: FunctionComponent<ItemsProps> = ({
   const path = usePathname();
 
   return (
-    <div className="relative w-3/4 h-[12rem] flex">
+    <div className="relative w-full h-[12rem] flex">
       <div className="relative border border-ligero rounded-md w-full h-full flex flex-col gap-3 p-2">
         <div className="relative w-full h-full items-start justify-start flex overflow-scroll">
           <div className="flex flex-col gap-2 items-start justify-start w-fit preG:w-full h-fit">

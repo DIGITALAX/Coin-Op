@@ -16,7 +16,7 @@ const MobileFotos: FunctionComponent<MobileFotosProps> = ({
 }): JSX.Element => {
   const context = useContext(ModalContext);
   return (
-    <div className="relative w-full h-[95vh] items-center justify-center flex sm:hidden flex-col gap-3">
+    <div className="relative w-full h-[95vh] items-center justify-center flex sm:hidden flex-col gap-3 pb-20">
       <Link
         className="relative flex justify-start w-fit h-fit items-center whitespace-nowrap break-words cursor-pointer text-white font-mega"
         href={"/"}
