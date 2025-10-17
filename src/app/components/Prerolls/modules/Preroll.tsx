@@ -152,9 +152,9 @@ const Preroll: FunctionComponent<PrerollProps> = ({
             backgroundColor={preroll.bgColor}
             type={printTypeToString[Number(preroll.printType)]}
           />
-          <ColorChoice preroll={preroll} left={left} right={right} />
+          <ColorChoice preroll={preroll} />
         </div>
-        <SizingChoice preroll={preroll} left={left} right={right} />
+        <SizingChoice preroll={preroll} />
         <div className="relative flex flex-row gap-2 w-full h-fit items-center">
           <div className="relative text-xl text-white font-aqua flex justify-start items-start w-fit h-fit">
             ${Number(preroll?.price)}
