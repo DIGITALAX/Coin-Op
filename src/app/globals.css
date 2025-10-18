@@ -608,3 +608,11 @@ textarea::-webkit-outer-spin-button:focus {
   display: flex;
   justify-content: center;
 }
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
