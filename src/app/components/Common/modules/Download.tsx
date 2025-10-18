@@ -1,9 +1,9 @@
 import { FunctionComponent, JSX } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { DownloadProps } from "../types/common.types";
-import { CSS } from "@dnd-kit/utilities";
 import Image from "next/image";
 import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { FaLinux, FaWindows, FaApple } from "react-icons/fa";
 
 const Download: FunctionComponent<DownloadProps> = ({
   dict,
@@ -23,7 +23,7 @@ const Download: FunctionComponent<DownloadProps> = ({
       }}
       {...listeners}
       {...attributes}
-      className="absolute w-60 h-48 flex items-start justify-start font-chic flex-col border-2 border-white bg-black cursor-grab text-agua"
+      className="absolute w-60 h-52 flex items-start justify-start font-chic flex-col border-2 border-white bg-black cursor-grab text-agua"
     >
       <div className="relative w-full h-fit flex flex-row justify-between  gap-2">
         <div className="relative w-full h-full flex">
@@ -49,17 +49,33 @@ const Download: FunctionComponent<DownloadProps> = ({
         </div>
       </div>
       <div className="relative w-full h-1 bg-white"></div>
-      <div
-        className="relative w-full h-full p-2 text-center uppercase flex items-center justify-center flex-col gap-2 cursor-pointer"
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
+      <div className="relative w-full h-full p-2 text-center uppercase flex items-center justify-center flex-col gap-2">
         <div className="relative w-fit h-fit flex text-sm">
           {dict?.Common?.eth}
         </div>
         <div className="relative w-fit font-bit h-fit flex text-white text-lg">
           {dict?.Common?.download}
+        </div>
+
+        <div className="relative w-full flex flex-row gap-6 justify-between items-center">
+          <a
+            href="https://github.com/DIGITALAX/Coin-Op-App/releases/download/v0.1.0/coinop_0.1.0_universal.dmg"
+            className="cursor-pointer"
+          >
+            <FaApple color="white" size={20} />
+          </a>
+          <a
+            href="https://github.com/DIGITALAX/Coin-Op-App/releases/download/v0.1.0/coinop_0.1.0_x64-setup.exe"
+            className="cursor-pointer"
+          >
+            <FaWindows color="white" size={20} />
+          </a>
+          <a
+            href="https://github.com/DIGITALAX/Coin-Op-App/releases/download/v0.1.0/coinop_0.1.0_amd64.AppImage"
+            className="cursor-pointer"
+          >
+            <FaLinux color="white" size={20} />
+          </a>
         </div>
       </div>
     </div>
