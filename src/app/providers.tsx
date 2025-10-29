@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Context, Post, PublicClient, mainnet } from "@lens-protocol/client";
+import { Context, Post, PublicClient, mainnet, testnet } from "@lens-protocol/client";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { StorageClient } from "@lens-chain/storage-client";
 import { chains } from "@lens-chain/sdk/viem";
@@ -21,11 +21,13 @@ import {
   SimpleCollect,
 } from "./components/Common/types/common.types";
 import { CartItem, Preroll } from "./components/Prerolls/types/prerolls.types";
+import { CartItemMarket } from "./components/AppMarket/types/appmarket.types";
 import {
   CurrentWalkthrough,
   OracleData,
   SynthConfig,
 } from "./components/Walkthrough/types/walkthrough.types";
+import { Parent } from "./components/AppMarket/types/appmarket.types";
 
 export const config = createConfig(
   getDefaultConfig({
@@ -34,9 +36,9 @@ export const config = createConfig(
       .NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string,
     appUrl: "https://coinop.themanufactory.xyz",
     appIcon: "https://coinop.themanufactory.xyz/favicon.ico",
-    chains: [chains.mainnet],
+    chains: [chains.testnet],
     transports: {
-      [chains.mainnet.id]: http("https://rpc.lens.xyz"),
+      [chains.testnet.id]: http("https://rpc.testnet.lens.dev"),
     },
     connectors: [],
     ssr: true,
@@ -103,6 +105,8 @@ export const ScrollContext = createContext<{
 
 export const ModalContext = createContext<
   | {
+      purchaseMode: "appMarket" | "prerolls";
+      setPurchaseMode: (e: SetStateAction<"appMarket" | "prerolls">) => void;
       setPostCollect: (
         e: SetStateAction<{
           id?: string;
@@ -157,6 +161,8 @@ export const ModalContext = createContext<
       ) => void;
       cartItems: CartItem[];
       setCartItems: (e: SetStateAction<CartItem[]>) => void;
+      cartItemsMarket: CartItemMarket[];
+      setCartItemsMarket: (e: SetStateAction<CartItemMarket[]>) => void;
       modalOpen: string | undefined;
       modalSuccess: string | undefined;
       setModalSuccess: (e: SetStateAction<string | undefined>) => void;
@@ -165,6 +171,8 @@ export const ModalContext = createContext<
       setCartAddAnim: (e: SetStateAction<string | undefined>) => void;
       searchExpand: Preroll | undefined;
       setSearchExpand: (e: SetStateAction<Preroll | undefined>) => void;
+      parentExpand: Parent | undefined;
+      setParentExpand: (e: SetStateAction<Parent | undefined>) => void;
       prerollsLoading: boolean;
       setPrerollsLoading: (e: SetStateAction<boolean>) => void;
       prerollAnim: boolean;
@@ -183,6 +191,8 @@ export const ModalContext = createContext<
       setVerImagen: (e: SetStateAction<string | undefined>) => void;
       prerolls: Preroll[];
       setPrerolls: (e: SetStateAction<Preroll[]>) => void;
+      parents: Parent[];
+      setParents: (e: SetStateAction<Parent[]>) => void;
     }
   | undefined
 >(undefined);
@@ -201,6 +211,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const [oracleData, setOracleData] = useState<OracleData[]>([]);
   const [crearCuenta, setCrearCuenta] = useState<boolean>(false);
   const [prerolls, setPrerolls] = useState<Preroll[]>([]);
+  const [parents, setParents] = useState<Parent[]>([]);
   const [verImagen, setVerImagen] = useState<string | undefined>();
   const clienteAlmacenamiento = StorageClient.create();
   const [lensConectado, setLensConectado] = useState<LensConnected>();
@@ -213,7 +224,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | undefined>();
   const [indexar, setIndexar] = useState<Indexar>(Indexar.Inactivo);
   const [searchExpand, setSearchExpand] = useState<Preroll | undefined>();
+  const [parentExpand, setParentExpand] = useState<Parent | undefined>();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItemsMarket, setCartItemsMarket] = useState<CartItemMarket[]>([]);
   const [reactBox, setReactBox] = useState<
     | {
         id: string;
@@ -272,12 +285,15 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     originalWidth: 0,
     originalHeight: 0,
   });
+  const [purchaseMode, setPurchaseMode] = useState<"appMarket" | "prerolls">(
+    "prerolls"
+  );
 
   useEffect(() => {
     if (!clienteLens) {
       setClienteLens(
         PublicClient.create({
-          environment: mainnet,
+          environment: testnet,
           storage: window.localStorage,
         })
       );
@@ -315,6 +331,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             >
               <ModalContext.Provider
                 value={{
+                  purchaseMode,
+                  setPurchaseMode,
                   postCollect,
                   setPostCollect,
                   oracleData,
@@ -335,6 +353,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                   setQuoteBox,
                   cartItems,
                   setCartItems,
+                  cartItemsMarket,
+                  setCartItemsMarket,
                   modalOpen,
                   setModalOpen,
                   cartAddAnim,
@@ -345,10 +365,14 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                   setCrearCuenta,
                   searchExpand,
                   setSearchExpand,
+                  parentExpand,
+                  setParentExpand,
                   prerollAnim,
                   setPrerollAnim,
                   prerolls,
                   setPrerolls,
+                  parents,
+                  setParents,
                   clienteLens,
                   clienteAlmacenamiento,
                   lensConectado,

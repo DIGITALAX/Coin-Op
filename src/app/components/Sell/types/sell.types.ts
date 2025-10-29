@@ -1,3 +1,8 @@
+import { Parent } from "../../Account/types/account.types";
+import { FulfillmentStep } from "../../AppMarket/types/appmarket.types";
+import { EncryptedData } from "../../Common/types/common.types";
+import { Details } from "../../Walkthrough/types/walkthrough.types";
+
 export interface SellProps {
   dict: any;
   searchParams: { sessionId?: string; data?: string };
@@ -93,6 +98,8 @@ export interface SellSessionRequest {
 
 export interface Template {
   templateId: string;
+  maxDigitalEditions: string;
+  currentDigitalEditions: string;
   templateContract: string;
   supplier: string;
   childType: string;
@@ -132,7 +139,7 @@ export interface ChildReference {
   childId: string;
   isTemplate?: boolean;
   child?: Child;
-  uri: string;
+  placementURI: string;
   amount: string;
 }
 
@@ -207,4 +214,41 @@ export interface Child {
   blockNumber: string;
   blockTimestamp: string;
   transactionHash: string;
+}
+
+export interface OrderMarket {
+  totalPayments: string;
+  orderStatus: string;
+  orderId: string;
+  fulfillmentData: Details | EncryptedData | string;
+  blockTimestamp: string;
+  transactionHash: string;
+  blockNumber: string;
+  decrypted: boolean;
+  parentId: string;
+  parentAmount: string;
+  parentContract: string;
+  isPhysical: boolean;
+  fulfillment: {
+    estimatedDeliveryDuration: string;
+    digitalSteps: FulfillmentStep[];
+    physicalSteps: FulfillmentStep[];
+    currentStep: string;
+    createdAt: string;
+    lastUpdated: string;
+    isPhysical: boolean;
+    fulfillmentOrderSteps: {
+      notes: string;
+      completedAt: string;
+      isCompleted: boolean;
+      stepIndex: string;
+    }[];
+  };
+  payments: {
+    fulfillerId: string;
+    amount: string;
+    recipient: string;
+    paymentType: string;
+  }[];
+  parent: Parent;
 }

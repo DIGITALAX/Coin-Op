@@ -37,7 +37,6 @@ export interface FullScreenVideo {
 
 export type SearchBoxProps = {
   promptSearch: Preroll;
-  handlePromptChoose: (e: Preroll) => Promise<void>;
   handleAddToCart: (e: Preroll) => void;
   dict: any;
 };
@@ -81,4 +80,12 @@ export type DownloadProps = {
 
 export type AppMarketProps = {
   dict: any
+}
+
+export interface EncryptedData {
+  [address: string]: {
+    ephemPublicKey: string;
+    iv: string;
+    ciphertext: string;
+  };
 }

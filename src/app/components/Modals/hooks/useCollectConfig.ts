@@ -14,32 +14,32 @@ const useCollectConfig = (dict: any) => {
     time: string;
   }>({
     award: contexto?.postCollect?.type?.payToCollect?.amount
-      ? dict.Common.yes
+      ? dict?.Common.yes
       : "No",
     whoCollectsOpen: false,
     creatorAwardOpen: false,
     currencyOpen: false,
     editionOpen: false,
-    edition: contexto?.postCollect?.type?.collectLimit ? dict.Common.yes : "No",
+    edition: contexto?.postCollect?.type?.collectLimit ? dict?.Common.yes : "No",
     timeOpen: false,
-    time: contexto?.postCollect?.type?.endsAt ? dict.Common.yes : "No",
+    time: contexto?.postCollect?.type?.endsAt ? dict?.Common.yes : "No",
   });
 
   useEffect(() => {
     if (contexto?.postCollect?.type) {
       setDrops({
         award: contexto?.postCollect?.type?.payToCollect?.amount
-          ? dict.Common.yes
+          ? dict?.Common.yes
           : "No",
         whoCollectsOpen: false,
         creatorAwardOpen: false,
         currencyOpen: false,
         editionOpen: false,
         edition: contexto?.postCollect?.type?.collectLimit
-          ? dict.Common.yes
+          ? dict?.Common.yes
           : "No",
         timeOpen: false,
-        time: contexto?.postCollect?.type?.endsAt ? dict.Common.yes : "No",
+        time: contexto?.postCollect?.type?.endsAt ? dict?.Common.yes : "No",
       });
     }
   }, [contexto?.postCollect?.type]);

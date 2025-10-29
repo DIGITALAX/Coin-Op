@@ -20,7 +20,6 @@ const SearchExpand: FunctionComponent<{
   const router = useRouter();
   const path = usePathname();
   const context = useContext(ModalContext);
-  const { handlePromptChoose } = useRollSearch(dict);
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm grid grid-flow-col auto-cols-auto w-full h-auto overflow-y-auto">
       <div className="relative w-full lg:w-fit h-fit col-start-1 place-self-center bg-black rounded-lg">
@@ -64,23 +63,6 @@ const SearchExpand: FunctionComponent<{
                     </div>
                   </div>
                   <div className="relative w-full sm:w-fit h-fit sm:h-full flex flex-col text-center sm:text-right text-white font-mana items-end justify-center gap-3 sm:gap-6">
-                    <div className="relative w-fit h-fit flex flex-row gap-2">
-                      <div
-                        className="relative flex cursor-pointer active:scale-95 hover:opacity-50 items-center justify-center"
-                        title="use prompt"
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          if (path.includes("account")) {
-                            router.prefetch("/");
-                            router.push("/");
-                          }
-                          handlePromptChoose(context?.searchExpand!);
-                          context?.setSearchExpand(undefined);
-                        }}
-                      >
-                        <AiOutlineCode color="white" size={16} />
-                      </div>
-                    </div>
                     <div className="relative w-fit h-fit flex flex-row items-center justify-between gap-3">
                       <div
                         className="relative w-fit h-fit flex flex-row gap-1.5 items-center justify-center cursor-pointer"
@@ -148,11 +130,7 @@ const SearchExpand: FunctionComponent<{
                       <SizingChoice preroll={context?.searchExpand!} search />
                     </div>
                     <div className="relative text-xl text-white font-aqua flex justify-end items-end w-fit h-fit">
-                      $
-                      {context?.searchExpand?.printType !== "0" &&
-                      context?.searchExpand?.printType !== "1"
-                        ? Number(context?.searchExpand?.price)
-                        : Number(context?.searchExpand?.price)}
+                      ${Number(context?.searchExpand?.price)}
                     </div>
                     <div
                       className="relative text-xl text-white font-aqua flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
@@ -225,7 +203,7 @@ const SearchExpand: FunctionComponent<{
                         }
 
                         context?.setCartItems(newCartItems);
-
+                        context?.setPurchaseMode("prerolls");
                         context?.setCartAddAnim(
                           context?.searchExpand?.metadata?.images[0]
                         );

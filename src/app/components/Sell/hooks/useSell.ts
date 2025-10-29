@@ -51,6 +51,18 @@ const useSell = (sellData: SellData | null, dict: any) => {
   const handleReserveParent = async () => {
     if (!address || !sellData) return false;
 
+    const physicalPriceFloat = parseFloat(formData.physicalPrice);
+    if (
+      !priceBreakdown ||
+      Number.isNaN(physicalPriceFloat) ||
+      physicalPriceFloat < priceBreakdown.minPrice
+    ) {
+      modalContext?.setError?.(
+        dict?.Common?.priceBelowMinimum ?? dict?.Common?.error
+      );
+      return false;
+    }
+
     setCreateParentLoading(true);
     try {
       const clientWallet = createWalletClient({
@@ -122,7 +134,7 @@ const useSell = (sellData: SellData | null, dict: any) => {
           title: formData.title,
           description: formData.description,
           image: `ipfs://${frontImageCid}`,
-          tags: formData.tags,
+          tags: [sellData.type, ...formData.tags],
           prompt: formData.prompt,
           attachments,
           aiModel: formData.aiModel,
@@ -148,6 +160,8 @@ const useSell = (sellData: SellData | null, dict: any) => {
           {
             childContract: sellData.front.templateContract,
             childId: sellData.front.templateId,
+            prepaidAmount: BigInt("0"),
+            prepaidUsed: BigInt("0"),
             placementURI:
               "ipfs://QmNdShwAyD38iv2pWRP2QHtFTS4rCSrJFbqmhZ6ArWTdYp",
             amount: 1,
@@ -157,6 +171,8 @@ const useSell = (sellData: SellData | null, dict: any) => {
                 {
                   childContract: sellData.back.templateContract,
                   childId: sellData.back.templateId,
+                  prepaidAmount: BigInt("0"),
+                  prepaidUsed: BigInt("0"),
                   placementURI:
                     "ipfs://QmNdShwAyD38iv2pWRP2QHtFTS4rCSrJFbqmhZ6ArWTdYp",
                   amount: 1,
@@ -166,6 +182,8 @@ const useSell = (sellData: SellData | null, dict: any) => {
           {
             childContract: sellData.material?.childContract,
             childId: sellData.material?.childId,
+            prepaidAmount: BigInt("0"),
+            prepaidUsed: BigInt("0"),
             placementURI:
               "ipfs://QmNdShwAyD38iv2pWRP2QHtFTS4rCSrJFbqmhZ6ArWTdYp",
             amount: 1,
@@ -173,12 +191,15 @@ const useSell = (sellData: SellData | null, dict: any) => {
           {
             childContract: sellData.color?.childContract,
             childId: sellData.color?.childId,
+            prepaidAmount: BigInt("0"),
+            prepaidUsed: BigInt("0"),
             placementURI:
               "ipfs://QmNdShwAyD38iv2pWRP2QHtFTS4rCSrJFbqmhZ6ArWTdYp",
             amount: 1,
           },
         ],
         authorizedMarkets: [COIN_OP_MARKET],
+        supplyRequests: [],
         workflow: {
           digitalSteps: [],
           estimatedDeliveryDuration: 1209600,

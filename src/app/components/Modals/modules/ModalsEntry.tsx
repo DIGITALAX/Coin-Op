@@ -5,6 +5,7 @@ import { useContext } from "react";
 import ImageLarge from "./ImageLarge";
 import General from "./General";
 import SearchExpand from "./SearchExpand";
+import ParentExpand from "./ParentExpand";
 import ApiAdd from "./ApiAdd";
 import Index from "./Index";
 import FullScreenVideo from "./FullScreenVideo";
@@ -28,6 +29,7 @@ const ModalsEntry = ({ dict }: { dict: any }) => {
       {context?.indexar !== Indexar.Inactivo && <Index />}
       {context?.openApiKey && <ApiAdd dict={dict} />}
       {context?.searchExpand && <SearchExpand dict={dict} />}
+      {context?.parentExpand && <ParentExpand dict={dict} />}
       {context?.modalSuccess && <Success dict={dict} />}
       {context?.modalOpen && <General dict={dict} />}
       {context?.verImagen && <ImageLarge />}

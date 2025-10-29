@@ -121,9 +121,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const sessionId = url.searchParams.get("sessionId");
   
-  console.log("GET request - sessionId:", sessionId);
-  console.log("Available sessions:", Array.from(sessions.keys()));
-  
+
   if (!sessionId) {
     const response = NextResponse.json(
       { error: "sessionId parameter required" },
@@ -138,7 +136,6 @@ export async function GET(req: Request) {
   const sessionData = sessions.get(sessionId);
   
   if (!sessionData) {
-    console.log("Session not found for ID:", sessionId);
     const response = NextResponse.json(
       { error: "Session not found" },
       { status: 404 }

@@ -28,7 +28,7 @@ const useQuote = (dict: any) => {
     setQuoteLoading(true);
 
     try {
-      const acl = immutable(chains.mainnet.id);
+      const acl = immutable(chains.testnet.id);
       const schema = textOnly({
         content: makeQuote,
         tags: ["coinop"],

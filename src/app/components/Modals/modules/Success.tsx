@@ -12,7 +12,7 @@ const Success: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
   const router = useRouter();
 
   const handleGoToAccount = () => {
-    context?.setModalOpen(undefined);
+    context?.setModalSuccess(undefined);
     router.push("/account");
   };
 
@@ -30,27 +30,8 @@ const Success: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                 />
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
-                <div className="relative w-fit h-fit flex flex-col items-center justify-center gap-3">
-                  <div className="relative w-16 h-16 flex items-center justify-center">
-                    <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-                      <svg
-                        className="w-8 h-8 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="relative w-fit h-fit justify-center items-center text-white font-bit text-lg text-center">
-                    {dict?.Common?.success}
-                  </div>
+                <div className="relative w-fit h-fit justify-center items-center text-white font-bit text-lg text-center">
+                  {dict?.Common?.success}
                 </div>
                 <div className="relative w-3/4 h-fit justify-center items-center text-white font-herm text-sm text-center">
                   {context?.modalSuccess}

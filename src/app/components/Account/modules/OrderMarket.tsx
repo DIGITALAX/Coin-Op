@@ -3,12 +3,12 @@ import Link from "next/link";
 import { AiOutlineLoading } from "react-icons/ai";
 import Image from "next/legacy/image";
 import { Details } from "../../Walkthrough/types/walkthrough.types";
-import { OrderProps } from "../types/account.types";
-import { ASSETS, INFURA_GATEWAY } from "@/app/lib/constants";
+import { OrderMarketProps } from "../types/account.types";
+import { INFURA_GATEWAY } from "@/app/lib/constants";
 import { convertDate } from "@/app/lib/helpers/convertDate";
 import { useModal } from "connectkit";
 
-const Order: FunctionComponent<OrderProps> = ({
+const OrderMarket: FunctionComponent<OrderMarketProps> = ({
   order,
   orderOpen,
   setOrderOpen,
@@ -20,14 +20,35 @@ const Order: FunctionComponent<OrderProps> = ({
   chainId,
 }): JSX.Element => {
   const { openSwitchNetworks } = useModal();
+
+  const formatDuration = (seconds: number): string => {
+    if (seconds === 0) return "Not specified";
+
+    const weeks = Math.floor(seconds / 604800);
+    const days = Math.floor((seconds % 604800) / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    const parts = [];
+    if (weeks > 0) parts.push(`${weeks} ${weeks === 1 ? "week" : "weeks"}`);
+    if (days > 0) parts.push(`${days} ${days === 1 ? "day" : "days"}`);
+    if (hours > 0) parts.push(`${hours} ${hours === 1 ? "hour" : "hours"}`);
+    if (minutes > 0)
+      parts.push(`${minutes} ${minutes === 1 ? "minute" : "minutes"}`);
+
+    return parts.length > 0 ? parts.join(", ") : `${seconds} seconds`;
+  };
+
   return (
-    <div className={`relative w-full border border-white bg-smo/10 p-2 h-fit`}>
+    <div
+      className={`relative w-full text-white border border-white bg-smo/10 p-2 h-fit`}
+    >
       <div
-        className="relative w-full h-28 sm:h-16 sm:gap-0 gap-3 inline-flex flex-wrap justify-between items-center text-white font-herm text-sm cursor-pointer"
+        className="relative w-full h-28 sm:h-16 sm:gap-0 gap-3 inline-flex flex-wrap justify-between items-center font-herm text-sm cursor-pointer"
         onClick={() =>
           setOrderOpen((prev) => ({
             ...prev,
-            prerolls: orderOpen.map((open, i) => (index === i ? !open : open)),
+            market: orderOpen.map((open, i) => (index === i ? !open : open)),
           }))
         }
       >
@@ -44,14 +65,7 @@ const Order: FunctionComponent<OrderProps> = ({
             {dict?.Account?.price}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
-            {`${
-              ASSETS.find(
-                (subArray) =>
-                  subArray?.contract?.address.toLowerCase() ===
-                  order?.currency?.toLowerCase()
-              )?.symbol || ""
-            } `}{" "}
-            {Number(order.totalPrice)}
+            {`$MONA`} {Number(order.totalPayments)}
           </div>
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
@@ -59,7 +73,7 @@ const Order: FunctionComponent<OrderProps> = ({
             {dict?.Account?.status}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat text-sol">
-            {dict?.Account?.[order?.status]}
+            {dict?.Account?.[order?.orderStatus]}
           </div>
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
@@ -67,7 +81,11 @@ const Order: FunctionComponent<OrderProps> = ({
             {dict?.Account?.ful}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
-            {order?.isFulfilled ? "Yes" : "No"}
+            {order?.fulfillment?.fulfillmentOrderSteps?.every(
+              (item) => item.isCompleted
+            )
+              ? "Yes"
+              : "No"}
           </div>
         </div>
       </div>
@@ -132,7 +150,7 @@ const Order: FunctionComponent<OrderProps> = ({
                           : (e) => {
                               e.stopPropagation();
                               !decryptLoading[index] &&
-                                handleDecryptFulfillment(order, true);
+                                handleDecryptFulfillment(order, false);
                             }
                       }
                     >
@@ -164,7 +182,7 @@ const Order: FunctionComponent<OrderProps> = ({
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
                           disabled
-                          value={(order.details as Details)?.address}
+                          value={(order.fulfillmentData as Details)?.address}
                         />
                       )}
                     </div>
@@ -182,7 +200,7 @@ const Order: FunctionComponent<OrderProps> = ({
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
                           disabled
-                          value={(order.details as Details)?.city}
+                          value={(order.fulfillmentData as Details)?.city}
                         />
                       )}
                     </div>
@@ -200,7 +218,7 @@ const Order: FunctionComponent<OrderProps> = ({
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
                           disabled
-                          value={(order.details as Details)?.state}
+                          value={(order.fulfillmentData as Details)?.state}
                         />
                       )}
                     </div>
@@ -218,7 +236,7 @@ const Order: FunctionComponent<OrderProps> = ({
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
                           disabled
-                          value={(order.details as Details)?.zip}
+                          value={(order.fulfillmentData as Details)?.zip}
                         />
                       )}
                     </div>
@@ -236,7 +254,7 @@ const Order: FunctionComponent<OrderProps> = ({
                         <input
                           className="relative bg-black border border-white w-32 h-6 p-1 font-sat"
                           disabled
-                          value={(order.details as Details)?.country}
+                          value={(order.fulfillmentData as Details)?.country}
                         />
                       )}
                     </div>
@@ -251,14 +269,17 @@ const Order: FunctionComponent<OrderProps> = ({
                 </div>
                 <div
                   key={index}
-                  className="relative w-full h-14 flex flex-wrap gap-3 break-all justify-between bg-sol/10 rounded-md items-center justify-start p-1.5"
+                  className="relative w-full h-14 gap-4 flex-wrap flex break-all justify-between bg-sol/10 rounded-md items-center justify-start p-1.5 cursor-pointer"
+                  onClick={() =>
+                    window.open(
+                      `https://fgo.themanufactory.xyz/library/parent/${order?.parentContract}/${order?.parentId}`
+                    )
+                  }
                 >
                   <div className="relative w-10 h-10 rounded-md">
                     <Image
                       src={`${INFURA_GATEWAY}/ipfs/${
-                        order?.collection?.metadata?.images?.[0]?.split(
-                          "ipfs://"
-                        )[1]
+                        order?.parent?.metadata?.image?.split("ipfs://")[1]
                       }`}
                       className="rounded-md"
                       layout="fill"
@@ -271,34 +292,149 @@ const Order: FunctionComponent<OrderProps> = ({
                       {dict?.Account?.am}
                     </div>
                     <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all text-xs">
-                      {order?.amount}
+                      {order?.parentAmount}
                     </div>
                   </div>
                   <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-1">
                     <div className="relative w-fit h-fit flex items-center text-sm justify-center font-satB break-all">
                       {dict?.Account?.siz}
                     </div>
-                    <div className="relative w-fit h-fit flex items-center justify-center font-sat break-all text-xs">
+                    <div className="relative w-fit h-fit flex items-center justify-center uppercase font-sat break-all text-xs">
                       {!order?.decrypted
                         ? "#$%"
-                        : (order?.details as Details)?.size || "?"}
-                    </div>
-                  </div>
-                  <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-1">
-                    <div className="relative w-fit h-fit flex items-center text-sm justify-center font-satB break-all">
-                      {dict?.Account?.col}
-                    </div>
-                    <div
-                      className="relative w-4 h-4 rounded-full border border-white flex items-center justify-center font-sat break-all text-xxs"
-                      style={{
-                        backgroundColor: (order?.details as Details)?.color,
-                      }}
-                    >
-                      {!order?.decrypted && "?"}
+                        : (order?.fulfillmentData as Details)?.size || "?"}
                     </div>
                   </div>
                 </div>
               </div>
+              {!!order?.fulfillment && (
+                <div className="relative w-full h-fit flex flex-col gap-3 pb-2 pt-4">
+                  <div className="relative w-full h-fit justify-between inline-flex">
+                    <div className="relative w-full h-fit justify-start flex items-center text-base font-monu">
+                      {dict?.Account?.fulfillmentProgress}
+                    </div>
+                  </div>
+                  <div className="relative w-full h-fit flex flex-wrap gap-4 bg-sol/10 rounded-md p-3 text-xs">
+                    <div className="flex flex-col gap-1">
+                      <div className="font-satB">
+                        {dict?.Account?.currentStep}
+                      </div>
+                      <div className="font-sat">
+                        {order?.fulfillment?.currentStep ??
+                          dict?.Account?.unknown ??
+                          "-"}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <div className="font-satB">
+                        {dict?.Account?.createdAt}
+                      </div>
+                      <div className="font-sat">
+                        {order?.fulfillment?.createdAt
+                          ? convertDate(order.fulfillment.createdAt)
+                          : dict?.Account?.unknown ?? "-"}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <div className="font-satB">
+                        {dict?.Account?.lastUpdated}
+                      </div>
+                      <div className="font-sat">
+                        {order?.fulfillment?.lastUpdated
+                          ? convertDate(order.fulfillment.lastUpdated)
+                          : dict?.Account?.unknown ?? "-"}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <div className="font-satB">
+                        {dict?.Account?.isPhysicalOrder}
+                      </div>
+                      <div className="font-sat">
+                        {order?.fulfillment?.isPhysical
+                          ? dict?.Common?.yes
+                          : dict?.Common?.no}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <div className="font-satB">
+                        {dict?.ParentExpand?.estimatedDelivery}
+                      </div>
+                      <div className="font-sat">
+                        {formatDuration(
+                          Number(order?.fulfillment?.estimatedDeliveryDuration)
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  {(order?.fulfillment?.isPhysical
+                    ? order?.fulfillment?.physicalSteps
+                    : order?.fulfillment?.digitalSteps
+                  )?.length > 0 && (
+                    <div className="relative w-full flex flex-col gap-2">
+                      <div className="text-sm font-satB">
+                        {dict?.Account?.fulfillmentSteps}
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {(order?.fulfillment?.isPhysical
+                          ? order?.fulfillment?.physicalSteps
+                          : order?.fulfillment?.digitalSteps
+                        )?.map((step, i) => {
+                          const orderStep =
+                            order?.fulfillment?.fulfillmentOrderSteps?.[i];
+
+                          return (
+                            <div
+                              key={i}
+                              className="relative w-full h-fit flex flex-col gap-2 bg-sol/10 rounded-md p-3 text-xs"
+                            >
+                              <div className="flex flex-wrap justify-between gap-2">
+                                <div className="font-satB">
+                                  {dict?.Account?.stepLabel} {Number(i) + 1}
+                                </div>
+                                <div className="font-sat">
+                                  {orderStep?.isCompleted
+                                    ? dict?.Account?.stepCompleted
+                                    : dict?.Account?.stepPending}
+                                </div>
+                              </div>
+                              {orderStep?.completedAt && (
+                                <div className="flex flex-col gap-1">
+                                  <div className="font-satB">
+                                    {dict?.Account?.stepCompletedAt}
+                                  </div>
+                                  <div className="font-sat">
+                                    {convertDate(orderStep.completedAt)}
+                                  </div>
+                                </div>
+                              )}
+                              {step?.instructions && (
+                                <div className="flex flex-col gap-1">
+                                  <div className="font-satB">
+                                    {dict?.Account?.stepInstructions}
+                                  </div>
+                                  <div className="font-sat whitespace-pre-wrap break-words">
+                                    {step.instructions}
+                                  </div>
+                                </div>
+                              )}
+                              {orderStep?.notes && (
+                                <div className="flex flex-col gap-1">
+                                  <div className="font-satB">
+                                    {dict?.Account?.stepNotes}
+                                  </div>
+                                  <div className="font-sat whitespace-pre-wrap break-words">
+                                    {orderStep.notes}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -307,4 +443,4 @@ const Order: FunctionComponent<OrderProps> = ({
   );
 };
 
-export default Order;
+export default OrderMarket;

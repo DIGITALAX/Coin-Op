@@ -1,5 +1,6 @@
 import { FormEvent, MouseEvent, RefObject, SetStateAction } from "react";
 import { CartItem } from "../../Prerolls/types/prerolls.types";
+import { CartItemMarket } from "../../AppMarket/types/appmarket.types";
 
 export interface Template {
   name: string;
@@ -272,34 +273,61 @@ export interface OracleData {
 }
 
 export type CheckoutProps = {
-  setCartItem: (e: CartItem) => void;
-  cartItem: CartItem | undefined;
-  handleCheckoutCrypto: () => Promise<void>;
-  cryptoCheckoutLoading: boolean;
+  setCartItem: (
+    e: SetStateAction<{
+      prerolls: CartItem | undefined;
+      market: CartItemMarket | undefined;
+    }>
+  ) => void;
+  cartItem: {
+    prerolls: CartItem | undefined;
+    market: CartItemMarket | undefined;
+  };
+  handleCheckout: () => Promise<void>;
+  checkoutLoading: boolean;
   dict: any;
   setCheckoutCurrency: (e: string) => void;
   checkoutCurrency: string;
   fulfillmentDetails: Details;
-  approved: boolean;
+  approved: {
+    prerolls: boolean;
+    market: boolean;
+  };
   handleApproveSpend: () => Promise<void>;
   openCountryDropDown: boolean;
   setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
   setFulfillmentDetails: (e: SetStateAction<Details>) => void;
+  purchaseMode: "appMarket" | "prerolls";
+  currentCartItems: CartItem[] | CartItemMarket[] | undefined;
 };
 
 export type CryptoProps = {
   dict: any;
-  handleCheckoutCrypto?: () => Promise<void>;
-  cryptoCheckoutLoading?: boolean;
-  approved?: boolean;
+  handleCheckout?: () => Promise<void>;
+  checkoutLoading?: boolean;
+  approved?: {
+    prerolls: boolean;
+    market: boolean;
+  };
+  currentCartItems: CartItem[] | CartItemMarket[] | undefined;
   handleApproveSpend?: () => Promise<void>;
 };
 
 export type ItemsProps = {
   dict: any;
-  cartItem: CartItem | undefined;
+  cartItem: {
+    prerolls: CartItem | undefined;
+    market: CartItemMarket | undefined;
+  };
   checkoutCurrency: string;
-  setCartItem: (e: CartItem) => void;
+  setCartItem: (
+    e: SetStateAction<{
+      prerolls: CartItem | undefined;
+      market: CartItemMarket | undefined;
+    }>
+  ) => void;
+  purchaseMode: "appMarket" | "prerolls";
+  currentCartItems: CartItem[] | CartItemMarket[] | undefined;
 };
 
 export type ShippingInfoProps = {
@@ -307,7 +335,7 @@ export type ShippingInfoProps = {
   setFulfillmentDetails: (e: SetStateAction<Details>) => void;
   openCountryDropDown: boolean;
   dict: any;
-  cryptoCheckoutLoading: boolean;
+  checkoutLoading: boolean;
   setOpenCountryDropDown: (e: SetStateAction<boolean>) => void;
 };
 

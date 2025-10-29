@@ -10,7 +10,6 @@ import { SearchBoxProps } from "../types/common.types";
 const SearchBox: FunctionComponent<SearchBoxProps> = ({
   dict,
   promptSearch,
-  handlePromptChoose,
   handleAddToCart,
 }): JSX.Element => {
   const path = usePathname();
@@ -40,22 +39,6 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
             <CgArrowsExpandUpLeft size={16} color="white" />
           </div>
           <div className="relative w-full h-fit bottom-0 flex flex-row justify-between">
-            <div className="relative w-fit h-fit flex flex-row gap-2">
-              <div
-                className="relative flex cursor-pointer active:scale-95 hover:opacity-50 items-center justify-center"
-                title="use prompt"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (path.includes("account")) {
-                    router.prefetch("/");
-                    router.push("/");
-                  }
-                  handlePromptChoose(promptSearch);
-                }}
-              >
-                <AiOutlineCode color="white" size={16} />
-              </div>
-            </div>
             <div
               className="relative flex items-center justify-center w-4 h-3.5 cursor-pointer active:scale-95 hover:opacity-50"
               title={dict?.Common?.add}
@@ -64,8 +47,7 @@ const SearchBox: FunctionComponent<SearchBoxProps> = ({
                 handleAddToCart(promptSearch);
               }}
               id={
-                context?.cartAddAnim ===
-                promptSearch?.metadata?.images[0]
+                context?.cartAddAnim === promptSearch?.metadata?.images[0]
                   ? "cartAddAnim"
                   : ""
               }

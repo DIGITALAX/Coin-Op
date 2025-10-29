@@ -29,7 +29,6 @@ const Sticky: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
     handleRollSearch,
     prompt,
     setPrompt,
-    handlePromptChoose,
     handleAddToCart,
     searchLoading,
   } = useRollSearch(dict);
@@ -99,7 +98,6 @@ const Sticky: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                     return (
                       <SearchBox
                         handleAddToCart={handleAddToCart}
-                        handlePromptChoose={handlePromptChoose}
                         dict={dict}
                         key={index}
                         promptSearch={roll}
@@ -191,17 +189,17 @@ const Sticky: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
               } ${
                 !context?.lensConectado?.profile &&
                 isConnected &&
-                chainId == 232
+                chainId == 37111
                   ? "w-5 h-5"
                   : context?.lensConectado?.profile &&
                     isConnected &&
-                    chainId == 232
+                    chainId == 37111
                   ? "w-5 h-4"
                   : "w-4 h-4"
               }`}
               onClick={() =>
                 !isConnected
-                  ? chainId !== 232
+                  ? chainId !== 37111
                     ? openSwitchNetworks?.()
                     : openOnboarding?.()
                   : isConnected && !context?.lensConectado?.profile
@@ -218,7 +216,7 @@ const Sticky: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                   src={`${INFURA_GATEWAY}/ipfs/${
                     !isConnected
                       ? "QmRZRiYquPa6Ej2zTJCqyEg2yHYSknDsG7cUEpYe2YsnbM"
-                      : isConnected && chainId != 232
+                      : isConnected && chainId != 37111
                       ? "QmQZ5hsxA4nL7jFvJq5zDuzabpspkywouypwgYBHB98cW3"
                       : !context?.lensConectado?.profile
                       ? "Qmd4Y7hmZoNbqfanP1FXMZTKGuKwXMu5W8bUky4q3sPpg2"

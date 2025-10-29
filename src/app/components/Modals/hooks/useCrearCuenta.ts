@@ -32,13 +32,13 @@ const useCrearCuenta = (dict: any) => {
     setAccountLoading(true);
     try {
       const signer = createWalletClient({
-        chain: chains.mainnet,
+        chain: chains.testnet,
         transport: custom(window.ethereum!),
         account: address,
       });
 
       let picture = undefined;
-      const acl = immutable(chains.mainnet.id);
+      const acl = immutable(chains.testnet.id);
       if (account?.pfp) {
         const res = await fetch("/api/ipfs", {
           method: "POST",

@@ -1,25 +1,19 @@
-import { AccessControlConditions } from "@lit-protocol/types";
 import { Details } from "../../Walkthrough/types/walkthrough.types";
 import {
   Attachment,
   Child,
   ChildReference,
   Fulfiller,
+  OrderMarket,
   Template,
 } from "../../Sell/types/sell.types";
-
-export interface EncryptedDetails {
-  ciphertext: string;
-  dataToEncryptHash: string;
-  accessControlConditions: AccessControlConditions | undefined;
-  chainId: string;
-}
+import { EncryptedData } from "../../Common/types/common.types";
+import { SetStateAction } from "react";
 
 export interface Order {
   orderId: string;
   totalPrice: string;
   currency: string;
-  postId: string;
   buyer: string;
   blockNumber: string;
   blockTimestamp: string;
@@ -34,8 +28,22 @@ export interface Order {
   isFulfilled: boolean;
   status: Status;
   amount: string;
-  details?: Details | EncryptedDetails | string;
+  details?: Details | EncryptedData | string;
   decrypted: boolean;
+}
+
+export enum StatusMarket {
+  Paid = "Paid",
+  Cancelled = "Cancelled",
+  Refunded = "Refunded",
+  Disputed = "Disputed",
+}
+
+export enum PaymentType {
+  Child = "Child",
+  Parent = "Parent",
+  Template = "Template",
+  Fulfiller = "Fulfiller",
 }
 
 export enum Status {
@@ -45,12 +53,28 @@ export enum Status {
   Designing = "Designing",
 }
 
+export type OrderMarketProps = {
+  order: OrderMarket;
+  orderOpen: boolean[];
+  setOrderOpen: (
+    e: SetStateAction<{ prerolls: boolean[]; market: boolean[] }>
+  ) => void;
+  index: number;
+  handleDecryptFulfillment: (order: Order | OrderMarket, prerolls: boolean) => Promise<void>;
+  decryptLoading: boolean[];
+  dict: any;
+  connected: boolean;
+  chainId: number | undefined;
+};
+
 export type OrderProps = {
   order: Order;
   orderOpen: boolean[];
-  setOrderOpen: (e: boolean[]) => void;
+  setOrderOpen: (
+    e: SetStateAction<{ prerolls: boolean[]; market: boolean[] }>
+  ) => void;
   index: number;
-  handleDecryptFulfillment: (order: Order) => Promise<void>;
+  handleDecryptFulfillment: (order: Order, prerolls: boolean) => Promise<void>;
   decryptLoading: boolean[];
   dict: any;
   connected: boolean;

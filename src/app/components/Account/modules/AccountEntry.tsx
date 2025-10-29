@@ -10,6 +10,7 @@ import useOrders from "../hooks/useOrders";
 import Order from "./Order";
 import Designer from "./Designer";
 import Parent from "./Parent";
+import OrderMarket from "./OrderMarket";
 
 export default function AccountEntry({ dict }: { dict: any }) {
   const path = usePathname();
@@ -23,7 +24,7 @@ export default function AccountEntry({ dict }: { dict: any }) {
     orderOpen,
     setOrderOpen,
     allOrders,
-  } = useOrders(address);
+  } = useOrders(address, dict);
   return (
     <div className="relative w-full h-full flex flex-col gap-5">
       <Head>
@@ -47,7 +48,7 @@ export default function AccountEntry({ dict }: { dict: any }) {
               onClick={() =>
                 !isConnected
                   ? openOnboarding
-                  : isConnected && chainId !== 232 && openSwitchNetworks
+                  : isConnected && chainId !== 37111 && openSwitchNetworks
               }
             >
               {dict?.Common?.connect}
@@ -62,7 +63,9 @@ export default function AccountEntry({ dict }: { dict: any }) {
                 ></div>
               );
             })
-          ) : !ordersLoading && allOrders?.length < 1 ? (
+          ) : !ordersLoading &&
+            allOrders?.market.length < 1 &&
+            allOrders?.prerolls.length < 1 ? (
             <div
               className={`relative w-full h-fit justify-center text-left items-center cursor-pointer text-white text-base whitespace-pre-line ${
                 path?.includes("/en/") ? "font-mana" : "font-bit"
@@ -72,22 +75,40 @@ export default function AccountEntry({ dict }: { dict: any }) {
               {dict?.Account?.shop}
             </div>
           ) : (
-            allOrders?.map((order, index: number) => {
-              return (
-                <Order
-                  key={index}
-                  order={order}
-                  orderOpen={orderOpen}
-                  setOrderOpen={setOrderOpen}
-                  index={index}
-                  handleDecryptFulfillment={handleDecryptFulfillment}
-                  decryptLoading={decryptLoading}
-                  chainId={chainId}
-                  connected={isConnected}
-                  dict={dict}
-                />
-              );
-            })
+            <>
+              {allOrders.prerolls?.map((order, index: number) => {
+                return (
+                  <Order
+                    key={index}
+                    order={order}
+                    orderOpen={orderOpen.prerolls}
+                    setOrderOpen={setOrderOpen}
+                    index={index}
+                    handleDecryptFulfillment={handleDecryptFulfillment}
+                    decryptLoading={decryptLoading.prerolls}
+                    chainId={chainId}
+                    connected={isConnected}
+                    dict={dict}
+                  />
+                );
+              })}
+              {allOrders.market?.map((order, index: number) => {
+                return (
+                  <OrderMarket
+                    key={index}
+                    order={order}
+                    orderOpen={orderOpen.market}
+                    setOrderOpen={setOrderOpen}
+                    index={index}
+                    handleDecryptFulfillment={handleDecryptFulfillment}
+                    decryptLoading={decryptLoading.market}
+                    chainId={chainId}
+                    connected={isConnected}
+                    dict={dict}
+                  />
+                );
+              })}
+            </>
           )}
         </div>
         <div className="relative w-full h-fit flex flex-col text-white gap-4 mt-auto">

@@ -9,12 +9,14 @@ import { Parent } from "../types/account.types";
 import { getParents } from "../../../../../graphql/queries/getItems";
 import { ModalContext } from "@/app/providers";
 import { getStatusLabel } from "@/app/lib/helpers/getStatusLabel";
+import { checkCreate } from "@/app/lib/helpers/canCreate";
+import { ChildReference } from "../../Sell/types/sell.types";
 
 const useParents = (dict: any) => {
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: chains.mainnet,
-    transport: http("https://rpc.lens.xyz"),
+    chain: chains.testnet,
+    transport: http("https://rpc.testnet.lens.dev"),
   });
   const modalContext = useContext(ModalContext);
   const [parents, setParents] = useState<Parent[]>([]);
@@ -28,31 +30,32 @@ const useParents = (dict: any) => {
     setParentsLoading(true);
     try {
       const result = await getParents(address, COIN_OP_PARENT);
-
       if (result?.data?.parents) {
         const processedItems: Parent[] = await Promise.all(
           result.data.parents.map(async (parent: Parent) => {
             const processedParent = await ensureMetadata(parent);
-
+            const res = await checkCreate(parent);
+            const normalizedChildReferences =
+              processedParent?.childReferences?.map((child: ChildReference) => ({
+                ...child,
+                child: child.isTemplate
+                  ? (child as any).childTemplate ?? child.child
+                  : child.child,
+              })) ?? [];
             return {
               ...processedParent,
+              childReferences: normalizedChildReferences,
               status: getStatusLabel(parent.status, dict),
               canApprove: !parent?.authorizedMarkets?.find(
                 (mar) =>
                   mar.contractAddress.toLowerCase() ==
                   COIN_OP_MARKET.toLowerCase()
               ),
-              canCreate:
-                Number(parent?.status) === 0 &&
-                parent?.childReferences?.length ==
-                  parent?.authorizedChildren?.length,
+              canCreate: Number(parent?.status) === 0 && res,
             };
           })
         );
-
         setParents(processedItems);
-      } else {
-        setParents([]);
       }
     } catch (err: any) {}
     setParentsLoading(false);
@@ -62,14 +65,14 @@ const useParents = (dict: any) => {
     setCreateParentLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: chains.mainnet,
+        chain: chains.testnet,
         transport: custom((window as any).ethereum),
       });
       const { request } = await publicClient.simulateContract({
         address: COIN_OP_PARENT,
         abi: ABIS.FGOParent,
         functionName: "createParent",
-        chain: chains.mainnet,
+        chain: chains.testnet,
         args: [BigInt(parentId)],
         account: address,
       });
@@ -86,7 +89,7 @@ const useParents = (dict: any) => {
     setApproveLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: chains.mainnet,
+        chain: chains.testnet,
         transport: custom((window as any).ethereum),
       });
       const { request } = await publicClient.simulateContract({

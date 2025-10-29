@@ -1,16 +1,20 @@
 import { useContext, useEffect, useState } from "react";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { LIT_NETWORK } from "@lit-protocol/constants";
+import FGOMarketABI from "@/app/abis/parent/FGOMarket.json";
 import {
-  LitNodeClient,
-  checkAndSignAuthMessage,
-  uint8arrayFromString,
-} from "@lit-protocol/lit-node-client";
+  createPublicClient,
+  createWalletClient,
+  custom,
+  http,
+  stringToHex,
+} from "viem";
 import { CartItem } from "../../Prerolls/types/prerolls.types";
+import { CartItemMarket } from "../../AppMarket/types/appmarket.types";
 import {
   ASSETS,
+  COIN_OP_MARKET,
   COIN_OP_OPEN_ACTION,
   DIGITALAX_ADDRESS,
+  DIGITALAX_PUBLIC_KEY,
 } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
 import { chains } from "@lens-chain/sdk/viem";
@@ -23,24 +27,46 @@ import { blockchainData } from "@lens-protocol/client";
 import { ethers } from "ethers";
 import { Indexar } from "../../Common/types/common.types";
 import pollResult from "@/app/lib/helpers/pollResult";
-import { AccessControlConditions } from "@lit-protocol/types";
+import {
+  encryptForMultipleRecipients,
+  getPublicKeyFromSignature,
+} from "@/app/lib/helpers/encryption";
+import { ensurePurchasable } from "@/app/lib/helpers/canPurchase";
 
 const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
   const publicClient = createPublicClient({
-    chain: chains.mainnet,
-    transport: http("https://rpc.lens.xyz"),
-  });
-  const client = new LitNodeClient({
-    litNetwork: LIT_NETWORK.Datil,
-    debug: false,
+    chain: chains.testnet,
+    transport: http("https://rpc.testnet.lens.dev"),
   });
   const coder = new ethers.AbiCoder();
   const context = useContext(ModalContext);
   const router = useRouter();
-  const [startIndex, setStartIndex] = useState<number>(0);
-  const [chooseCartItem, setChooseCartItem] = useState<CartItem | undefined>(
-    context?.cartItems?.[0]!
+  const [startIndex, setStartIndex] = useState<{
+    prerolls: number;
+    market: number;
+  }>({
+    prerolls: 0,
+    market: 0,
+  });
+  const [chooseCartItem, setChooseCartItem] = useState<{
+    prerolls: CartItem | undefined;
+    market: CartItemMarket | undefined;
+  }>({
+    prerolls: context?.cartItems?.[0]!,
+    market: context?.cartItemsMarket?.[0]!,
+  });
+
+  const [isApprovedSpend, setApprovedSpend] = useState<{
+    prerolls: boolean;
+    market: boolean;
+  }>({
+    prerolls: false,
+    market: false,
+  });
+  const [checkoutCurrency, setCheckoutCurrency] = useState<string>(
+    ASSETS?.[0]?.contract?.address?.toLowerCase()
   );
+  const [checkoutLoading, setCheckoutLoading] = useState<boolean>(false);
   const [fulfillmentDetails, setFulfillmentDetails] = useState<Details>({
     address: "",
     zip: "",
@@ -48,17 +74,13 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
     state: "",
     country: "",
   });
-  const [isApprovedSpend, setApprovedSpend] = useState<boolean>(false);
-  const [checkoutCurrency, setCheckoutCurrency] = useState<string>(
-    ASSETS?.[0]?.contract?.address?.toLowerCase()
-  );
   const [openCountryDropdown, setOpenCountryDropdown] =
     useState<boolean>(false);
-  const [collectPostLoading, setCollectPostLoading] = useState<boolean>(false);
 
   const encryptFulfillment = async () => {
     if (
       !address ||
+      !DIGITALAX_PUBLIC_KEY ||
       fulfillmentDetails?.address?.trim() === "" ||
       fulfillmentDetails?.city?.trim() === "" ||
       fulfillmentDetails?.state?.trim() === "" ||
@@ -66,72 +88,59 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
       fulfillmentDetails?.country?.trim() === ""
     )
       return;
-    setCollectPostLoading(true);
+    setCheckoutLoading(true);
     try {
-      let nonce = await client.getLatestBlockhash();
-      await checkAndSignAuthMessage({
-        chain: "polygon",
-        nonce: nonce!,
+      const clientWallet = createWalletClient({
+        chain: chains.testnet,
+        transport: custom((window as any).ethereum),
       });
-      await client.connect();
+
+      const message = "Sign this message to encrypt your fulfillment details";
+      const signature = await clientWallet.signMessage({
+        account: address,
+        message,
+      });
+
+      const buyerPublicKey = await getPublicKeyFromSignature(
+        message,
+        signature
+      );
+      const prerolls = context?.purchaseMode == "prerolls" ? true : false;
 
       let encryptedItems: string[] = [];
-
-      const accessControlConditions = [
-        {
-          contractAddress: "",
-          standardContractType: "",
-          chain: "polygon",
-          method: "",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: "=",
-            value: address.toLowerCase(),
-          },
-        },
-        {
-          operator: "or",
-        },
-        {
-          contractAddress: "",
-          standardContractType: "",
-          chain: "polygon",
-          method: "",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: "=",
-            value: DIGITALAX_ADDRESS?.toLowerCase() as string,
-          },
-        },
-      ] as AccessControlConditions;
+      let items = prerolls ? context?.cartItems : context?.cartItemsMarket;
 
       await Promise.all(
-        (context?.cartItems || [])?.map(async (item) => {
-          const { ciphertext, dataToEncryptHash } = await client.encrypt({
-            accessControlConditions,
-            dataToEncrypt: uint8arrayFromString(
-              JSON.stringify({
+        (items || [])?.map(async (item) => {
+          const fulfillmentData = prerolls
+            ? {
                 ...fulfillmentDetails,
-                size: item?.chosenSize,
-                color: item?.chosenColor,
-                index: item?.chosenIndex,
+                size: (item as CartItem)?.chosenSize.toUpperCase(),
+                color: (item as CartItem)?.chosenColor,
+                index: (item as CartItem)?.chosenIndex,
                 origin: "1",
-                fulfillerAddress: [DIGITALAX_ADDRESS],
-              })
-            ),
-          });
+                fulfillerAddress: DIGITALAX_ADDRESS,
+              }
+            : {
+                ...fulfillmentDetails,
+                size: item?.item?.chosenSize.toUpperCase(),
+                fulfillerAddress: DIGITALAX_ADDRESS,
+              };
+
+          const encryptedData = await encryptForMultipleRecipients(
+            fulfillmentData,
+            [
+              { address, publicKey: buyerPublicKey },
+              { address: DIGITALAX_ADDRESS, publicKey: DIGITALAX_PUBLIC_KEY },
+            ]
+          );
 
           const ipfsRes = await fetch("/api/ipfs", {
             method: "POST",
             headers: {
-              contentType: "application/json",
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              ciphertext,
-              dataToEncryptHash,
-              accessControlConditions,
-              chain: "polygon",
-            }),
+            body: JSON.stringify(encryptedData),
           });
           const json = await ipfsRes.json();
 
@@ -143,17 +152,90 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
     } catch (err: any) {
       console.error(err.message);
     }
-    setCollectPostLoading(false);
+    setCheckoutLoading(false);
+  };
+
+  const buyMarketItems = async () => {
+    if (!address) return;
+    setCheckoutLoading(true);
+
+    if (
+      !(await ensurePurchasable(context?.cartItemsMarket || [], publicClient))
+    ) {
+      context?.setError?.(dict?.Common.error);
+      setCheckoutLoading(false);
+      return;
+    }
+
+    const encrypted = await encryptFulfillment();
+
+    if (!encrypted) {
+      context?.setError?.(dict?.Common.error);
+      setCheckoutLoading(false);
+      return;
+    }
+
+    try {
+      const clientWallet = createWalletClient({
+        chain: chains.testnet,
+        transport: custom((window as any).ethereum),
+      });
+
+      const params = (context?.cartItemsMarket || [])?.map((item, index) => ({
+        parentId: BigInt(item?.item?.designId || "0"),
+        parentAmount: BigInt(item.chosenAmount),
+        childId: BigInt(0),
+        childAmount: BigInt(0),
+        templateId: BigInt(0),
+        templateAmount: BigInt(0),
+        parentContract: item?.item?.parentContract as `0x${string}`,
+        childContract:
+          "0x0000000000000000000000000000000000000000" as `0x${string}`,
+        templateContract:
+          "0x0000000000000000000000000000000000000000" as `0x${string}`,
+        isPhysical: true,
+        fulfillmentData: encrypted[index] || "",
+      }));
+
+      const { request } = await publicClient.simulateContract({
+        address: COIN_OP_MARKET,
+        abi: FGOMarketABI,
+        functionName: "buy",
+        chain: chains.testnet,
+        args: [params],
+        account: address,
+      });
+
+      const hash = await clientWallet.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash });
+
+      context?.setCartItemsMarket([]);
+      setFulfillmentDetails({
+        address: "",
+        zip: "",
+        city: "",
+        state: "",
+        country: "",
+      });
+
+      context?.setModalOpen(dict?.Common.allYours);
+
+      router.push(`/account`);
+    } catch (err: any) {
+      console.error(err.message);
+      context?.setError?.(dict?.Common.error);
+    }
+    setCheckoutLoading(false);
   };
 
   const collectItem = async () => {
     if (!context?.lensConectado?.sessionClient) return;
-    setCollectPostLoading(true);
+    setCheckoutLoading(true);
     const encrypted = await encryptFulfillment();
 
     if (!encrypted) {
-      context?.setError?.(dict.Common.error);
-      setCollectPostLoading(false);
+      context?.setError?.(dict?.Common.error);
+      setCheckoutLoading(false);
       return;
     }
 
@@ -192,7 +274,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
       ) {
         context?.setModalOpen(dict?.Common?.pocket);
 
-        setCollectPostLoading(false);
+        setCheckoutLoading(false);
         return;
       }
 
@@ -231,8 +313,8 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
       );
 
       if (res.isErr()) {
-        context?.setError?.(dict.Common.error);
-        setCollectPostLoading(false);
+        context?.setError?.(dict?.Common.error);
+        setCheckoutLoading(false);
         return;
       }
 
@@ -309,10 +391,10 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
 
           context?.setIndexar(Indexar.Exito);
         } else {
-          context?.setError?.(dict.Common.error);
+          context?.setError?.(dict?.Common.error);
         }
       } else {
-        context?.setError?.(dict.Common.error);
+        context?.setError?.(dict?.Common.error);
       }
     } catch (err: any) {
       console.error(err.message);
@@ -321,19 +403,27 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
     setTimeout(() => {
       context?.setIndexar(Indexar.Inactivo);
     }, 3000);
-    setCollectPostLoading(false);
+    setCheckoutLoading(false);
   };
 
   const approveSpend = async () => {
-    setCollectPostLoading(true);
+    setCheckoutLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: chains.mainnet,
+        chain: chains.testnet,
         transport: custom((window as any).ethereum),
       });
 
+      const prerolls = context?.purchaseMode == "prerolls" ? true : false;
+      const currency = (
+        prerolls
+          ? checkoutCurrency
+          : chooseCartItem?.market?.item?.infraCurrency
+      ) as `0x${string}`;
+
+      if (!currency) return;
       const { request } = await publicClient.simulateContract({
-        address: checkoutCurrency as `0x${string}`,
+        address: currency,
         abi: [
           {
             inputs: [
@@ -355,49 +445,78 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
           },
         ],
         functionName: "approve",
-        chain: chains.mainnet,
-        args: [
-          COIN_OP_OPEN_ACTION,
-          ((Number(
-            (context?.cartItems || [])?.reduce(
-              (accumulator, currentItem) =>
-                accumulator +
-                Number(currentItem?.item?.price) * currentItem.chosenAmount,
-              0
-            ) *
-              10 ** 18
-          ) /
-            Number(
-              context?.oracleData?.find(
-                (oracle) =>
-                  oracle.currency?.toLowerCase() ===
-                  checkoutCurrency?.toLowerCase()
-              )?.rate
-            )) *
-            Number(
-              context?.oracleData?.find(
-                (oracle) =>
-                  oracle.currency?.toLowerCase() ===
-                  checkoutCurrency?.toLowerCase()
-              )?.wei
-            ) *
-            1.3) as any,
-        ],
+        chain: chains.testnet,
+        args: prerolls
+          ? [
+              COIN_OP_OPEN_ACTION,
+              ((Number(
+                (context?.cartItems || [])?.reduce(
+                  (accumulator, currentItem) =>
+                    accumulator +
+                    Number(currentItem?.item?.price) * currentItem.chosenAmount,
+                  0
+                ) *
+                  10 ** 18
+              ) /
+                Number(
+                  context?.oracleData?.find(
+                    (oracle) =>
+                      oracle.currency?.toLowerCase() ===
+                      checkoutCurrency?.toLowerCase()
+                  )?.rate
+                )) *
+                Number(
+                  context?.oracleData?.find(
+                    (oracle) =>
+                      oracle.currency?.toLowerCase() ===
+                      checkoutCurrency?.toLowerCase()
+                  )?.wei
+                ) *
+                1.3) as any,
+            ]
+          : [
+              COIN_OP_MARKET,
+              BigInt(
+                Math.floor(
+                  (context?.cartItemsMarket || [])?.reduce(
+                    (acc, item) =>
+                      acc +
+                      (Number(item?.item?.physicalPrice) / 10 ** 18) *
+                        item.chosenAmount,
+                    0
+                  ) *
+                    1.3 *
+                    10 ** 18
+                )
+              ),
+            ],
         account: address,
       });
       const res = await clientWallet.writeContract(request);
       await publicClient.waitForTransactionReceipt({ hash: res });
-      setApprovedSpend(true);
+      setApprovedSpend((prev) => ({
+        ...prev,
+        [prerolls ? "prerolls" : "market"]: true,
+      }));
     } catch (err: any) {
       console.error(err.message);
     }
-    setCollectPostLoading(false);
+    setCheckoutLoading(false);
   };
 
   const checkApproved = async () => {
     try {
+      const prerolls = context?.purchaseMode == "prerolls" ? true : false;
+      const currency = (
+        prerolls
+          ? checkoutCurrency
+          : chooseCartItem?.market?.item?.infraCurrency
+      ) as `0x${string}`;
+
+      if (!currency) return;
+
       const data = await publicClient.readContract({
-        address: checkoutCurrency?.toLowerCase() as `0x${string}`,
+        address: currency,
         abi: [
           {
             inputs: [
@@ -425,39 +544,79 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
           },
         ],
         functionName: "allowance",
-        args: [address as `0x${string}`, COIN_OP_OPEN_ACTION],
+        args: [
+          address as `0x${string}`,
+          prerolls ? COIN_OP_OPEN_ACTION : COIN_OP_MARKET,
+        ],
       });
 
       if (address) {
-        if (
-          Number((data as any)?.toString()) /
-          ((Number(
-            (context?.cartItems || [])?.reduce(
-              (accumulator, currentItem) =>
-                accumulator +
-                Number(currentItem?.item?.price) * currentItem.chosenAmount,
+        if (prerolls) {
+          if (
+            Number((data as any)?.toString()) /
+            ((Number(
+              (context?.cartItems || [])?.reduce(
+                (accumulator, currentItem) =>
+                  accumulator +
+                  Number(currentItem?.item?.price) * currentItem.chosenAmount,
+                0
+              ) *
+                10 ** 18
+            ) /
+              Number(
+                context?.oracleData?.find(
+                  (oracle) =>
+                    oracle.currency?.toLowerCase() ===
+                    checkoutCurrency?.toLowerCase()
+                )?.rate
+              )) *
+              Number(
+                context?.oracleData?.find(
+                  (oracle) =>
+                    oracle.currency?.toLowerCase() ===
+                    checkoutCurrency?.toLowerCase()
+                )?.wei
+              ))
+          ) {
+            setApprovedSpend((prev) => ({
+              ...prev,
+              prerolls: true,
+            }));
+          } else {
+            setApprovedSpend((prev) => ({
+              ...prev,
+              prerolls: false,
+            }));
+          }
+        } else {
+          if (
+            Number((data as any)?.toString()) >=
+            (context?.cartItemsMarket || [])?.reduce(
+              (acc, item) =>
+                acc +
+                ((Number(item?.item?.physicalPrice) +
+                  Number(
+                    item?.item?.childReferences?.reduce(
+                      (acc2, item2) => acc2 + Number(item.item.physicalPrice),
+                      0
+                    )
+                  )) /
+                  10 ** 18) *
+                  item.chosenAmount,
               0
             ) *
               10 ** 18
-          ) /
-            Number(
-              context?.oracleData?.find(
-                (oracle) =>
-                  oracle.currency?.toLowerCase() ===
-                  checkoutCurrency?.toLowerCase()
-              )?.rate
-            )) *
-            Number(
-              context?.oracleData?.find(
-                (oracle) =>
-                  oracle.currency?.toLowerCase() ===
-                  checkoutCurrency?.toLowerCase()
-              )?.wei
-            ))
-        ) {
-          setApprovedSpend(true);
-        } else {
-          setApprovedSpend(false);
+          ) {
+            setApprovedSpend((prev) => ({
+              ...prev,
+              market: true,
+            }));
+          } else {
+            setApprovedSpend((prev) => ({
+              ...prev,
+              market: false,
+            }));
+          }
         }
       }
     } catch (err: any) {
@@ -466,19 +625,81 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
   };
 
   useEffect(() => {
-    if (context?.lensConectado?.profile) {
+    if (
+      context?.lensConectado?.profile &&
+      context?.purchaseMode == "prerolls" &&
+      Number(context?.cartItems?.length) > 0
+    ) {
       checkApproved();
     }
-  }, [checkoutCurrency, context?.lensConectado?.profile]);
+    if (
+      address &&
+      context?.purchaseMode == "appMarket" &&
+      Number(context?.cartItemsMarket?.length) > 0
+    ) {
+      checkApproved();
+    }
+  }, [
+    checkoutCurrency,
+    context?.lensConectado?.profile,
+    address,
+    context?.purchaseMode,
+  ]);
 
   useEffect(() => {
-    if (Number(context?.cartItems?.length) > 0 && !chooseCartItem) {
-      setChooseCartItem(context?.cartItems?.[0]!);
+    if (
+      Number(context?.cartItems?.length) > 0 &&
+      !chooseCartItem &&
+      context?.purchaseMode == "prerolls"
+    ) {
+      setChooseCartItem((prev) => ({
+        ...prev,
+        prerolls: context?.cartItems?.[0]!,
+      }));
     }
-  }, [context?.cartItems]);
+
+    if (
+      Number(context?.cartItems?.length) > 0 &&
+      !chooseCartItem &&
+      context?.purchaseMode == "appMarket"
+    ) {
+      setChooseCartItem((prev) => ({
+        ...prev,
+        market: context?.cartItemsMarket?.[0]!,
+      }));
+    }
+  }, [context?.cartItemsMarket, context?.cartItems, context?.purchaseMode]);
+
+  useEffect(() => {
+    if (
+      context?.purchaseMode === "appMarket" &&
+      Number(context?.cartItemsMarket?.length) > 0
+    ) {
+      setChooseCartItem((prev) => ({
+        ...prev,
+        market: context?.cartItemsMarket?.[0]!,
+      }));
+      setStartIndex((prev) => ({
+        ...prev,
+        market: 0,
+      }));
+    } else if (
+      context?.purchaseMode === "prerolls" &&
+      Number(context?.cartItems?.length) > 0
+    ) {
+      setChooseCartItem((prev) => ({
+        ...prev,
+        prerolls: context?.cartItems?.[0]!,
+      }));
+      setStartIndex((prev) => ({
+        ...prev,
+        prerolls: 0,
+      }));
+    }
+  }, [context?.purchaseMode]);
 
   return {
-    collectPostLoading,
+    checkoutLoading,
     collectItem,
     fulfillmentDetails,
     setFulfillmentDetails,
@@ -492,6 +713,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
     setStartIndex,
     chooseCartItem,
     setChooseCartItem,
+    buyMarketItems,
   };
 };
 

@@ -2,7 +2,6 @@ import { INFURA_GATEWAY } from "@/app/lib/constants";
 import { ModalContext, ScrollContext } from "@/app/providers";
 import Image from "next/legacy/image";
 import { FunctionComponent, JSX, useContext } from "react";
-import { CartItem } from "../../../Prerolls/types/prerolls.types";
 import { usePathname } from "next/navigation";
 import Checkout from "./Checkout";
 import useCheckout from "../../hooks/useCheckout";
@@ -13,8 +12,9 @@ const Purchase: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
   const context = useContext(ModalContext);
   const path = usePathname();
   const { address } = useAccount();
+
   const {
-    collectPostLoading,
+    checkoutLoading,
     collectItem,
     fulfillmentDetails,
     setFulfillmentDetails,
@@ -23,25 +23,63 @@ const Purchase: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
     openCountryDropdown,
     setOpenCountryDropdown,
     approveSpend,
-    chooseCartItem,
-    setChooseCartItem,
     isApprovedSpend,
     startIndex,
     setStartIndex,
+    chooseCartItem,
+    setChooseCartItem,
+    buyMarketItems,
   } = useCheckout(dict, address);
+
+  const getImageUrl = (item: any) => {
+    if (!item) return "";
+    if (context?.purchaseMode === "appMarket") {
+      return `${INFURA_GATEWAY}/ipfs/${
+        item?.item?.metadata?.image?.split("ipfs://")?.[1]
+      }`;
+    }
+    return `${INFURA_GATEWAY}/ipfs/${
+      item?.item?.metadata?.images?.[0]?.split("ipfs://")?.[1]
+    }`;
+  };
+
   return (
     <div className="relative w-full h-fit flex flex-col">
       <div
         className="relative w-full h-fit flex flex-col gap-2"
         ref={scrollContext?.scrollRef}
       >
+        <div className="relative w-full h-fit flex items-center justify-center gap-2 mb-4">
+          <div
+            className={`relative w-fit h-fit px-4 py-2 cursor-pointer border font-bit text-xs rounded-md ${
+              context?.purchaseMode === "prerolls"
+                ? "bg-ama text-black border-ama"
+                : "bg-black text-white border-white/50"
+            } hover:opacity-70 active:scale-95`}
+            onClick={() => context?.setPurchaseMode("prerolls")}
+          >
+            {dict?.Common?.prerolls}
+          </div>
+          <div
+            className={`relative w-fit h-fit px-4 py-2 cursor-pointer border font-bit text-xs rounded-md ${
+              context?.purchaseMode === "appMarket"
+                ? "bg-ama text-black border-ama"
+                : "bg-black text-white border-white/50"
+            } hover:opacity-70 active:scale-95`}
+            onClick={() => context?.setPurchaseMode("appMarket")}
+          >
+            {dict?.Common?.appMarket}
+          </div>
+        </div>
         <div className="relative w-full flex flex-col synth:flex-row items-center justify-start gap-5">
           <Checkout
             dict={dict}
             setCartItem={setChooseCartItem}
             cartItem={chooseCartItem}
-            handleCheckoutCrypto={collectItem}
-            cryptoCheckoutLoading={collectPostLoading}
+            handleCheckout={
+              context?.purchaseMode == "prerolls" ? collectItem : buyMarketItems
+            }
+            checkoutLoading={checkoutLoading}
             setCheckoutCurrency={setCheckoutCurrency}
             checkoutCurrency={checkoutCurrency}
             fulfillmentDetails={fulfillmentDetails}
@@ -50,49 +88,59 @@ const Purchase: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
             openCountryDropDown={openCountryDropdown}
             setOpenCountryDropDown={setOpenCountryDropdown}
             setFulfillmentDetails={setFulfillmentDetails}
+            purchaseMode={context?.purchaseMode!}
+            currentCartItems={
+              context?.purchaseMode == "prerolls"
+                ? context?.cartItems
+                : context?.cartItemsMarket
+            }
           />
           <div className="relative w-full h-fit flex flex-col gap-3 justify-center items-center">
             <div className="relative w-full preG:w-96 h-96 xl:h-80 justify-end flex items-center">
-              <div
-                className="relative w-full h-full rounded-md border border-ama cursor-pointer hover:opacity-80 bg-cross"
-                onClick={() =>
-                  Number(context?.cartItems?.length) > 0 &&
-                  context?.setVerImagen(
-                    `${INFURA_GATEWAY}/ipfs/${
-                      chooseCartItem?.item?.metadata?.images?.[0]?.split(
-                        "ipfs://"
-                      )?.[1]
-                    }`
-                  )
-                }
-              >
-                <Image
-                  src={`${INFURA_GATEWAY}/ipfs/${
-                    chooseCartItem?.item?.metadata?.images?.[0]?.split(
-                      "ipfs://"
-                    )?.[1]
-                  }`}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-md"
-                  draggable={false}
-                />
-              </div>
+              {Number(context?.cartItems?.length) > 0 && chooseCartItem ? (
+                <div
+                  className="relative w-full h-full rounded-md border border-ama cursor-pointer hover:opacity-80 bg-cross"
+                  onClick={() =>
+                    Number(context?.cartItems?.length) > 0 &&
+                    context?.setVerImagen(getImageUrl(chooseCartItem))
+                  }
+                >
+                  <Image
+                    src={getImageUrl(chooseCartItem)}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-md"
+                    draggable={false}
+                  />
+                </div>
+              ) : (
+                <div className="relative w-full h-full rounded-md border border-ama bg-cross flex items-center justify-center text-white font-bit text-xs">
+                  {dict?.Common?.fill}
+                </div>
+              )}
             </div>
             <div className="relative w-full preG:w-fit h-fit flex flex-col preG:flex-row gap-3 text-white items-center justify-center text-center">
               <div className="relative flex flex-col preG:flex-row w-full h-full gap-3 items-center justify-center">
                 <div className="relative w-full h-fit flex items-center justify-center gap-2">
                   {(
                     (Number(context?.cartItems?.length) <= 4
-                      ? context?.cartItems || []
+                      ? context?.purchaseMode == "prerolls"
+                        ? context?.cartItems
+                        : context?.cartItemsMarket || []
                       : (Array.from(
                           { length: 4 },
                           (_, index) =>
-                            context?.cartItems?.[
-                              (startIndex + index) % context?.cartItems?.length
+                            (context?.purchaseMode == "prerolls"
+                              ? context?.cartItems
+                              : context?.cartItemsMarket)?.[
+                              ((context?.purchaseMode == "prerolls"
+                                ? startIndex.prerolls
+                                : startIndex.market) +
+                                index) %
+                                Number(context?.cartItems?.length)
                             ]
-                        ) as CartItem[])) || []
-                  ).map((item: CartItem, index: number) => {
+                        ) as any[])) || []
+                  ).map((item: any, index: number) => {
                     return (
                       <div
                         key={index}
@@ -100,11 +148,7 @@ const Purchase: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                         onClick={() => setChooseCartItem(item)}
                       >
                         <Image
-                          src={`${INFURA_GATEWAY}/ipfs/${
-                            item?.item?.metadata?.images?.[0]?.split(
-                              "ipfs://"
-                            )?.[1]
-                          }`}
+                          src={getImageUrl(item)}
                           layout="fill"
                           objectFit="cover"
                           className="rounded-md"
@@ -118,12 +162,31 @@ const Purchase: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                   <div
                     className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center"
                     onClick={() => {
-                      setStartIndex((prevIndex) =>
-                        prevIndex === 0
-                          ? Number(context?.cartItems?.length) - 1
-                          : prevIndex - 1
-                      );
-                      setChooseCartItem(context?.cartItems?.[startIndex]!);
+                      setStartIndex((prev) => ({
+                        ...prev,
+                        [context?.purchaseMode == "prerolls"
+                          ? "prerolls"
+                          : "market"]:
+                          (context?.purchaseMode == "prerolls"
+                            ? startIndex.prerolls
+                            : startIndex.market) === 0
+                            ? Number(context?.cartItems?.length) - 1
+                            : (context?.purchaseMode == "prerolls"
+                                ? startIndex.prerolls
+                                : startIndex.market) - 1,
+                      }));
+                      setChooseCartItem((prev) => ({
+                        ...prev,
+                        [context?.purchaseMode == "prerolls"
+                          ? "prerolls"
+                          : "market"]: (context?.purchaseMode == "prerolls"
+                          ? context?.cartItems
+                          : context?.cartItemsMarket)?.[
+                          context?.purchaseMode == "prerolls"
+                            ? startIndex.prerolls
+                            : startIndex.market
+                        ]!,
+                      }));
                     }}
                   >
                     <Image
@@ -135,11 +198,29 @@ const Purchase: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                   <div
                     className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center"
                     onClick={() => {
-                      setStartIndex(
-                        (prevIndex) =>
-                          (prevIndex + 1) % Number(context?.cartItems?.length)
-                      );
-                      setChooseCartItem(context?.cartItems?.[startIndex]!);
+                      setStartIndex((prev) => ({
+                        ...prev,
+                        [context?.purchaseMode == "prerolls"
+                          ? "prerolls"
+                          : "market"]:
+                          ((context?.purchaseMode == "prerolls"
+                            ? startIndex.prerolls
+                            : startIndex.market) +
+                            1) %
+                          Number(context?.cartItems?.length),
+                      }));
+                      setChooseCartItem((prev) => ({
+                        ...prev,
+                        [context?.purchaseMode == "prerolls"
+                          ? "prerolls"
+                          : "market"]: (context?.purchaseMode == "prerolls"
+                          ? context?.cartItems
+                          : context?.cartItemsMarket)?.[
+                          context?.purchaseMode == "prerolls"
+                            ? startIndex.prerolls
+                            : startIndex.market
+                        ]!,
+                      }));
                     }}
                   >
                     <Image

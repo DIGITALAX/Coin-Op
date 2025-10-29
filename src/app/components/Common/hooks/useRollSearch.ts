@@ -9,10 +9,8 @@ import { Post } from "@lens-protocol/client";
 
 const useRollSearch = (dict: any) => {
   const context = useContext(ModalContext);
-  const scrollContext = useContext(ScrollContext);
   const synthContext = useContext(SynthContext);
   const [prompt, setPrompt] = useState<string>("");
-  const [cartAnim, setCartAnim] = useState<boolean>(false);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
 
   const handleRollSearch = async () => {
@@ -124,34 +122,6 @@ const useRollSearch = (dict: any) => {
     setSearchLoading(false);
   };
 
-  const handlePromptChoose = async (preroll: Preroll) => {
-    const response = await fetch(
-      `${INFURA_GATEWAY}/ipfs/${
-        preroll.metadata?.images?.[0].split("ipfs://")[1]
-      }`
-    );
-    const data = await response.blob();
-    const image = new File([data], "coinop", { type: "image/png" });
-
-    synthContext?.setSynthConfig({
-      type: "img2img",
-      prompt: preroll?.metadata?.prompt || "",
-      image,
-    });
-
-    if (!scrollContext?.synthRef || !scrollContext?.synthRef?.current) return;
-
-    scrollContext?.synthRef?.current.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-
-    setTimeout(() => {
-      scrollContext.synthRef.current!.scrollTop =
-        scrollContext?.synthRef.current!.scrollHeight;
-    }, 500);
-  };
-
   const handleAddToCart = (preroll: Preroll) => {
     const existing = [...(context?.cartItems || [])].findIndex(
       (item) =>
@@ -206,7 +176,7 @@ const useRollSearch = (dict: any) => {
             : preroll?.metadata?.sizes?.indexOf(preroll?.chosenSize),
       });
     }
-
+    context?.setPurchaseMode("prerolls");
     context?.setCartItems(newCartItems);
     context?.setCartAddAnim(preroll?.metadata?.images[0]);
   };
@@ -215,10 +185,8 @@ const useRollSearch = (dict: any) => {
     handleRollSearch,
     prompt,
     setPrompt,
-    handlePromptChoose,
     handleAddToCart,
     searchLoading,
-    cartAnim,
   };
 };
 

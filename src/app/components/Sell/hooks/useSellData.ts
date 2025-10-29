@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Child, ResponseData, SellData, Template } from "../types/sell.types";
-import { DATA, FULFILLERS } from "@/app/lib/constants";
+import { FULFILLERS } from "@/app/lib/constants";
 import { getChild, getTemplate } from "../../../../../graphql/queries/getItems";
 import { ensureMetadata } from "@/app/lib/helpers/metadata";
 
@@ -28,7 +28,6 @@ const useSellData = (searchParams: {
           }
 
           const data = (await response.json()) as ResponseData;
-          console.log({ data });
 
           const resultFront = await getTemplate(
             Number(data.front.templateId),

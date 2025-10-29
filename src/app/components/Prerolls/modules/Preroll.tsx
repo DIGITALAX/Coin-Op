@@ -220,7 +220,7 @@ const Preroll: FunctionComponent<PrerollProps> = ({
                       : preroll?.metadata?.sizes?.indexOf(preroll.chosenSize),
                 });
               }
-
+              context?.setPurchaseMode("prerolls");
               context?.setCartItems(newCartItems);
               context?.setCartAddAnim(preroll?.metadata?.images[0]);
             }}

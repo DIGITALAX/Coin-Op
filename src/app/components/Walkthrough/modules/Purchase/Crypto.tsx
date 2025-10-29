@@ -7,9 +7,10 @@ import { useModal } from "connectkit";
 import { CryptoProps } from "../../types/walkthrough.types";
 
 const Crypto: FunctionComponent<CryptoProps> = ({
-  handleCheckoutCrypto,
-  cryptoCheckoutLoading,
+  handleCheckout,
+  checkoutLoading,
   approved,
+  currentCartItems,
   handleApproveSpend,
   dict,
 }): JSX.Element => {
@@ -24,41 +25,45 @@ const Crypto: FunctionComponent<CryptoProps> = ({
   return (
     <div
       className={`relative w-full h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex  ${
-        !lensCargando && !cryptoCheckoutLoading
+        !lensCargando && !checkoutLoading
           ? "cursor-pointer active:scale-95"
           : "opacity-70"
       } `}
       onClick={
-        !lensCargando && !cryptoCheckoutLoading
+        !lensCargando && !checkoutLoading
           ? !address
             ? () => openOnboarding()
-            : chainId !== 137
+            : chainId !== 37111
             ? () => openSwitchNetworks()
-            : !context?.lensConectado?.profile
+            : !context?.lensConectado?.profile &&
+              context?.purchaseMode == "prerolls"
             ? () => handleConectarse()
-            : !approved
+            : !(context?.purchaseMode == "prerolls"
+                ? approved?.prerolls
+                : approved?.market)
             ? () =>
-                Number(context?.cartItems?.length) > 0 && handleApproveSpend!()
-            : () =>
-                Number(context?.cartItems?.length) > 0 &&
-                handleCheckoutCrypto!()
+                Number(currentCartItems?.length) > 0 && handleApproveSpend!()
+            : () => Number(currentCartItems?.length) > 0 && handleCheckout!()
           : () => {}
       }
     >
       <div
         className={`relative w-fit h-fit flex justify-center items-center ${
-          (lensCargando || cryptoCheckoutLoading) && "animate-spin"
+          (lensCargando || checkoutLoading) && "animate-spin"
         }`}
       >
-        {lensCargando || cryptoCheckoutLoading ? (
+        {lensCargando || checkoutLoading ? (
           <AiOutlineLoading size={15} color={"white"} />
-        ) : Number(context?.cartItems.length) < 1 ? (
+        ) : Number(currentCartItems?.length) < 1 ? (
           dict?.Common?.add
         ) : !address ? (
           dict?.Common?.conn
-        ) : !context?.lensConectado?.profile ? (
+        ) : !context?.lensConectado?.profile &&
+          context?.purchaseMode == "prerolls" ? (
           "LENS"
-        ) : !approved ? (
+        ) : !(context?.purchaseMode == "prerolls"
+            ? approved?.prerolls
+            : approved?.market) ? (
           dict?.Common?.app
         ) : (
           dict?.Common?.check

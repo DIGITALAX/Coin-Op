@@ -105,7 +105,17 @@ export default function Parent({ dict }: ParentProps) {
                     {dict?.Account?.physicalPrice}
                   </div>
                   <div className="relative w-fit h-fit flex items-center justify-center font-sat">
-                    {Number(parent.physicalPrice) / 10 ** 18} MONA
+                    {(Number(parent.physicalPrice) +
+                      Number(
+                        parent?.childReferences?.reduce(
+                          (accumulator, currentItem) =>
+                            accumulator +
+                            Number(currentItem.child?.physicalPrice),
+                          0
+                        )
+                      )) /
+                      10 ** 18}{" "}
+                    MONA
                   </div>
                 </div>
 
@@ -120,19 +130,10 @@ export default function Parent({ dict }: ParentProps) {
 
                 <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
                   <div className="relative w-fit h-fit flex items-center justify-center">
-                    {dict?.Account?.parentStatus}
-                  </div>
-                  <div className="relative w-fit h-fit flex items-center justify-center font-sat text-sol">
-                    {parent.status}
-                  </div>
-                </div>
-
-                <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
-                  <div className="relative w-fit h-fit flex items-center justify-center">
                     {dict?.Account?.parentTxHash}
                   </div>
                   <Link
-                    className="relative w-fit h-fit flex items-center justify-center font-sat cursor-pointer"
+                    className="relative w-fit h-fit flex items-center justify-center font-sat cursor-pointer break-all"
                     href={`https://explorer.lens.xyz/tx/${parent.transactionHash}`}
                     target="_blank"
                     rel="noreferrer"

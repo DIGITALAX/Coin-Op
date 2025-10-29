@@ -69,7 +69,6 @@ const InteractBar: FunctionComponent<InteractBarProps> = ({
                 item.chosenColor === preroll?.chosenColor
             );
 
-
             let newCartItems: CartItem[] = [...(context?.cartItems || [])];
 
             if (
@@ -117,7 +116,7 @@ const InteractBar: FunctionComponent<InteractBarProps> = ({
                     : preroll?.metadata?.sizes?.indexOf(preroll?.chosenSize),
               });
             }
-
+            context?.setPurchaseMode("prerolls");
             context?.setCartItems(newCartItems);
             context?.setCartAddAnim(preroll?.metadata?.images[0]);
           },

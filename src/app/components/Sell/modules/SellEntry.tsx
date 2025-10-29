@@ -42,12 +42,12 @@ export default function SellEntry({ dict, searchParams }: SellProps) {
 
   if (error) {
     return (
-      <div className="relative w-full min-h-screen h-full items-center justify-center flex">
-        <div className="relative w-fit h-fit flex flex-col items-center justify-center gap-3 p-6 border border-red-500/20 bg-red-500/10 rounded-sm">
-          <div className="text-red-400 font-bit text-lg">
+      <div className="relative w-full text-white min-h-screen h-full items-center justify-center flex">
+        <div className="relative w-fit h-fit flex flex-col items-center justify-center gap-3">
+          <div className="font-bit text-lg">
             {dict?.Common?.error}
           </div>
-          <div className="text-red-300 font-herm text-sm text-center">
+          <div className="font-herm text-sm text-center">
             {error}
           </div>
         </div>

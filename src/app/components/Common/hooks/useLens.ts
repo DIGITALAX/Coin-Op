@@ -57,7 +57,7 @@ const useLens = (
     setLensCargando(true);
     try {
       const signer = createWalletClient({
-        chain: chains.mainnet,
+        chain: chains.testnet,
         transport: custom(window.ethereum!),
         account: address,
       });
@@ -81,7 +81,7 @@ const useLens = (
 
         if (authenticated.isErr()) {
           console.error(authenticated.error);
-          contexto?.setError?.(dict.Common.auth);
+          contexto?.setError?.(dict?.Common.auth);
           setLensCargando(false);
           return;
         }
@@ -102,7 +102,7 @@ const useLens = (
 
         if (authenticatedOnboarding.isErr()) {
           console.error(authenticatedOnboarding.error);
-          contexto?.setError?.(dict.Common.onboard);
+          contexto?.setError?.(dict?.Common.onboard);
 
           setLensCargando(false);
           return;

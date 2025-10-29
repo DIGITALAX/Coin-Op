@@ -38,12 +38,12 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                 {[
                   {
                     type: "drop",
-                    title: dict.Common.who,
-                    dropValues: [dict.Common.todos, dict.Common.seguidor],
+                    title: dict?.Common.who,
+                    dropValues: [dict?.Common.todos, dict?.Common.seguidor],
                     dropOpen: drops.whoCollectsOpen,
                     chosenValue: context?.postCollect?.type?.followerOnGraph
-                      ? dict.Common.seguidor
-                      : dict.Common.todos,
+                      ? dict?.Common.seguidor
+                      : dict?.Common.todos,
                     showObject: true,
                     openDropdown: () =>
                       setDrops((prev) => ({
@@ -54,7 +54,7 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                       context?.setPostCollect((prev) => {
                         let col = prev?.type;
                         let followerOnGraph =
-                          item === dict.Common.seguidor
+                          item === dict?.Common.seguidor
                             ? {
                                 followerOnGraph: {
                                   globalGraph: true as true,
@@ -92,8 +92,8 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                   },
                   {
                     type: "drop",
-                    title: dict.Common.award,
-                    dropValues: [dict.Common.yes, "No"],
+                    title: dict?.Common.award,
+                    dropValues: [dict?.Common.yes, "No"],
                     dropOpen: drops.creatorAwardOpen,
                     chosenValue: drops.award,
                     showObject: true,
@@ -108,7 +108,7 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
 
                         let followerOnGraph =
                           context?.postCollect?.type?.followerOnGraph ===
-                          dict.Common.seguidor
+                          dict?.Common.seguidor
                             ? {
                                 followerOnGraph: {
                                   globalGraph: true as true,
@@ -158,11 +158,11 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                   },
                   {
                     type: "input",
-                    title: dict.Common.awardAmount,
+                    title: dict?.Common.awardAmount,
                     chosenValue:
                       context?.postCollect?.type?.payToCollect?.amount?.value ||
                       "0",
-                    showObject: drops.award === dict.Common.yes ? true : false,
+                    showObject: drops.award === dict?.Common.yes ? true : false,
                     setValue: (item: string) => {
                       if (isNaN(Number(item))) return;
                       context?.setPostCollect((prev) => {
@@ -206,7 +206,7 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                   },
                   {
                     type: "drop",
-                    title: dict.Common.moneda,
+                    title: dict?.Common.moneda,
                     dropValues: ASSETS?.map((item) => item.symbol),
                     chosenValue:
                       ASSETS?.find((item) => {
@@ -219,7 +219,7 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                         }
                       })?.symbol ?? ASSETS?.[0]?.symbol,
                     dropOpen: drops.currencyOpen,
-                    showObject: drops.award === dict.Common.yes ? true : false,
+                    showObject: drops.award === dict?.Common.yes ? true : false,
                     openDropdown: () =>
                       setDrops((prev) => ({
                         ...prev,
@@ -264,12 +264,12 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                   },
                   {
                     type: "input",
-                    title: dict.Common.ref,
+                    title: dict?.Common.ref,
                     chosenValue: String(
                       context?.postCollect?.type?.payToCollect?.referralShare ||
                         0
                     ),
-                    showObject: drops.award === dict.Common.yes ? true : false,
+                    showObject: drops.award === dict?.Common.yes ? true : false,
                     setValue: (item: string) => {
                       if (isNaN(Number(item))) return;
                       context?.setPostCollect((prev) => {
@@ -299,8 +299,8 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                   },
                   {
                     type: "drop",
-                    title: dict.Common.limit,
-                    dropValues: [dict.Common.yes, "No"],
+                    title: dict?.Common.limit,
+                    dropValues: [dict?.Common.yes, "No"],
                     dropOpen: drops.editionOpen,
                     chosenValue: drops.edition,
                     showObject: true,
@@ -336,11 +336,11 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                   },
                   {
                     type: "input",
-                    title: dict.Common.edition,
+                    title: dict?.Common.edition,
                     chosenValue:
                       context?.postCollect?.type?.collectLimit || "0",
                     showObject:
-                      drops?.edition === dict.Common.yes ? true : false,
+                      drops?.edition === dict?.Common.yes ? true : false,
                     setValue: (item: string) => {
                       if (isNaN(Number(item))) return;
                       context?.setPostCollect((prev) => ({
@@ -358,8 +358,8 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
                   },
                   {
                     type: "drop",
-                    title: dict.Common.time,
-                    dropValues: [dict.Common.yes, "No"],
+                    title: dict?.Common.time,
+                    dropValues: [dict?.Common.yes, "No"],
                     dropOpen: drops.timeOpen,
                     chosenValue: drops.time,
                     showObject: true,
@@ -376,7 +376,7 @@ const PostCollect: FunctionComponent<{ dict: any }> = ({
 
                       context?.setPostCollect((prev) => {
                         let col = {};
-                        if (item === dict.Common.yes) {
+                        if (item === dict?.Common.yes) {
                           col = {
                             endsAt: new Date(
                               new Date().getTime() + 24 * 60 * 60 * 1000

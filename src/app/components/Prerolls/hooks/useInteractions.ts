@@ -62,10 +62,10 @@ const useInteractions = (dict: any, post: Post) => {
             hasUpvoted: reaction ? false : true,
           });
         } else {
-          contexto?.setError?.(dict.Common.error);
+          contexto?.setError?.(dict?.Common.error);
         }
       } else {
-        contexto?.setError?.(dict.Common.error);
+        contexto?.setError?.(dict?.Common.error);
       }
     } catch (err: any) {
       console.error(err.message);
@@ -88,7 +88,7 @@ const useInteractions = (dict: any, post: Post) => {
       });
       contexto?.setIndexar(Indexar.Indexando);
       if (res.isErr()) {
-        contexto?.setError?.(dict.Common.error);
+        contexto?.setError?.(dict?.Common.error);
         setInteractionLoading({
           ...interactionLoading,
           mirror: false,
@@ -107,7 +107,7 @@ const useInteractions = (dict: any, post: Post) => {
         });
         contexto?.setIndexar(Indexar.Exito);
       } else {
-        contexto?.setError?.(dict.Common.error);
+        contexto?.setError?.(dict?.Common.error);
       }
     } catch (err: any) {
       console.error(err.message);
