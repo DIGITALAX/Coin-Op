@@ -127,17 +127,7 @@ const AppMarket: FunctionComponent<AppMarketProps> = ({
                         {item?.metadata?.title}
                       </div>
                       <div className="relative w-fit h-fit text-[0.6rem] text-ama">
-                        {(Number(item.physicalPrice) +
-                          Number(
-                            item?.childReferences?.reduce(
-                              (accumulator, currentItem) =>
-                                accumulator +
-                                Number(currentItem.child?.physicalPrice),
-                              0
-                            )
-                          )) /
-                          10 ** 18}{" "}
-                        MONA
+                        {Number(item.totalPhysicalPrice) / 10 ** 18} MONA
                       </div>
                       <div className="relative w-fit h-fit text-[0.55rem] text-white/70">
                         {item?.currentPhysicalEditions} /{" "}

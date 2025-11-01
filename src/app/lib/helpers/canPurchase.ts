@@ -39,42 +39,42 @@ export const ensurePurchasable = async (
       continue;
     }
 
-    if ((item as Template).templateId) {
-      const templateOk = await requireTemplateCanPurchase(
-        item.templateContract,
-        item.templateId,
-        amount,
-        true,
-        publicClient
-      );
-      if (!templateOk) return false;
+    // if ((item as Template).templateId) {
+    //   const templateOk = await requireTemplateCanPurchase(
+    //     item.templateContract,
+    //     item.templateId,
+    //     amount,
+    //     true,
+    //     publicClient
+    //   );
+    //   if (!templateOk) return false;
 
-      const placements = await fetchTemplatePlacements(
-        item.templateContract,
-        item.templateId,
-        publicClient
-      );
+    //   const placements = await fetchTemplatePlacements(
+    //     item.templateContract,
+    //     item.templateId,
+    //     publicClient
+    //   );
 
-      const childrenOk = await walkChildReferences(
-        placements,
-        { isPhysical: true },
-        publicClient
-      );
-      if (!childrenOk) return false;
-      continue;
-    }
+    //   const childrenOk = await walkChildReferences(
+    //     placements,
+    //     { isPhysical: true },
+    //     publicClient
+    //   );
+    //   if (!childrenOk) return false;
+    //   continue;
+    // }
 
-    if ((item as Child).childId) {
-      const childOk = await requireChildCanPurchase(
-        item.childContract,
-        item.childId,
-        amount,
-        true,
-        publicClient
-      );
-      if (!childOk) return false;
-      continue;
-    }
+    // if ((item as Child).childId) {
+    //   const childOk = await requireChildCanPurchase(
+    //     item.childContract,
+    //     item.childId,
+    //     amount,
+    //     true,
+    //     publicClient
+    //   );
+    //   if (!childOk) return false;
+    //   continue;
+    // }
 
     return false;
   }
@@ -133,7 +133,7 @@ const requireChildCanPurchase = async (
   return Boolean(ok);
 };
 
-const fetchTemplatePlacements = async (
+export const fetchTemplatePlacements = async (
   templateContract: `0x${string}`,
   templateId: string | number,
   publicClient: PublicClient

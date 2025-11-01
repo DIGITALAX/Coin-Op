@@ -15,17 +15,17 @@ export const VENICE_BASE_URL: string = "https://api.venice.ai/api/v1";
 export const LOCALES: string[] = ["en", "es"];
 
 export const COIN_OP_PARENT: `0x${string}` =
-  "0x270026069af74e377F82A50eA683B9e21057682D";
+  "0x5215f9b79bee0f043dc7dcce870750033a8480c5";
 export const COIN_OP_DESIGNER: `0x${string}` =
-  "0xda335d98621b0503b8e2f48c80385f02668cf238";
+  "0x1c7ec8b9100ae14cf0d2eacde7b08cda6863fc44";
 export const COIN_OP_MARKET: `0x${string}` =
-  "0x52f565a7e692eb97f2E76A48F0da1c7f68b3AaD2";
+  "0xdb28aaf0aee89b4383d59f6da948883f538e9da5";
 export const INFRA_ID: string =
-  "0x0000000000000000000000000000000000000000000000000000000000000004";
+  "0x0000000000000000000000000000000000000000000000000000000000000001";
 export const MATERIAL_CHILD: `0x${string}` =
-  "0xd15b2415812bb864796c664ae08006eb9f1f72f6";
+  "0xadc3f6c9fe006d997fa6124ccc253c6de6244e85";
 export const COLOR_CHILD: `0x${string}` =
-  "0xe2b5fe11efc1f996eef76caf6925e8db0725b1d7";
+  "0x59271b2d618dd4fe5ab998d8ad8a3da77f15c716";
 export const SIZES: string[] = ["xxs", "xs", "s", "m", "l", "xl", "2xl"];
 export const APP_COLORS: string[] = [
   "bg-morado",
@@ -208,8 +208,8 @@ export const ASSETS: {
     symbol: "MONA",
     decimals: 18,
     contract: {
-      address: "0x28547B5b6B405A1444A17694AC84aa2d6A03b3Bd",
-      // address: "0x72ab7C7f3F6FF123D08692b0be196149d4951a41",
+      // address: "0x28547B5b6B405A1444A17694AC84aa2d6A03b3Bd",
+      address: "0x3D7f4Fc4E17Ead2ABBcf282A38F209D683e03835",
       chainId: 232,
     },
     cover: "QmS6f8vrNZok9j4pJttUuWpNrjsf4vP9RD5mRL36z6UdaL",

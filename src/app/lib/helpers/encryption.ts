@@ -75,7 +75,6 @@ export const decryptData = async (
   address: string
 ): Promise<any> => {
   const encrypted = encryptedData[address.toLowerCase()];
-
   if (!encrypted) {
     throw new Error("No encrypted data found for this address");
   }

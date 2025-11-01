@@ -95,6 +95,7 @@ export interface DesignerProps {
 export interface Parent {
   infraId: string;
   designId: string;
+  totalPhysicalPrice: string;
   canCreate: boolean;
   canApprove: boolean;
   parentContract: string;

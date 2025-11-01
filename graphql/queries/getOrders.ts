@@ -53,7 +53,6 @@ export const getOrders = async (buyer: string): Promise<any> => {
 const ORDERS_MARKET = `
 query($buyer: String!) {
   orders(where: {buyer: $buyer}) {
-      totalPayments
       orderStatus
       orderId
       fulfillmentData
@@ -106,6 +105,7 @@ query($buyer: String!) {
       }
       parent {
         uri
+        totalPhysicalPrice
         metadata {
           title
           image

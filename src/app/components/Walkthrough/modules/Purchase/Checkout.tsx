@@ -59,14 +59,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                   ?.reduce(
                     (accumulator: number, currentItem) =>
                       accumulator +
-                      ((Number(currentItem?.item?.physicalPrice) +
-                        Number(
-                          currentItem?.item?.childReferences?.reduce(
-                            (acc, item2) =>
-                              acc + Number(item2?.child?.physicalPrice),
-                            0
-                          )
-                        )) /
+                      (Number(currentItem?.item?.totalPhysicalPrice) /
                         10 ** 18) *
                         currentItem.chosenAmount,
                     0

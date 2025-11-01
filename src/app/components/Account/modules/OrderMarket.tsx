@@ -65,7 +65,9 @@ const OrderMarket: FunctionComponent<OrderMarketProps> = ({
             {dict?.Account?.price}
           </div>
           <div className="relative w-fit h-fit flex items-center justify-center font-sat">
-            {`$MONA`} {Number(order.totalPayments)}
+            {`$MONA`}{" "}
+            {(Number(order.parent.totalPhysicalPrice) / 10 ** 18) *
+              Number(order.parentAmount)}
           </div>
         </div>
         <div className="relative w-fit h-fit items-start justify-center flex flex-col gap-2">
@@ -320,9 +322,7 @@ const OrderMarket: FunctionComponent<OrderMarketProps> = ({
                         {dict?.Account?.currentStep}
                       </div>
                       <div className="font-sat">
-                        {order?.fulfillment?.currentStep ??
-                          dict?.Account?.unknown ??
-                          "-"}
+                        {Number(order?.fulfillment?.currentStep) + 1}
                       </div>
                     </div>
                     <div className="flex flex-col gap-1">

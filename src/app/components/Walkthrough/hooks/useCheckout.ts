@@ -1,12 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import FGOMarketABI from "@/app/abis/parent/FGOMarket.json";
-import {
-  createPublicClient,
-  createWalletClient,
-  custom,
-  http,
-  stringToHex,
-} from "viem";
+import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { CartItem } from "../../Prerolls/types/prerolls.types";
 import { CartItemMarket } from "../../AppMarket/types/appmarket.types";
 import {
@@ -107,11 +101,11 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
       );
       const prerolls = context?.purchaseMode == "prerolls" ? true : false;
 
-      let encryptedItems: string[] = [];
+      let encryptedItems: (string | null)[] = [];
       let items = prerolls ? context?.cartItems : context?.cartItemsMarket;
 
       await Promise.all(
-        (items || [])?.map(async (item) => {
+        (items || [])?.map(async (item, index) => {
           const fulfillmentData = prerolls
             ? {
                 ...fulfillmentDetails,
@@ -144,10 +138,9 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
           });
           const json = await ipfsRes.json();
 
-          encryptedItems.push("ipfs://" + json?.cid);
+          encryptedItems[index] = "ipfs://" + json?.cid;
         })
       );
-
       return encryptedItems;
     } catch (err: any) {
       console.error(err.message);
@@ -196,7 +189,6 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
         isPhysical: true,
         fulfillmentData: encrypted[index] || "",
       }));
-
       const { request } = await publicClient.simulateContract({
         address: COIN_OP_MARKET,
         abi: FGOMarketABI,
@@ -219,7 +211,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
       });
 
       context?.setModalOpen(dict?.Common.allYours);
-
+      context?.setCartItemsMarket([]);
       router.push(`/account`);
     } catch (err: any) {
       console.error(err.message);
@@ -351,7 +343,6 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
         });
 
         context?.setModalOpen(dict?.Common.allYours);
-
         router.push(
           `https://cypher.digitalax.xyz/autograph/${
             context?.lensConectado?.profile?.username?.localName?.split(
@@ -476,19 +467,15 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
             ]
           : [
               COIN_OP_MARKET,
-              BigInt(
-                Math.floor(
-                  (context?.cartItemsMarket || [])?.reduce(
-                    (acc, item) =>
-                      acc +
-                      (Number(item?.item?.physicalPrice) / 10 ** 18) *
-                        item.chosenAmount,
-                    0
-                  ) *
-                    1.3 *
-                    10 ** 18
-                )
-              ),
+              (context?.cartItemsMarket || [])?.reduce(
+                (acc, item) =>
+                  acc +
+                  (Number(item?.item?.totalPhysicalPrice) / 10 ** 18) *
+                    item.chosenAmount,
+                0
+              ) *
+                10 ** 18 *
+                1.3,
             ],
         account: address,
       });
@@ -594,14 +581,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
             (context?.cartItemsMarket || [])?.reduce(
               (acc, item) =>
                 acc +
-                ((Number(item?.item?.physicalPrice) +
-                  Number(
-                    item?.item?.childReferences?.reduce(
-                      (acc2, item2) => acc2 + Number(item.item.physicalPrice),
-                      0
-                    )
-                  )) /
-                  10 ** 18) *
+                (Number(item?.item?.totalPhysicalPrice) / 10 ** 18) *
                   item.chosenAmount,
               0
             ) *
@@ -641,6 +621,8 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
     }
   }, [
     checkoutCurrency,
+    context?.cartItems,
+    context?.cartItemsMarket,
     context?.lensConectado?.profile,
     address,
     context?.purchaseMode,

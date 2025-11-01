@@ -26,6 +26,8 @@ query($designer: String!, $parentContract: String!) {
     infraCurrency
     digitalMarketsOpenToAll
     physicalMarketsOpenToAll
+    totalPhysicalPrice
+    totalDigitalPrice
     authorizedMarkets {
       contractAddress
       isActive
@@ -574,6 +576,7 @@ query($parentContract: String!, $first: Int!, $skip: Int!) {
     symbol
     digitalPrice
     physicalPrice
+    totalPhysicalPrice
     printType
     availability
     infraCurrency

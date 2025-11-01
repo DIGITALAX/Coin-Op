@@ -30,6 +30,7 @@ const useParents = (dict: any) => {
     setParentsLoading(true);
     try {
       const result = await getParents(address, COIN_OP_PARENT);
+
       if (result?.data?.parents) {
         const processedItems: Parent[] = await Promise.all(
           result.data.parents.map(async (parent: Parent) => {

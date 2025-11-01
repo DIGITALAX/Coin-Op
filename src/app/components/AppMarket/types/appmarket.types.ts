@@ -36,6 +36,8 @@ export interface Parent {
   availability: string;
   digitalMarketsOpenToAll: boolean;
   physicalMarketsOpenToAll: boolean;
+  totalPhysicalPrice: boolean;
+  totalDigitalPrice: boolean;
   authorizedMarkets: MarketContract[];
   status: string;
   infraCurrency: string;

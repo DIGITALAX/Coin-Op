@@ -136,7 +136,6 @@ const useOrders = (address: `0x${string}` | undefined, dict: any) => {
         (resMarket?.data?.orders || [])?.map(
           async (item: {
             orderId: string;
-            totalPayments: string;
             orderStatus: string;
             fulfillmentData: string;
             payments: {
@@ -168,7 +167,6 @@ const useOrders = (address: `0x${string}` | undefined, dict: any) => {
 
             return {
               ...item,
-              totalPayments: String(Number(item?.totalPayments) / 10 ** 18),
               fulfillmentData: resolvedDetails,
               orderStatus: orderStatusMarket[Number(item?.orderStatus)],
               payments: item?.payments?.map((item) => ({

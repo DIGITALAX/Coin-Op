@@ -73,7 +73,6 @@ const useSellData = (searchParams: {
             Number(data.material.childId),
             data.material.childContract
           );
-
           const resultColor = await getChild(
             Number(data.color.childId),
             data.color.childContract

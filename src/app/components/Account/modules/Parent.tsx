@@ -105,15 +105,7 @@ export default function Parent({ dict }: ParentProps) {
                     {dict?.Account?.physicalPrice}
                   </div>
                   <div className="relative w-fit h-fit flex items-center justify-center font-sat">
-                    {(Number(parent.physicalPrice) +
-                      Number(
-                        parent?.childReferences?.reduce(
-                          (accumulator, currentItem) =>
-                            accumulator +
-                            Number(currentItem.child?.physicalPrice),
-                          0
-                        )
-                      )) /
+                    {(Number(parent.totalPhysicalPrice)) /
                       10 ** 18}{" "}
                     MONA
                   </div>

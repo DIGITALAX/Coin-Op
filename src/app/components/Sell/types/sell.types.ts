@@ -217,7 +217,6 @@ export interface Child {
 }
 
 export interface OrderMarket {
-  totalPayments: string;
   orderStatus: string;
   orderId: string;
   fulfillmentData: Details | EncryptedData | string;
