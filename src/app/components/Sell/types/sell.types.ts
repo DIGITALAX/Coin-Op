@@ -85,6 +85,7 @@ export interface Fulfiller {
   uri: string;
   base: number;
   address: string;
+  fulfillerId: number;
   vig: number;
 }
 

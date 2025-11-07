@@ -15,8 +15,8 @@ import { ChildReference } from "../../Sell/types/sell.types";
 const useParents = (dict: any) => {
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: chains.testnet,
-    transport: http("https://rpc.testnet.lens.dev"),
+    chain: chains.mainnet,
+    transport: http("https://rpc.lens.xyz"),
   });
   const modalContext = useContext(ModalContext);
   const [parents, setParents] = useState<Parent[]>([]);
@@ -30,7 +30,6 @@ const useParents = (dict: any) => {
     setParentsLoading(true);
     try {
       const result = await getParents(address, COIN_OP_PARENT);
-
       if (result?.data?.parents) {
         const processedItems: Parent[] = await Promise.all(
           result.data.parents.map(async (parent: Parent) => {
@@ -66,14 +65,14 @@ const useParents = (dict: any) => {
     setCreateParentLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: chains.testnet,
+        chain: chains.mainnet,
         transport: custom((window as any).ethereum),
       });
       const { request } = await publicClient.simulateContract({
         address: COIN_OP_PARENT,
         abi: ABIS.FGOParent,
         functionName: "createParent",
-        chain: chains.testnet,
+        chain: chains.mainnet,
         args: [BigInt(parentId)],
         account: address,
       });
@@ -90,7 +89,7 @@ const useParents = (dict: any) => {
     setApproveLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: chains.testnet,
+        chain: chains.mainnet,
         transport: custom((window as any).ethereum),
       });
       const { request } = await publicClient.simulateContract({

@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 
 const PARENTS = `
 query($designer: String!, $parentContract: String!) {
-  parents(where: {designer: $designer, parentContract: $parentContract, status: 2}, orderBy: blockTimestamp, orderDirection: desc) {
+  parents(where: {designer: $designer, parentContract: $parentContract}, orderBy: blockTimestamp, orderDirection: desc) {
     infraId
     designId
     parentContract

@@ -33,7 +33,7 @@ const Crypto: FunctionComponent<CryptoProps> = ({
         !lensCargando && !checkoutLoading && Number(currentCartItems?.length) > 0 
           ? !address
             ? () => openOnboarding()
-            : chainId !== 37111
+            : chainId !== 232
             ? () => openSwitchNetworks()
             : !context?.lensConectado?.profile &&
               context?.purchaseMode == "prerolls"

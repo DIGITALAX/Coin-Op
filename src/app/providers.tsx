@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Context, Post, PublicClient, mainnet, testnet } from "@lens-protocol/client";
+import { Context, Post, PublicClient, mainnet } from "@lens-protocol/client";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { StorageClient } from "@lens-chain/storage-client";
 import { chains } from "@lens-chain/sdk/viem";
@@ -36,9 +36,9 @@ export const config = createConfig(
       .NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string,
     appUrl: "https://coinop.themanufactory.xyz",
     appIcon: "https://coinop.themanufactory.xyz/favicon.ico",
-    chains: [chains.testnet],
+    chains: [chains.mainnet],
     transports: {
-      [chains.testnet.id]: http("https://rpc.testnet.lens.dev"),
+      [chains.mainnet.id]: http("https://rpc.lens.xyz"),
     },
     connectors: [],
     ssr: true,
@@ -293,7 +293,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     if (!clienteLens) {
       setClienteLens(
         PublicClient.create({
-          environment: testnet,
+          environment: mainnet,
           storage: window.localStorage,
         })
       );

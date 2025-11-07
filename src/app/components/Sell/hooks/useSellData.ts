@@ -48,7 +48,6 @@ const useSellData = (searchParams: {
           if (templateDataFront) {
             templateDataFront = await ensureMetadata(templateDataFront);
           }
-
           if (data?.back) {
             const resultBack = await getTemplate(
               Number(data.back.templateId),
@@ -78,6 +77,7 @@ const useSellData = (searchParams: {
             data.color.childContract
           );
 
+
           const childDataMaterial = resultMaterial?.data?.childs?.[0];
           const childDataColor = resultColor?.data?.childs?.[0];
 
@@ -88,7 +88,6 @@ const useSellData = (searchParams: {
           const processedItemColor = childDataColor
             ? await ensureMetadata(childDataColor)
             : null;
-
           setSellData({
             front: {
               ...data?.front,
@@ -104,7 +103,7 @@ const useSellData = (searchParams: {
             },
             back: data?.back && {
               ...data?.back,
-              template: templateDataFront,
+              template: templateDataBack!,
               children: data?.back?.children?.map((child) => ({
                 ...child,
                 child: templateDataBack?.childReferences.find(

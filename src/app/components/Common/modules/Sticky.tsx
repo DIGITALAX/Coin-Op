@@ -189,17 +189,17 @@ const Sticky: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
               } ${
                 !context?.lensConectado?.profile &&
                 isConnected &&
-                chainId == 37111
+                chainId == 232
                   ? "w-5 h-5"
                   : context?.lensConectado?.profile &&
                     isConnected &&
-                    chainId == 37111
+                    chainId == 232
                   ? "w-5 h-4"
                   : "w-4 h-4"
               }`}
               onClick={() =>
                 !isConnected
-                  ? chainId !== 37111
+                  ? chainId !== 232
                     ? openSwitchNetworks?.()
                     : openOnboarding?.()
                   : isConnected && !context?.lensConectado?.profile
@@ -216,7 +216,7 @@ const Sticky: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                   src={`${INFURA_GATEWAY}/ipfs/${
                     !isConnected
                       ? "QmRZRiYquPa6Ej2zTJCqyEg2yHYSknDsG7cUEpYe2YsnbM"
-                      : isConnected && chainId != 37111
+                      : isConnected && chainId != 232
                       ? "QmQZ5hsxA4nL7jFvJq5zDuzabpspkywouypwgYBHB98cW3"
                       : !context?.lensConectado?.profile
                       ? "Qmd4Y7hmZoNbqfanP1FXMZTKGuKwXMu5W8bUky4q3sPpg2"

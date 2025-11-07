@@ -12,7 +12,7 @@ import { DesignerFormData } from "../types/account.types";
 const useDesigner = () => {
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: chains.testnet,
+    chain: chains.mainnet,
     transport: http("https://rpc.lens.dev"),
   });
   const [designer, setDesigner] = useState<Designer | null>();
@@ -31,7 +31,7 @@ const useDesigner = () => {
     setCreateDesignerLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: chains.testnet,
+        chain: chains.mainnet,
         transport: custom((window as any).ethereum),
       });
 
@@ -63,7 +63,7 @@ const useDesigner = () => {
         address: COIN_OP_DESIGNER,
         abi: ABIS.FGODesigners,
         functionName: edit ? "updateProfile" : "createProfile",
-        chain: chains.testnet,
+        chain: chains.mainnet,
         args: edit
           ? [Number(designer?.designerId), BigInt(Number(designer?.version) + 1), `ipfs://${json?.cid}`]
           : [BigInt(1), `ipfs://${json?.cid}`],

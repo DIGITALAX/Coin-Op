@@ -48,7 +48,7 @@ export default function AccountEntry({ dict }: { dict: any }) {
               onClick={() =>
                 !isConnected
                   ? openOnboarding
-                  : isConnected && chainId !== 37111 && openSwitchNetworks
+                  : isConnected && chainId !== 232 && openSwitchNetworks
               }
             >
               {dict?.Common?.connect}

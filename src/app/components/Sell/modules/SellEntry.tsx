@@ -44,12 +44,8 @@ export default function SellEntry({ dict, searchParams }: SellProps) {
     return (
       <div className="relative w-full text-white min-h-screen h-full items-center justify-center flex">
         <div className="relative w-fit h-fit flex flex-col items-center justify-center gap-3">
-          <div className="font-bit text-lg">
-            {dict?.Common?.error}
-          </div>
-          <div className="font-herm text-sm text-center">
-            {error}
-          </div>
+          <div className="font-bit text-lg">{dict?.Common?.error}</div>
+          <div className="font-herm text-sm text-center">{error}</div>
         </div>
       </div>
     );
@@ -146,7 +142,14 @@ export default function SellEntry({ dict, searchParams }: SellProps) {
           <div className="relative w-full h-fit flex overflow-y-scroll justify-start items-start p-4">
             <div className="w-full h-fit items-start justify-start grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
               <div className="relative w-full h-fit flex flex-col rounded-lg bg-nube p-1">
-                <div className="relative w-full h-80 flex rounded-lg bg-morado overflow-hidden">
+                <div
+                  className="relative w-full h-80 flex rounded-lg bg-morado overflow-hidden cursor-pointer"
+                  onClick={() =>
+                    window.open(
+                      `https://fgo.themanufactory.xyz/library/template/${sellData?.front?.template?.templateContract}/${sellData?.front?.template?.templateId}`
+                    )
+                  }
+                >
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/${
                       sellData?.front?.template?.metadata?.image.split(
@@ -172,6 +175,41 @@ export default function SellEntry({ dict, searchParams }: SellProps) {
                   </div>
                 </div>
               </div>
+              <div className="relative w-full h-fit flex flex-col rounded-lg bg-nube p-1">
+                <div
+                  className="relative w-full h-80 flex rounded-lg bg-morado overflow-hidden cursor-pointer"
+                  onClick={() =>
+                    window.open(
+                      `https://fgo.themanufactory.xyz/library/template/${sellData?.back?.template?.templateContract}/${sellData?.back?.template?.templateId}`
+                    )
+                  }
+                >
+                  <Image
+                    src={`${INFURA_GATEWAY}/ipfs/${
+                      sellData?.back?.template?.metadata?.image.split(
+                        "ipfs://"
+                      )?.[1]
+                    }`}
+                    alt={sellData?.back?.template?.metadata?.title ?? ""}
+                    layout="fill"
+                    objectFit="contain"
+                    className="rounded-lg"
+                    draggable={false}
+                  />
+                </div>
+                <div className="relative w-full h-fit flex flex-col p-3 gap-2 items-start justify-start bg-black rounded-lg">
+                  <div className="font-count text-white text-xs uppercase">
+                    {dict?.Common?.template}
+                  </div>
+                  <div className="font-mega text-white text-sm">
+                    {sellData?.back?.template?.metadata?.title}
+                  </div>
+                  <div className="font-mega text-white/60 text-xs">
+                    {formatPrice(sellData?.back?.template?.physicalPrice || 0)}{" "}
+                    MONA
+                  </div>
+                </div>
+              </div>
               {sellData?.front?.children?.map(
                 (
                   child: {
@@ -186,7 +224,14 @@ export default function SellEntry({ dict, searchParams }: SellProps) {
                     key={index}
                     className="relative w-full h-fit flex flex-col rounded-lg bg-nube p-1"
                   >
-                    <div className="relative w-full h-80 flex rounded-lg bg-arbol overflow-hidden">
+                    <div
+                      className="relative w-full h-80 flex rounded-lg bg-arbol overflow-hidden cursor-pointer"
+                      onClick={() =>
+                        window.open(
+                          `https://fgo.themanufactory.xyz/library/child/${child?.childContract}/${child?.childId}`
+                        )
+                      }
+                    >
                       <Image
                         src={`${INFURA_GATEWAY}/ipfs/${
                           child?.child?.metadata?.image.split("ipfs://")?.[1]
@@ -226,7 +271,14 @@ export default function SellEntry({ dict, searchParams }: SellProps) {
                     key={index}
                     className="relative w-full h-fit flex flex-col rounded-lg bg-nube p-1"
                   >
-                    <div className="relative w-full h-80 flex rounded-lg bg-rosa overflow-hidden">
+                    <div
+                      className="relative w-full h-80 flex rounded-lg bg-rosa overflow-hidden cursor-pointer"
+                      onClick={() =>
+                        window.open(
+                          `https://fgo.themanufactory.xyz/library/child/${child?.childContract}/${child?.childId}`
+                        )
+                      }
+                    >
                       <Image
                         src={`${INFURA_GATEWAY}/ipfs/${
                           child?.child?.metadata?.image.split("ipfs://")?.[1]
@@ -253,7 +305,14 @@ export default function SellEntry({ dict, searchParams }: SellProps) {
                 )
               )}
               <div className="relative w-full h-fit flex flex-col rounded-lg bg-nube p-1">
-                <div className="relative w-full h-80 flex rounded-lg bg-apagado overflow-hidden">
+                <div
+                  className="relative w-full h-80 flex rounded-lg bg-apagado overflow-hidden cursor-pointer"
+                  onClick={() =>
+                    window.open(
+                      `https://fgo.themanufactory.xyz/library/child/${sellData?.material?.child?.childContract}/${sellData?.material?.child?.childId}`
+                    )
+                  }
+                >
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/${
                       sellData?.material?.child?.metadata?.image.split(
@@ -280,7 +339,14 @@ export default function SellEntry({ dict, searchParams }: SellProps) {
                 </div>
               </div>
               <div className="relative w-full h-fit flex flex-col rounded-lg bg-nube p-1">
-                <div className="relative w-full h-80 flex rounded-lg bg-mar overflow-hidden">
+                <div
+                  className="relative w-full h-80 flex rounded-lg bg-mar overflow-hidden cursor-pointer"
+                  onClick={() =>
+                    window.open(
+                      `https://fgo.themanufactory.xyz/library/child/${sellData?.color?.child?.childContract}/${sellData?.color?.child?.childId}`
+                    )
+                  }
+                >
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/${
                       sellData?.color?.child?.metadata?.image.split(

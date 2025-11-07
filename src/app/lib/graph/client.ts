@@ -19,7 +19,7 @@ export const graphPrintClient = new ApolloClient({
 });
 
 const httpLinkFactory = new HttpLink({
-  uri: `https://api.studio.thegraph.com/query/109132/fractional-garment-ownership/version/latest`,
+  uri: `https://gateway.thegraph.com/api/${process.env.NEXT_PUBLIC_GRAPH_KEY}/subgraphs/id/4jujS6j8wMahNTSzN2T8wN7iTiEfNRQfoYYQL7Q1Bn9X`,
 });
 
 export const graphFactoryClient = new ApolloClient({

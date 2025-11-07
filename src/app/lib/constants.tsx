@@ -15,17 +15,17 @@ export const VENICE_BASE_URL: string = "https://api.venice.ai/api/v1";
 export const LOCALES: string[] = ["en", "es"];
 
 export const COIN_OP_PARENT: `0x${string}` =
-  "0x5215f9b79bee0f043dc7dcce870750033a8480c5";
+  "0xb871d2aad4b28910ec46c2963b98fbf4bd5e85ec";
 export const COIN_OP_DESIGNER: `0x${string}` =
-  "0x1c7ec8b9100ae14cf0d2eacde7b08cda6863fc44";
+  "0xc41da80b39872bf9ee95b1cf5b0cd3c1b1617aab";
 export const COIN_OP_MARKET: `0x${string}` =
-  "0xdb28aaf0aee89b4383d59f6da948883f538e9da5";
+  "0xb44785efc595c77174626b571efba2660b573d34";
 export const INFRA_ID: string =
   "0x0000000000000000000000000000000000000000000000000000000000000001";
 export const MATERIAL_CHILD: `0x${string}` =
-  "0xadc3f6c9fe006d997fa6124ccc253c6de6244e85";
+  "0x029bc2ba787c131fd58938a192787c066955cd2f";
 export const COLOR_CHILD: `0x${string}` =
-  "0x59271b2d618dd4fe5ab998d8ad8a3da77f15c716";
+  "0xf71d3b3a5efa4f8e34d4cd922831833350fa3dfb";
 export const SIZES: string[] = ["xxs", "xs", "s", "m", "l", "xl", "2xl"];
 export const APP_COLORS: string[] = [
   "bg-morado",
@@ -46,6 +46,7 @@ export const FULFILLERS: Fulfiller[] = [
     base: 1,
     vig: 5,
     address: "0xdD35935C12E3748704C96492E5565d34daE73De7",
+    fulfillerId: 1,
   },
 ];
 
@@ -188,10 +189,10 @@ export const COUNTRIES: string[] = [
 ];
 
 export const DIGITALAX_ADDRESS: `0x${string}` =
-  "0x7642fca8eEFEF0678a30F7Cf5892590545Aa154A";
+  "0xdd35935c12e3748704c96492e5565d34dae73de7";
 
 export const DIGITALAX_PUBLIC_KEY: string =
-  "0x0432166686bda53a75de0cdf3360bf47993b4277315798b2e28b2e662af7965a5b018950eeccede9ba01adf2563d2a8e731a881f39deb0c58cec6bfe3e8a812c28";
+  "0x04d9824e95252fda536edb1e80797e5ba885d2a98e1a6d880ab9ccbe050aa850c8d0fdb95f347256c907468b74e058181b14edc8acb3f3b178f2b7946bb9170ebe";
 
 export const ASSETS: {
   name: string;
@@ -208,8 +209,7 @@ export const ASSETS: {
     symbol: "MONA",
     decimals: 18,
     contract: {
-      // address: "0x28547B5b6B405A1444A17694AC84aa2d6A03b3Bd",
-      address: "0x3D7f4Fc4E17Ead2ABBcf282A38F209D683e03835",
+      address: "0x28547B5b6B405A1444A17694AC84aa2d6A03b3Bd",
       chainId: 232,
     },
     cover: "QmS6f8vrNZok9j4pJttUuWpNrjsf4vP9RD5mRL36z6UdaL",
@@ -220,7 +220,6 @@ export const ASSETS: {
     decimals: 18,
     contract: {
       address: "0x6bDc36E20D267Ff0dd6097799f82e78907105e2F",
-      // address: "0xeee5a340Cdc9c179Db25dea45AcfD5FE8d4d3eB8",
       chainId: 232,
     },
     cover: "QmZRqza7VxetyQh2JWvxC6PsnXVUPVV7vU3RS1XUhuqmNA",

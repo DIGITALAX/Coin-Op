@@ -57,7 +57,7 @@ const useLens = (
     setLensCargando(true);
     try {
       const signer = createWalletClient({
-        chain: chains.testnet,
+        chain: chains.mainnet,
         transport: custom(window.ethereum!),
         account: address,
       });

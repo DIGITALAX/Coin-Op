@@ -17,8 +17,8 @@ import { ModalContext } from "@/app/providers";
 const useSell = (sellData: SellData | null, dict: any) => {
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: chains.testnet,
-    transport: http("https://rpc.testnet.lens.dev"),
+    chain: chains.mainnet,
+    transport: http("https://rpc.lens.xyz"),
   });
   const modalContext = useContext(ModalContext);
   const [createParentLoading, setCreateParentLoading] =
@@ -66,7 +66,7 @@ const useSell = (sellData: SellData | null, dict: any) => {
     setCreateParentLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: chains.testnet,
+        chain: chains.mainnet,
         transport: custom((window as any).ethereum),
       });
 
@@ -97,8 +97,12 @@ const useSell = (sellData: SellData | null, dict: any) => {
 
       const childrenCanvasUploads = await Promise.all(
         [
-          ...(sellData?.front.children || []),
-          ...(sellData?.back?.children || []),
+          ...(sellData?.front.children || [])?.filter(
+            (child) => child?.canvasImage
+          ),
+          ...(sellData?.back?.children || [])?.filter(
+            (child) => child?.canvasImage
+          ),
         ].map(async (child) => {
           const canvasFile = dataURLToFile(
             child.canvasImage,
@@ -162,6 +166,7 @@ const useSell = (sellData: SellData | null, dict: any) => {
             childId: sellData.front.templateId,
             prepaidAmount: BigInt("0"),
             prepaidUsed: BigInt("0"),
+            futuresCreditsReserved: BigInt("0"),
             placementURI:
               "ipfs://QmNdShwAyD38iv2pWRP2QHtFTS4rCSrJFbqmhZ6ArWTdYp",
             amount: 1,
@@ -173,6 +178,7 @@ const useSell = (sellData: SellData | null, dict: any) => {
                   childId: sellData.back.templateId,
                   prepaidAmount: BigInt("0"),
                   prepaidUsed: BigInt("0"),
+                  futuresCreditsReserved: BigInt("0"),
                   placementURI:
                     "ipfs://QmNdShwAyD38iv2pWRP2QHtFTS4rCSrJFbqmhZ6ArWTdYp",
                   amount: 1,
@@ -184,6 +190,7 @@ const useSell = (sellData: SellData | null, dict: any) => {
             childId: sellData.material?.childId,
             prepaidAmount: BigInt("0"),
             prepaidUsed: BigInt("0"),
+            futuresCreditsReserved: BigInt("0"),
             placementURI:
               "ipfs://QmNdShwAyD38iv2pWRP2QHtFTS4rCSrJFbqmhZ6ArWTdYp",
             amount: 1,
@@ -193,6 +200,7 @@ const useSell = (sellData: SellData | null, dict: any) => {
             childId: sellData.color?.childId,
             prepaidAmount: BigInt("0"),
             prepaidUsed: BigInt("0"),
+            futuresCreditsReserved: BigInt("0"),
             placementURI:
               "ipfs://QmNdShwAyD38iv2pWRP2QHtFTS4rCSrJFbqmhZ6ArWTdYp",
             amount: 1,
@@ -205,7 +213,7 @@ const useSell = (sellData: SellData | null, dict: any) => {
           estimatedDeliveryDuration: 1209600,
           physicalSteps: [
             {
-              primaryPerformer: FULFILLERS[0].address,
+              primaryPerformer: BigInt(FULFILLERS[0].fulfillerId),
               instructions: "Manufactory Fulfillment",
               subPerformers: [],
             },
@@ -217,7 +225,7 @@ const useSell = (sellData: SellData | null, dict: any) => {
         address: COIN_OP_PARENT,
         abi: ABIS.FGOParent,
         functionName: "reserveParent",
-        chain: chains.testnet,
+        chain: chains.mainnet,
         args: [reserveParentParams],
         account: address,
       });
@@ -235,9 +243,12 @@ const useSell = (sellData: SellData | null, dict: any) => {
     if (!sellData) return null;
 
     const templatePrice =
-      parseFloat(sellData?.front?.template?.physicalPrice) / 10 ** 18;
+      parseFloat(sellData?.front?.template?.physicalPrice) / 10 ** 18 +
+      parseFloat(sellData?.back?.template?.physicalPrice ?? "0") / 10 ** 18;
     const materialPrice =
       parseFloat(sellData?.material?.child?.physicalPrice) / 10 ** 18;
+    const colorPrice =
+      parseFloat(sellData?.color?.child?.physicalPrice) / 10 ** 18;
     const fulfillmentBasePrice = sellData?.fulfiller?.base;
 
     let childrenPrice = 0;
@@ -250,7 +261,8 @@ const useSell = (sellData: SellData | null, dict: any) => {
       });
     }
 
-    const suppliersTotal = templatePrice + materialPrice + childrenPrice;
+    const suppliersTotal =
+      templatePrice + materialPrice + colorPrice + childrenPrice;
     const userPhysicalPrice =
       parseFloat(formData.physicalPrice) || fulfillmentBasePrice;
     const fulfillmentVigPercentage = sellData?.fulfiller?.vig / 100;

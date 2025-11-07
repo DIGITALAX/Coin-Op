@@ -29,8 +29,8 @@ import { ensurePurchasable } from "@/app/lib/helpers/canPurchase";
 
 const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
   const publicClient = createPublicClient({
-    chain: chains.testnet,
-    transport: http("https://rpc.testnet.lens.dev"),
+    chain: chains.mainnet,
+    transport: http("https://rpc.lens.xyz"),
   });
   const coder = new ethers.AbiCoder();
   const context = useContext(ModalContext);
@@ -85,7 +85,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
     setCheckoutLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: chains.testnet,
+        chain: chains.mainnet,
         transport: custom((window as any).ethereum),
       });
 
@@ -170,7 +170,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
 
     try {
       const clientWallet = createWalletClient({
-        chain: chains.testnet,
+        chain: chains.mainnet,
         transport: custom((window as any).ethereum),
       });
 
@@ -193,7 +193,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
         address: COIN_OP_MARKET,
         abi: FGOMarketABI,
         functionName: "buy",
-        chain: chains.testnet,
+        chain: chains.mainnet,
         args: [params],
         account: address,
       });
@@ -401,7 +401,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
     setCheckoutLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: chains.testnet,
+        chain: chains.mainnet,
         transport: custom((window as any).ethereum),
       });
 
@@ -436,7 +436,7 @@ const useCheckout = (dict: any, address: `0x${string}` | undefined) => {
           },
         ],
         functionName: "approve",
-        chain: chains.testnet,
+        chain: chains.mainnet,
         args: prerolls
           ? [
               COIN_OP_OPEN_ACTION,

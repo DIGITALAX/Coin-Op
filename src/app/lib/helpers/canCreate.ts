@@ -30,8 +30,8 @@ export const checkCreate = async (
   item: Template | Parent
 ): Promise<boolean> => {
   const publicClient = createPublicClient({
-    chain: chains.testnet,
-    transport: http("https://rpc.testnet.lens.dev"),
+    chain: chains.mainnet,
+    transport: http("https://rpc.lens.xyz"),
   });
 
   const childReferences = item.childReferences ?? [];

@@ -147,7 +147,7 @@ const OrderMarket: FunctionComponent<OrderMarketProps> = ({
                         "cursor-pointer hover:opacity-70"
                       }`}
                       onClick={
-                        connected && chainId !== 37111
+                        connected && chainId !== 232
                           ? () => openSwitchNetworks()
                           : (e) => {
                               e.stopPropagation();
