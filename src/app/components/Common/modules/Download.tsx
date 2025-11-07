@@ -59,19 +59,19 @@ const Download: FunctionComponent<DownloadProps> = ({
 
         <div className="relative w-full flex flex-row gap-6 justify-between items-center">
           <a
-            href="https://github.com/DIGITALAX/Coin-Op-App/releases/download/v0.1.0/coinop_0.1.0_universal.dmg"
+            href="https://github.com/DIGITALAX/Coin-Op-App/releases/download/v0.1.0/coinop_0.1.0_universal_darwin.dmg"
             className="cursor-pointer"
           >
             <FaApple color="white" size={20} />
           </a>
           <a
-            href="https://github.com/DIGITALAX/Coin-Op-App/releases/download/v0.1.0/coinop_0.1.0_x64-setup.exe"
+            href="https://github.com/DIGITALAX/Coin-Op-App/releases/download/v0.1.0/coinop_0.1.0_x64-setup_windows.exe"
             className="cursor-pointer"
           >
             <FaWindows color="white" size={20} />
           </a>
           <a
-            href="https://github.com/DIGITALAX/Coin-Op-App/releases/download/v0.1.0/coinop_0.1.0_amd64.AppImage"
+            href="https://github.com/DIGITALAX/Coin-Op-App/releases/download/v0.1.0/coinop_0.1.0_amd64_linux.AppImage"
             className="cursor-pointer"
           >
             <FaLinux color="white" size={20} />
