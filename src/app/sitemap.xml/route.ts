@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { INFURA_GATEWAY_INTERNAL } from "../lib/constants";
 import { getAllPrerolls } from "../../../graphql/queries/getPrerolls";
 
+
 const locales = ["en", "es"];
 
 function escapeXml(unsafe: string) {

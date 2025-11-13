@@ -1,16 +1,15 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
-const fgoLink = new HttpLink({
-  uri: `https://gateway-arbitrum.network.thegraph.com/api/${process.env.NEXT_PUBLIC_GRAPH_KEY}/subgraphs/id/2WcnqC9wn2Y33zbXUvTYuFngyddWYfBHsKpCLHrXvBi6`,
-});
-
-export const graphFGOClient = new ApolloClient({
-  link: fgoLink,
-  cache: new InMemoryCache(),
-});
+const getPrintUri = () => {
+  if (typeof window === "undefined") {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    return `${baseUrl}/api/graphql/print`;
+  }
+  return "/api/graphql/print";
+};
 
 const httpLinkPrint = new HttpLink({
-  uri: `https://gateway-arbitrum.network.thegraph.com/api/${process.env.NEXT_PUBLIC_GRAPH_KEY}/subgraphs/id/5BRsShsfv6tEucvDwGtrstRhg1fpvx2pMRWh5GDovE9K`,
+  uri: getPrintUri(),
 });
 
 export const graphPrintClient = new ApolloClient({
@@ -18,8 +17,16 @@ export const graphPrintClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const getFactoryUri = () => {
+  if (typeof window === "undefined") {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    return `${baseUrl}/api/graphql/factory`;
+  }
+  return "/api/graphql/factory";
+};
+
 const httpLinkFactory = new HttpLink({
-  uri: `https://gateway.thegraph.com/api/${process.env.NEXT_PUBLIC_GRAPH_KEY}/subgraphs/id/4jujS6j8wMahNTSzN2T8wN7iTiEfNRQfoYYQL7Q1Bn9X`,
+  uri: getFactoryUri(),
 });
 
 export const graphFactoryClient = new ApolloClient({
