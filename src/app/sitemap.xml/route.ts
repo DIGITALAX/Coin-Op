@@ -28,9 +28,15 @@ function escapeXml(unsafe: string) {
 export async function GET() {
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || "https://coinop.themanufactory.xyz";
-  const prerolls = await getAllPrerolls();
 
-  const collections = prerolls?.data?.collectionCreateds || [];
+  let collections = [];
+
+  try {
+    const prerolls = await getAllPrerolls();
+    collections = prerolls?.data?.collectionCreateds || [];
+  } catch (error) {
+    console.log("Error fetching prerolls for sitemap:", error);
+  }
 
   const collectionsXml = collections
     .map((coll: any) => {
