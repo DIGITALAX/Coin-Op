@@ -2,6 +2,7 @@
 import templates from "./../../public/templates.json";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, createConfig, http } from "wagmi";
+import { injected } from "wagmi/connectors";
 import {
   createContext,
   RefObject,
@@ -11,7 +12,7 @@ import {
   useState,
 } from "react";
 import { Context, Post, PublicClient, mainnet } from "@lens-protocol/client";
-import { ConnectKitProvider, getDefaultConfig } from "connectkit";
+import { ConnectKitProvider } from "connectkit";
 import { StorageClient } from "@lens-chain/storage-client";
 import { chains } from "@lens-chain/sdk/viem";
 import {
@@ -29,21 +30,18 @@ import {
 } from "./components/Walkthrough/types/walkthrough.types";
 import { Parent } from "./components/AppMarket/types/appmarket.types";
 
-export const config = createConfig(
-  getDefaultConfig({
-    appName: "Coinop",
-    walletConnectProjectId: process.env
-      .NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string,
-    appUrl: "https://coinop.themanufactory.xyz",
-    appIcon: "https://coinop.themanufactory.xyz/favicon.ico",
-    chains: [chains.mainnet],
-    transports: {
-      [chains.mainnet.id]: http("https://rpc.lens.xyz"),
-    },
-    connectors: [],
-    ssr: true,
-  })
-);
+export const config = createConfig({
+  chains: [chains.mainnet],
+  transports: {
+    [chains.mainnet.id]: http("https://rpc.lens.xyz"),
+  },
+  connectors: [
+    injected({
+      target: "metaMask",
+    }),
+  ],
+  ssr: true,
+});
 
 const queryClient = new QueryClient();
 
