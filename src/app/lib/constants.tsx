@@ -6,8 +6,8 @@ import {
 import { Fulfiller } from "../components/Sell/types/sell.types";
 export const GROVE_GATEWAY: string = "https://api.grove.storage/";
 export const INFURA_GATEWAY_INTERNAL: string =
-  "https://themanufactory.xyz/api/infura/";
-export const INFURA_GATEWAY: string = "https://thedial.infura-ipfs.io";
+  "https://cdn.digitalax.xyz/ipfs/";
+export const INFURA_GATEWAY: string = "https://cdn.digitalax.xyz";
 export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
 export const COIN_OP_OPEN_ACTION: `0x${string}` =
   "0x77D6D8A6d059820AD2C6DC2e3Fba73BcB1eFddf8";

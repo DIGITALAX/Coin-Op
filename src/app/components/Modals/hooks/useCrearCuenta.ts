@@ -40,13 +40,12 @@ const useCrearCuenta = (dict: any) => {
       let picture = undefined;
       const acl = immutable(chains.mainnet.id);
       if (account?.pfp) {
-        const res = await fetch("/api/ipfs", {
-          method: "POST",
-          body: account?.pfp,
-        });
-        const json = await res.json();
+        const { uri } = await context?.clienteAlmacenamiento!?.uploadFile(
+          new File([account?.pfp], "pfp", { type: account?.pfp?.type }),
+          { acl }
+        );
 
-        picture = "ipfs://" + json?.cid;
+        picture = uri;
       }
 
       const { uri } = await context?.clienteAlmacenamiento!?.uploadAsJson(

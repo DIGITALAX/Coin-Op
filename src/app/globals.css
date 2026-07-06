@@ -126,7 +126,7 @@
   --h-150: 70rem;
   --h-160: 95rem;
 
-  --bg-cross: url("https://thedial.infura-ipfs.io/ipfs/QmXZSyTXMxttm9jxioNH3k5L9uWpnbFTrTUK85muBen21F");
+  --bg-cross: url("https://cdn.digitalax.xyz/ipfs/QmXZSyTXMxttm9jxioNH3k5L9uWpnbFTrTUK85muBen21F");
 }
 
 /* === CUSTOM UTILITIES === */
@@ -470,7 +470,7 @@ input[type="range"]::-ms-thumb {
 }
 
 #videoplayer {
-  background-image: url("https://thedial.infura-ipfs.io/ipfs/QmekpQQEtQBP1M71SohCHiDRQbV1Sc2bKveVvwEfzAJCPx");
+  background-image: url("https://cdn.digitalax.xyz/ipfs/QmekpQQEtQBP1M71SohCHiDRQbV1Sc2bKveVvwEfzAJCPx");
   background-color: white;
   background-position: center;
   background-size: cover;

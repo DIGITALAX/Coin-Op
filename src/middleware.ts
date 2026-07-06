@@ -33,7 +33,7 @@ export function middleware(request: NextRequest) {
     
     // Allow specific production origins and any localhost
     const allowedOrigins = [
-      "https://thedial.infura-ipfs.io",
+      "https://cdn.digitalax.xyz",
       "https://ik.imagekit.io", 
       "https://themanufactory.xyz",
       "https://coinop.themanufactory.xyz"

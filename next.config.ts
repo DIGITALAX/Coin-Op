@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "thedial.infura-ipfs.io",
+        hostname: "cdn.digitalax.xyz",
         pathname: "/ipfs/**",
       },
       {
@@ -23,8 +23,8 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "themanufactory.xyz",
-        pathname: "/api/infura/**",
+        hostname: "cdn.digitalax.xyz",
+        pathname: "/ipfs/**",
       },
     ],
     unoptimized: true,
